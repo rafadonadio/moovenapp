@@ -8,6 +8,7 @@ import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
 import { NumberValidator } from '../../shared/validators/number.validator';
 
 @Component({
+    selector: 'page-sending-create-3',
     templateUrl: 'sending-create-3.html'
 })
 export class SendingCreate3Page implements OnInit{

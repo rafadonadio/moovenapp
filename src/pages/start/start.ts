@@ -4,6 +4,7 @@ import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 
 @Component({
+    selector: 'page-start',
     templateUrl: 'start.html',
 })
 export class StartPage {

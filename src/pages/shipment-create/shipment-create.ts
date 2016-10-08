@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { ShipmentCreate2Page } from '../shipment-create-2/shipment-create-2';
 
 @Component({
+    selector: 'page-shipment-create',
     templateUrl: 'shipment-create.html',
 })
 export class ShipmentCreatePage {

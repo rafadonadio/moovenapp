@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
+    selector: 'modal-user-edit-phone',
     templateUrl: 'modal-user-edit-phone.html'
 })
 export class ModalUserEditPhonePage implements OnInit{

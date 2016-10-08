@@ -9,6 +9,7 @@ import { SendingsPage } from '../sendings/sendings';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password/';
 
 @Component({
+    selector: 'page-login',
     templateUrl: 'login.html'
 })
 export class LoginPage {

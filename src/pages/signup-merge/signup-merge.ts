@@ -10,6 +10,7 @@ import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';
 
 @Component({
+    selector: 'page-signup-merge',
     templateUrl: 'signup-merge.html'
 })
 export class SignupMergePage implements OnInit{

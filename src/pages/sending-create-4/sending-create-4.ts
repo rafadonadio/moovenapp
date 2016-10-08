@@ -7,6 +7,7 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 
 @Component({
+    selector: 'page-sending-create-4',
     templateUrl: 'sending-create-4.html',
 })
 export class SendingCreate4Page implements OnInit {

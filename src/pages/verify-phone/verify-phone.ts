@@ -6,6 +6,7 @@ import { SendingsPage } from '../sendings/sendings';
 import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit-phone';
 
 @Component({
+    selector: 'page-verify-phone',
     templateUrl: 'verify-phone.html',
 })
 export class VerifyPhonePage {

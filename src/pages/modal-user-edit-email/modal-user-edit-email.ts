@@ -7,6 +7,7 @@ import { EmailValidator } from '../../shared/validators/email.validator';
 
 
 @Component({
+    selector: 'modal-user-edit-email',
     templateUrl: 'modal-user-edit-email.html'
 })
 export class ModalUserEditEmailPage implements OnInit {

@@ -6,6 +6,7 @@ import { EmailValidator } from '../../shared/validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
+    selector: 'modal-auth-reset-password',
     templateUrl: 'modal-auth-reset-password.html'
 })
 export class ModalAuthResetPasswordPage implements OnInit{

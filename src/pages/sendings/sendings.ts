@@ -6,6 +6,7 @@ import { SendingDetailPage } from '../sending-detail/sending-detail';
 import { SendingService } from  '../../providers/sending-service/sending-service';
 
 @Component({
+    selector: 'page-sendings',
     templateUrl: 'sendings.html',
 })
 export class SendingsPage implements OnInit{

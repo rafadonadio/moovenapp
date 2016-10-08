@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 @Component({
+    selector: 'page-sending-detail',
     templateUrl: 'sending-detail.html',
 })
 export class SendingDetailPage {

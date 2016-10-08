@@ -8,6 +8,7 @@ import { EmailValidator } from '../../shared/validators/email.validator';
 import { SignupMergePage } from '../signup-merge/signup-merge';
 
 @Component({
+    selector: 'page-signup',
     templateUrl: 'signup.html'
 })
 export class SignupPage implements OnInit {

@@ -8,6 +8,7 @@ import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit
 import { ModalUserEditNamePage } from '../modal-user-edit-name/modal-user-edit-name';
 
 @Component({
+    selector: 'page-settings',
     templateUrl: 'settings.html'
 })
 export class SettingsPage implements OnInit{

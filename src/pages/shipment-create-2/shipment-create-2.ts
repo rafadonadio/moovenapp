@@ -5,6 +5,7 @@ import { ToastController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
 
 @Component({
+  selector: 'page-shipment-create-2',  
   templateUrl: 'shipment-create-2.html',
 })
 export class ShipmentCreate2Page {
