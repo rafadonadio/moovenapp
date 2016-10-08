@@ -1,0 +1,67 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Nuevo Envío | paso 2</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="sending-create-2">
+    <form [formGroup]="formTwo">
+        <ion-item-divider dark>Datos de Retiro</ion-item-divider>
+        <div>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d13134.365872335158!2d-58.38880525!3d-34.61449064999999!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sar!4v1470177425680"
+            width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+        <ion-list>
+            <ion-item-divider light>Dirección de Retiro</ion-item-divider>
+            <ion-item>
+                <ion-input type="text" placeholder="Ingresa la dirección"
+                    [formControl]="pickupAddressFullText"></ion-input>
+            </ion-item>
+            <ion-item-divider light margin-top>Banda horaria de Retiro</ion-item-divider>
+            <ion-item>
+                <ion-label>Desde</ion-label>
+                <ion-datetime [formControl]="pickupTimeFrom"
+                    displayFormat="HH:mm" minuteValues="00,30" cancelText="Cancelar" doneText="Listo"
+                    [(ngModel)]="rangeFrom"
+                    (ionChange)="adjustPickupTimeTo($event)"
+                    ></ion-datetime>
+            </ion-item>
+            <ion-item>
+                <ion-label>Hasta</ion-label>
+                <ion-datetime [formControl]="pickupTimeTo"
+                    displayFormat="HH:mm" minuteValues="00,30" cancelText="Cancelar" doneText="Listo"
+                    [(ngModel)]="rangeTo"
+                    (ionChange)="adjustPickupTimeFrom($event)"
+                    ></ion-datetime>
+            </ion-item>
+            <ion-item-divider light>
+                Contacto para Retiro
+                <button outline item-right
+                    (click)="populateUserData()">
+                    <ion-icon name="person"></ion-icon>
+                    Copiar mis datos
+                </button>
+            </ion-item-divider>
+            <ion-list inset>
+                <ion-item no-lines>
+                    <ion-label>Nombre</ion-label>
+                    <ion-input type="text" [formControl]="pickupPersonName" [(ngModel)]="contactName"></ion-input>
+                </ion-item>
+                <ion-item no-lines>
+                    <ion-label>Telefono</ion-label>
+                    <ion-input type="text" [formControl]="pickupPersonPhone" [(ngModel)]="contactPhone"></ion-input>
+                </ion-item>
+                <ion-item no-lines>
+                    <ion-label>Email</ion-label>
+                    <ion-input type="text" [formControl]="pickupPersonEmail" [(ngModel)]="contactEmail"></ion-input>
+                </ion-item>
+            </ion-list>
+        </ion-list>
+        <div margin>
+            <button block primary
+                [disabled]="!formTwo.valid"
+                (click)="submit()">
+                Siguiente
+            </button>
+        </div>
+    </form>
+</ion-content>

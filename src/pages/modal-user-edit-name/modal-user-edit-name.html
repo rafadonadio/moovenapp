@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Cambiar Nombre
+        </ion-title>
+        <ion-buttons start>
+            <button (click)="dismiss()">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content padding class="modal-user-edit-name">
+    <form [formGroup]="editForm">
+        <ion-item margin-bottom>
+            <ion-label stacked>Nombre</ion-label>
+            <ion-input #input type="text" [formControl]="firstName" value="{{ profile.firstName }}"></ion-input>
+        </ion-item>
+        <ion-item margin-bottom>
+            <ion-label stacked>Apellido</ion-label>
+            <ion-input #input type="text" [formControl]="lastName" value="{{ profile.lastName }}"></ion-input>
+        </ion-item>
+
+        <button primary block margin-top
+            (click)="submit(editForm.value)"
+            [disabled]="!editForm.valid"
+            >Guardar</button>
+        <button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+    </form>
+</ion-content>

@@ -1,0 +1,78 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Confirmar cuenta</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="signup-merge">
+  <div class="profile">
+    <button fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
+    <img src="http://placehold.it/250x250?text=PROFILE">
+  </div>
+    <form [formGroup]="signupMergeForm">
+        <ion-grid>
+            <ion-row>
+                <ion-col width-50>
+                    <ion-item class="item-input">
+                        <ion-label stacked>NOMBRE</ion-label>
+                        <ion-input type="text"
+                            [formControl]="firstName"
+                            placeholder="Ingresa tu nombre"></ion-input>
+                    </ion-item>
+                    <div *ngIf="firstName.hasError('required') && firstName.touched"
+                        class="input-error">* Ingresa tu nombre</div>
+                </ion-col>
+                <ion-col width-50>
+                    <ion-item class="item-input">
+                        <ion-label stacked>APELLIDO</ion-label>
+                        <ion-input type="text"
+                            [formControl]="lastName"
+                            placeholder="Ingresa tu apellido"></ion-input>
+                    </ion-item>
+                    <div *ngIf="lastName.hasError('required') && lastName.touched" class="input-error">* Ingresa tu apellido</div>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label stacked>EMAIL</ion-label>
+                        <ion-input type="text"
+                            value="{{currentUser.email}}" disabled></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <p>Móvil<br>
+                    <small>Ingresa código de área sin el 0 y número sin el 15</small></p>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col width-20>
+                    <ion-item>
+    	                <ion-input type="text"
+                            [formControl]="phonePrefix"
+                            readonly></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col width-80>
+                    <ion-item>
+                        <ion-input type="number"
+                            [formControl]="phoneMobile"
+                            placeholder="Ingresa tu número de móvil"></ion-input>
+                    </ion-item>
+                    <div *ngIf="phoneMobile.hasError('required') && phoneMobile.touched" class="input-error">* Ingresa tu número de móvil</div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <div padding>
+            <button dark block margin-bottom margin-top
+                (click)="submitSignupMergeForm(signupMergeForm.value)"
+                [disabled]="!signupMergeForm.valid"
+                >Siguiente</button>
+            <p text-center>Al crear una cuenta en Mooven, tu aceptas nuestros<br>
+                <a (click)="presentModalTos()">Términos & condiciones y Políticas de Privacidad</a></p>
+            <button clear block margin-bottom margin-top light
+                (click)="signOut()">Salir</button>
+        </div>
+    </form>
+</ion-content>

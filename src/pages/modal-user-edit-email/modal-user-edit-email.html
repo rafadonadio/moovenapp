@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Cambiar dirección de email
+        </ion-title>
+        <ion-buttons start>
+            <button (click)="dismiss()">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content padding class="modal-user-edit-email">
+    <p text-center>Ingresa tu nueva dirección de email y presiona guardar.
+        <br>Un correo será enviado a la nueva dirección de email con un link de validación, clickéalo para confirmar el cambio.
+        <br>Algunas funcionalidades de la App quedarán deshabilitadas hasta que la dirección de email sea validada.</p>
+    <form [formGroup]="editForm">
+        <ion-item margin-bottom>
+            <ion-label stacked>NUEVA DIRECCIÓN DE EMAIL</ion-label>
+            <ion-input #input type="email" [formControl]="email"></ion-input>
+        </ion-item>
+        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched"
+            class="input-error">* Ingresa un email válido</div>
+
+        <button primary block margin-top
+            (click)="submit(editForm.value)"
+            [disabled]="!editForm.valid"
+            >Guardar</button>
+        <button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+    </form>
+</ion-content>

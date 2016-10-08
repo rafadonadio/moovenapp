@@ -1,0 +1,20 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Verificar Móvil</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding class="verify-phone">
+    <p text-center><small>ACCIÓN REQUERIDA</small></p>
+    <hr margin-bottom>
+    <h6 text-center margin-top>Ingresa tu código de verificación</h6>
+    <p text-center margin>Te hemos enviado un mensaje de texto al número +54 9 11 9876 5432 con el código de verificación.</p>
+    <ion-item class="code-verification" margin-bottom>
+        <ion-input type="text"></ion-input>
+    </ion-item>
+    <div class="buttons">
+        <button dark block outline margin-bottom margin-top (click)="goToApp()">Verificar luego</button>
+        <button dark block margin-bottom margin-top (click)="verifyCode()">Verificar</button>
+	    <button dark block outline margin-bottom margin-top (click)="showAlert()">Reenviar código</button>
+	    <button dark block outline margin-bottom margin-top (click)="goToUpdatePhoneNumber()">Cambiar número de móvil</button>
+    </div>
+</ion-content>

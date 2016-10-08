@@ -1,0 +1,90 @@
+<ion-header class="image-header">
+    <ion-navbar primary>
+        <button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title><h4>Mooven | Envíos</h4></ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="sendings">
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <!-- flotaing bottom right button -->
+    <button fab primary fab-right fab-bottom fab-fixed
+    class="new-sending"
+    (click)="createSending()"
+    ><ion-icon name="add"></ion-icon></button>
+
+    <ion-list *ngIf="sendingsEmpty==true">
+        <button ion-item detail-none (click)="createSending()">
+            <h2 primary text-center>No hay envíos activos</h2>
+        </button>
+    </ion-list>
+
+    <ion-list [virtualScroll]="sendings">
+        <button ion-item detail-none (click)="goToDetail()" *virtualItem="let item">
+            <ion-icon name="time" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>{{ item.ref }}</h2>
+            <p>Desde: {{ item.pickupAddressFullText }}</p>
+            <p>Hasta: {{ item.dropAddressFullText }}</p>
+            <h3>Aguardando Transporte</h3>
+        </button>
+    </ion-list>
+
+    <!-- <ion-list>
+        <button ion-item detail-none (click)="goToDetail()">
+            <ion-icon name="time" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>98765432123456</h2>
+            <p>Desde: Av de Mayo 432, CABA</p>
+            <p>Hasta: Gorriti 1234, CABA</p>
+            <h3>Aguardando Transporte</h3>
+        </button>
+        <button ion-item detail-none (click)="goToDetail()">
+            <ion-icon name="home" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>98765432123456</h2>
+            <p>Retiro: Av de Mayo 432, CABA</p>
+            <p>Horario: 11:30 a 13:00</p>
+            <h3>Transporte: Niki Lauda</h3>
+        </button>
+        <button ion-item detail-none (click)="goToDetail()">
+            <ion-icon name="pin" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>98765432123456</h2>
+            <p>Entrega: Gorriti 1234, CABA</p>
+            <p>Recibe: Arturo Mengano</p>
+            <h3>Horario: 15:00 a 17:00</h3>
+        </button>
+        <button ion-item detail-none (click)="goToDetail()">
+            <ion-icon name="checkmark" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>98765432123456</h2>
+            <p>Entrega: Gorriti 1234, CABA</p>
+            <p>Recibe: Arturo Mengano</p>
+            <h3>Entregado 16:35</h3>
+        </button>
+        <button ion-item detail-none (click)="goToDetail()">
+            <ion-icon name="close" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>98765432123456</h2>
+            <p>Desde: Av de Mayo 432, CABA</p>
+            <p>Hasta: Gorriti 1234, CABA</p>
+            <h3>Cancelado</h3>
+        </button>
+        <button ion-item detail-none (click)="goToDetail()">
+            <ion-icon name="time" item-left></ion-icon>
+            <ion-icon name="arrow-forward" item-right light></ion-icon>
+            <h2 primary>98765432123456</h2>
+            <p>Desde: Av de Mayo 432, CABA</p>
+            <p>Hasta: Gorriti 1234, CABA</p>
+            <h3>Aguardando Transporte</h3>
+        </button>
+    </ion-list> -->
+
+    <!-- <ion-footer padding>
+    <button block primary>Nuevo envío</button>
+</ion-footer> -->
+</ion-content>

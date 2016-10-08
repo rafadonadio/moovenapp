@@ -1,0 +1,94 @@
+<ion-header>
+    <ion-navbar dark>
+        <ion-title>Ajustes</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="settings">
+    <button fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
+    <div class="profile">
+        <img src="img/mooven_avatar.png">
+    </div>
+    <ion-grid>
+        <ion-row>
+            <ion-col width-50>
+                <button ion-item class="item-input"
+                    (click)="presentModalEditName()">
+                    <ion-label stacked>Nombre</ion-label>
+                    <ion-input type="text" value="{{ profile?.firstName }}"
+                        [disabled]="inputDisabled.names"></ion-input>
+                </button>
+            </ion-col>
+            <ion-col width-50>
+                <button ion-item class="item-input"
+                    (click)="presentModalEditName()">
+                    <ion-label stacked>Apellido</ion-label>
+                    <ion-input type="text" value="{{ profile?.lastName }}"
+                        [disabled]="inputDisabled.names"></ion-input>
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <button ion-item
+                    (click)="presentModalEditEmail()">
+                    <ion-label stacked>Email</ion-label>
+                    <ion-input type="email"
+                        value="{{ user.email }}"
+                        disabled></ion-input>
+                    <ion-icon name="checkmark-circle" item-right light [hidden]="user.emailVerified==false"></ion-icon>
+                    <ion-icon name="help" item-right light [hidden]="user.emailVerified==true"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <button ion-item
+                    (click)="presentModalEditPhone()">
+                    <ion-label stacked>Móvil</ion-label>
+                    <ion-input type="text" value="{{ profile?.phonePrefix }}{{ profile?.phoneMobile }}"
+                        [disabled]="inputDisabled.phoneMobile"></ion-input>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ion-list>
+        <ion-item-divider subdark>
+            Perfiles
+        </ion-item-divider>
+        <ion-item>
+            <ion-icon name='send' item-left></ion-icon>
+            Envíos
+            <ion-note item-right>Aprobado</ion-note>
+            <ion-icon name='checkmark' item-right primary></ion-icon>
+        </ion-item>
+        <ion-item>
+            <ion-icon name='cube' item-left></ion-icon>
+            Cargas
+            <ion-note item-right>Verificar</ion-note>
+            <ion-icon name='arrow-forward' item-right></ion-icon>
+        </ion-item>
+    </ion-list>
+    <ion-list>
+        <ion-item-divider subdark>
+            Notificaciones
+        </ion-item-divider>
+        <ion-item>
+            <ion-toggle checked="true"></ion-toggle>
+            <ion-label>
+                Push
+            </ion-label>
+            <ion-icon name='notifications' item-left></ion-icon>
+        </ion-item>
+        <ion-item>
+            <ion-toggle checked="true"></ion-toggle>
+            <ion-label>
+                Email
+            </ion-label>
+            <ion-icon name='mail' item-left></ion-icon>
+        </ion-item>
+    </ion-list>
+    <div padding>
+    	<button dark outline block margin-bottom (click)="signOut()">Salir</button>
+    	<button light outline block>Cerrar cuenta</button>
+    </div>
+</ion-content>

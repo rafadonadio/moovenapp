@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Editar número de móvil</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content class="update-phone-number">
+  <ion-grid>
+    <ion-row>
+        <ion-col>
+            <p>Móvil<br>
+            <small>Ingresa código de área sin el 0 y número sin el 15</small></p>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col width-20>
+            <ion-item>
+              <ion-input type="text" value="+549" disabled></ion-input>
+            </ion-item>
+        </ion-col>
+        <ion-col width-80>
+            <ion-item>
+                <ion-input type="text" placeholder="ingresa tu número" value="1198765432"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="buttons" padding>
+    <button dark block margin-bottom margin-top (click)="goToVerifyPhone()">Guardar y verificar</button>
+  </div>
+</ion-content>

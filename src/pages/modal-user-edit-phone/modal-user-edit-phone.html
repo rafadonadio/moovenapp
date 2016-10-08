@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Cambiar número de móvil
+        </ion-title>
+        <ion-buttons start>
+            <button (click)="dismiss()">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="update-phone-number">
+    <form [formGroup]="editForm">
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <p>Móvil<br>
+                    <small>Ingresa código de área sin el 0 y número sin el 15</small></p>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col width-20>
+                    <ion-item>
+                        <ion-input #input type="text" [formControl]="phonePrefix" value="{{ profile.phonePrefix }}" disabled></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col width-80>
+                    <ion-item>
+                        <ion-input #input type="text" [formControl]="phoneMobile" value="{{ profile.phoneMobile }}"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+    <div class="buttons" padding>
+        <button dark block margin-bottom margin-top (click)="dismiss()">Guardar y verificar</button>
+        <button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+    </div>
+</ion-content>

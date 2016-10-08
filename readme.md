@@ -103,8 +103,16 @@ ___
 
 **0.3.1** 
 - update ionic beta11 > RC0
-    > ionic start moovenAppDev sidemenu --v2
-    
+    - ref:   https://github.com/driftyco/ionic/blob/master/CHANGELOG.md#steps-to-upgrade-to-rc0
+    - start new project
+        > ionic start moovenAppDev sidemenu --v2
+    - copy project
+        4 copy app/pages > src/pages, copy app/providers > src/providers
+        5 modify templateUrl to relative to .ts
+        6 Import and add each of your pages to the declarations array and the entryComponents array in src/app/app.module.ts
+        7 n/a
+        8 Import and add each of your providers to the providers array in src/app/app.module.ts.
+        9 Remove any use of the providers, pipes and directives arrays in @Component.
 
 
 > to-do´s

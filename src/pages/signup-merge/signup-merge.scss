@@ -1,0 +1,28 @@
+.signup-merge {
+
+	div.profile{
+		padding-top: 10px;
+		padding-bottom: 10px;
+		background: #fafafa;
+	}
+	div.profile img{
+		margin-right: auto;
+		margin-left: auto;
+		display: block;
+		border-radius: 50%;
+	}
+	ion-item.item-input,
+	ion-item.item-select{
+		padding-left: 0;
+	}
+	ion-select{
+		max-width: 50%;
+		padding: 13px 0px 13px 0px;
+	}
+
+    .input-error{
+        margin-left: 20px;
+        margin-top: 5px;
+        color: red;
+    }
+}
