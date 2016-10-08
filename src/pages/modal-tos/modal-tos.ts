@@ -6,7 +6,7 @@ import { NavController, ViewController } from 'ionic-angular';
 })
 export class ModalTosPage {
 
-  constructor(private navCtrl: NavController,
+  constructor(public navCtrl: NavController,
       public viewCtrl: ViewController) {
 
   }

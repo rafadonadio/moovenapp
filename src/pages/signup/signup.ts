@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController  } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UserCredentials } from '../../shared/interfaces';
 import { UsersService } from '../../providers/users-service/users-service';
@@ -8,9 +8,7 @@ import { EmailValidator } from '../../shared/validators/email.validator';
 import { SignupMergePage } from '../signup-merge/signup-merge';
 
 @Component({
-    templateUrl: 'signup.html',
-    providers: [UsersService],
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'signup.html'
 })
 export class SignupPage implements OnInit {
 
@@ -18,12 +16,12 @@ export class SignupPage implements OnInit {
     email: AbstractControl;
     password: AbstractControl;
 
-    constructor(private navCtrl: NavController,
-        private users: UsersService,
-        private formBuilder: FormBuilder,
-        private loadingCtrl: LoadingController,
-        private toastCtrl: ToastController,
-        private alertCtrl: AlertController) {
+    constructor(public navCtrl: NavController,
+        public users: UsersService,
+        public formBuilder: FormBuilder,
+        public loadingCtrl: LoadingController,
+        public toastCtrl: ToastController,
+        public alertCtrl: AlertController) {
     }
 
     ngOnInit() {

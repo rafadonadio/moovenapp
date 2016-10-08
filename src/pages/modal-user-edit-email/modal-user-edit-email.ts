@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController, AlertController } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../shared/validators/email.validator';
 
 
 @Component({
-    templateUrl: 'modal-user-edit-email.html',
-    providers: [UsersService],
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'modal-user-edit-email.html'
 })
 export class ModalUserEditEmailPage implements OnInit {
 
@@ -18,11 +16,11 @@ export class ModalUserEditEmailPage implements OnInit {
 
     currentUser: any;
 
-    constructor(private navCtrl: NavController,
-        private viewCtrl: ViewController,
-        private alertCtrl: AlertController,
-        private users: UsersService,
-        private formBuilder: FormBuilder) {
+    constructor(public navCtrl: NavController,
+        public viewCtrl: ViewController,
+        public alertCtrl: AlertController,
+        public users: UsersService,
+        public formBuilder: FormBuilder) {
     }
 
     ngOnInit() {

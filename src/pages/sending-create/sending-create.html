@@ -2,7 +2,7 @@
     <ion-toolbar>
         <ion-title>Nuevo Envío | paso 1</ion-title>
         <ion-buttons start>
-            <button (click)="cancelSending()">
+            <button ion-button (click)="cancelSending()">
                 <ion-icon name="md-close"></ion-icon>
             </button>
         </ion-buttons>
@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content class="sending-create">
     <div>
-        <button fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
+        <button ion-button fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
         <img src="http://placehold.it/450x300">
     </div>
     <form [formGroup]="formOne">
@@ -34,31 +34,19 @@
                 <ion-label>Valor a declarar</ion-label>
             </ion-item>
             <ion-item no-lines>
-                <ion-range min="0" max="3000" step="100"
-                    [(ngModel)]="rangeValue"
-                    [formControl]="objectDeclaredValue"
-                    [disabled]="objectNoValueDeclared.value==true">
+                <ion-range min="0" max="3000" step="100" [(ngModel)]="rangeValue" [formControl]="objectDeclaredValue" [disabled]="objectNoValueDeclared.value==true">
                     <ion-label range-right>${{ objectDeclaredValue.value }}</ion-label>
                 </ion-range>
             </ion-item>
             <ion-item no-lines>
                 <ion-label>Sin valor</ion-label>
-                <ion-toggle
-                    [formControl]="objectNoValueDeclared"
-                    (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
+                <ion-toggle [formControl]="objectNoValueDeclared" (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
             </ion-item>
-                    <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false"
-                        class="input-error">* Desliza hasta el valor a declarar o marca "Sin valor"</div>
+            <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" class="input-error">* Desliza hasta el valor a declarar o marca "Sin valor"</div>
         </ion-list>
         <div margin>
-            <button block primary
-                class="submit"
-                (click)="submitInit()"
-                [disabled]="objectType.valid==false || (objectNoValueDeclared.value==false && objectDeclaredValue.valid==false)"
-                >Siguiente</button>
-            <button block light outline margin-top
-                (click)="cancelSending()"
-                >Cancelar</button>
+            <button ion-button block primary class="submit" (click)="submitInit()" [disabled]="objectType.valid==false || (objectNoValueDeclared.value==false && objectDeclaredValue.valid==false)">Siguiente</button>
+            <button ion-button block light outline margin-top (click)="cancelSending()">Cancelar</button>
         </div>
     </form>
 </ion-content>

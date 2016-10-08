@@ -6,7 +6,7 @@ import { NavController } from 'ionic-angular';
 })
 export class HistorialPage {
 
-    constructor(private navCtrl: NavController) {
+    constructor(public navCtrl: NavController) {
 
     }
 

@@ -7,7 +7,7 @@ import { NavController } from 'ionic-angular';
 })
 export class PaymentPage {
 
-  constructor(private navCtrl: NavController) {
+  constructor(public navCtrl: NavController) {
 
   }
 

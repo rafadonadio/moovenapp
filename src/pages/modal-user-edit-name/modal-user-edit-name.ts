@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
-    templateUrl: 'modal-user-edit-name.html',
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'modal-user-edit-name.html'
 })
 export class ModalUserEditNamePage implements OnInit{
 
@@ -19,10 +18,10 @@ export class ModalUserEditNamePage implements OnInit{
         lastName: ''
     };
 
-    constructor(private navCtrl: NavController,
-        private viewCtrl: ViewController,
-        private formBuilder: FormBuilder,
-        private users: UsersService) {
+    constructor(public navCtrl: NavController,
+        public viewCtrl: ViewController,
+        public formBuilder: FormBuilder,
+        public users: UsersService) {
     }
 
     ngOnInit() {

@@ -12,11 +12,11 @@
 		</ion-row>
 		<ion-row center class="signin-buttons">
 			<ion-col width-50>
-				<button block danger
+				<button ion-button block danger
 					(click)="signupWithGoogle()">Google</button>
 			</ion-col>
 			<ion-col width-50>
-				<button block
+				<button ion-button block
                     class="facebook"
                     (click)="goToSignupMerge()">Facebook</button>
 			</ion-col>
@@ -39,6 +39,6 @@
         </ion-item>
         <div *ngIf="(password.hasError('required') || password.hasError('length')) && password.touched" class="input-error">* Crea una contraseña de al menos 6 caracteres</div>
 
-        <button type="submit" primary block class="submit" [disabled]="!signupForm.valid">Registrarse</button>
+        <button ion-button type="submit" primary block class="submit" [disabled]="!signupForm.valid">Registrarse</button>
     </form>
 </ion-content>

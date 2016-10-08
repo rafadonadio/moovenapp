@@ -4,7 +4,7 @@
             Cambiar Nombre
         </ion-title>
         <ion-buttons start>
-            <button (click)="dismiss()">
+            <button ion-button (click)="dismiss()">
                 <ion-icon name="md-close"></ion-icon>
             </button>
         </ion-buttons>
@@ -21,10 +21,7 @@
             <ion-input #input type="text" [formControl]="lastName" value="{{ profile.lastName }}"></ion-input>
         </ion-item>
 
-        <button primary block margin-top
-            (click)="submit(editForm.value)"
-            [disabled]="!editForm.valid"
-            >Guardar</button>
-        <button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+        <button ion-button primary block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
+        <button ion-button dark outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

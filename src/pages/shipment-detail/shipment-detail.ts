@@ -8,7 +8,7 @@ export class ShipmentDetailPage {
 
   shipmenttab: string = "state";
 
-  constructor(private navCtrl: NavController) {
+  constructor(public navCtrl: NavController) {
 
   }
 

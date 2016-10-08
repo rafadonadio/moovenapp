@@ -8,7 +8,7 @@ import { SignupPage } from '../signup/signup';
 })
 export class StartPage {
 
-    constructor(private navCtrl: NavController) {
+    constructor(public navCtrl: NavController) {
 
     }
 

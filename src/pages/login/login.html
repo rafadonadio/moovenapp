@@ -4,23 +4,21 @@
     </ion-navbar>
 </ion-header>
 <ion-content class="login" padding>
-  <ion-grid>
-		<ion-row>
-			<ion-col width="100">
-				<h6 text-center margin>Ingresa con tu cuenta de</h6>
-			</ion-col>
-		</ion-row>
-		<ion-row center class="signin-buttons">
-			<ion-col width-50>
-				<button block danger
-					(click)="goToHome()">Google</button>
-			</ion-col>
-			<ion-col width-50>
-				<button block
-          (click)="goToHome()">Facebook</button>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+    <ion-grid>
+        <ion-row>
+            <ion-col width="100">
+                <h6 text-center margin>Ingresa con tu cuenta de</h6>
+            </ion-col>
+        </ion-row>
+        <ion-row center class="signin-buttons">
+            <ion-col width-50>
+                <button ion-button block danger (click)="goToHome()">Google</button>
+            </ion-col>
+            <ion-col width-50>
+                <button ion-button block (click)="goToHome()">Facebook</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
     <div style="height:50px;"></div>
     <hr>
     <h6 text-center margin class="create-account-title">Inicia sesión con tu correo electrónico</h6>
@@ -38,9 +36,7 @@
         </ion-item>
         <div *ngIf="password.hasError('required') && password.touched" class="input-error">* Ingresa tu contraseña</div>
 
-        <button type="submit" primary block class="submit" [disabled]="!signinForm.valid">iniciar sesión</button>
+        <button ion-button type="submit" primary block class="submit" [disabled]="!signinForm.valid">iniciar sesión</button>
     </form>
-    <button block light outline margin-top
-        (click)="presentModalPasswordReset()"
-        >Recuperar contraseña</button>
+    <button ion-button block light outline margin-top (click)="presentModalPasswordReset()">Recuperar contraseña</button>
 </ion-content>

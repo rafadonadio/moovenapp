@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../shared/validators/email.validator';
@@ -10,9 +10,7 @@ import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';
 
 @Component({
-    templateUrl: 'signup-merge.html',
-    providers: [UsersService],
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'signup-merge.html'
 })
 export class SignupMergePage implements OnInit{
 
@@ -25,13 +23,13 @@ export class SignupMergePage implements OnInit{
 
     currentUser: any;
 
-    constructor(private navCtrl: NavController,
-        private users: UsersService,
-        private formBuilder: FormBuilder,
-        private loadingCtrl: LoadingController,
-        private toastCtrl: ToastController,
-        private alertCtrl: AlertController,
-        private modalCtrl: ModalController) {
+    constructor(public navCtrl: NavController,
+        public users: UsersService,
+        public formBuilder: FormBuilder,
+        public loadingCtrl: LoadingController,
+        public toastCtrl: ToastController,
+        public alertCtrl: AlertController,
+        public modalCtrl: ModalController) {
     }
 
     ngOnInit() {

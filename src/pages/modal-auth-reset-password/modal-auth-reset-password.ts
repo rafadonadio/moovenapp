@@ -6,19 +6,18 @@ import { EmailValidator } from '../../shared/validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
-    templateUrl: 'modal-auth-reset-password.html',
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'modal-auth-reset-password.html'
 })
 export class ModalAuthResetPasswordPage implements OnInit{
 
     editForm: FormGroup;
     email: AbstractControl;
 
-    constructor(private navCtrl: NavController,
-        private viewCtrl: ViewController,
-        private formBuilder: FormBuilder,
-        private users: UsersService,
-        private alertCtrl: AlertController) {
+    constructor(public navCtrl: NavController,
+        public viewCtrl: ViewController,
+        public formBuilder: FormBuilder,
+        public users: UsersService,
+        public alertCtrl: AlertController) {
 
     }
 

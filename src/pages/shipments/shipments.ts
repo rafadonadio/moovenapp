@@ -4,21 +4,20 @@ import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 
 @Component({
-  templateUrl: 'shipments.html',
+    templateUrl: 'shipments.html',
 })
 export class ShipmentsPage {
 
-  constructor(private navCtrl: NavController) {
+    constructor(private navCtrl: NavController) {
 
-  }
+    }
 
-  goToDetail() {
-    this.navCtrl.push(ShipmentDetailPage);
-  }
+    goToDetail() {
+        this.navCtrl.push(ShipmentDetailPage);
+    }
 
-  goToCreate() {
-    this.navCtrl.push(ShipmentCreatePage);
-  }
-
+    goToCreate() {
+        this.navCtrl.push(ShipmentCreatePage);
+    }
 
 }

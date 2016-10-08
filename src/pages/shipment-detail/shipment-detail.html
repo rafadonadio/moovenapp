@@ -1,202 +1,202 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Carga 76543212345678</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>Carga 76543212345678</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content class="shipment-detail">
-  <!-- TABS -->
-  <div margin-bottom margin-top>
-    <ion-segment [(ngModel)]="shipmenttab" dark>
-      <ion-segment-button value="state">
-        <ion-icon name="locate"></ion-icon>
-      </ion-segment-button>
-      <ion-segment-button value="details">
-        <ion-icon name="cube"></ion-icon>
-      </ion-segment-button>
-      <ion-segment-button value="pickup">
-        <ion-icon name="home"></ion-icon>
-      </ion-segment-button>
-      <ion-segment-button value="drop">
-        <ion-icon name="pin"></ion-icon>
-      </ion-segment-button>
-      <ion-segment-button value="notifications">
-        <ion-icon name="notifications"></ion-icon>
-      </ion-segment-button>
-    </ion-segment>
-  </div>
-  <!-- TAB CONTENT -->
-  <div [ngSwitch]="shipmenttab">
-
-    <ion-list *ngSwitchCase="'state'">
-      <ion-item-divider dark>Estado</ion-item-divider>
-      <ion-list>
-        <button ion-item no-lines (click)="goToTab('details')">
-          <ion-icon name="send" item-left></ion-icon>
-          <h3>Carga aceptada</h3>
-          <p>A cobrar por viaje: $79.00**</p>
-          <ion-icon name="checkmark" item-right></ion-icon>
-        </button>
-        <button ion-item no-lines (click)="goToTab('pickup')">
-          <ion-icon name="home" item-left></ion-icon>
-          <h3>Retiro</h3>
-          <p>01/08/2016 11:45</p>
-          <ion-icon name="checkmark" item-right></ion-icon>
-        </button>
-        <button ion-item (click)="goToTab('drop')">
-          <ion-icon name="pin" item-left></ion-icon>
-          <h3>Entrega</h3>
-          <p>En transito</p>
-          <ion-icon name="time" item-right></ion-icon>
-        </button>
-      </ion-list>
-    </ion-list>
-
-    <ion-list *ngSwitchCase="'details'">
-      <ion-item-group>
-        <ion-item-divider dark>Detalles del Envío</ion-item-divider>
-        <ion-item-divider>Solicitante</ion-item-divider>
-        <ion-item no-lines>
-          <ion-thumbnail item-left>
-            <img src="http://placehold.it/200x200">
-          </ion-thumbnail>
-          <h2>Marco Polo</h2>
-          <h3>+5491165432100</h3>
-          <button outline item-right>
-            <ion-icon name="call"></ion-icon>
-            Llamar
-          </button>
-        </ion-item>
-        <ion-item-divider>Precio</ion-item-divider>
-        <ion-item no-lines>
-          <ion-icon name="card" item-left light></ion-icon>
-          <h3>Distancia aproximada: 15 km</h3>
-          <h2><b>$ 79.00</b></h2>
-        </ion-item>
-        <ion-item-divider>Carga</ion-item-divider>
-      </ion-item-group>
-      <ion-grid>
-        <ion-row>
-          <ion-col width-50>
-            <img src="http://placehold.it/200x200">
-          </ion-col>
-          <ion-col width-50>
-            <ion-item no-lines>
-              <p>Objeto a enviar</p>
-              <h2>Caja</h2>
-              <br>
-              <p>Valor declarado</p>
-              <h2>$1000,00</h2>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-list>
-
-    <ion-list *ngSwitchCase="'pickup'">
-      <ion-item-group>
-        <ion-item-divider dark>Detalles de Retiro</ion-item-divider>
-        <ion-item-divider>Dirección</ion-item-divider>
-        <ion-item no-lines>
-          <ion-icon name="home" item-left></ion-icon>
-          <h2>Av. de Mayo 432</h2>
-          <h3>Buenos Aires</h3>
-          <button outline item-right>
-            <ion-icon name="navigate"></ion-icon>
-            Mapa
-          </button>
-        </ion-item>
-        <ion-item-divider>Horario</ion-item-divider>
-        <ion-item no-lines>
-          <ion-icon name="time" item-left></ion-icon>
-          <h3>Banda horaria para el retiro</h3>
-          <h2>11:30 a 13:00</h2>
-        </ion-item>
-        <ion-item-divider>Persona que entrega</ion-item-divider>
-        <button ion-item no-lines>
-          <ion-icon name="person" item-left></ion-icon>
-          <h2>Marco Polo</h2>
-          <h3>+5491165432100</h3>
-          <button outline item-right>
-            <ion-icon name="call"></ion-icon>
-            Llamar
-          </button>
-        </button>
-        <ion-item-divider>Código de Seguridad</ion-item-divider>
-        <ion-item>
-          <ion-icon name="lock" item-left></ion-icon>
-          <h2>875462</h2>
-          <p text-wrap>Informa este código de seguridad<br>al retirar el envío<br>para validar tu identidad.</p>
-        </ion-item>
-      </ion-item-group>
-    </ion-list>
-
-    <ion-list *ngSwitchCase="'drop'">
-      <ion-item-group>
-        <ion-item-divider dark>Detalles de Entrega</ion-item-divider>
-        <ion-item-divider>Dirección</ion-item-divider>
-        <ion-item no-lines>
-          <ion-icon name="pin" item-left></ion-icon>
-          <h2>Dirección: Gorriti 1234</h2>
-          <h3>Buenos Aires</h3>
-          <button outline item-right>
-            <ion-icon name="navigate"></ion-icon>
-            Mapa
-          </button>
-        </ion-item>
-        <ion-item-divider>Horario</ion-item-divider>
-        <ion-item no-lines>
-          <ion-icon name="time" item-left></ion-icon>
-          <h3>Banda horaria para la entrega</h3>
-          <h2>15:00 a 17:00</h2>
-        </ion-item>
-        <ion-item-divider>Persona que recibe</ion-item-divider>
-        <ion-item no-lines>
-          <ion-icon name="person" item-left></ion-icon>
-          <h3>Nombre: Arturo Mengano</h3>
-          <h3>DNI: 99.999.999</h3>
-          <h3>Telefono: (11) 5432 5478</h3>
-          <h3>Movil: (11) 15 9876 5432</h3>
-          <h3>Email: amengano@gmail.com</h3>
-          <button outline item-right>
-            <ion-icon name="call"></ion-icon>
-            Llamar
-          </button>
-        </ion-item>
-        <ion-item-divider>Código de Seguridad</ion-item-divider>
-        <ion-item>
-          <ion-icon name="lock" item-left></ion-icon>
-          <h2>445682</h2>
-          <p text-wrap>Este código de seguridad<br>debe ser informado por la <br>persona que recibe el envío.</p>
-        </ion-item>
-      </ion-item-group>
-    </ion-list>
-
-
+    <!-- TABS -->
+    <div margin-bottom margin-top>
+        <ion-segment [(ngModel)]="shipmenttab" dark>
+            <ion-segment-button value="state">
+                <ion-icon name="locate"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="details">
+                <ion-icon name="cube"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="pickup">
+                <ion-icon name="home"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="drop">
+                <ion-icon name="pin"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="notifications">
+                <ion-icon name="notifications"></ion-icon>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
     <!-- TAB CONTENT -->
-    <ion-list *ngSwitchCase="'notifications'">
-      <ion-item-divider dark>Notificaciones</ion-item-divider>
-      <ion-item>
-        <ion-icon name="person" item-left></ion-icon>
-        <h2>Carga aceptada</h2>
-        <p>01/08/2016 09:50</p>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="lock" item-left></ion-icon>
-        <h2>Codigo de Seguridad</h2>
-        <p>Para validar la entrega: 445682</p>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="checkmark" item-left></ion-icon>
-        <h2>Paquete retirado</h2>
-        <p>01/08/2016 11:45</p>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="checkmark" item-left></ion-icon>
-        <h2>Paquete entregado</h2>
-        <p>01/08/2016 16:35</p>
-      </ion-item>
-    </ion-list>
+    <div [ngSwitch]="shipmenttab">
 
-  </div>
+        <ion-list *ngSwitchCase="'state'">
+            <ion-item-divider dark>Estado</ion-item-divider>
+            <ion-list>
+                <button ion-item no-lines (click)="goToTab('details')">
+                    <ion-icon name="send" item-left></ion-icon>
+                    <h3>Carga aceptada</h3>
+                    <p>A cobrar por viaje: $79.00**</p>
+                    <ion-icon name="checkmark" item-right></ion-icon>
+                </button>
+                <button ion-item no-lines (click)="goToTab('pickup')">
+                    <ion-icon name="home" item-left></ion-icon>
+                    <h3>Retiro</h3>
+                    <p>01/08/2016 11:45</p>
+                    <ion-icon name="checkmark" item-right></ion-icon>
+                    </button>
+                <button ion-item (click)="goToTab('drop')">
+                    <ion-icon name="pin" item-left></ion-icon>
+                    <h3>Entrega</h3>
+                    <p>En transito</p>
+                    <ion-icon name="time" item-right></ion-icon>
+                </button>
+            </ion-list>
+        </ion-list>
+
+        <ion-list *ngSwitchCase="'details'">
+            <ion-item-group>
+                <ion-item-divider dark>Detalles del Envío</ion-item-divider>
+                <ion-item-divider>Solicitante</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-thumbnail item-left>
+                        <img src="http://placehold.it/200x200">
+                    </ion-thumbnail>
+                    <h2>Marco Polo</h2>
+                    <h3>+5491165432100</h3>
+                    <button ion-button outline item-right>
+                        <ion-icon name="call"></ion-icon>
+                        Llamar
+                    </button>
+                </ion-item>
+                <ion-item-divider>Precio</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="card" item-left light></ion-icon>
+                    <h3>Distancia aproximada: 15 km</h3>
+                    <h2><b>$ 79.00</b></h2>
+                </ion-item>
+                <ion-item-divider>Carga</ion-item-divider>
+            </ion-item-group>
+            <ion-grid>
+                <ion-row>
+                    <ion-col width-50>
+                        <img src="http://placehold.it/200x200">
+                    </ion-col>
+                    <ion-col width-50>
+                        <ion-item no-lines>
+                            <p>Objeto a enviar</p>
+                            <h2>Caja</h2>
+                            <br>
+                            <p>Valor declarado</p>
+                            <h2>$1000,00</h2>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-list>
+
+        <ion-list *ngSwitchCase="'pickup'">
+            <ion-item-group>
+                <ion-item-divider dark>Detalles de Retiro</ion-item-divider>
+                <ion-item-divider>Dirección</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="home" item-left></ion-icon>
+                    <h2>Av. de Mayo 432</h2>
+                    <h3>Buenos Aires</h3>
+                    <button ion-button outline item-right>
+                        <ion-icon name="navigate"></ion-icon>
+                        Mapa
+                    </button>
+                </ion-item>
+                <ion-item-divider>Horario</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="time" item-left></ion-icon>
+                    <h3>Banda horaria para el retiro</h3>
+                    <h2>11:30 a 13:00</h2>
+                </ion-item>
+                <ion-item-divider>Persona que entrega</ion-item-divider>
+                <button ion-item no-lines>
+                    <ion-icon name="person" item-left></ion-icon>
+                    <h2>Marco Polo</h2>
+                    <h3>+5491165432100</h3>
+                    <button ion-button outline item-right>
+                        <ion-icon name="call"></ion-icon>
+                        Llamar
+                    </button>
+                </button>
+                <ion-item-divider>Código de Seguridad</ion-item-divider>
+                <ion-item>
+                    <ion-icon name="lock" item-left></ion-icon>
+                    <h2>875462</h2>
+                    <p text-wrap>Informa este código de seguridad<br>al retirar el envío<br>para validar tu identidad.</p>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
+
+        <ion-list *ngSwitchCase="'drop'">
+            <ion-item-group>
+                <ion-item-divider dark>Detalles de Entrega</ion-item-divider>
+                <ion-item-divider>Dirección</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="pin" item-left></ion-icon>
+                    <h2>Dirección: Gorriti 1234</h2>
+                    <h3>Buenos Aires</h3>
+                    <button ion-button outline item-right>
+                        <ion-icon name="navigate"></ion-icon>
+                        Mapa
+                    </button>
+                </ion-item>
+                <ion-item-divider>Horario</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="time" item-left></ion-icon>
+                    <h3>Banda horaria para la entrega</h3>
+                    <h2>15:00 a 17:00</h2>
+                </ion-item>
+                <ion-item-divider>Persona que recibe</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="person" item-left></ion-icon>
+                    <h3>Nombre: Arturo Mengano</h3>
+                    <h3>DNI: 99.999.999</h3>
+                    <h3>Telefono: (11) 5432 5478</h3>
+                    <h3>Movil: (11) 15 9876 5432</h3>
+                    <h3>Email: amengano@gmail.com</h3>
+                    <button ion-button outline item-right>
+                        <ion-icon name="call"></ion-icon>
+                        Llamar
+                    </button>
+                </ion-item>
+                <ion-item-divider>Código de Seguridad</ion-item-divider>
+                <ion-item>
+                    <ion-icon name="lock" item-left></ion-icon>
+                    <h2>445682</h2>
+                    <p text-wrap>Este código de seguridad<br>debe ser informado por la <br>persona que recibe el envío.</p>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
+
+
+        <!-- TAB CONTENT -->
+        <ion-list *ngSwitchCase="'notifications'">
+            <ion-item-divider dark>Notificaciones</ion-item-divider>
+            <ion-item>
+                <ion-icon name="person" item-left></ion-icon>
+                <h2>Carga aceptada</h2>
+                <p>01/08/2016 09:50</p>
+            </ion-item>
+            <ion-item>
+                <ion-icon name="lock" item-left></ion-icon>
+                <h2>Codigo de Seguridad</h2>
+                <p>Para validar la entrega: 445682</p>
+            </ion-item>
+            <ion-item>
+                <ion-icon name="checkmark" item-left></ion-icon>
+                <h2>Paquete retirado</h2>
+                <p>01/08/2016 11:45</p>
+            </ion-item>
+            <ion-item>
+                <ion-icon name="checkmark" item-left></ion-icon>
+                <h2>Paquete entregado</h2>
+                <p>01/08/2016 16:35</p>
+            </ion-item>
+        </ion-list>
+
+    </div>
 </ion-content>

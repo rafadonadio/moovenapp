@@ -4,9 +4,9 @@
             Cambiar número de móvil
         </ion-title>
         <ion-buttons start>
-            <button (click)="dismiss()">
+            <ion-nav-back-button ion-button (click)="dismiss()">
                 <ion-icon name="md-close"></ion-icon>
-            </button>
+                </button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
@@ -16,7 +16,7 @@
             <ion-row>
                 <ion-col>
                     <p>Móvil<br>
-                    <small>Ingresa código de área sin el 0 y número sin el 15</small></p>
+                        <small>Ingresa código de área sin el 0 y número sin el 15</small></p>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -34,7 +34,7 @@
         </ion-grid>
     </form>
     <div class="buttons" padding>
-        <button dark block margin-bottom margin-top (click)="dismiss()">Guardar y verificar</button>
-        <button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+        <button ion-button dark block margin-bottom margin-top (click)="dismiss()">Guardar y verificar</button>
+        <button ion-button dark outline block margin-top (click)="dismiss()">Cancelar</button>
     </div>
 </ion-content>

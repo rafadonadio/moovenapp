@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from  '../../providers/sending-service/sending-service';
@@ -9,9 +9,7 @@ import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../shared/validators/number.validator';
 
 @Component({
-    templateUrl: 'sending-create.html',
-    providers: [UsersService, SendingService],
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'sending-create.html'
 })
 export class SendingCreatePage implements OnInit{
 
@@ -25,11 +23,11 @@ export class SendingCreatePage implements OnInit{
     rangeValue: any = 0;
     formValid:boolean = false;
 
-    constructor(private navCtrl: NavController,
-        private users: UsersService,
-        private formBuilder: FormBuilder,
-        private alertCtrl: AlertController,
-        private sending: SendingService) {
+    constructor(public navCtrl: NavController,
+        public users: UsersService,
+        public formBuilder: FormBuilder,
+        public alertCtrl: AlertController,
+        public sending: SendingService) {
         }
 
         ngOnInit() {

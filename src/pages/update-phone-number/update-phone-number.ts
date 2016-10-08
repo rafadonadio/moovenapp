@@ -7,7 +7,7 @@ import { VerifyPhonePage } from '../verify-phone/verify-phone';
 })
 export class UpdatePhoneNumberPage {
 
-    constructor(private navCtrl: NavController) {
+    constructor(public navCtrl: NavController) {
 
     }
 

@@ -13,12 +13,12 @@ export class SendingCreate4Page implements OnInit {
 
     request: any;
 
-    constructor(private navCtrl: NavController,
-        private navParams: NavParams,
-        private alertCtrl: AlertController,
-        private toastCtrl: ToastController,
-        private loadingCtrl: LoadingController,
-        private sendings: SendingService) {
+    constructor(public navCtrl: NavController,
+        public navParams: NavParams,
+        public alertCtrl: AlertController,
+        public toastCtrl: ToastController,
+        public loadingCtrl: LoadingController,
+        public sendings: SendingService) {
     }
 
     ngOnInit() {

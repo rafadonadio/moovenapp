@@ -1,9 +1,11 @@
 <ion-header class="image-header">
     <ion-navbar primary>
-        <button menuToggle>
+        <button ion-button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
-        <ion-title><h4>Mooven | Envíos</h4></ion-title>
+        <ion-title>
+            <h4>Mooven | Envíos</h4>
+        </ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content class="sendings">
@@ -11,10 +13,7 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <!-- flotaing bottom right button -->
-    <button fab primary fab-right fab-bottom fab-fixed
-    class="new-sending"
-    (click)="createSending()"
-    ><ion-icon name="add"></ion-icon></button>
+    <button fab primary fab-right fab-bottom fab-fixed class="new-sending" (click)="createSending()"><ion-icon name="add"></ion-icon></button>
 
     <ion-list *ngIf="sendingsEmpty==true">
         <button ion-item detail-none (click)="createSending()">

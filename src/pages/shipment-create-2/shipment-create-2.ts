@@ -9,8 +9,9 @@ import { ShipmentsPage } from '../shipments/shipments';
 })
 export class ShipmentCreate2Page {
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController,
-    private toastCtrl: ToastController) {
+  constructor(public navCtrl: NavController, 
+    public alertCtrl: AlertController,
+    public toastCtrl: ToastController) {
 
   }
 

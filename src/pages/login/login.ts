@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UserCredentials } from '../../shared/interfaces';
 import { UsersService } from '../../providers/users-service/users-service';
@@ -9,9 +9,7 @@ import { SendingsPage } from '../sendings/sendings';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password/';
 
 @Component({
-    templateUrl: 'login.html',
-    providers: [UsersService],
-    directives: [FORM_DIRECTIVES]
+    templateUrl: 'login.html'
 })
 export class LoginPage {
 

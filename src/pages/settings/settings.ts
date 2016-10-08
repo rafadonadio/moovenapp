@@ -8,8 +8,7 @@ import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit
 import { ModalUserEditNamePage } from '../modal-user-edit-name/modal-user-edit-name';
 
 @Component({
-    templateUrl: 'settings.html',
-    providers: [UsersService]
+    templateUrl: 'settings.html'
 })
 export class SettingsPage implements OnInit{
 
@@ -28,11 +27,11 @@ export class SettingsPage implements OnInit{
         phoneMobile: true
     }
 
-    constructor(private navCtrl: NavController,
-        private users: UsersService,
-        private loadingCtrl: LoadingController,
-        private toastCtrl: ToastController,
-        private modalCtrl: ModalController) {
+    constructor(public navCtrl: NavController,
+        public users: UsersService,
+        public loadingCtrl: LoadingController,
+        public toastCtrl: ToastController,
+        public modalCtrl: ModalController) {
     }
 
     ngOnInit() {

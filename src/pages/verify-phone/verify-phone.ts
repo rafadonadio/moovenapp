@@ -10,11 +10,11 @@ import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit
 })
 export class VerifyPhonePage {
 
-    constructor(private navCtrl: NavController,
-        private alertCtrl:  AlertController,
-        private loadingCtrl: LoadingController,
-        private toastCtrl: ToastController,
-        private modalCtrl: ModalController) {
+    constructor(public navCtrl: NavController,
+        public alertCtrl:  AlertController,
+        public loadingCtrl: LoadingController,
+        public toastCtrl: ToastController,
+        public modalCtrl: ModalController) {
         }
 
         goToUpdatePhoneNumber() {

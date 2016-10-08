@@ -4,7 +4,7 @@
             Cambiar dirección de email
         </ion-title>
         <ion-buttons start>
-            <button (click)="dismiss()">
+            <button ion-button (click)="dismiss()">
                 <ion-icon name="md-close"></ion-icon>
             </button>
         </ion-buttons>
@@ -22,10 +22,10 @@
         <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched"
             class="input-error">* Ingresa un email válido</div>
 
-        <button primary block margin-top
+        <button ion-button primary block margin-top
             (click)="submit(editForm.value)"
             [disabled]="!editForm.valid"
             >Guardar</button>
-        <button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+        <button ion-button dark outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

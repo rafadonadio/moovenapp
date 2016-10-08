@@ -8,7 +8,7 @@
         <ion-item-divider dark>Confirmar Envío</ion-item-divider>
         <ion-item-divider light>
             Objeto
-            <button outline item-right (click)="goToStep1()">
+            <button ion-button outline item-right (click)="goToStep1()">
                 <ion-icon name="create"></ion-icon>
                 Modificar
             </button>
@@ -25,7 +25,7 @@
         </ion-item>
         <ion-item-divider light>
             Retiro
-            <button outline item-right (click)="goToStep2()">
+            <button ion-button outline item-right (click)="goToStep2()">
                 <ion-icon name="create"></ion-icon>
                 Modificar
             </button>
@@ -49,7 +49,7 @@
         </ion-item>
         <ion-item-divider light>
             Entrega
-            <button outline item-right (click)="goToStep3()">
+            <button ion-button outline item-right (click)="goToStep3()">
                 <ion-icon name="create"></ion-icon>
                 Modificar
             </button>
@@ -80,9 +80,8 @@
         </ion-item>
     </ion-list>
     <div margin>
-        <button block primary
-        (click)="confirmSending()">
+        <button ion-button block primary (click)="confirmSending()">
         Confirmar Envío
     </button>
-</div>
+    </div>
 </ion-content>

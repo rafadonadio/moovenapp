@@ -4,23 +4,21 @@
     </ion-navbar>
 </ion-header>
 <ion-content class="settings">
-    <button fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
+    <button ion-buton fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
     <div class="profile">
         <img src="img/mooven_avatar.png">
     </div>
     <ion-grid>
         <ion-row>
             <ion-col width-50>
-                <button ion-item class="item-input"
-                    (click)="presentModalEditName()">
+                <button ion-item class="item-input" (click)="presentModalEditName()">
                     <ion-label stacked>Nombre</ion-label>
                     <ion-input type="text" value="{{ profile?.firstName }}"
                         [disabled]="inputDisabled.names"></ion-input>
                 </button>
             </ion-col>
             <ion-col width-50>
-                <button ion-item class="item-input"
-                    (click)="presentModalEditName()">
+                <button ion-item class="item-input" (click)="presentModalEditName()">
                     <ion-label stacked>Apellido</ion-label>
                     <ion-input type="text" value="{{ profile?.lastName }}"
                         [disabled]="inputDisabled.names"></ion-input>
@@ -29,8 +27,7 @@
         </ion-row>
         <ion-row>
             <ion-col>
-                <button ion-item
-                    (click)="presentModalEditEmail()">
+                <button ion-item (click)="presentModalEditEmail()">
                     <ion-label stacked>Email</ion-label>
                     <ion-input type="email"
                         value="{{ user.email }}"
@@ -42,8 +39,7 @@
         </ion-row>
         <ion-row>
             <ion-col>
-                <button ion-item
-                    (click)="presentModalEditPhone()">
+                <button ion-item (click)="presentModalEditPhone()">
                     <ion-label stacked>Móvil</ion-label>
                     <ion-input type="text" value="{{ profile?.phonePrefix }}{{ profile?.phoneMobile }}"
                         [disabled]="inputDisabled.phoneMobile"></ion-input>
@@ -88,7 +84,7 @@
         </ion-item>
     </ion-list>
     <div padding>
-    	<button dark outline block margin-bottom (click)="signOut()">Salir</button>
-    	<button light outline block>Cerrar cuenta</button>
+        <button ion-button dark outline block margin-bottom (click)="signOut()">Salir</button>
+        <button ion-button light outline block>Cerrar cuenta</button>
     </div>
 </ion-content>

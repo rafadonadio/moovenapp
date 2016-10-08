@@ -2,13 +2,6 @@ import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AccountEmailVerificationService } from '../providers/account-email-verification-service/account-email-verification-service';
-import { AccountService } from '../providers/account-service/account-service';
-import { AuthenticationService } from '../providers/authentication-service/authentication-service';
-import { ProfileService } from '../providers/profile-service/profile-service';
-import { SendingService } from  '../providers/sending-service/sending-service';
-import { UsersService } from '../providers/users-service/users-service';
-
 import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
 
@@ -39,6 +32,13 @@ import { StartPage } from '../pages/start/start';
 import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone-number';
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 
+import { AccountEmailVerificationService } from '../providers/account-email-verification-service/account-email-verification-service';
+import { AccountService } from '../providers/account-service/account-service';
+import { AuthenticationService } from '../providers/authentication-service/authentication-service';
+import { ProfileService } from '../providers/profile-service/profile-service';
+import { SendingService } from  '../providers/sending-service/sending-service';
+import { UsersService } from '../providers/users-service/users-service';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -68,7 +68,7 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
     SignupMergePage,
     StartPage,
     UpdatePhoneNumberPage,
-    VerifyPhonePage
+    VerifyPhonePage,
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -102,7 +102,7 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
     SignupMergePage,
     StartPage,
     UpdatePhoneNumberPage,
-    VerifyPhonePage       
+    VerifyPhonePage,       
   ],
   providers: [
     AccountEmailVerificationService,
@@ -110,7 +110,7 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
     AuthenticationService,
     ProfileService,
     SendingService,    
-    UsersService 
+    UsersService,
   ]
 })
 export class AppModule {}

@@ -1,62 +1,61 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Confirmar Carga</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>Confirmar Carga</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item-divider dark>Confirmar Carga</ion-item-divider>
-    <ion-item-divider light>Valor a Cobrar</ion-item-divider>
-    <ion-item no-lines>
-      <ion-icon name="card" item-left></ion-icon>
-      <h2>$ 50,00</h2>
-      <p>Distancia aproximada: 15 km</p>
-    </ion-item>
-    <ion-item-divider light>
-        Objeto
-    </ion-item-divider>
-    <ion-item no-lines>
-      <ion-icon name="cube" item-left></ion-icon>
-      <ion-thumbnail item-right>
-        <img src="http://placehold.it/200x200">
-      </ion-thumbnail>
-      <p>Tipo de objeto</p>
-      <h2>Caja</h2>
-      <p>Valor declarado</p>
-      <h2>$1000,00</h2>
-    </ion-item>
-    <ion-item-divider light>
-        Retiro
-    </ion-item-divider>
-    <ion-item no-lines>
-      <ion-icon name="home" item-left></ion-icon>
-      <p>Dirección</p>
-      <h2>Av de Mayo 0-500, Buenos Aires</h2>
-    </ion-item>
-    <ion-item no-lines>
-      <ion-icon name="time" item-left></ion-icon>
-      <p>Banda horaria de retiro</p>
-      <h2>11:00 a 13:00</h2>
-    </ion-item>
-    <ion-item-divider light>
-      Entrega
-    </ion-item-divider>
-    <ion-item no-lines>
-      <ion-icon name="pin" item-left></ion-icon>
-      <p>Dirección</p>
-      <h2>Gorriti 1000-1500, Buenos Aires</h2>
-    </ion-item>
-    <ion-item no-lines>
-      <ion-icon name="time" item-left></ion-icon>
-      <p>Banda horaria de retiro</p>
-      <h2>15:00 a 17:00</h2>
-    </ion-item>
-  </ion-list>
-  <div margin>
-    <button block primary
-      (click)="createShipment()">
+    <ion-list>
+        <ion-item-divider dark>Confirmar Carga</ion-item-divider>
+        <ion-item-divider light>Valor a Cobrar</ion-item-divider>
+        <ion-item no-lines>
+            <ion-icon name="card" item-left></ion-icon>
+            <h2>$ 50,00</h2>
+            <p>Distancia aproximada: 15 km</p>
+        </ion-item>
+        <ion-item-divider light>
+            Objeto
+        </ion-item-divider>
+        <ion-item no-lines>
+            <ion-icon name="cube" item-left></ion-icon>
+            <ion-thumbnail item-right>
+                <img src="http://placehold.it/200x200">
+            </ion-thumbnail>
+            <p>Tipo de objeto</p>
+            <h2>Caja</h2>
+            <p>Valor declarado</p>
+            <h2>$1000,00</h2>
+        </ion-item>
+        <ion-item-divider light>
+            Retiro
+        </ion-item-divider>
+        <ion-item no-lines>
+            <ion-icon name="home" item-left></ion-icon>
+            <p>Dirección</p>
+            <h2>Av de Mayo 0-500, Buenos Aires</h2>
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="time" item-left></ion-icon>
+            <p>Banda horaria de retiro</p>
+            <h2>11:00 a 13:00</h2>
+        </ion-item>
+        <ion-item-divider light>
+            Entrega
+        </ion-item-divider>
+        <ion-item no-lines>
+            <ion-icon name="pin" item-left></ion-icon>
+            <p>Dirección</p>
+            <h2>Gorriti 1000-1500, Buenos Aires</h2>
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="time" item-left></ion-icon>
+            <p>Banda horaria de retiro</p>
+            <h2>15:00 a 17:00</h2>
+        </ion-item>
+    </ion-list>
+    <div margin>
+        <button ion-button block primary (click)="createShipment()">
       Confirmar Carga
     </button>
-  </div>
+    </div>
 </ion-content>

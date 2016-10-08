@@ -113,8 +113,9 @@ ___
         7 n/a
         8 Import and add each of your providers to the providers array in src/app/app.module.ts.
         9 Remove any use of the providers, pipes and directives arrays in @Component.
-
-
+        10 Change any uses of the private TypeScript keyword to public ONLY for component variables that are needed in the associated template.
+        11 Change <button> to <button ion-button>
+        
 > to-do´s
     - #email sending
         *implementar mailgun

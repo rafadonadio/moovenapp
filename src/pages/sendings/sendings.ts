@@ -13,8 +13,8 @@ export class SendingsPage implements OnInit{
     sendings: any;
     sendingsEmpty = true;
 
-    constructor(private navCtrl: NavController,
-        private sendingsService: SendingService) {
+    constructor(public navCtrl: NavController,
+        public sendingsService: SendingService) {
     }
 
     ngOnInit() {
