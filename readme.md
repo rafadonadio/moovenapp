@@ -101,7 +101,10 @@ ___
 - Sendings
     - form step 1
 
-
+**0.3.1** 
+- update ionic beta11 > RC0
+    > ionic start moovenAppDev sidemenu --v2
+    
 
 
 > to-do´s
