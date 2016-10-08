@@ -12,9 +12,17 @@
         <ion-input type="text"></ion-input>
     </ion-item>
     <div class="buttons">
-        <button ion-button dark block outline margin-bottom margin-top (click)="goToApp()">Verificar luego</button>
-        <button ion-button dark block margin-bottom margin-top (click)="verifyCode()">Verificar</button>
-        <button ion-button dark block outline margin-bottom margin-top (click)="showAlert()">Reenviar código</button>
-        <button ion-button dark block outline margin-bottom margin-top (click)="goToUpdatePhoneNumber()">Cambiar número de móvil</button>
+        <button ion-button color="dark" block outline margin-bottom margin-top 
+            (click)="goToApp()"
+            >Verificar luego</button>
+        <button ion-button color="dark" block margin-bottom margin-top 
+            (click)="verifyCode()"
+            >Verificar</button>
+        <button ion-button color="dark" block outline margin-bottom margin-top 
+            (click)="showAlert()"
+            >Reenviar código</button>
+        <button ion-button color="dark" block outline margin-bottom margin-top 
+            (click)="goToUpdatePhoneNumber()"
+            >Cambiar número de móvil</button>
     </div>
 </ion-content>

@@ -36,7 +36,7 @@
         </ion-item>
         <div *ngIf="password.hasError('required') && password.touched" class="input-error">* Ingresa tu contraseña</div>
 
-        <button ion-button type="submit" primary block class="submit" [disabled]="!signinForm.valid">iniciar sesión</button>
+        <button ion-button type="submit" color="primary" block class="submit" [disabled]="!signinForm.valid">iniciar sesión</button>
     </form>
-    <button ion-button block light outline margin-top (click)="presentModalPasswordReset()">Recuperar contraseña</button>
+    <button ion-button block color="light" outline margin-top (click)="presentModalPasswordReset()">Recuperar contraseña</button>
 </ion-content>

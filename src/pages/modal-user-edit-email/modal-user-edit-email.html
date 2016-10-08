@@ -19,13 +19,9 @@
             <ion-label stacked>NUEVA DIRECCIÓN DE EMAIL</ion-label>
             <ion-input #input type="email" [formControl]="email"></ion-input>
         </ion-item>
-        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched"
-            class="input-error">* Ingresa un email válido</div>
+        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched" class="input-error">* Ingresa un email válido</div>
 
-        <button ion-button primary block margin-top
-            (click)="submit(editForm.value)"
-            [disabled]="!editForm.valid"
-            >Guardar</button>
-        <button ion-button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+        <button ion-button color="primary" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
+        <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

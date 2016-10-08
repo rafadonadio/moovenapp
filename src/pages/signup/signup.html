@@ -1,27 +1,24 @@
 <ion-header>
-    <ion-navbar dark>
+    <ion-navbar color="dark">
         <ion-title>Registrate</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content class="signup" padding>
-	<ion-grid>
-		<ion-row>
-			<ion-col width="100">
-				<h6 text-center margin>Registrate utilizando tu cuenta de</h6>
-			</ion-col>
-		</ion-row>
-		<ion-row center class="signin-buttons">
-			<ion-col width-50>
-				<button ion-button block danger
-					(click)="signupWithGoogle()">Google</button>
-			</ion-col>
-			<ion-col width-50>
-				<button ion-button block
-                    class="facebook"
-                    (click)="goToSignupMerge()">Facebook</button>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+    <ion-grid>
+        <ion-row>
+            <ion-col width="100">
+                <h6 text-center margin>Registrate utilizando tu cuenta de</h6>
+            </ion-col>
+        </ion-row>
+        <ion-row center class="signin-buttons">
+            <ion-col width-50>
+                <button ion-button block color="danger" (click)="signupWithGoogle()">Google</button>
+            </ion-col>
+            <ion-col width-50>
+                <button ion-button block class="facebook" (click)="goToSignupMerge()">Facebook</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
     <div style="height:50px;"></div>
     <hr>
     <h6 text-center margin class="create-account-title">Registrate con tu correo electrónico</h6>
@@ -39,6 +36,6 @@
         </ion-item>
         <div *ngIf="(password.hasError('required') || password.hasError('length')) && password.touched" class="input-error">* Crea una contraseña de al menos 6 caracteres</div>
 
-        <button ion-button type="submit" primary block class="submit" [disabled]="!signupForm.valid">Registrarse</button>
+        <button ion-button type="submit" color="primary" block class="submit" [disabled]="!signupForm.valid">Registrarse</button>
     </form>
 </ion-content>

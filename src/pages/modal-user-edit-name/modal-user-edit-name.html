@@ -21,7 +21,7 @@
             <ion-input #input type="text" [formControl]="lastName" value="{{ profile.lastName }}"></ion-input>
         </ion-item>
 
-        <button ion-button primary block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
-        <button ion-button dark outline block margin-top (click)="dismiss()">Cancelar</button>
+        <button ion-button color="primary" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
+        <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

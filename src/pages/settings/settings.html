@@ -32,8 +32,8 @@
                     <ion-input type="email"
                         value="{{ user.email }}"
                         disabled></ion-input>
-                    <ion-icon name="checkmark-circle" item-right light [hidden]="user.emailVerified==false"></ion-icon>
-                    <ion-icon name="help" item-right light [hidden]="user.emailVerified==true"></ion-icon>
+                    <ion-icon name="checkmark-circle" item-right color="light" [hidden]="user.emailVerified==false"></ion-icon>
+                    <ion-icon name="help" item-right color="light" [hidden]="user.emailVerified==true"></ion-icon>
                 </button>
             </ion-col>
         </ion-row>
@@ -84,7 +84,7 @@
         </ion-item>
     </ion-list>
     <div padding>
-        <button ion-button dark outline block margin-bottom (click)="signOut()">Salir</button>
-        <button ion-button light outline block>Cerrar cuenta</button>
+        <button ion-button color="dark" outline block margin-bottom (click)="signOut()">Salir</button>
+        <button ion-button color="light" outline block>Cerrar cuenta</button>
     </div>
 </ion-content>

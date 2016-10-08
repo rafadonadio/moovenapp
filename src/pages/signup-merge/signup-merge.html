@@ -57,12 +57,12 @@
             </ion-row>
         </ion-grid>
         <div padding>
-            <button ion-button dark block margin-bottom margin-top (click)="submitSignupMergeForm(signupMergeForm.value)" [disabled]="!signupMergeForm.valid">Siguiente</button>
+            <button ion-button color="dark" block margin-bottom margin-top (click)="submitSignupMergeForm(signupMergeForm.value)" [disabled]="!signupMergeForm.valid">Siguiente</button>
             <p text-center>Al crear una cuenta en Mooven, tu aceptas nuestros<br>
                 <a (click)="presentModalTos()">Términos & condiciones y Políticas de Privacidad</a></p>
-            <button ion-button clear block margin-bottom margin-top light 
-                (click)="signOut()"
-                >Salir</button>
+            <button ion-button clear block margin-bottom margin-top 
+                color="light"
+                (click)="signOut()">Salir</button>
         </div>
     </form>
 </ion-content>
