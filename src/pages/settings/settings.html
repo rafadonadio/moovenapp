@@ -1,12 +1,16 @@
 <ion-header>
-    <ion-navbar dark>
+    <ion-navbar color="dark">
         <ion-title>Ajustes</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content class="settings">
-    <button ion-buton fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
+    <ion-fab top right>
+        <button ion-fab>
+            <ion-icon name="camera"></ion-icon>
+        </button>
+    </ion-fab> 
     <div class="profile">
-        <img src="img/mooven_avatar.png">
+        <img src="assets/img/mooven_avatar.png">
     </div>
     <ion-grid>
         <ion-row>
@@ -48,7 +52,7 @@
         </ion-row>
     </ion-grid>
     <ion-list>
-        <ion-item-divider subdark>
+        <ion-item-divider color="subdark">
             Perfiles
         </ion-item-divider>
         <ion-item>
@@ -65,7 +69,7 @@
         </ion-item>
     </ion-list>
     <ion-list>
-        <ion-item-divider subdark>
+        <ion-item-divider color="subdark">
             Notificaciones
         </ion-item-divider>
         <ion-item>

@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="primary">
         <ion-title>Nuevo Envío | paso 1</ion-title>
         <ion-buttons start>
             <button ion-button (click)="cancelSending()">
@@ -10,7 +10,11 @@
 </ion-header>
 <ion-content class="sending-create">
     <div>
-        <button ion-button fab fab-top fab-right><ion-icon name="camera"></ion-icon></button>
+        <ion-fab top right>
+            <button ion-fab>
+                <ion-icon name="camera"></ion-icon>
+            </button>
+        </ion-fab>    
         <img src="http://placehold.it/450x300">
     </div>
     <form [formGroup]="formOne">

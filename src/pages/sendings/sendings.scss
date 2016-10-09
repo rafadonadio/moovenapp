@@ -1,5 +1,53 @@
 page-sendings {
-  button.new-sending{
-    z-index:100;
-  }
+
+    .ion-ios-add{
+        color: #fff;
+    }
+
+    .item-inner{
+        padding: 10px;
+    }
+
+    .item h3{
+        font-size: 1.6rem;
+        font-weight: 500;
+    }
+
+    ion-icon{
+        font-size: 2.9rem; 
+    }
+    
+    scroll-content{
+        
+        .button-inner{		
+            
+            ion-icon{
+                color: #fff;
+            }	
+        }
+    }	
+
+    .item h2{
+        font-size: 2rem;
+        font-weight: 500;
+    }
+
+    ion-label p{
+        font-size: 1.6rem;
+        font-weight: 300;
+        color: $bg-color-second-level;
+    }
+
+    ion-icon.item-icon{
+            color: $overall-color-sendings;
+    }
+
+    .item h2{
+        color: $overall-color-sendings;
+    }
+
+    .button-inner{
+        background-color: $overall-color-sendings;
+    }
+
 }

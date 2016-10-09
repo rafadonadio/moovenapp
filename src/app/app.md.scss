@@ -1,0 +1,136 @@
+.md{
+
+    // Cross All
+
+    button .button-inner{
+        font-size: 1.8rem;
+        font-weight: 600;
+        text-transform: initial;
+    }
+
+    .shipment-detail .item-button, .sending-detail .item-button{
+        height: 30px;
+    }
+
+    // Menu
+
+    ion-menu{
+
+        ion-toolbar .toolbar-background{
+                border-color: $menu-bg-color !important;
+                background: $menu-bg-color !important;
+        }
+
+        ion-content{
+            
+            background-color: $bg-color-fourth-level;
+
+            .item > ion-icon:first-child, .item-inner > ion-icon:first-child{
+                min-width: 36px;
+                font-size: 2.6rem;
+            }
+
+            .item{
+                background-color: $bg-color-fourth-level;
+                color: $push-form-text-color;
+                padding-bottom: 10px;
+                padding-top: 10px;
+
+                h2{
+                    font-size: 1.8rem;
+                    font-weight: 500;
+                }
+
+                .item-inner{
+                    font-size: 2rem;
+                    margin-left: 10px;
+                }
+
+                .item-inner:first-child{
+                    margin-left: -10px;
+                }
+            }
+                
+            h2{
+                font-weight: 500;
+                font-size: 2rem;
+            }
+        }
+    }
+
+    // Header
+        
+    .toolbar-title{
+        font-size: 1.8rem;
+        width: auto;
+    }
+
+    ion-header{
+        
+        .toolbar{
+            min-height: 60px;
+        }	
+    }	
+
+    ion-header.image-header{
+        
+        ion-title{
+            width: 100%;
+            margin: auto;
+            width: auto;
+            margin-left: 11%; 
+            
+            img{
+                vertical-align: middle;
+                float: left;
+                margin-top: 11px;
+                margin-right: 8px;
+
+            }
+            h4{
+                float: right;
+                margin-top: 9px;
+
+                width: auto;
+            }	
+        }	
+    }
+
+    ion-item{
+        
+        .input-wrapper ion-label {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: $push-form-text-color; 
+        }
+    }
+
+    ion-item-divider{
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        
+        ion-label{
+            font-size: 1.8rem;
+            font-weight: 600 !important;
+            margin-bottom: 15px;
+            margin-top: 15px;
+            color: #fff !important;
+        }
+    }
+
+    item-inner{
+
+        .item{
+            font-size: 1.8rem;
+            font-weight: 100;
+        }	
+    }
+
+    .input-wrapper ion-label, ion-note{
+        font-size: 1.8rem;
+        font-weight: 100;
+        color: $push-form-text-color;
+    } 
+
+}

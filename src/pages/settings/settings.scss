@@ -1,10 +1,10 @@
 page-settings {
 
-	div.profile{
-			padding-top: 20px;
-    		padding-bottom: 20px;
-    		background: #464646;
-	}
+    div.profile{
+        padding-top: 40px;
+        padding-bottom: 20px;
+        background: $bg-color-second-level;
+    }
 	div.profile img{
 		margin-right: auto;
 		margin-left: auto;
@@ -16,4 +16,5 @@ page-settings {
     button.item{
 		padding-left: 0;
 	}
+
 }
