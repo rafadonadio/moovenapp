@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from  '../../providers/sending-service/sending-service';
 import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
-import { NumberValidator } from '../../shared/validators/number.validator';
+import { NumberValidator } from '../../validators/number.validator';
 
 @Component({
     selector: 'page-sending-create-3',

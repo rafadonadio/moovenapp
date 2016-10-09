@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController, AlertController } from 'ionic-angular';
-import { FORM_DIRECTIVES, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
-import { EmailValidator } from '../../shared/validators/email.validator';
+import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({

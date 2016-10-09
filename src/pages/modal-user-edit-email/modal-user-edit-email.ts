@@ -3,7 +3,7 @@ import { NavController, ViewController, AlertController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
-import { EmailValidator } from '../../shared/validators/email.validator';
+import { EmailValidator } from '../../validators/email.validator';
 
 
 @Component({

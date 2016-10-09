@@ -117,8 +117,8 @@ ___
         11 Change 'button' to 'button ion-button'  
         12 Pass colors to the color attribute : 'button primary' changes to 'button color="primary"'
         13 config
-        14 vars
-
+        14 scss variables > app/variables.scss
+        15 add selectors for scss files
         
 
 > to-do´s

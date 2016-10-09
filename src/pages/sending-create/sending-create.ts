@@ -6,7 +6,8 @@ import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from  '../../providers/sending-service/sending-service';
 import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
-import { NumberValidator } from '../../shared/validators/number.validator';
+import { NumberValidator } from '../../validators/number.validator';
+
 
 @Component({
     selector: 'page-sending-create',
