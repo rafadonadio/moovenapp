@@ -10,7 +10,6 @@ import { PaymentPage } from '../pages/payment/payment';
 import { HistorialPage } from '../pages/historial/historial';
 import { NotificationsPage } from '../pages/notifications/notifications';
 import { HelpPage } from '../pages/help/help';
-import { LoginPage } from '../pages/login/login';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
 declare var window: any;

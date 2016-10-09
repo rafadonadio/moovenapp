@@ -7,7 +7,6 @@ import { AccountEmailVerificationService } from '../account-email-verification-s
 
 import { UserCredentials } from '../../shared/interfaces';
 import { UserAccount } from '../../shared/interfaces';
-import { UserProfile } from '../../shared/interfaces';
 
 
 @Injectable()
