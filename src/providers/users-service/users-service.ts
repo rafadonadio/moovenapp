@@ -13,11 +13,10 @@ import { UserProfile } from '../../shared/interfaces';
 @Injectable()
 export class UsersService {
 
-
-    constructor(private auth: AuthenticationService,
-        private account: AccountService,
-        private profile: ProfileService,
-        private emailVerification: AccountEmailVerificationService) {
+    constructor(public auth: AuthenticationService,
+        public account: AccountService,
+        public profile: ProfileService,
+        public emailVerification: AccountEmailVerificationService) {
     }
 
 
