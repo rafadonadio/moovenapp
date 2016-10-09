@@ -50,4 +50,8 @@ page-sendings {
         background-color: $overall-color-sendings;
     }
 
+    .has-refresher > .scroll-content {
+        border-top: none;
+    }
+
 }
