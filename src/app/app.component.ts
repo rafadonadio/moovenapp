@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 import { UsersService } from '../providers/users-service/users-service';
@@ -18,9 +18,10 @@ declare var window: any;
 @Component({
     templateUrl: 'app.html'
 })
-export class MyApp implements OnInit{
+export class MyApp{
+    //@ViewChild(Nav) nav: Nav;
     @ViewChild(Nav) nav: Nav;
-
+    // make StartPage the root (or first) page
     rootPage: any = StartPage;
 
     pages: Array < {
@@ -39,7 +40,22 @@ export class MyApp implements OnInit{
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController) {
-        this.initializeApp();
+
+        platform.ready().then(() => {
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            if (window.cordova) {
+                // Okay, so the platform is ready and our plugins are available.
+                // Here you can do any higher level native things you might need.
+                StatusBar.styleDefault();
+                console.log('in ready..');
+                let array: string[] = platform.platforms();
+                console.log(array);
+                let isAndroid: boolean = platform.is('android');
+                let isIos: boolean = platform.is('ios');
+                let isWindows: boolean = platform.is('windows');
+            }
+        });
 
         // used for an example of ngFor and navigation
         this.pages = [
@@ -51,9 +67,11 @@ export class MyApp implements OnInit{
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' }
         ];
 
+        this.onAuthStateChange();
+
     }
 
-    ngOnInit(){
+    onAuthStateChange() {
         // observer for user auth
         this.usersService.onAuthStateChanged((user) => {
             if (user) {
@@ -71,25 +89,6 @@ export class MyApp implements OnInit{
             }
         });
 
-    }
-
-    initializeApp() {
-        this.platform.ready().then(() => {
-            // Okay, so the platform is ready and our plugins are available.
-            // Here you can do any higher level native things you might need.
-            if (window.cordova) {
-                // Okay, so the platform is ready and our plugins are available.
-                // Here you can do any higher level native things you might need.
-                StatusBar.styleDefault();
-
-                console.log('in ready..');
-                let array: string[] = this.platform.platforms();
-                console.log(array);
-                let isAndroid: boolean = this.platform.is('android');
-                let isIos: boolean = this.platform.is('ios');
-                let isWindows: boolean = this.platform.is('windows');
-            }
-        });
     }
 
     openPage(page): void {
@@ -176,7 +175,7 @@ export class MyApp implements OnInit{
             this.nav.setRoot(SignupMergePage);
         }
     }
-
+    
     /**
      * Check email verification in 3 steps
      * 1- check value in account (instant)

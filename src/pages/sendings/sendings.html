@@ -13,8 +13,11 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <!-- flotaing bottom right button -->
-    <button ion-button fab color="primary" fab-right fab-bottom fab-fixed class="new-sending" (click)="createSending()"><ion-icon name="add"></ion-icon></button>
-
+    <ion-fab bottom right edge>
+        <button ion-fab color="primary" class="new-sending" (click)="createSending()">
+            <ion-icon name="add"></ion-icon>
+        </button>
+    </ion-fab>    
     <ion-list *ngIf="sendingsEmpty==true">
         <button ion-item detail-none (click)="createSending()">
             <h2 color="primary" text-center>No hay envíos activos</h2>

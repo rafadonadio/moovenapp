@@ -4,10 +4,9 @@
             <ion-title>Menu</ion-title>
         </ion-toolbar>
     </ion-header>
-
     <ion-content>
         <ion-list no-lines>
-            <button ion-item (click)="goToSettings()">
+            <button menuClose ion-item (click)="goToSettings()">
                 <ion-avatar item-left>
                     <img src="assets/img/mooven_avatar.png">
                 </ion-avatar>
@@ -20,7 +19,6 @@
             </button>
         </ion-list>
     </ion-content>
-
 </ion-menu>
 
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
