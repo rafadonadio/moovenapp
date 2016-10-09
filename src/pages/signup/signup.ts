@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 
 import { UserCredentials } from '../../shared/interfaces';
 import { UsersService } from '../../providers/users-service/users-service';
-import { EmailValidator } from '../../shared/validators/email.validator';
+import { EmailValidator } from '../../validators/email.validator';
 import { SignupMergePage } from '../signup-merge/signup-merge';
 
 @Component({
