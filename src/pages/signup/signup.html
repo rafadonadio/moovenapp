@@ -7,7 +7,7 @@
     <ion-grid>
         <ion-row>
             <ion-col width="100">
-                <h6 text-center margin>Registrate utilizando tu cuenta de</h6>
+                <h6 text-center margin>Utiliza tu cuenta de</h6>
             </ion-col>
         </ion-row>
         <ion-row center class="signin-buttons">
@@ -15,7 +15,7 @@
                 <button ion-button block color="danger" (click)="signupWithGoogle()">Google</button>
             </ion-col>
             <ion-col width-50>
-                <button ion-button block class="facebook" (click)="goToSignupMerge()">Facebook</button>
+                <button ion-button block color="facebook" (click)="goToSignupMerge()">Facebook</button>
             </ion-col>
         </ion-row>
     </ion-grid>
@@ -34,8 +34,8 @@
             <ion-label floating>Crea una contraseña</ion-label>
             <ion-input type="password" value="" [formControl]="password"></ion-input>
         </ion-item>
-        <div *ngIf="(password.hasError('required') || password.hasError('length')) && password.touched" class="input-error">* Crea una contraseña de al menos 6 caracteres</div>
-
+        <div *ngIf="password.hasError('required') && password.touched" class="input-error">* Crea una contraseña</div>
+        <div *ngIf="password.hasError('minlength') && password.touched" class="input-error">* De al menos 6 caracteres</div>
         <button ion-button type="submit" color="primary" block class="submit" [disabled]="!signupForm.valid">Registrarse</button>
     </form>
 </ion-content>
