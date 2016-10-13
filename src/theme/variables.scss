@@ -23,19 +23,19 @@ $background-color:  #fff;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:            #4836cc,
+  primary:            #060a7a,
   secondary:          #e2e2e2,
   danger:             #f53d3d,
   light:              #ededed,
   dark:               #2d2d2d,
 
-  sublight:	          #b1b1b1,
+  sublight:	          #b2b2b2,
   subdark:	  		  #464646,
-  invert:   		  #fff,
+  invert:   		  #ffffff,
   dark-gray:		  #595858,
   grayftwo:			  #f2f2f2,
   grayfthree:		  #f3f3f3,
-  green:          #4caf50,
+  green:          #0a7a06,
   purple:         #9C27B0,
 
 );
@@ -64,14 +64,14 @@ $ionicons-font-path: "../assets/fonts";
 // CUSTOM - MOOVEN
 // --------------------------------------------------
 
-$base-color-first-level: color($colors,primary);
+$base-color-first-level: color($colors, primary);
 $bg-color-second-level: color($colors, dark);
 $bg-color-third-level: color($colors, invert);
 $bg-color-fourth-level: color($colors, grayfthree);
 $menu-bg-color: color($colors, grayftwo);
 $push-form-text-color: color($colors, subdark);
-$start-page-background-color: color($colors,primary);
-$start-page-footer-background-color: color($colors,invert);
-$overall-color-sendings: color($colors,primary);
-$overall-color-shipment: color($colors,purple);
-$icon-detail-color: color($colors,subdark);
+$start-page-background-color: color($colors, primary);
+$start-page-footer-background-color: color($colors, invert);
+$overall-color-sendings: color($colors, primary);
+$overall-color-shipment: color($colors, green);
+$icon-detail-color: color($colors, subdark);

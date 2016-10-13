@@ -1,23 +1,16 @@
 <ion-content>
-    <img src="http://placehold.it/1080x1920?text=MOOVEN">
+    <img src="assets/img/mooven_logo_big.png">
 </ion-content>
 <ion-footer>
-    <ion-grid>
-        <ion-row>
-            <ion-col width-50>
-                <button ion-button block 
-                    color="dark" 
-                    outline (click)="goToLogin()"
-                    >INGRESAR
-                </button>
-            </ion-col>
-            <ion-col width-50>
-                <button ion-button block 
-                    color="dark" 
-                    (click)="goToSignup()"
-                    >CREAR CUENTA
-                </button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+    <button ion-button block 
+        class="signin"
+        color="invert"
+        (click)="goToLogin()"
+        >Ingresar
+    </button>
+    <button ion-button block outline 
+        color="invert"
+        (click)="goToSignup()"
+        >Crear cuenta
+    </button>
 </ion-footer>

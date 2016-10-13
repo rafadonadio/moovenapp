@@ -1,5 +1,28 @@
 page-start {
-	scroll-content{
+
+	.scroll-content{
 		overflow-y: hidden;
+    }
+
+    ion-content.content-md,
+    ion-content.content-ios{    
+	    background-color: #060a7a;			
+        img{
+			margin: auto;
+    		display: block;
+    		padding: 25%;
+    		padding-top: 50%;
+		}
 	}
+
+    ion-footer{
+	    padding: 80px;
+	    .signin{
+		    color: $base-color-first-level;
+	    }
+    }  
+    .footer-md::before{
+        height: 0px;
+    }  
+
 }
