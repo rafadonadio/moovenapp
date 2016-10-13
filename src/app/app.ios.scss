@@ -1,0 +1,48 @@
+.ios{
+
+    // SideMenu
+    ion-menu{
+
+        ion-toolbar .toolbar-background{
+                border-color: $menu-bg-color !important;
+                background: $menu-bg-color !important;
+        }
+
+        ion-content{
+            
+            background-color: $bg-color-fourth-level;
+
+            .item > ion-icon:first-child, .item-inner > ion-icon:first-child{
+                min-width: 36px;
+                font-size: 2.6rem;
+            }
+
+            .item{
+                background-color: $bg-color-fourth-level;
+                color: $push-form-text-color;
+                padding-bottom: 10px;
+                padding-top: 10px;
+
+                h2{
+                    font-size: 1.8rem;
+                    font-weight: 500;
+                }
+
+                .item-inner{
+                    font-size: 2rem;
+                    margin-left: 10px;
+                }
+
+                .item-inner:first-child{
+                    margin-left: -10px;
+                }
+            }
+                
+            h2{
+                font-weight: 500;
+                font-size: 2rem;
+            }
+        }
+    }
+
+}

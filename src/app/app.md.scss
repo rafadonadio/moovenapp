@@ -1,19 +1,6 @@
 .md{
 
-    // Cross All
-
-    button .button-inner{
-        font-size: 1.8rem;
-        font-weight: 600;
-        text-transform: initial;
-    }
-
-    .shipment-detail .item-button, .sending-detail .item-button{
-        height: 30px;
-    }
-
-    // Menu
-
+    // SideMenu
     ion-menu{
 
         ion-toolbar .toolbar-background{
@@ -56,81 +43,6 @@
                 font-size: 2rem;
             }
         }
-    }
-
-    // Header
-        
-    .toolbar-title{
-        font-size: 1.8rem;
-        width: auto;
-    }
-
-    ion-header{
-        
-        .toolbar{
-            min-height: 60px;
-        }	
-    }	
-
-    ion-header.image-header{
-        
-        ion-title{
-            width: 100%;
-            margin: auto;
-            width: auto;
-            margin-left: 11%; 
-            
-            img{
-                vertical-align: middle;
-                float: left;
-                margin-top: 11px;
-                margin-right: 8px;
-
-            }
-            h4{
-                float: right;
-                margin-top: 9px;
-
-                width: auto;
-            }	
-        }	
-    }
-
-    ion-item{
-        
-        .input-wrapper ion-label {
-            font-size: 1.8rem;
-            font-weight: 300;
-            color: $push-form-text-color; 
-        }
-    }
-
-    ion-item-divider{
-        margin-top: 20px;
-        margin-bottom: 20px;
-
-        
-        ion-label{
-            font-size: 1.8rem;
-            font-weight: 600 !important;
-            margin-bottom: 15px;
-            margin-top: 15px;
-            color: #fff !important;
-        }
-    }
-
-    item-inner{
-
-        .item{
-            font-size: 1.8rem;
-            font-weight: 100;
-        }	
-    }
-
-    .input-wrapper ion-label, ion-note{
-        font-size: 1.8rem;
-        font-weight: 100;
-        color: $push-form-text-color;
     } 
 
 }

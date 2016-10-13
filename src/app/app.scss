@@ -27,8 +27,25 @@ body {
   font-family: $roboto-light;
 }
 
+
 // App MD 
 // --------------------------------------------------
 // Shared Sass variables go in the app.variables.scss file
 @import "app.md";
+
+
+// App iOS
+// --------------------------------------------------
+// Shared Sass variables go in the app.variables.scss file
+@import "app.ios";
+
+
+// CROSS
+// all plataforms
+
+button .button-inner {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-transform: none;
+}
 
