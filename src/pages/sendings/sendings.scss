@@ -8,23 +8,6 @@ page-sendings {
         padding: 10px;
     }
 
-    .item h3{
-        font-size: 1.6rem;
-        font-weight: 500;
-    }
-
-   .item h2{
-        font-size: 2rem;
-        font-weight: 500;
-        color: $overall-color-sendings;        
-    }
-
-    .item p{
-        font-size: 1.6rem;
-        font-weight: 300;
-        color: $bg-color-second-level;
-    }
-
     ion-icon.item-icon{
             color: $overall-color-sendings;
     }
@@ -49,6 +32,31 @@ page-sendings {
                 color: #fff;
             }	
         }
+    }
+
+    /* card list */
+    ion-card ion-list-header.item{
+        background: #ededed;
+        text-transform: none;
+    }
+    ion-card ion-list-header.item h2{
+        color: color($colors, primary);
+        font-size: 1.8rem;
+    }
+    div.item-inner{
+        padding:0px;
+    }
+    ion-card ion-item ion-label h3{
+        color: #bbb!important;
+    } 
+    ion-card ion-item ion-label p{
+        padding: 3px 0 3px 0;
+    } 
+    ion-card ion-item.footer{
+        background: #fafafa;
+    }
+    ion-card ion-item.footer ion-icon{
+        font-size:2.6rem;
     }
 
 }

@@ -24,14 +24,35 @@
         </button>
     </ion-list>
 
-    <ion-list [virtualScroll]="sendings" approxItemHeight="140px">
+    <!--<ion-list [virtualScroll]="sendings" approxItemHeight="140px">
         <button ion-item detail-none (click)="goToDetail()" *virtualItem="let item">
             <ion-icon name="time" item-left></ion-icon>
             <ion-icon name="arrow-forward" item-right light></ion-icon>
             <h2 color="primary">{{ item.ref }}</h2>
-            <p>{{ item.dropAddressFullText }}</p>
+            <p><span>Desde</span> {{ item.pickupAddressFullText }}</p>
+            <p><span>Hasta</span> {{ item.dropAddressFullText }}</p>
             <h3>Aguardando Transporte</h3>
         </button>
-    </ion-list>
- 
+    </ion-list>       -->
+
+    <div [virtualScroll]="sendings" approxItemHeight="500px">
+        <ion-card *virtualItem="let item" (click)="goToDetail()">
+            <ion-list-header>
+                <h2>Descripción del item</h2>
+                <ion-note item-right>#{{ item.ref }}</ion-note>
+            </ion-list-header>                   
+            <ion-item>            
+                <ion-icon name="arrow-forward" item-right light></ion-icon>                  
+                <h3>Desde</h3>
+                <p>{{ item.pickupAddressFullText }}</p>
+                <h3>Hasta</h3>
+                <p>{{ item.dropAddressFullText }}</p>            
+            </ion-item>  
+            <ion-item class="footer">
+                <ion-icon name="time" item-left light></ion-icon>                   
+                <p>Aguardando transporte ...</p>
+            </ion-item>                                      
+        </ion-card>
+    </div>  
+
 </ion-content>
