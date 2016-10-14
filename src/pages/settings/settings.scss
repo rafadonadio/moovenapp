@@ -17,4 +17,12 @@ page-settings {
 		padding-left: 0;
 	}
 
+    ion-item-divider.item{
+        background: color($colors, subdark);
+        color: #fff;
+    }
+
+    ion-list ion-item ion-icon{
+        color: color($colors, subdark);
+    }
 }

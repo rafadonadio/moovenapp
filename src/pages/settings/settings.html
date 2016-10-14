@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content class="settings">
     <ion-fab top right>
-        <button ion-fab>
+        <button ion-fab color="subdark">
             <ion-icon name="camera"></ion-icon>
         </button>
     </ion-fab> 
@@ -15,14 +15,14 @@
     <ion-grid>
         <ion-row>
             <ion-col width-50>
-                <button ion-item class="item-input" (click)="presentModalEditName()">
+                <button ion-item detail-none class="item-input" (click)="presentModalEditName()">
                     <ion-label stacked>Nombre</ion-label>
                     <ion-input type="text" value="{{ profile?.firstName }}"
                         [disabled]="inputDisabled.names"></ion-input>
                 </button>
             </ion-col>
             <ion-col width-50>
-                <button ion-item class="item-input" (click)="presentModalEditName()">
+                <button ion-item detail-none class="item-input" (click)="presentModalEditName()">
                     <ion-label stacked>Apellido</ion-label>
                     <ion-input type="text" value="{{ profile?.lastName }}"
                         [disabled]="inputDisabled.names"></ion-input>
@@ -31,7 +31,7 @@
         </ion-row>
         <ion-row>
             <ion-col>
-                <button ion-item (click)="presentModalEditEmail()">
+                <button ion-item detail-none (click)="presentModalEditEmail()">
                     <ion-label stacked>Email</ion-label>
                     <ion-input type="email"
                         value="{{ user.email }}"
@@ -43,7 +43,7 @@
         </ion-row>
         <ion-row>
             <ion-col>
-                <button ion-item (click)="presentModalEditPhone()">
+                <button ion-item detail-none (click)="presentModalEditPhone()">
                     <ion-label stacked>Móvil</ion-label>
                     <ion-input type="text" value="{{ profile?.phonePrefix }}{{ profile?.phoneMobile }}"
                         [disabled]="inputDisabled.phoneMobile"></ion-input>
@@ -73,14 +73,14 @@
             Notificaciones
         </ion-item-divider>
         <ion-item>
-            <ion-toggle checked="true"></ion-toggle>
+            <ion-toggle checked="true" color="subdark"></ion-toggle>
             <ion-label>
                 Push
             </ion-label>
             <ion-icon name='notifications' item-left></ion-icon>
         </ion-item>
         <ion-item>
-            <ion-toggle checked="true"></ion-toggle>
+            <ion-toggle checked="true" color="subdark"></ion-toggle>
             <ion-label>
                 Email
             </ion-label>
@@ -88,7 +88,7 @@
         </ion-item>
     </ion-list>
     <div padding>
-        <button ion-button color="dark" outline block margin-bottom (click)="signOut()">Salir</button>
-        <button ion-button color="light" outline block>Cerrar cuenta</button>
+        <button ion-button color="dark" block margin-bottom (click)="signOut()">Salir</button>
+        <button ion-button color="dark-gray" outline block>Cerrar cuenta</button>
     </div>
 </ion-content>
