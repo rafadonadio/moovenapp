@@ -1,9 +1,7 @@
 <ion-menu [content]="content">
-    <ion-toolbar color="secondary">
-    </ion-toolbar>
     <ion-content>
         <ion-list no-lines>
-            <button ion-item (click)="goToSettings()">
+            <button ion-item detail-none (click)="goToSettings()">
                 <ion-avatar item-left>
                     <img src="assets/img/mooven_avatar.png">
                 </ion-avatar>
@@ -11,7 +9,7 @@
                 <p></p>
                 <ion-icon name="settings" item-right></ion-icon>
             </button> 
-            <button ion-item *ngFor="let p of pages" (click)="openPage(p)">
+            <button ion-item detail-none class="menu-item" *ngFor="let p of pages" (click)="openPage(p)">
                 <ion-icon name="{{p.icon}}" item-left></ion-icon>
                 {{p.title}}
             </button> 
