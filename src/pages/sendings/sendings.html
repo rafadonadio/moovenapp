@@ -30,19 +30,17 @@
                 <h2>Descripción del item</h2>
                 <ion-note item-right>#{{ item.ref }}</ion-note>
             </ion-item>                   
-            <ion-item class="content">  
-                <ion-icon name="arrow-forward" item-right></ion-icon>                  
-                <h3>Desde</h3>
-                <p>{{ item.pickupAddressFullText }}</p>
-                <h3>Hasta</h3>
-                <p>{{ item.dropAddressFullText }}</p>            
+            <ion-item class="content">                 
+                <p><span>Desde</span> {{ item.pickupAddressFullText }}</p>
+                <p><span>Hasta</span> {{ item.dropAddressFullText }}</p>            
             </ion-item>  
             <ion-item class="footer">             
                 <ion-icon name="time" item-left class="active"></ion-icon> 
                 <ion-icon name="home" item-left></ion-icon>
                 <ion-icon name="pin" item-left></ion-icon>
                 <ion-icon name="checkmark-circle" item-left></ion-icon>            
-                <ion-note item-right>Aguardando transporte</ion-note>  
+                <ion-note item-right>Aguardando transporte</ion-note>
+                <ion-icon name="arrow-forward" item-right></ion-icon>                    
             </ion-item>                                      
         </ion-card>
     </div>  

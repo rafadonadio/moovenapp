@@ -19,8 +19,10 @@ page-sendings {
     div.item-inner{
         padding:0px;
     }
-    ion-card ion-item ion-label.label-md h3,
-    ion-card ion-item ion-label.label-ios h3{
+    ion-card ion-item ion-label.label-md p span,
+    ion-card ion-item ion-label.label-ios p span{
+        display: inline-block;
+        width: 60px;        
         color: #bbb;
     } 
     ion-card ion-item ion-label p{
@@ -42,7 +44,9 @@ page-sendings {
         color: #ededed;
         font-size:2.2rem; 
     }
-    ion-card ion-item.footer ion-icon.active{
+    ion-card ion-item.footer ion-icon.active,
+    ion-card ion-item.footer ion-icon[item-right],
+    ion-card ion-item.footer ion-note{
         color: color($colors, primary); 
     }    
 
