@@ -35,13 +35,19 @@ page-sendings {
     }
 
     /* card list */
-    ion-card ion-list-header.item{
-        background: #ededed;
-        text-transform: none;
+    ion-card ion-item.header ion-label.label-md,
+    ion-card ion-item.header ion-label.label-ios{
+        margin-bottom: 0;
     }
-    ion-card ion-list-header.item h2{
+    ion-card ion-item.header.item-md ion-note,
+    ion-card ion-item.header.item-ios ion-note{
+        margin-top: 20px;
+    }    
+    ion-card ion-item ion-label.label-md h2,
+    ion-card ion-item ion-label.label-ios h2{
         color: color($colors, primary);
         font-size: 1.8rem;
+        font-weight: 500;
     }
     div.item-inner{
         padding:0px;
@@ -52,11 +58,16 @@ page-sendings {
     ion-card ion-item ion-label p{
         padding: 3px 0 3px 0;
     } 
+    ion-card ion-item.item-md ion-icon[item-right],
+    ion-card ion-item.item-ios ion-icon[item-right]{
+        font-size:2.9rem; 
+        color: #c5c5c5;
+    }
     ion-card ion-item.footer{
-        background: #fafafa;
+        border-top: 1px solid #ededed;
     }
     ion-card ion-item.footer ion-icon{
-        font-size:2.6rem;
+        font-size: 2.9rem;
     }
 
 }
