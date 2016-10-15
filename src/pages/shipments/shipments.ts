@@ -21,4 +21,8 @@ export class ShipmentsPage {
         this.navCtrl.push(ShipmentCreatePage);
     }
 
+    doRefresh(refresher) {
+        console.log('Begin async operation', refresher);
+    }    
+
 }

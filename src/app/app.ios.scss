@@ -4,7 +4,7 @@
     ion-menu{
 
         ion-content{
-            
+                      
             background-color: $bg-color-fourth-level;
 
             ion-list.list-ios{
@@ -28,6 +28,11 @@
                 margin-left: 7px;
             }
         }
+    }
+    
+    // page navbar title
+    ion-navbar ion-title h4{
+        margin-top: 1.1rem;
     }
 
 }

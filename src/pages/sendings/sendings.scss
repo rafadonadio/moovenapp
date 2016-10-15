@@ -1,39 +1,6 @@
 page-sendings {
 
-    .ion-ios-add{
-        color: #fff;
-    }
-
-    .item-inner{
-        padding: 10px;
-    }
-
-    ion-icon.item-icon{
-            color: $overall-color-sendings;
-    }
-
-    .button-inner{
-        background-color: $overall-color-sendings;
-    }
-
-    .has-refresher > .scroll-content {
-        border-top: none;
-    }
-    
-    ion-icon.item-right{
-        font-size: 2.9rem; 
-    }
-    
-    scroll-content{
-        
-        .button-inner{		
-            
-            ion-icon{
-                color: #fff;
-            }	
-        }
-    }
-
+ 
     /* card list */
     ion-card ion-item.header ion-label.label-md,
     ion-card ion-item.header ion-label.label-ios{
