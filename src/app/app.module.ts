@@ -18,6 +18,7 @@ import { SendingCreate4Page } from '../pages/sending-create-4/sending-create-4';
 import { SendingDetailPage } from '../pages/sending-detail/sending-detail';
 import { SendingsPage } from '../pages/sendings/sendings';
 import { SettingsPage } from '../pages/settings/settings';
+import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover';
 import { ShipmentCreatePage } from '../pages/shipment-create/shipment-create';
 import { ShipmentCreate2Page } from '../pages/shipment-create-2/shipment-create-2';
 import { ShipmentDetailPage } from '../pages/shipment-detail/shipment-detail';
@@ -54,6 +55,7 @@ import { UsersService } from '../providers/users-service/users-service';
     SendingDetailPage,
     SendingsPage,
     SettingsPage,
+    SettingsPopoverPage,
     ShipmentCreatePage,
     ShipmentCreate2Page,
     ShipmentDetailPage,
@@ -87,6 +89,7 @@ import { UsersService } from '../providers/users-service/users-service';
     SendingDetailPage,
     SendingsPage,
     SettingsPage,
+    SettingsPopoverPage,
     ShipmentCreatePage,
     ShipmentCreate2Page,
     ShipmentDetailPage,

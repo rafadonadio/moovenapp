@@ -25,4 +25,8 @@ page-settings {
     ion-list ion-item ion-icon{
         color: color($colors, subdark);
     }
+
+    .text-input[disabled] {
+        opacity: .7;
+    }
 }

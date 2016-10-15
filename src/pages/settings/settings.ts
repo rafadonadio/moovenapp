@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, ToastController, ModalController } from 'ionic-angular';
-import { StartPage } from '../start/start';
+import { NavController, LoadingController, ToastController, PopoverController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
 
-import { ModalUserEditEmailPage } from '../modal-user-edit-email/modal-user-edit-email';
-import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit-phone';
-import { ModalUserEditNamePage } from '../modal-user-edit-name/modal-user-edit-name';
+import { SettingsPopoverPage } from '../settings-popover/settings-popover';
+
 
 @Component({
     selector: 'page-settings',
@@ -32,7 +30,7 @@ export class SettingsPage implements OnInit{
         public users: UsersService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
-        public modalCtrl: ModalController) {
+        public popoverCtrl: PopoverController ) {
     }
 
     ngOnInit() {
@@ -40,20 +38,11 @@ export class SettingsPage implements OnInit{
         this.initInputs();
     }
 
-    presentModalEditEmail() {
-        // show modal
-        let modal = this.modalCtrl.create(ModalUserEditEmailPage);
-        modal.present();
-    }
-
-    presentModalEditPhone() {
-        let modal = this.modalCtrl.create(ModalUserEditPhonePage);
-        modal.present();
-    }
-
-    presentModalEditName() {
-        let modal = this.modalCtrl.create(ModalUserEditNamePage);
-        modal.present();
+    presentPopover(myEvent) {
+        let popover = this.popoverCtrl.create(SettingsPopoverPage);
+        popover.present({
+            ev: myEvent
+        });       
     }
 
     signOut() {
