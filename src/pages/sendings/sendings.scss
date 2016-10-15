@@ -52,22 +52,31 @@ page-sendings {
     div.item-inner{
         padding:0px;
     }
-    ion-card ion-item ion-label h3{
-        color: #bbb!important;
+    ion-card ion-item ion-label.label-md h3,
+    ion-card ion-item ion-label.label-ios h3{
+        color: #bbb;
     } 
     ion-card ion-item ion-label p{
         padding: 3px 0 3px 0;
     } 
-    ion-card ion-item.item-md ion-icon[item-right],
-    ion-card ion-item.item-ios ion-icon[item-right]{
+    ion-card ion-item.header.item-md ion-icon[item-left],
+    ion-card ion-item.header.item-ios ion-icon[item-left]{
         font-size:2.9rem; 
+        color: color($colors, primary);
+    }
+    ion-card ion-item.content.item-md ion-icon,
+    ion-card ion-item.content.item-ios ion-icon{
         color: #c5c5c5;
     }
     ion-card ion-item.footer{
         border-top: 1px solid #ededed;
     }
     ion-card ion-item.footer ion-icon{
-        font-size: 2.9rem;
+        color: #ededed;
+        font-size:2.2rem; 
     }
+    ion-card ion-item.footer ion-icon.active{
+        color: color($colors, primary); 
+    }    
 
 }
