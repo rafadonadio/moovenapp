@@ -7,7 +7,7 @@ import { NavController } from 'ionic-angular';
 })
 export class ShipmentDetailPage {
 
-    shipmenttab: string = "state";
+    shipmenttab: string = "notifications";
 
     constructor(public navCtrl: NavController) {
 

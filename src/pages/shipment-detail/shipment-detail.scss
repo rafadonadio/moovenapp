@@ -1,3 +1,28 @@
 page-shipment-detail {
 
+    ion-segment.segment-ios{
+        padding-left:10px;
+        padding-right:10px;
+    }
+    ion-list.list-md ion-list-header,
+    ion-list.list-ios ion-list-header{
+        background: #e2e2e2;
+        color: color($colors, green);
+        font-weight: 500;
+        font-size:1.6rem;
+    }
+    ion-list.list-ios ion-list-header{
+        text-transform: none;
+    }    
+    ion-list button ion-icon[item-left],
+    ion-list button ion-icon[item-right],    
+    ion-list ion-item ion-icon[item-left],
+    ion-list ion-item ion-icon[item-right],
+    {
+        color: #c5c5c5;
+    }
+    ion-list button.active ion-icon{
+        color: color($colors, green);
+    }    
+
 }
