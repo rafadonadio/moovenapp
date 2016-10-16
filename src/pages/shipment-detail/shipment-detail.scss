@@ -14,6 +14,13 @@ page-shipment-detail {
     ion-list.list-ios ion-list-header{
         text-transform: none;
     }    
+
+    ion-list.list-md ion-item-divider,
+    ion-list.list-ios ion-item-divider{
+        color: color($colors, green);
+        font-size:1.6rem;
+    }    
+
     ion-list button ion-icon[item-left],
     ion-list button ion-icon[item-right],    
     ion-list ion-item ion-icon[item-left],

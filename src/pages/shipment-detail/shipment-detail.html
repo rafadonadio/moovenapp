@@ -28,7 +28,8 @@
     <div [ngSwitch]="shipmenttab">
 
         <ion-list *ngSwitchCase="'notifications'">
-            <ion-list-header>Estado</ion-list-header>
+            <ion-list-header>Estado y Notificaciones</ion-list-header>
+            <ion-item-divider>Estado</ion-item-divider>
             <button class="active" ion-item no-lines detail-none (click)="goToTab('details')">
                 <ion-icon name="send" item-left></ion-icon>
                 <h3>Carga aceptada</h3>
@@ -47,7 +48,7 @@
                 <p>En transito</p>
                 <ion-icon name="time" item-right></ion-icon>
             </button>
-            <ion-list-header>Notificaciones</ion-list-header>
+            <ion-item-divider>Notificaciones</ion-item-divider>
             <ion-list>
                 <ion-item>
                     <ion-icon name="person" item-left></ion-icon>
@@ -74,12 +75,13 @@
 
         <ion-list *ngSwitchCase="'details'">
             <ion-list>
-                <ion-list-header>Solicitante
+                <ion-list-header>Detalles del Envío</ion-list-header>
+                <ion-item-divider>Solicitante
                     <button ion-button outline item-right icon-left
                         color="green">
                         <ion-icon name="call"></ion-icon>
                         Llamar
-                    </button> </ion-list-header>
+                    </button> </ion-item-divider>
                 <ion-item no-lines>
                     <ion-thumbnail item-left>
                         <img src="http://placehold.it/200x200">
@@ -87,13 +89,13 @@
                     <h2>Marco Polo</h2>
                     <h3>+5491165432100</h3>        
                 </ion-item>
-                <ion-list-header>Precio</ion-list-header>
+                <ion-item-divider>Precio</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="card" item-left light></ion-icon>
                     <h3>Distancia aproximada: 15 km</h3>
                     <h2><b>$ 79.00</b></h2>
                 </ion-item>
-                <ion-list-header>Carga</ion-list-header>
+                <ion-item-divider>Carga</ion-item-divider>
             </ion-list>
             <ion-grid>
                 <ion-row>
@@ -115,36 +117,37 @@
 
         <ion-list *ngSwitchCase="'pickup'">
             <ion-list>
-                <ion-list-header>Dirección
+                <ion-list-header>Detalles del Retiro</ion-list-header>
+                <ion-item-divider>Dirección
                     <button ion-button outline item-right icon-left
                         color="green">
                         <ion-icon name="navigate"></ion-icon>
                         Mapa
                     </button>
-                </ion-list-header>
+                </ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="home" item-left></ion-icon>
                     <h2>Av. de Mayo 432</h2>
                     <h3>Buenos Aires</h3>
                 </ion-item>
-                <ion-list-header>Horario</ion-list-header>
+                <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
                     <h3>Banda horaria para el retiro</h3>
                     <h2>11:30 a 13:00</h2>
                 </ion-item>
-                <ion-list-header>Persona que entrega
+                <ion-item-divider>Persona que entrega
                     <button ion-button outline item-right icon-left
                         color="green">
                         <ion-icon name="call"></ion-icon>
                         Llamar
-                    </button></ion-list-header>
+                    </button></ion-item-divider>
                 <button ion-item no-lines>
                     <ion-icon name="person" item-left></ion-icon>
                     <h2>Marco Polo</h2>
                     <h3>+5491165432100</h3>
                 </button>
-                <ion-list-header>Código de Seguridad</ion-list-header>
+                <ion-item-divider>Código de Seguridad</ion-item-divider>
                 <ion-item>
                     <ion-icon name="lock" item-left></ion-icon>
                     <h2>875462</h2>
@@ -155,29 +158,30 @@
 
         <ion-list *ngSwitchCase="'drop'">
             <ion-list>
-                <ion-list-header>Dirección
+                <ion-list-header>Detalles de la Entrega</ion-list-header>
+                <ion-item-divider>Dirección
                     <button ion-button outline item-right icon-left
                         color="green">
                         <ion-icon name="navigate"></ion-icon>
                         Mapa
-                    </button></ion-list-header>
+                    </button></ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="pin" item-left></ion-icon>
                     <h2>Dirección: Gorriti 1234</h2>
                     <h3>Buenos Aires</h3>
                 </ion-item>
-                <ion-list-header>Horario</ion-list-header>
+                <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
                     <h3>Banda horaria para la entrega</h3>
                     <h2>15:00 a 17:00</h2>
                 </ion-item>
-                <ion-list-header>Persona que recibe
+                <ion-item-divider>Persona que recibe
                     <button ion-button outline item-right icon-left
                         color="green">
                         <ion-icon name="call"></ion-icon>
                         Llamar
-                    </button></ion-list-header>
+                    </button></ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="person" item-left></ion-icon>
                     <h3>Nombre: Arturo Mengano</h3>
@@ -186,7 +190,7 @@
                     <h3>Movil: (11) 15 9876 5432</h3>
                     <h3>Email: amengano@gmail.com</h3>
                 </ion-item>
-                <ion-list-header>Código de Seguridad</ion-list-header>
+                <ion-item-divider>Código de Seguridad</ion-item-divider>
                 <ion-item>
                     <ion-icon name="lock" item-left></ion-icon>
                     <h2>445682</h2>
