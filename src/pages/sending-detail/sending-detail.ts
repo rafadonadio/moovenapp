@@ -7,7 +7,7 @@ import { NavController } from 'ionic-angular';
 })
 export class SendingDetailPage {
 
-    sendingtab: string = "state";
+    sendingtab: string = "notifications";
 
     constructor(public navCtrl: NavController) {
 
