@@ -9,19 +9,16 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="sending-create">
-    <div>
-        <ion-fab top right>
-            <button ion-fab>
-                <ion-icon name="camera"></ion-icon>
-            </button>
-        </ion-fab>    
-        <img src="http://placehold.it/450x300">
-    </div>
     <form [formGroup]="formOne">
         <ion-list radio-group [formControl]="objectType">
-            <ion-item no-lines class="header">
-                <ion-label>Tipo de objeto</ion-label>
-            </ion-item>
+            <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
+            <ion-card>
+                <img src="http://placehold.it/400x200" />
+                <ion-item>
+                    <button ion-button clear item-right><ion-icon name="camera"></ion-icon></button>
+                </ion-item>
+            </ion-card>
+            <ion-list-header>Tipo de objeto</ion-list-header>
             <ion-item no-lines>
                 <ion-label>Sobre</ion-label>
                 <ion-radio value="sobre"></ion-radio>
@@ -34,9 +31,7 @@
                 <ion-label>Objeto irregular</ion-label>
                 <ion-radio value="irregular"></ion-radio>
             </ion-item>
-            <ion-item no-lines class="header">
-                <ion-label>Valor a declarar</ion-label>
-            </ion-item>
+            <ion-list-header>Valor a declarar</ion-list-header>
             <ion-item no-lines>
                 <ion-range min="0" max="3000" step="100" [(ngModel)]="rangeValue" [formControl]="objectDeclaredValue" [disabled]="objectNoValueDeclared.value==true">
                     <ion-label range-right>${{ objectDeclaredValue.value }}</ion-label>
