@@ -15,13 +15,15 @@ page-sending-create {
         color: color($colors, primary);
         font-weight: 500;
         font-size:1.6rem;
+        text-transform: none;
     }
     ion-list.list-md ion-item-divider,
     ion-list.list-ios ion-item-divider{
         color: color($colors, primary);
         font-size:1.6rem;
     }     
-    ion-card.card-md ion-item button ion-icon{
+    ion-card.card-md ion-item button ion-icon,
+    ion-card.card-ios ion-item button ion-icon{
         font-size: 3rem;
     }
 

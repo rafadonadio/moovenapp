@@ -41,7 +41,7 @@
                 <ion-label>Sin valor</ion-label>
                 <ion-toggle [formControl]="objectNoValueDeclared" (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
             </ion-item>
-            <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" class="input-error">* Desliza hasta el valor a declarar o marca "Sin valor"</div>
+            <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
         </ion-list>
         <div margin>
             <button ion-button block color="primary" class="submit" (click)="submitInit()" [disabled]="objectType.valid==false || (objectNoValueDeclared.value==false && objectDeclaredValue.valid==false)">Siguiente</button>
