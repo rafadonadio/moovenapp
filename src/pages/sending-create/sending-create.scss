@@ -1,5 +1,9 @@
 page-sending-create {
-
+    
+    ion-toolbar.toolbar-md ion-title span,
+    ion-toolbar.toolbar-ios ion-title span{
+        font-weight: 200;
+    }    
    .input-error{
         margin-left: 20px;
         margin-top: 5px;
@@ -11,7 +15,7 @@ page-sending-create {
 
     ion-list.list-md ion-list-header,
     ion-list.list-ios ion-list-header{
-        background: #ededed;
+        background: #fff;
         color: color($colors, primary);
         font-weight: 500;
         font-size:1.6rem;
@@ -20,11 +24,21 @@ page-sending-create {
     ion-list.list-md ion-item-divider,
     ion-list.list-ios ion-item-divider{
         color: color($colors, primary);
-        font-size:1.6rem;
-    }     
+        font-size:1.8rem;
+        background: #e2e2e2;
+        font-weight: 500;        
+    }
+    ion-list.list-md ion-item-divider ion-icon,
+    ion-list.list-ios ion-item-divider ion-icon{
+        font-size: 1.5rem;    
+    }         
     ion-card.card-md ion-item button ion-icon,
     ion-card.card-ios ion-item button ion-icon{
         font-size: 3rem;
     }
+    ion-list.list-md ion-item ion-label,
+    ion-list.list-ios ion-item ion-label{
+        color: #999;
+    }        
 
 }

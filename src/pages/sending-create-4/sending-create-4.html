@@ -1,18 +1,19 @@
 <ion-header>
-    <ion-navbar>
-        <ion-title>Nuevo Envío | Confirmar</ion-title>
-    </ion-navbar>
+    <ion-toolbar color="primary">
+        <ion-buttons start>
+            <button ion-button (click)="goToStep3()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>Nuevo <span>| Confirmar</span></ion-title>
+    </ion-toolbar>
 </ion-header>
 <ion-content>
     <ion-list>
-        <ion-item-divider dark>Confirmar Envío</ion-item-divider>
-        <ion-item-divider light>
+        <ion-list-header>
             Objeto
-            <button ion-button outline item-right (click)="goToStep1()">
-                <ion-icon name="create"></ion-icon>
-                Modificar
-            </button>
-        </ion-item-divider>
+            <button ion-button outline item-right (click)="goToStep1()">Modificar</button>
+        </ion-list-header>
         <ion-item no-lines>
             <ion-icon name="cube" item-left></ion-icon>
             <ion-thumbnail item-right>
@@ -23,13 +24,10 @@
             <p>Valor declarado</p>
             <h2>${{ request.objectDeclaredValue }}</h2>
         </ion-item>
-        <ion-item-divider light>
+        <ion-list-header>
             Retiro
-            <button ion-button outline item-right (click)="goToStep2()">
-                <ion-icon name="create"></ion-icon>
-                Modificar
-            </button>
-        </ion-item-divider>
+            <button ion-button outline item-right (click)="goToStep2()">Modificar</button>
+        </ion-list-header>
         <ion-item no-lines>
             <ion-icon name="home" item-left></ion-icon>
             <p>Dirección</p>
@@ -47,13 +45,10 @@
             <h2>Tel: {{ request.pickupPersonPhone }}</h2>
             <h2>Email: {{ request.pickupPersonEmail }}</h2>
         </ion-item>
-        <ion-item-divider light>
+        <ion-list-header>
             Entrega
-            <button ion-button outline item-right (click)="goToStep3()">
-                <ion-icon name="create"></ion-icon>
-                Modificar
-            </button>
-        </ion-item-divider>
+            <button ion-button outline item-right (click)="goToStep3()">Modificar</button>
+        </ion-list-header>
         <ion-item no-lines>
             <ion-icon name="pin" item-left></ion-icon>
             <p>Dirección</p>
@@ -71,7 +66,7 @@
             <h2>Tel: {{ request.dropPersonPhone }}</h2>
             <h2>Email: {{ request.dropPersonEmail }}</h2>
         </ion-item>
-        <ion-item-divider light>Precio</ion-item-divider>
+        <ion-list-header>Precio</ion-list-header>
         <ion-item no-lines>
             <ion-icon name="card" item-left></ion-icon>
             <p>Costo del envío</p>
@@ -80,8 +75,8 @@
         </ion-item>
     </ion-list>
     <div margin>
-        <button ion-button block color="primary" (click)="confirmSending()">
-        Confirmar Envío
-    </button>
+        <button ion-button block color="primary" 
+            (click)="confirmSending()">Confirmar Envío</button>
+        <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button> 
     </div>
 </ion-content>

@@ -1,3 +1,42 @@
 page-sending-create-3 {
 
+    ion-toolbar.toolbar-md ion-title span,
+    ion-toolbar.toolbar-ios ion-title span{
+        font-weight: 200;
+    }
+
+    .input-error{
+        margin-left: 20px;
+        margin-top: 5px;
+        color: red;
+    }
+    button.submit{
+        margin-top: 30px;
+    }
+
+    ion-list.list-md ion-list-header,
+    ion-list.list-ios ion-list-header{
+        background: #fff;
+        color: color($colors, primary);
+        font-weight: 500;
+        font-size:1.6rem;
+        text-transform: none;
+    }
+    ion-list.list-md ion-item-divider,
+    ion-list.list-ios ion-item-divider{
+        color: color($colors, primary);
+        font-size:1.8rem;
+        font-weight: 500;
+        background: #ededed;
+    }     
+    ion-list.list-md ion-item-divider ion-icon,
+    ion-list.list-ios ion-item-divider ion-icon{
+        font-size: 1.5rem;    
+    }     
+    ion-list.list-md ion-list-header button .button-inner,
+    ion-list.list-ios ion-list-header .button-inner{
+        font-weight: 400;
+        font-size: 1.4rem;
+    }    
+
 }

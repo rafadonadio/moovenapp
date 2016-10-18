@@ -1,20 +1,32 @@
 <ion-header>
-    <ion-navbar>
-        <ion-title>Nuevo Envío | paso 3</ion-title>
-    </ion-navbar>
+    <ion-toolbar color="primary">
+        <ion-buttons start>
+            <button ion-button (click)="goToStep2()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>Nuevo</ion-title>
+    </ion-toolbar>
 </ion-header>
 <ion-content class="sending-create-2">
     <form [formGroup]="formThree">
-        <ion-item-divider dark>Datos de Entrega</ion-item-divider>
-        <div>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d13134.365872335158!2d-58.38880525!3d-34.61449064999999!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sar!4v1470177425680" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
-        </div>
         <ion-list>
-            <ion-item-divider color="light">Dirección de Entrega</ion-item-divider>
+            <ion-item-divider>Datos de la Entrega
+                <ion-note item-right>
+                    <ion-icon name="radio-button-on"></ion-icon>
+                    <ion-icon name="radio-button-on"></ion-icon>
+                    <ion-icon name="radio-button-on"></ion-icon>
+                    <ion-icon name="radio-button-off"></ion-icon>
+                </ion-note>
+            </ion-item-divider>  
+            <div>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d13134.365872335158!2d-58.38880525!3d-34.61449064999999!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sar!4v1470177425680" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+            <ion-list-header>Dirección de Entrega</ion-list-header>
             <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" [formControl]="dropAddressFullText"></ion-input>
             </ion-item>
-            <ion-item-divider color="light" margin-top>Banda horaria de Entrega</ion-item-divider>
+            <ion-list-header margin-top>Banda horaria de Entrega</ion-list-header>
             <ion-item>
                 <ion-label>Desde</ion-label>
                 <ion-datetime [formControl]="dropTimeFrom" displayFormat="HH:mm" minuteValues="00,30" cancelText="Cancelar" doneText="Listo" [(ngModel)]="rangeFrom" (ionChange)="adjustDropTimeTo($event)"></ion-datetime>
@@ -23,13 +35,12 @@
                 <ion-label>Hasta</ion-label>
                 <ion-datetime [formControl]="dropTimeTo" displayFormat="HH:mm" minuteValues="00,30" cancelText="Cancelar" doneText="Listo" [(ngModel)]="rangeTo" (ionChange)="adjustDropTimeFrom($event)"></ion-datetime>
             </ion-item>
-            <ion-item-divider color="light">
+            <ion-list-header>
                 Contacto para Retiro
                 <button ion-button outline item-right (click)="populateUserData()">
-                    <ion-icon name="person"></ion-icon>
                     Copiar mis datos
                 </button>
-            </ion-item-divider>
+            </ion-list-header>
             <ion-list inset>
                 <ion-item no-lines>
                     <ion-label>Nombre</ion-label>
@@ -49,6 +60,7 @@
             <button ion-button block color="primary" [disabled]="!formThree.valid" (click)="submit()">
                 Siguiente
             </button>
+            <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button>            
         </div>
     </form>
 </ion-content>

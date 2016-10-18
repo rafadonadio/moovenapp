@@ -1,3 +1,49 @@
 page-sending-create-4 {
 
+    ion-toolbar.toolbar-md ion-title span,
+    ion-toolbar.toolbar-ios ion-title span{
+        font-weight: 200;
+    }
+
+    button.submit{
+        margin-top: 30px;
+    }
+
+    ion-list.list-md ion-list-header,
+    ion-list.list-ios ion-list-header{
+        background: #ededed;
+        color: color($colors, primary);
+        font-weight: 500;
+        font-size:1.6rem;
+        text-transform: none;
+    }
+    ion-list.list-md ion-item-divider,
+    ion-list.list-ios ion-item-divider{
+        color: color($colors, primary);
+        font-size:1.8rem;
+        font-weight: 500;
+        background: #ededed;
+    }     
+    ion-list.list-md ion-item-divider ion-icon,
+    ion-list.list-ios ion-item-divider ion-icon{
+        font-size: 1.5rem;    
+    }     
+    ion-list.list-md ion-list-header button .button-inner,
+    ion-list.list-ios ion-list-header .button-inner{
+        font-weight: 400;
+        font-size: 1.4rem;
+    } 
+    ion-list.list-md ion-item ion-icon,
+    ion-list.list-ios ion-item ion-icon{
+        color: #bbb;
+    }
+    ion-list.list-md ion-item ion-label p,
+    ion-list.list-ios ion-item ion-label p{
+        color: #999;
+    }      
+    ion-list.list-md ion-item ion-label h2,
+    ion-list.list-ios ion-item ion-label h2{
+        color: color($colors, primary);
+    }         
+
 }

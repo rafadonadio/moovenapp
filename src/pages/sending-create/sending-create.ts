@@ -111,7 +111,7 @@ export class SendingCreatePage implements OnInit{
 
         private goToNextStep() {
             console.log('set nav param and go to next page');
-            this.navCtrl.push(SendingCreate2Page, {
+            this.navCtrl.setRoot(SendingCreate2Page, {
                 request: this.request
             });
         }
