@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { UserCredentials } from '../../shared/interfaces';
 import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
-import { SignupMergePage } from '../signup-merge/signup-merge';
 
 @Component({
     selector: 'page-signup',
@@ -84,10 +83,6 @@ export class SignupPage implements OnInit {
     /**
      *  PRIVATE METHODS
      */
-
-    private goToSignupMerge() {
-        this.navCtrl.push(SignupMergePage)
-    }
 
     private presentErrorAlert(msgCode: string ):void {
         // set strings

@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from  '../../providers/sending-service/sending-service';
 import { SendingCreate3Page} from '../sending-create-3/sending-create-3';
-import { NumberValidator } from '../../validators/number.validator';
 
 @Component({
     selector: 'page-sending-create-2',
@@ -80,6 +79,14 @@ export class SendingCreate2Page implements OnInit{
         this.contactName = this.user.displayName;
         this.contactPhone = this.profile.phonePrefix + this.profile.phoneMobile;
         this.contactEmail = this.user.email;
+    }
+
+    goToStep1() {
+        console.log('go back to step 1');
+    }
+
+    cancelSending() {
+        console.log('cancel sending');
     }
 
     /**

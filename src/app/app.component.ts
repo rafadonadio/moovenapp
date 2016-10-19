@@ -50,9 +50,9 @@ export class MyApp{
                 console.log('in ready..');
                 let array: string[] = platform.platforms();
                 console.log(array);
-                let isAndroid: boolean = platform.is('android');
-                let isIos: boolean = platform.is('ios');
-                let isWindows: boolean = platform.is('windows');
+                // let isAndroid: boolean = platform.is('android');
+                // let isIos: boolean = platform.is('ios');
+                // let isWindows: boolean = platform.is('windows');
             }
         });
 

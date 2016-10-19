@@ -3,8 +3,6 @@ import { NavController, LoadingController, ToastController, AlertController, Mod
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
-import { EmailValidator } from '../../validators/email.validator';
-import { CheckedValidator } from '../../validators/checked.validator';
 
 import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';

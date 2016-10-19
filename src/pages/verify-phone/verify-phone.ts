@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
-import { SignupMergePage } from '../signup-merge/signup-merge';
-import { UpdatePhoneNumberPage } from '../update-phone-number/update-phone-number';
 import { SendingsPage } from '../sendings/sendings';
 import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit-phone';
 

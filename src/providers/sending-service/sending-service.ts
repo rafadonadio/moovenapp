@@ -94,10 +94,6 @@ export class SendingService {
         }
         return status;
     }
-    private setProgess() {
-        // save every sending progress
-
-    }
     private getBlankSending(): any {
         var data = {
             ref: '',

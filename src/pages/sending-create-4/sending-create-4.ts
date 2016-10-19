@@ -76,6 +76,10 @@ export class SendingCreate4Page implements OnInit {
         this.navCtrl.pop();
     }
 
+    cancelSending() {
+        console.log('cancel sending');
+    }
+
     /**
      *  PRIVATE
      */

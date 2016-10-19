@@ -41,6 +41,9 @@ export class ModalUserEditNamePage implements OnInit{
         this.viewCtrl.dismiss();
     }
 
+    submit(formValues: any) {
+        console.log('form submitted');
+    }
 
     /**
      * PRIVATE
