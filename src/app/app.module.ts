@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
+// PAGES
 import { HelpPage } from '../pages/help/help';
 import { HistorialPage } from '../pages/historial/historial';
 import { LoginPage } from '../pages/login/login';
@@ -28,6 +29,7 @@ import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { StartPage } from '../pages/start/start';
 import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone-number';
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
+// PROVIDERS
 import { AccountEmailVerificationService } from '../providers/account-email-verification-service/account-email-verification-service';
 import { AccountService } from '../providers/account-service/account-service';
 import { AuthenticationService } from '../providers/authentication-service/authentication-service';

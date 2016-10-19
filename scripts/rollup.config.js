@@ -47,13 +47,9 @@ var rollupConfig = {
         include: [
             'node_modules/rxjs/**', // firebase needs rxjs to avoid build errors
             'node_modules/firebase/**', // here we're calling firebase.
-            'node_modules/angularfire2/**' // here we're calling angularfire2.
         ],
         namedExports: {
-            'node_modules/firebase/firebase.js': ['initializeApp', 'auth',
-            'database'],
-            'node_modules/angularfire2/node_modules/firebase/firebase-browser.js':
-            ['initializeApp', 'auth', 'database']
+            'node_modules/firebase/firebase.js': ['initializeApp', 'auth', 'database', 'storage']
         }   
     }),
     nodeResolve({

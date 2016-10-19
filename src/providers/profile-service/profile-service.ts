@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-declare var firebase: any;
+import firebase from 'firebase';
 
 @Injectable()
 export class ProfileService {
