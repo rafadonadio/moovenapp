@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { UsersService } from '../users-service/users-service';
 
-import firebase from 'firebase';
+declare var firebase: any;
 
 @Injectable()
 export class SendingService {
