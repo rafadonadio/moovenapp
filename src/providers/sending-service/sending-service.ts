@@ -97,10 +97,9 @@ export class SendingService {
     private getSendingObject(): any {
         var data = {
             ref: '',
-            shortName: '',
-            description: '',
             timestamp: '',
             userUid: '',
+            objectShortName: '',
             objectImageSet: '',
             objectImageUrl: '',
             objectType: '',

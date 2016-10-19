@@ -18,6 +18,7 @@ export class SendingCreatePage implements OnInit{
     request: any;
     formOne: FormGroup;
     objectImageUrl: AbstractControl;
+    objectShortName: AbstractControl;
     objectType: AbstractControl;
     objectNoValueDeclared: AbstractControl;
     objectDeclaredValue: AbstractControl;
@@ -38,11 +39,13 @@ export class SendingCreatePage implements OnInit{
             // init form
             this.formOne = this.formBuilder.group({
                 'objectImageUrl': [''],
+                'objectShortName': ['', Validators.compose([Validators.required, Validators.maxLength(75), Validators.minLength(3)])],
                 'objectType': ['', Validators.compose([Validators.required])],
                 'objectDeclaredValue': [this.request.objectDeclaredValue, Validators.compose([Validators.required, NumberValidator.nonZero])],
                 'objectNoValueDeclared': [false],
             });
             this.objectImageUrl = this.formOne.controls['objectImageUrl'];
+            this.objectShortName = this.formOne.controls['objectShortName'];
             this.objectType = this.formOne.controls['objectType'];
             this.objectNoValueDeclared = this.formOne.controls['objectNoValueDeclared'];
             this.objectDeclaredValue = this.formOne.controls['objectDeclaredValue'];
@@ -101,6 +104,7 @@ export class SendingCreatePage implements OnInit{
         private setRequest() {
             console.log('set request values from form');
             // set input values to request
+            this.request.objectShortName = this.objectShortName.value;
             this.request.objectType = this.objectType.value;
             this.request.objectNoValueDeclared = this.objectNoValueDeclared.value;
             this.request.objectDeclaredValue = this.objectDeclaredValue.value;

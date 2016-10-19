@@ -36,8 +36,8 @@ export class SendingsPage implements OnInit{
         this.getAllActive();
 
         setTimeout(() => {
-        console.log('Async operation has ended');
-        refresher.complete();
+            console.log('Async operation has ended');
+            refresher.complete();
         }, 2000);
     }
 

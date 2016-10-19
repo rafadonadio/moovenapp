@@ -31,6 +31,7 @@ page-sending-create {
     ion-list.list-md ion-item-divider ion-icon,
     ion-list.list-ios ion-item-divider ion-icon{
         font-size: 1.5rem;    
+        color: color($colors, primary);
     }         
     ion-card.card-md ion-item button ion-icon,
     ion-card.card-ios ion-item button ion-icon{
