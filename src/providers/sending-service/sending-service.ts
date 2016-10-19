@@ -27,7 +27,7 @@ export class SendingService {
      * @return {object} [description]
      */
     init() {
-        return this.getBlankSending();
+        return this.getSendingObject();
     }
 
     create(request: any): Promise<any> {
@@ -94,9 +94,11 @@ export class SendingService {
         }
         return status;
     }
-    private getBlankSending(): any {
+    private getSendingObject(): any {
         var data = {
             ref: '',
+            shortName: '',
+            description: '',
             timestamp: '',
             userUid: '',
             objectImageSet: '',

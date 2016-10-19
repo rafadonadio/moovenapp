@@ -49,10 +49,10 @@ export class SendingsPage implements OnInit{
         // init array
         var self = this;
         var ref = this.sendingsService.getAllActiveRef();
-        ref.on('value', function(snapshot) {
-            var result = snapshot.val();
+        ref.on('value', snapshot => {
+            let result = snapshot.val();
             console.log(result);
-            self.sendings = [];
+            self.sendings = [];        
             for (var key in result) {
                 var item = result[key];
                 self.sendings.push(item);
@@ -62,7 +62,7 @@ export class SendingsPage implements OnInit{
                 self.sendingsEmpty = false;
                 console.log(self.sendingsEmpty);
             }
-        })
+        });
     }
 
 }
