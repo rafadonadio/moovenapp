@@ -1,4 +1,4 @@
-console.log("Custom Rollup");
+console.log("--> Custom Rollup");
 var nodeResolve = require('rollup-plugin-node-resolve');
 var commonjs = require('rollup-plugin-commonjs');
 var globals = require('rollup-plugin-node-globals');
@@ -33,12 +33,29 @@ var rollupConfig = {
   dest: 'main.js',
 
   /**
+   *   CUSTOM > Add this to avoid eval errors
+   */ 
+  useStrict: false,
+
+  /**
    * plugins: Array of plugin objects, or a single plugin object.
    * See https://github.com/rollup/rollup/wiki/Plugins for more info.
    */
   plugins: [
     builtins(),
-    commonjs(),
+    commonjs({
+        include: [
+            'node_modules/rxjs/**', // firebase needs rxjs to avoid build errors
+            'node_modules/firebase/**', // here we're calling firebase.
+            'node_modules/angularfire2/**' // here we're calling angularfire2.
+        ],
+        namedExports: {
+            'node_modules/firebase/firebase.js': ['initializeApp', 'auth',
+            'database'],
+            'node_modules/angularfire2/node_modules/firebase/firebase-browser.js':
+            ['initializeApp', 'auth', 'database']
+        }   
+    }),
     nodeResolve({
       module: true,
       jsnext: true,
