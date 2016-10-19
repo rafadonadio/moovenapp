@@ -13,7 +13,6 @@ import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
 declare var firebase: any;
-
 declare var window: any;
 
 @Component({
@@ -41,14 +40,6 @@ export class MyApp{
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController) {
-
-        firebase.initializeApp({
-            apiKey: "AIzaSyC6tq6l0EVThcHsvkWHEoPYenGZg2p7PiU",
-            authDomain: "mooven-f9e3c.firebaseapp.com",
-            databaseURL: "https://mooven-f9e3c.firebaseio.com",
-            storageBucket: "mooven-f9e3c.appspot.com",
-            messagingSenderId: "301998553220"
-        });
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
