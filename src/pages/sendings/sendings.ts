@@ -3,7 +3,8 @@ import { NavController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
 
-import { SendingService } from  '../../providers/sending-service/sending-service';
+import { SendingService } from '../../providers/sending-service/sending-service';
+import { CapitalizePipe } from '../../pipes/capitalize-pipe';
 
 @Component({
     selector: 'page-sendings',

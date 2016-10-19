@@ -36,10 +36,13 @@ import { AuthenticationService } from '../providers/authentication-service/authe
 import { ProfileService } from '../providers/profile-service/profile-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { UsersService } from '../providers/users-service/users-service';
+// PIPES
+import { CapitalizePipe } from '../pipes/capitalize-pipe';
 
 @NgModule({
   declarations: [
     MyApp,
+    // PAGES
     HelpPage,
     HistorialPage,
     LoginPage,
@@ -67,6 +70,8 @@ import { UsersService } from '../providers/users-service/users-service';
     StartPage,
     UpdatePhoneNumberPage,
     VerifyPhonePage,
+    // PIPES
+    CapitalizePipe
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -109,6 +114,6 @@ import { UsersService } from '../providers/users-service/users-service';
     ProfileService,
     SendingService,    
     UsersService,
-  ]
+  ],
 })
 export class AppModule {}

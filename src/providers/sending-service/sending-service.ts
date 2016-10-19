@@ -47,6 +47,7 @@ export class SendingService {
             currentStatus: status.current,
             timestamp: request.timestamp,
             objectType: request.objectType,
+            objectShortName: request.objectShortName,
             pickupAddressFullText: request.pickupAddressFullText,
             pickupAddressCity: request.pickupAddressCity,
             dropAddressCity: request.dropAddressCity,

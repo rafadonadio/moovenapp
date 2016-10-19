@@ -21,14 +21,14 @@
             </ion-item-divider>         
             <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
             <ion-card>
-                <img src="http://placehold.it/400x200" />
+                <img src="http://placehold.it/400x250" />
                 <ion-item>
                     <button ion-button clear item-right><ion-icon name="camera"></ion-icon></button>
                 </ion-item>
             </ion-card>
             <ion-list-header>Descripción corta</ion-list-header>
             <ion-item>
-                <ion-input type="text" placeholder="Indique una descripción corta" [formControl]="objectShortName"></ion-input>
+                <ion-input type="text" placeholder="Ej: folletos, imanes" [formControl]="objectShortName"></ion-input>
             </ion-item>             
             <div *ngIf="( objectShortName.hasError('required') || objectShortName.hasError('minlength') ) && objectShortName.touched" class="input-error">* mínimo 3 caracteres</div>
             <div *ngIf="objectShortName.hasError('maxlength') && objectShortName.touched" class="input-error">* máximo 75 caracteres</div>
