@@ -31,7 +31,8 @@
             <ion-item>
                 <ion-input type="text" placeholder="Ej: folletos, imanes" [formControl]="objectShortName"></ion-input>
             </ion-item>             
-            <div *ngIf="( objectShortName.hasError('required') || objectShortName.hasError('minlength') ) && objectShortName.touched" class="input-error">* mínimo 3 caracteres</div>
+            <div *ngIf="objectShortName.hasError('required') && objectShortName.touched" class="input-error">* ingresa una descripción corta</div>
+            <div *ngIf="objectShortName.hasError('minlength') && objectShortName.touched" class="input-error">* mínimo 3 caracteres</div>
             <div *ngIf="objectShortName.hasError('maxlength') && objectShortName.touched" class="input-error">* máximo 75 caracteres</div>
             <ion-list-header>Tipo de objeto</ion-list-header>
             <ion-item no-lines>
@@ -48,13 +49,18 @@
             </ion-item>
             <ion-list-header>Valor a declarar</ion-list-header>
             <ion-item no-lines>
-                <ion-range min="0" max="3000" step="100" [(ngModel)]="rangeValue" [formControl]="objectDeclaredValue" [disabled]="objectNoValueDeclared.value==true">
+                <ion-range min="0" max="3000" step="100" 
+                    [(ngModel)]="rangeValue" 
+                    [formControl]="objectDeclaredValue" 
+                    [disabled]="objectNoValueDeclared.value==true">
                     <ion-label range-right>${{ objectDeclaredValue.value }}</ion-label>
                 </ion-range>
             </ion-item>
             <ion-item no-lines>
                 <ion-label>Sin valor</ion-label>
-                <ion-toggle [formControl]="objectNoValueDeclared" (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
+                <ion-toggle 
+                    [formControl]="objectNoValueDeclared" 
+                    (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
             </ion-item>
             <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
         </ion-list>

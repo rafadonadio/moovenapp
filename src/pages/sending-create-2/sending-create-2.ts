@@ -3,7 +3,7 @@ import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
-import { SendingService } from  '../../providers/sending-service/sending-service';
+import { SendingCreatePage} from '../sending-create/sending-create';
 import { SendingCreate3Page} from '../sending-create-3/sending-create-3';
 
 @Component({
@@ -20,7 +20,7 @@ export class SendingCreate2Page implements OnInit{
     pickupPersonPhone: AbstractControl;
     pickupPersonEmail: AbstractControl;
 
-    request: any;
+    sending: any;
     user: any;
     profile: any;
     // aux
@@ -34,14 +34,13 @@ export class SendingCreate2Page implements OnInit{
         public navParams: NavParams,
         public users: UsersService,
         public formBuilder: FormBuilder,
-        public alertCtrl: AlertController,
-        public sending: SendingService) {
+        public alertCtrl: AlertController) {
     }
 
     ngOnInit() {
         this.setUser();
         // set request from param
-        this.getRequestFromParams();
+        this.getSendingFromParams();
         // init form
         this.formTwo = this.formBuilder.group({
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
@@ -61,7 +60,7 @@ export class SendingCreate2Page implements OnInit{
 
     submit() {
         console.log('formTwo > process');
-        this.setRequest();
+        this.updateSending();
         this.goToNextStep();
     }
 
@@ -81,8 +80,9 @@ export class SendingCreate2Page implements OnInit{
         this.contactEmail = this.user.email;
     }
 
-    goToStep1() {
-        console.log('go back to step 1');
+    goBack() {
+        this.updateSending();
+        this.goBacktoStep1();
     }
 
     cancelSending() {
@@ -94,25 +94,32 @@ export class SendingCreate2Page implements OnInit{
      */
 
     private goToNextStep() {
-        console.log('set nav param and go to next page');
+        console.log('Go to formThree, include this.sending in params');
         this.navCtrl.push(SendingCreate3Page, {
-            request: this.request
+            request: this.sending
         });
     }
 
-    private setRequest() {
-        console.log('set request values from form');
-        this.request.pickupAddressFullText = this.pickupAddressFullText.value;
-        this.request.pickupTimeFrom = this.pickupTimeFrom.value;
-        this.request.pickupTimeTo = this.pickupTimeTo.value;
-        this.request.pickupPersonName = this.pickupPersonName.value;
-        this.request.pickupPersonPhone = this.pickupPersonPhone.value;
-        this.request.pickupPersonEmail = this.pickupPersonEmail.value;
-        console.log('sending request data ', this.request);
+    private goBacktoStep1() {
+        console.log('Go to formOne, include this.sending in params');
+        this.navCtrl.push(SendingCreatePage, {
+            sending: this.sending
+        });
     }
 
-    private getRequestFromParams() {
-        this.request = this.navParams.get('request');
+    private updateSending() {
+        console.log('Save formTwo values in this.sending');
+        this.sending.pickupAddressFullText = this.pickupAddressFullText.value;
+        this.sending.pickupTimeFrom = this.pickupTimeFrom.value;
+        this.sending.pickupTimeTo = this.pickupTimeTo.value;
+        this.sending.pickupPersonName = this.pickupPersonName.value;
+        this.sending.pickupPersonPhone = this.pickupPersonPhone.value;
+        this.sending.pickupPersonEmail = this.pickupPersonEmail.value;
+        console.log('this.sending data > ', this.sending);
+    }
+
+    private getSendingFromParams() {
+        this.sending = this.navParams.get('sending');
     }
 
     private setUser(){

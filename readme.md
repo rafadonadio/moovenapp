@@ -119,6 +119,13 @@ ___
         13 config
         14 scss variables > app/variables.scss
         15 add selectors for scss files
+
+**0.4.0**
+- update ionic RC0 > RC1 
+    // firebase type fix
+    declare namespace firebase.database.ServerValue {
+        var TIMESTAMP: any;
+    }        
         
 
 > to-do´s

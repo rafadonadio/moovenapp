@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
@@ -17,7 +17,7 @@ import { Camera } from 'ionic-native';
 })
 export class SendingCreatePage implements OnInit{
 
-    request: any;
+    sending: any;
     formOne: FormGroup;
     objectImageUrl: AbstractControl;
     objectShortName: AbstractControl;
@@ -29,21 +29,20 @@ export class SendingCreatePage implements OnInit{
     formValid:boolean = false;
 
     constructor(public navCtrl: NavController,
+        public navParams: NavParams,
         public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
-        public sending: SendingService) {
+        public sendingSrv: SendingService) {
         }
 
         ngOnInit() {
-            // init data
-            this.initRequestData();
             // init form
             this.formOne = this.formBuilder.group({
                 'objectImageUrl': ['http://placehold.it/400x250'],
                 'objectShortName': ['', Validators.compose([Validators.required, Validators.maxLength(75), Validators.minLength(3)])],
                 'objectType': ['', Validators.compose([Validators.required])],
-                'objectDeclaredValue': [this.request.objectDeclaredValue, Validators.compose([Validators.required, NumberValidator.nonZero])],
+                'objectDeclaredValue': ['', Validators.compose([Validators.required, NumberValidator.nonZero])],
                 'objectNoValueDeclared': [false],
             });
             this.objectImageUrl = this.formOne.controls['objectImageUrl'];
@@ -51,10 +50,13 @@ export class SendingCreatePage implements OnInit{
             this.objectType = this.formOne.controls['objectType'];
             this.objectNoValueDeclared = this.formOne.controls['objectNoValueDeclared'];
             this.objectDeclaredValue = this.formOne.controls['objectDeclaredValue'];
-        }
+
+            // init data
+            this.initSending(); 
+       }
 
         submitInit() {
-            console.log('oneForm > submited');
+            console.log('formOne > submited');
             // if not 'sobre' and photo not added, confirm its ok
             if(this.objectImageUrl.value === '') {
                 let alert = this.alertCtrl.create({
@@ -84,21 +86,47 @@ export class SendingCreatePage implements OnInit{
         }
 
         submitProcess() {
-            console.log('formOne > process');
-            this.setRequest();
+            console.log('formOne > process > set request');
+            this.saveSending();
             this.goToNextStep();
         }
 
         cancelSending() {
-            this.navCtrl.setRoot(SendingsPage);
+            let alert = this.alertCtrl.create({
+                title: '¿Seguro deseas cancelar?',
+                message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+                buttons: [
+                    {
+                        text: 'No, continuar',
+                        role: 'cancel',
+                        handler: () => {
+                            console.log('Cancel sending > canceled');
+
+                        }
+                    },
+                    {
+                        text: 'Si, cancelar',
+                        handler: () => {
+                            console.log('Sending create > canceled');
+                            this.navCtrl.setRoot(SendingsPage);
+                        }
+                    }
+                ]
+            });
+            alert.present();
         }
 
+        /**
+         * Reset value of range input
+         */
         resetObjectDeclaredValue(e) {
-            console.log('declared value reseted');
+            console.log('formOne.objectDeclaredValue > reseted');
             this.rangeValue = 0;
         }
 
-
+        /**
+         * Take picture and save imageData
+         */
         takePicture() {
             Camera.getPicture({
                 quality : 95,
@@ -110,13 +138,13 @@ export class SendingCreatePage implements OnInit{
                 targetHeight: 500,
                 saveToPhotoAlbum: true,
                 correctOrientation: true
-                })
-                .then(imageData => {
-                    let base64Image: string;
-                    base64Image = "data:image/jpeg;base64," + imageData;
-                    this.objectImageUrl.setValue(base64Image);
-                }, error => {
-                    console.log("ERROR -> " + JSON.stringify(error));
+            })
+            .then(imageData => {
+                let base64Image: string;
+                base64Image = "data:image/jpeg;base64," + imageData;
+                this.objectImageUrl.setValue(base64Image);
+            }, error => {
+                console.log("ERROR -> " + JSON.stringify(error));
             });
         }     
 
@@ -125,22 +153,22 @@ export class SendingCreatePage implements OnInit{
         *  PRIVATE
         */
 
-        private setRequest() {
-            console.log('set request values from form');
+        private saveSending() {
+            console.log('Save formOne values in this.sending');
             // set input values to request
-            this.request.objectShortName = this.objectShortName.value;
-            this.request.objectType = this.objectType.value;
-            this.request.objectNoValueDeclared = this.objectNoValueDeclared.value;
-            this.request.objectDeclaredValue = this.objectDeclaredValue.value;
-            this.request.objectImageSet = this.isObjectImageSet();
-            this.request.objectImageUrl = this.objectImageUrl.value;
-            console.log('sending request data ', this.request);
+            this.sending.objectShortName = this.objectShortName.value;
+            this.sending.objectType = this.objectType.value;
+            this.sending.objectNoValueDeclared = this.objectNoValueDeclared.value;
+            this.sending.objectDeclaredValue = this.objectDeclaredValue.value;
+            this.sending.objectImageSet = this.isObjectImageSet();
+            this.sending.objectImageUrl = this.objectImageUrl.value;
+            console.log('this.sending data > ', this.sending);
         }
 
         private goToNextStep() {
-            console.log('set nav param and go to next page');
+            console.log('Go to formTwo, include this.sending in params');
             this.navCtrl.setRoot(SendingCreate2Page, {
-                request: this.request
+                sending: this.sending
             });
         }
 
@@ -148,13 +176,37 @@ export class SendingCreatePage implements OnInit{
          *  HELPERS
          */
 
-        private initRequestData() {
-            console.log('sending request data > initiated');
-            this.request = this.sending.init();
+        private initSending() {
+            // check if sending exist in params, else initiate it
+            let paramValue = this.navParams.get('sending');
+            console.log('this.navParams.get("sending") value > ', paramValue);
+            if(paramValue) {
+                console.log('this.sending data > set from param');
+                this.sending = paramValue;
+                // populate inputs
+                this.populateForm();
+            }   
+            else{
+                console.log('this.sending data > initiated');
+                this.sending = this.sendingSrv.init();
+            }         
         }
 
         private isObjectImageSet() {
             return this.objectImageUrl.value === '' ? false : true;
+        }
+
+        private populateForm() {
+            console.log('Populate form with this.sending');
+            // set input values to request
+            this.objectShortName.setValue(this.sending.objectShortName);
+            this.objectType.setValue(this.sending.objectType);
+            this.objectNoValueDeclared.setValue(this.sending.objectNoValueDeclared);
+            
+            this.objectDeclaredValue.setValue(this.sending.objectDeclaredValue);
+            this.rangeValue = this.sending.objectDeclaredValue;
+            
+            this.objectImageUrl.setValue(this.sending.objectImageUrl);            
         }
 
     }
