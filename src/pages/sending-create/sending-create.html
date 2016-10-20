@@ -23,7 +23,8 @@
             <ion-card>
                 <img src="http://placehold.it/400x250" />
                 <ion-item>
-                    <button ion-button clear item-right><ion-icon name="camera"></ion-icon></button>
+                    <button ion-button clear item-right
+                        (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
                 </ion-item>
             </ion-card>
             <ion-list-header>Descripción corta</ion-list-header>

@@ -8,6 +8,8 @@ import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
 
+import { Camera } from 'ionic-native';
+
 
 @Component({
     selector: 'page-sending-create',
@@ -25,6 +27,7 @@ export class SendingCreatePage implements OnInit{
     //aux
     rangeValue: any = 0;
     formValid:boolean = false;
+    base64Image: string;
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -100,6 +103,24 @@ export class SendingCreatePage implements OnInit{
         /**
         *  PRIVATE
         */
+
+        takePicture() {
+            Camera.getPicture({
+                quality : 95,
+                destinationType : Camera.DestinationType.DATA_URL,
+                sourceType : Camera.PictureSourceType.CAMERA,
+                allowEdit : true,
+                encodingType: Camera.EncodingType.PNG,
+                targetWidth: 500,
+                targetHeight: 500,
+                saveToPhotoAlbum: true
+                })
+                .then(imageData => {
+                    this.base64Image = "data:image/jpeg;base64," + imageData;
+                }, error => {
+                    console.log("ERROR -> " + JSON.stringify(error));
+            });
+        }     
 
         private setRequest() {
             console.log('set request values from form');
