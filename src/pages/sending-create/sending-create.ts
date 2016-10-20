@@ -27,7 +27,6 @@ export class SendingCreatePage implements OnInit{
     //aux
     rangeValue: any = 0;
     formValid:boolean = false;
-    base64Image: string;
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -41,7 +40,7 @@ export class SendingCreatePage implements OnInit{
             this.initRequestData();
             // init form
             this.formOne = this.formBuilder.group({
-                'objectImageUrl': [''],
+                'objectImageUrl': ['http://placehold.it/400x250'],
                 'objectShortName': ['', Validators.compose([Validators.required, Validators.maxLength(75), Validators.minLength(3)])],
                 'objectType': ['', Validators.compose([Validators.required])],
                 'objectDeclaredValue': [this.request.objectDeclaredValue, Validators.compose([Validators.required, NumberValidator.nonZero])],
@@ -100,27 +99,31 @@ export class SendingCreatePage implements OnInit{
         }
 
 
-        /**
-        *  PRIVATE
-        */
-
         takePicture() {
             Camera.getPicture({
                 quality : 95,
                 destinationType : Camera.DestinationType.DATA_URL,
                 sourceType : Camera.PictureSourceType.CAMERA,
                 allowEdit : true,
-                encodingType: Camera.EncodingType.PNG,
+                encodingType: Camera.EncodingType.JPEG,
                 targetWidth: 500,
                 targetHeight: 500,
-                saveToPhotoAlbum: true
+                saveToPhotoAlbum: true,
+                correctOrientation: true
                 })
                 .then(imageData => {
-                    this.base64Image = "data:image/jpeg;base64," + imageData;
+                    let base64Image: string;
+                    base64Image = "data:image/jpeg;base64," + imageData;
+                    this.objectImageUrl.setValue(base64Image);
                 }, error => {
                     console.log("ERROR -> " + JSON.stringify(error));
             });
         }     
+
+
+        /**
+        *  PRIVATE
+        */
 
         private setRequest() {
             console.log('set request values from form');

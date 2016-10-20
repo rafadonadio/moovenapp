@@ -18,9 +18,11 @@ export class SendingService {
     statusNode = '/sendingsStatus/';
     progressNode = '/sendingsProgress/';
 
+    // DATABASE
     fd: any = firebase.database();
     fdRef: any = firebase.database().ref();
     sendingsRef: any = firebase.database().ref(this.sendingsNode);
+
 
     /**
      * Init sending data object

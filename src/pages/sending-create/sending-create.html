@@ -21,7 +21,7 @@
             </ion-item-divider>         
             <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
             <ion-card>
-                <img src="http://placehold.it/400x250" />
+                <img src="{{ objectImageUrl.value }}" />
                 <ion-item>
                     <button ion-button clear item-right
                         (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
