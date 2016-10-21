@@ -25,8 +25,8 @@ export class SendingCreate2Page implements OnInit{
     user: any;
     profile: any;
     // aux
-    rangeFrom: any = '09:00';
-    rangeTo: any = "11:00";
+    rangeFrom: any;
+    rangeTo: any;
     contactName: string;
     contactPhone: string;
     contactEmail: string;
@@ -40,8 +40,6 @@ export class SendingCreate2Page implements OnInit{
 
     ngOnInit() {
         this.setUser();
-        // set request from param
-        this.getSendingFromParams();
         // init form
         this.formTwo = this.formBuilder.group({
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
@@ -57,6 +55,8 @@ export class SendingCreate2Page implements OnInit{
         this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
         this.pickupPersonPhone = this.formTwo.controls['pickupPersonPhone'];
         this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];
+        // set request from param
+        this.getSendingFromParams();
     }
 
     submit() {
@@ -74,11 +74,11 @@ export class SendingCreate2Page implements OnInit{
         console.log('f2 > current hour to > ', this.pickupTimeTo.value);
     }
 
-    populateUserData() {
-        console.log('p2 > populate pickupContact with current user');
-        this.contactName = this.user.displayName;
-        this.contactPhone = this.profile.phonePrefix + this.profile.phoneMobile;
-        this.contactEmail = this.user.email;
+    populateUserDataInContact() {
+        console.log('f2 > populate pickupContact with current user');
+        this.pickupPersonName.setValue(this.user.displayName);
+        this.pickupPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
+        this.pickupPersonEmail.setValue(this.user.email);         
     }
 
     goBack() {
@@ -145,6 +145,21 @@ export class SendingCreate2Page implements OnInit{
         console.log('f2 > get navParams > this.sending');
         console.log('f2 > param > ', this.navParams.get('sending'));        
         this.sending = this.navParams.get('sending');
+        this.populateForm();
+    }
+
+    private populateForm() {
+        console.log('f2 > populate form with this.sending');
+        this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
+        //datetime
+        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);       
+        this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
+        this.rangeFrom = this.sending.pickupTimeFrom;
+        this.rangeTo = this.sending.pickupTimeTo;
+        // contact
+        this.pickupPersonName.setValue(this.sending.pickupPersonName);
+        this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
+        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);       
     }
 
     private setUser(){
