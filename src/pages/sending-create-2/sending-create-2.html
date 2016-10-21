@@ -56,9 +56,11 @@
             </ion-list>
         </ion-list>
         <div margin>
-            <button ion-button block color="primary" [disabled]="!formTwo.valid" (click)="submit()">
-                Siguiente
-            </button>
+            <button ion-button block color="primary" 
+                [disabled]="!formTwo.valid" 
+                (click)="submit()">Siguiente</button>
+            <button ion-button block color="primary" outline margin-top 
+                (click)="goBack()">Volver</button>                
             <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button>
         </div>
     </form>

@@ -26,7 +26,7 @@ export class SendingCreatePage implements OnInit{
     objectDeclaredValue: AbstractControl;
     //aux
     rangeValue: any = 0;
-    formValid:boolean = false;
+    cameraDefaultBg = 'assets/img/camera-bg-848x480.png';
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -39,7 +39,7 @@ export class SendingCreatePage implements OnInit{
         ngOnInit() {
             // init form
             this.formOne = this.formBuilder.group({
-                'objectImageUrl': ['http://placehold.it/400x250'],
+                'objectImageUrl': [''],
                 'objectShortName': ['', Validators.compose([Validators.required, Validators.maxLength(75), Validators.minLength(3)])],
                 'objectType': ['', Validators.compose([Validators.required])],
                 'objectDeclaredValue': ['', Validators.compose([Validators.required, NumberValidator.nonZero])],
@@ -56,7 +56,7 @@ export class SendingCreatePage implements OnInit{
        }
 
         submitInit() {
-            console.log('formOne > submited');
+            console.log('formOne > submited > confirm? ...');
             // if not 'sobre' and photo not added, confirm its ok
             if(this.objectImageUrl.value === '') {
                 let alert = this.alertCtrl.create({
@@ -67,13 +67,13 @@ export class SendingCreatePage implements OnInit{
                             text: 'Volver y agregar una foto',
                             role: 'cancel',
                             handler: () => {
-                                console.log('returned to oneForm > add photo');
+                                console.log('select: return to oneForm and add photo');
                             }
                         },
                         {
                             text: 'Continuar sin foto',
                             handler: () => {
-                                console.log('go to process');
+                                console.log('select: go to process formOne');
                                 this.submitProcess();
                             }
                         }
@@ -86,7 +86,7 @@ export class SendingCreatePage implements OnInit{
         }
 
         submitProcess() {
-            console.log('formOne > process > set request');
+            console.log('formOne > process > set this.sending');
             this.saveSending();
             this.goToNextStep();
         }
@@ -100,14 +100,14 @@ export class SendingCreatePage implements OnInit{
                         text: 'No, continuar',
                         role: 'cancel',
                         handler: () => {
-                            console.log('Cancel sending > canceled');
+                            console.log('formOne > cancel > no, continue');
 
                         }
                     },
                     {
                         text: 'Si, cancelar',
                         handler: () => {
-                            console.log('Sending create > canceled');
+                            console.log('formOne > cancel > yes, cancel');
                             this.navCtrl.setRoot(SendingsPage);
                         }
                     }
@@ -154,7 +154,7 @@ export class SendingCreatePage implements OnInit{
         */
 
         private saveSending() {
-            console.log('Save formOne values in this.sending');
+            console.log('formOne > save form values in this.sending');
             // set input values to request
             this.sending.objectShortName = this.objectShortName.value;
             this.sending.objectType = this.objectType.value;
@@ -162,11 +162,11 @@ export class SendingCreatePage implements OnInit{
             this.sending.objectDeclaredValue = this.objectDeclaredValue.value;
             this.sending.objectImageSet = this.isObjectImageSet();
             this.sending.objectImageUrl = this.objectImageUrl.value;
-            console.log('this.sending data > ', this.sending);
+            console.log('formOne > this.sending > ', this.sending);
         }
 
         private goToNextStep() {
-            console.log('Go to formTwo, include this.sending in params');
+            console.log('formOne > go to formTwo, include this.sending in params');
             this.navCtrl.setRoot(SendingCreate2Page, {
                 sending: this.sending
             });
@@ -179,17 +179,18 @@ export class SendingCreatePage implements OnInit{
         private initSending() {
             // check if sending exist in params, else initiate it
             let paramValue = this.navParams.get('sending');
-            console.log('this.navParams.get("sending") value > ', paramValue);
+            console.log('formOne > initSending > navParam value > ', paramValue);
             if(paramValue) {
-                console.log('this.sending data > set from param');
+                console.log('formOne > this.sending set from param');
                 this.sending = paramValue;
                 // populate inputs
                 this.populateForm();
             }   
             else{
-                console.log('this.sending data > initiated');
+                console.log('formOne > this.sending > initiated');
                 this.sending = this.sendingSrv.init();
             }         
+            console.log('formOne > this.sending > ', this.sending);
         }
 
         private isObjectImageSet() {
@@ -197,15 +198,13 @@ export class SendingCreatePage implements OnInit{
         }
 
         private populateForm() {
-            console.log('Populate form with this.sending');
+            console.log('formOne > populate form values with this.sending');
             // set input values to request
             this.objectShortName.setValue(this.sending.objectShortName);
             this.objectType.setValue(this.sending.objectType);
-            this.objectNoValueDeclared.setValue(this.sending.objectNoValueDeclared);
-            
+            this.objectNoValueDeclared.setValue(this.sending.objectNoValueDeclared);            
             this.objectDeclaredValue.setValue(this.sending.objectDeclaredValue);
             this.rangeValue = this.sending.objectDeclaredValue;
-            
             this.objectImageUrl.setValue(this.sending.objectImageUrl);            
         }
 
