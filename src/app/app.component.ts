@@ -48,7 +48,7 @@ export class MyApp{
                 // Okay, so the platform is ready and our plugins are available.
                 // Here you can do any higher level native things you might need.
                 StatusBar.styleDefault();
-                console.log('in ready..');
+                console.log('app > cordova ready..');
                 let array: string[] = platform.platforms();
                 console.log(array);
                 // let isAndroid: boolean = platform.is('android');
@@ -75,7 +75,7 @@ export class MyApp{
         // observer for user auth
         this.usersService.onAuthStateChanged((user) => {
             if (user) {
-                console.log('user signed in, onAuthChanged, user uid', user.uid);
+                console.log('app > authStateChanged > user signed in > user uid', user.uid);
                 this.currentUser = user;
                 this.setCurrentUserAccount();
                 // check if user state is OK
@@ -84,7 +84,7 @@ export class MyApp{
                 this.nav.setRoot(SendingsPage);
             } else {
                 // If there's no user logged in send him to the StartPage
-                console.log('no user signed in, onAuthChanged, user null');
+                console.log('app > authStateChanged > no user signed in, user null');
                 this.nav.setRoot(StartPage);
             }
         });
@@ -120,11 +120,11 @@ export class MyApp{
     }
 
     checkAccountStatusAndGo(): void{
-        this.presentLoader('Verificando credenciales ...');
+        this.presentLoader('app > checkAccountStatusAndGo > verificando credenciales ...');
         this.usersService.getCurrentUserAccount()
             .then((snapshot) => {
                 var account:any = snapshot.val();
-                console.log('account data > ok');
+                console.log('app > checkAccountStatusAndGo > account data ok');
                 // close loader and do some background checks
                 this.loader.dismiss()
                     .then(() => {
@@ -136,9 +136,9 @@ export class MyApp{
                         this.checkAccountProfileIsCompleteOrGo(account, 'basic');
                     });
             })
-            .catch((result) => {
+            .catch((error) => {
                 this.loader.dismiss();
-                console.log(result);
+                console.log('app > checkAccountStatusAndGo > error ', error);
             });
     }
 
@@ -148,31 +148,35 @@ export class MyApp{
     setCurrentUserAccount(): void {
         this.usersService.getCurrentUserAccount()
             .then((snapshot) => {
+                console.log('app > setCurrentUserAccount > success', snapshot.val());
                 this.currentUserAccount = snapshot.val();
             })
             .catch((error) => {
                 this.currentUserAccount = false;
-                console.log('set user account failed');
+                console.log('app > setCurrentUserAccount > failed', error);
             });
     }
 
     userAccountIsActiveOrDie(account: any){
         if(this.usersService.isAccountActive(account)===false) {
             // account is inactive, show error and signout
-            console.log('account active > 0');
+            console.log('app > userAccountIsActiveOrDie > is active > FALSE');
             this.presentAlertAndAction('Cuenta inactiva',
                 'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
                 'signout'
                 );
         }else{
-            console.log('account active > 1');
+            console.log('app > userAccountIsActiveOrDie > is active > ok');
         }
     }
 
     checkAccountProfileIsCompleteOrGo(account: any, profileType: string): void {
         if(this.usersService.isProfileComplete(account, profileType)===false) {
-            console.log('profile is incomplete');
+            console.log('app > checkAccountProfileIsCompleteOrGo > is incomplete > FALSE');
             this.nav.setRoot(SignupMergePage);
+        }
+        else{
+            console.log('app > checkAccountProfileIsCompleteOrGo > is incomplete > ok');
         }
     }
     
@@ -186,30 +190,30 @@ export class MyApp{
         var self = this;
         //is account defined?
         if(typeof this.currentUserAccount === 'undefined') {
-            console.log('currentUserAccount not defined yet');
+            console.log('app > checkAccountEmailIsVerifiedOrGo > error > currentUserAccount not defined yet');
         }else{
-            console.log('currentUserAccount ok');
+            console.log('app > checkAccountEmailIsVerifiedOrGo > error > currentUserAccount ok');
             // is account.emailVerified value true?
-            console.log('emailVerifiedRef retrieving ...');
+            console.log('app > checkAccountEmailIsVerifiedOrGo > emailVerifiedRef retrieving ...');
             // get firebase database Ref
             var emailVerifiedRef = this.usersService.getAccountEmailVerifiedRef();
             // retrieve value event
             emailVerifiedRef.on('value', function(snapshot) {
-                console.log('emailVerifiedRef value > ', snapshot.val());
+                console.log('app > checkAccountEmailIsVerifiedOrGo > emailVerifiedRef value > ', snapshot.val());
                 var isVerified: boolean = snapshot.val();
-                console.log('account email is verified > ', isVerified);
+                console.log('app > checkAccountEmailIsVerifiedOrGo > account email is verified > ', isVerified);
                 // if false, check fb user value if already verified, then run updates
                 if(isVerified === false) {
-                    console.log('run email verification ..');
+                    console.log('app > checkAccountEmailIsVerifiedOrGo > run email verification ..');
                     // check fbuser if emailVerified is true and update account
                     self.usersService.runUserEmailVerificationCheck()
                         .then((result) => {
-                            console.log('email verification check > ', result);
+                            console.log('app > checkAccountEmailIsVerifiedOrGo > email verification check > ', result);
                             // set account again
                             self.setCurrentUserAccount();
                         })
                         .catch((error) => {
-                            console.log('email verification check failed');
+                            console.log('app > checkAccountEmailIsVerifiedOrGo > email verification check failed > ', error);
                         });
                 }
             });
@@ -254,7 +258,7 @@ export class MyApp{
                 this.usersService.signOut();
                 break;
             default:
-                console.log('alertActionTrigger not found', action);
+                console.log('app > alertActionTrigger not found > ', action);
         }
     }
 }
