@@ -61,8 +61,8 @@
             <ion-icon name="person" item-left></ion-icon>
             <p>Persona que entrega</p>
             <h2>{{ sending.pickupPersonName }}</h2>
-            <h2>Tel: {{ sending.pickupPersonPhone }}</h2>
-            <h2>Email: {{ sending.pickupPersonEmail }}</h2>
+            <h2>{{ sending.pickupPersonPhone }}</h2>
+            <h2>{{ sending.pickupPersonEmail }}</h2>
         </ion-item>
         <ion-list-header>
             Entrega
@@ -82,15 +82,17 @@
             <ion-icon name="person" item-left></ion-icon>
             <p>Persona que recibe</p>
             <h2>{{ sending.dropPersonName }}</h2>
-            <h2>Tel: {{ sending.dropPersonPhone }}</h2>
-            <h2>Email: {{ sending.dropPersonEmail }}</h2>
+            <h2>{{ sending.dropPersonPhone }}</h2>
+            <h2>{{ sending.dropPersonEmail }}</h2>
         </ion-item>
         <ion-list-header>Precio</ion-list-header>
         <ion-item no-lines>
             <ion-icon name="card" item-left></ion-icon>
             <p>Costo del envío</p>
             <h2>$ 79,00</h2>
-            <p>Distancia aproximada: 15 km</p>
+            <div margin></div>
+            <p>Distancia aproximada<p>
+            <h2>15 km</h2>
         </ion-item>
     </ion-list>
     <div margin>

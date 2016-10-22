@@ -24,13 +24,13 @@
             </div>
             <ion-list-header>Dirección de Entrega</ion-list-header>
             <ion-item>
-                <ion-input type="text" placeholder="Ingresa la dirección" [formControl]="dropAddressFullText"></ion-input>
+                <ion-input type="text" placeholder="Ingresa la dirección" formControlName="dropAddressFullText"></ion-input>
             </ion-item>
             <ion-list-header margin-top>Banda horaria de Entrega</ion-list-header>
             <ion-item>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 
-                    [formControl]="dropTimeFrom" 
+                    formControlName="dropTimeFrom" 
                     displayFormat="HH:mm" minuteValues="00,30" 
                     cancelText="Cancelar" doneText="Listo" 
                     [(ngModel)]="rangeFrom" 
@@ -39,7 +39,7 @@
             <ion-item>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
-                [formControl]="dropTimeTo" 
+                formControlName="dropTimeTo" 
                 displayFormat="HH:mm" minuteValues="00,30" 
                 cancelText="Cancelar" doneText="Listo" 
                 [(ngModel)]="rangeTo" 
@@ -54,15 +54,15 @@
             <ion-list inset>
                 <ion-item no-lines>
                     <ion-label>Nombre</ion-label>
-                    <ion-input type="text" [formControl]="dropPersonName"></ion-input>
+                    <ion-input type="text" formControlName="dropPersonName"></ion-input>
                 </ion-item>
                 <ion-item no-lines>
                     <ion-label>Telefono</ion-label>
-                    <ion-input type="text" [formControl]="dropPersonPhone"></ion-input>
+                    <ion-input type="text" formControlName="dropPersonPhone"></ion-input>
                 </ion-item>
                 <ion-item no-lines>
                     <ion-label>Email</ion-label>
-                    <ion-input type="text" [formControl]="dropPersonEmail"></ion-input>
+                    <ion-input type="text" formControlName="dropPersonEmail"></ion-input>
                 </ion-item>
             </ion-list>
         </ion-list>

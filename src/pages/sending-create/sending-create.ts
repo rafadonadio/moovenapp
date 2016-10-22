@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
@@ -19,11 +19,11 @@ export class SendingCreatePage implements OnInit {
 
     sending: any;
     formOne: FormGroup;
-    objectImageUrl: AbstractControl;
-    objectShortName: AbstractControl;
-    objectType: AbstractControl;
-    objectNoValueDeclared: AbstractControl;
-    objectDeclaredValue: AbstractControl;
+    objectImageUrl: any;
+    objectShortName: any;
+    objectType: any;
+    objectNoValueDeclared: any;
+    objectDeclaredValue: any;
     //aux
     rangeValue: any = 0;
     cameraDefaultBg = 'assets/img/camera-bg-900x900.png';

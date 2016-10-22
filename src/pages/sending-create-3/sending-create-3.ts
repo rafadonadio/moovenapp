@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingsPage} from '../sendings/sendings';
@@ -14,12 +14,12 @@ import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
 export class SendingCreate3Page implements OnInit{
 
     formThree: FormGroup;
-    dropAddressFullText: AbstractControl;
-    dropTimeFrom: AbstractControl;
-    dropTimeTo: AbstractControl;
-    dropPersonName: AbstractControl;
-    dropPersonPhone: AbstractControl;
-    dropPersonEmail: AbstractControl;
+    dropAddressFullText: any;
+    dropTimeFrom: any;
+    dropTimeTo: any;
+    dropPersonName: any;
+    dropPersonPhone: any;
+    dropPersonEmail: any;
 
     sending: any;
     user: any;

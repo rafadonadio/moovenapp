@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { EmailValidator } from '../../validators/email.validator';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingsPage } from '../sendings/sendings';
@@ -14,12 +16,12 @@ import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 export class SendingCreate2Page implements OnInit {
 
     formTwo: FormGroup;
-    pickupAddressFullText: AbstractControl;
-    pickupTimeFrom: AbstractControl;
-    pickupTimeTo: AbstractControl;
-    pickupPersonName: AbstractControl;
-    pickupPersonPhone: AbstractControl;
-    pickupPersonEmail: AbstractControl;
+    pickupAddressFullText: any;
+    pickupTimeFrom: any;
+    pickupTimeTo: any;
+    pickupPersonName: any;
+    pickupPersonPhone: any;
+    pickupPersonEmail: any;
 
     sending: any;
     user: any;
@@ -46,9 +48,9 @@ export class SendingCreate2Page implements OnInit {
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
             'pickupTimeFrom': ['', Validators.compose([Validators.required])],
             'pickupTimeTo': ['', Validators.compose([Validators.required])],
-            'pickupPersonName': ['', Validators.compose([Validators.required])],
+            'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
             'pickupPersonPhone': ['', Validators.compose([Validators.required])],
-            'pickupPersonEmail': ['', Validators.compose([Validators.required])],
+            'pickupPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
         });
         this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
         this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
