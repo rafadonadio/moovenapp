@@ -129,8 +129,8 @@ export class SendingService {
             dropLat: '',
             dropLng: '',
             dropDate: '',
-            dropTimeFrameFrom: '',
-            dropTimeFrameTo: '',
+            dropTimeFrom: '14:00',
+            dropTimeTo: '16:00',
             dropPersonName: '',
             dropPersonPhone: '',
             dropPersonEmail: ''

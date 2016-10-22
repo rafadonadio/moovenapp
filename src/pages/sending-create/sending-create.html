@@ -67,7 +67,11 @@
             <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
         </ion-list>
         <div margin>
-            <button ion-button block color="primary" class="submit" (click)="submitInit()" [disabled]="objectType.valid==false || (objectNoValueDeclared.value==false && objectDeclaredValue.valid==false)">Siguiente</button>
+            <button ion-button block color="primary" 
+                class="submit" 
+                (click)="submitInit()" 
+                [disabled]="objectShortName.valid==false || objectType.valid==false || (objectNoValueDeclared.value==false && objectDeclaredValue.valid==false)"
+                >Siguiente</button>
             <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button>
         </div>       
     </form>

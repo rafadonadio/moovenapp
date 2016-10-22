@@ -1,72 +1,89 @@
 <ion-header>
     <ion-toolbar color="primary">
         <ion-buttons start>
-            <button ion-button (click)="goToStep3()">
+            <button ion-button (click)="goBack(3)">
                 <ion-icon name="arrow-back"></ion-icon>
             </button>
         </ion-buttons>
-        <ion-title>Nuevo <span>| Confirmar</span></ion-title>
+        <ion-title>Nuevo</ion-title>
     </ion-toolbar>
 </ion-header>
 <ion-content>
     <ion-list>
+        <ion-item-divider>Confirmar Datos
+            <ion-note item-right>
+                <ion-icon name="radio-button-on"></ion-icon>
+                <ion-icon name="radio-button-on"></ion-icon>
+                <ion-icon name="radio-button-on"></ion-icon>
+                <ion-icon name="radio-button-on"></ion-icon>
+            </ion-note>
+        </ion-item-divider>          
         <ion-list-header>
             Objeto
-            <button ion-button outline item-right (click)="goToStep1()">Modificar</button>
+            <button ion-button outline item-right (click)="goBack(1)">Modificar</button>
         </ion-list-header>
+         <ion-item no-lines
+            *ngIf="sending.objectImageUrl!=''">
+            <img [src]="sending.objectImageUrl">
+        </ion-item>
         <ion-item no-lines>
-            <ion-icon name="cube" item-left></ion-icon>
-            <ion-thumbnail item-right>
-                <img src="http://placehold.it/250x200">
-            </ion-thumbnail>
+            <ion-icon name="cube" item-left
+                *ngIf="sending.objectType=='caja'"></ion-icon>
+            <ion-icon name="mail" item-left
+                *ngIf="sending.objectType=='sobre'"></ion-icon>
+            <ion-icon name="qr-scanner" item-left
+                *ngIf="sending.objectType=='irregular'"></ion-icon>                                
             <p>Descripción corta</p>
-            <h2>{{ request.objectShortName }}</h2>
+            <h2>{{ sending.objectShortName }}</h2>
+            <div margin></div>
             <p>Tipo de objeto</p>
-            <h2>{{ request.objectType }}</h2>
+            <h2>{{ sending.objectType }}</h2>
+            <div margin></div>
             <p>Valor declarado</p>
-            <h2>${{ request.objectDeclaredValue }}</h2>
+            <h2 *ngIf="sending.objectDeclaredValue > 0">${{ sending.objectDeclaredValue }}</h2>
+            <h2 *ngIf="sending.objectDeclaredValue == 0">sin valor</h2>
         </ion-item>
         <ion-list-header>
             Retiro
-            <button ion-button outline item-right (click)="goToStep2()">Modificar</button>
+            <button ion-button outline item-right (click)="goBack(2)">Modificar</button>
         </ion-list-header>
         <ion-item no-lines>
             <ion-icon name="home" item-left></ion-icon>
             <p>Dirección</p>
-            <h2>{{ request.pickupAddressFullText }}</h2>
+            <h2>{{ sending.pickupAddressFullText }}</h2>
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="time" item-left></ion-icon>
             <p>Banda horaria de retiro</p>
-            <h2>{{ request.pickupTimeFrom }} a {{ request.pickupTimeTo }}</h2>
+            <h2>{{ sending.pickupTimeFrom }} a {{ sending.pickupTimeTo }}</h2>
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="person" item-left></ion-icon>
             <p>Persona que entrega</p>
-            <h2>{{ request.pickupPersonName }}</h2>
-            <h2>Tel: {{ request.pickupPersonPhone }}</h2>
-            <h2>Email: {{ request.pickupPersonEmail }}</h2>
+            <h2>{{ sending.pickupPersonName }}</h2>
+            <h2>Tel: {{ sending.pickupPersonPhone }}</h2>
+            <h2>Email: {{ sending.pickupPersonEmail }}</h2>
         </ion-item>
         <ion-list-header>
             Entrega
-            <button ion-button outline item-right (click)="goToStep3()">Modificar</button>
+            <button ion-button outline item-right (click)="goBack(3)">Modificar</button>
         </ion-list-header>
         <ion-item no-lines>
             <ion-icon name="pin" item-left></ion-icon>
             <p>Dirección</p>
-            <h2>{{ request.dropAddressFullText }}</h2>
+            <h2>{{ sending.dropAddressFullText }}</h2>
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="time" item-left></ion-icon>
             <p>Banda horaria de retiro</p>
-            <h2>{{ request.dropTimeFrom }} a {{ request.dropTimeTo }}</h2>
+            <h2>{{ sending.dropTimeFrom }} a {{ sending.dropTimeTo }}</h2>
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="person" item-left></ion-icon>
             <p>Persona que recibe</p>
-            <h2>{{ request.dropPersonName }}</h2>
-            <h2>Tel: {{ request.dropPersonPhone }}</h2>
-            <h2>Email: {{ request.dropPersonEmail }}</h2>
+            <h2>{{ sending.dropPersonName }}</h2>
+            <h2>Tel: {{ sending.dropPersonPhone }}</h2>
+            <h2>Email: {{ sending.dropPersonEmail }}</h2>
         </ion-item>
         <ion-list-header>Precio</ion-list-header>
         <ion-item no-lines>
@@ -79,6 +96,9 @@
     <div margin>
         <button ion-button block color="primary" 
             (click)="confirmSending()">Confirmar Envío</button>
-        <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button> 
+        <button ion-button block color="primary" outline margin-top 
+            (click)="goBack(3)">Volver</button>              
+        <button ion-button block color="subdark" 
+            clear margin-top (click)="cancelSending()">Cancelar</button> 
     </div>
 </ion-content>

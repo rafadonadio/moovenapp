@@ -5,6 +5,8 @@ import { SendingService } from  '../../providers/sending-service/sending-service
 
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
+import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
+import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 
 @Component({
     selector: 'page-sending-create-4',
@@ -12,7 +14,7 @@ import { SendingCreatePage } from '../sending-create/sending-create';
 })
 export class SendingCreate4Page implements OnInit {
 
-    request: any;
+    sending: any;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -23,7 +25,8 @@ export class SendingCreate4Page implements OnInit {
     }
 
     ngOnInit() {
-        this.getRequestFromParams();
+        console.log('f4 > init');
+        this.getSendingFromParams();
     }
 
     confirmSending() {
@@ -35,13 +38,13 @@ export class SendingCreate4Page implements OnInit {
                     text: 'Cancelar',
                     role: 'cancel',
                     handler: () => {
-                        console.log('Cancel clicked');
+                        console.log('f4 > submit > confirm > canceled');
                     }
                 },
                 {
                     text: 'Confirmar y Pagar',
                     handler: () => {
-                        console.log('confirmed');
+                        console.log('f4 > submit > confirm > process');
                         this.createSending();
                     }
                 }
@@ -58,26 +61,54 @@ export class SendingCreate4Page implements OnInit {
         });
 
         toast.onDidDismiss(() => {
-            console.log('Dismissed toast');
+            console.log('f4 > toast > dismissed');
         });
 
         toast.present();
     }
 
-    goToStep1() {
-        this.navCtrl.push(SendingCreatePage);
-    }
-
-    goToStep2() {
-        this.navCtrl.remove(3, 2);
-    }
-
-    goToStep3() {
-        this.navCtrl.pop();
+    goBack(step:number) {
+        console.log('f4 > go to f' + step + ', include this.sending in params');
+        let page: any;
+        switch(step) {
+            case 1: 
+                page = SendingCreatePage;
+                break;
+            case 2: 
+                page = SendingCreate2Page;
+                break;
+            case 3: 
+                page = SendingCreate3Page;
+                break;                                
+        }
+        this.navCtrl.push(page, {
+            sending: this.sending
+        });
     }
 
     cancelSending() {
-        console.log('cancel sending');
+        let alert = this.alertCtrl.create({
+            title: '¿Cancelar Envío?',
+            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > cancel form > no, continue');
+
+                    }
+                },
+                {
+                    text: 'Si',
+                    handler: () => {
+                        console.log('f4 > cancel form > yes, cancel');
+                        this.navCtrl.setRoot(SendingsPage);
+                    }
+                }
+            ]
+        });
+        alert.present();
     }
 
     /**
@@ -91,9 +122,9 @@ export class SendingCreate4Page implements OnInit {
         });
         loader.present();
         // save to db
-        this.sendings.create(this.request)
+        this.sendings.create(this.sending)
             .then(() => {
-                console.log('sending created > ok');
+                console.log('f4 > create sending > success');
                 loader.dismiss()
                     .then(() => {
                         this.navCtrl.setRoot(SendingsPage);
@@ -101,7 +132,7 @@ export class SendingCreate4Page implements OnInit {
                     });
             })
             .catch((error) => {
-                console.log('sending created > error', error.code);
+                console.log('f4 > create sending > error', error.code);
                 loader.dismiss()
                     .then(() => {
                         let alertError = this.alertCtrl.create({
@@ -118,8 +149,10 @@ export class SendingCreate4Page implements OnInit {
             });
     }
 
-    private getRequestFromParams() {
-        this.request = this.navParams.get('request');
+    private getSendingFromParams() {
+        console.log('f4 > get navParams > this.sending');
+        console.log('f4 > param > ', this.navParams.get('sending'));
+        this.sending = this.navParams.get('sending');
     }
 
 }

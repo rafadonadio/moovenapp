@@ -11,7 +11,7 @@ import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
     selector: 'page-sending-create-2',
     templateUrl: 'sending-create-2.html'
 })
-export class SendingCreate2Page implements OnInit{
+export class SendingCreate2Page implements OnInit {
 
     formTwo: FormGroup;
     pickupAddressFullText: AbstractControl;
@@ -39,12 +39,13 @@ export class SendingCreate2Page implements OnInit{
     }
 
     ngOnInit() {
+        console.log('f2 > init');
         this.setUser();
         // init form
         this.formTwo = this.formBuilder.group({
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
-            'pickupTimeFrom': ['09:00', Validators.compose([Validators.required])],
-            'pickupTimeTo': ['11:00', Validators.compose([Validators.required])],
+            'pickupTimeFrom': ['', Validators.compose([Validators.required])],
+            'pickupTimeTo': ['', Validators.compose([Validators.required])],
             'pickupPersonName': ['', Validators.compose([Validators.required])],
             'pickupPersonPhone': ['', Validators.compose([Validators.required])],
             'pickupPersonEmail': ['', Validators.compose([Validators.required])],
@@ -59,12 +60,6 @@ export class SendingCreate2Page implements OnInit{
         this.getSendingFromParams();
     }
 
-    submit() {
-        console.log('f2 > process');
-        this.updateSending();
-        this.goToNextStep();
-    }
-
     adjustPickupTimeFrom(e) {
         console.log('f2 > new hour to > ', e.hour.value);
         console.log('f2 > current hour to > ', this.pickupTimeFrom.value);
@@ -73,12 +68,17 @@ export class SendingCreate2Page implements OnInit{
         console.log('f2 > new hour from > ', e.hour.value);
         console.log('f2 > current hour to > ', this.pickupTimeTo.value);
     }
-
     populateUserDataInContact() {
         console.log('f2 > populate pickupContact with current user');
         this.pickupPersonName.setValue(this.user.displayName);
         this.pickupPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
-        this.pickupPersonEmail.setValue(this.user.email);         
+        this.pickupPersonEmail.setValue(this.user.email);
+    }
+
+    submit() {
+        console.log('f2 > process');
+        this.updateSending();
+        this.goToNextStep();
     }
 
     goBack() {
@@ -89,11 +89,11 @@ export class SendingCreate2Page implements OnInit{
 
     cancelSending() {
         let alert = this.alertCtrl.create({
-            title: '¿Seguro deseas cancelar?',
+            title: '¿Cancelar Envío?',
             message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
             buttons: [
                 {
-                    text: 'No, continuar',
+                    text: 'No',
                     role: 'cancel',
                     handler: () => {
                         console.log('f2 > cancel form > no, continue');
@@ -101,7 +101,7 @@ export class SendingCreate2Page implements OnInit{
                     }
                 },
                 {
-                    text: 'Si, cancelar',
+                    text: 'Si',
                     handler: () => {
                         console.log('f2 > cancel form > yes, cancel');
                         this.navCtrl.setRoot(SendingsPage);
@@ -119,7 +119,7 @@ export class SendingCreate2Page implements OnInit{
     private goToNextStep() {
         console.log('f2 > go to f3, include this.sending in params');
         this.navCtrl.push(SendingCreate3Page, {
-            request: this.sending
+            sending: this.sending
         });
     }
 
@@ -143,7 +143,7 @@ export class SendingCreate2Page implements OnInit{
 
     private getSendingFromParams() {
         console.log('f2 > get navParams > this.sending');
-        console.log('f2 > param > ', this.navParams.get('sending'));        
+        console.log('f2 > param > ', this.navParams.get('sending'));
         this.sending = this.navParams.get('sending');
         this.populateForm();
     }
@@ -152,23 +152,23 @@ export class SendingCreate2Page implements OnInit{
         console.log('f2 > populate form with this.sending');
         this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
         //datetime
-        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);       
+        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
         this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
         this.rangeFrom = this.sending.pickupTimeFrom;
         this.rangeTo = this.sending.pickupTimeTo;
         // contact
         this.pickupPersonName.setValue(this.sending.pickupPersonName);
         this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
-        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);       
+        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
     }
 
-    private setUser(){
+    private setUser() {
         this.user = this.users.getCurrentUser();
         // set profile
         this.users.getCurrentUserProfile()
             .then((snapshot) => {
                 this.profile = snapshot.val();
-        });
+            });
     }
 
 }

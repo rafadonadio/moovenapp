@@ -3,7 +3,8 @@ import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
-import { SendingService } from  '../../providers/sending-service/sending-service';
+import { SendingsPage} from '../sendings/sendings';
+import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
 
 @Component({
@@ -20,33 +21,28 @@ export class SendingCreate3Page implements OnInit{
     dropPersonPhone: AbstractControl;
     dropPersonEmail: AbstractControl;
 
-    request: any;
+    sending: any;
     user: any;
     profile: any;
     // aux
-    rangeFrom: any = '14:00';
-    rangeTo: any = "16:00";
-    contactName: string;
-    contactPhone: string;
-    contactEmail: string;
+    rangeFrom: any;
+    rangeTo: any;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public users: UsersService,
         public formBuilder: FormBuilder,
-        public alertCtrl: AlertController,
-        public sending: SendingService) {
+        public alertCtrl: AlertController) {
     }
 
     ngOnInit() {
+        console.log('f3 > init');
         this.setUser();
-        // set request from param
-        this.getRequestFromParams();
         // init form
         this.formThree = this.formBuilder.group({
             'dropAddressFullText': ['', Validators.compose([Validators.required])],
-            'dropTimeFrom': ['14:00', Validators.compose([Validators.required])],
-            'dropTimeTo': ['16:00', Validators.compose([Validators.required])],
+            'dropTimeFrom': ['', Validators.compose([Validators.required])],
+            'dropTimeTo': ['', Validators.compose([Validators.required])],
             'dropPersonName': ['', Validators.compose([Validators.required])],
             'dropPersonPhone': ['', Validators.compose([Validators.required])],
             'dropPersonEmail': ['', Validators.compose([Validators.required])],
@@ -57,36 +53,61 @@ export class SendingCreate3Page implements OnInit{
         this.dropPersonName = this.formThree.controls['dropPersonName'];
         this.dropPersonPhone = this.formThree.controls['dropPersonPhone'];
         this.dropPersonEmail = this.formThree.controls['dropPersonEmail'];
-    }
-
-    submit() {
-        console.log('formThree > process');
-        this.setRequest();
-        this.goToNextStep();
+        // set sending from param
+        this.getSendingFromParams();
     }
 
     adjustDropTimeFrom(e) {
-        console.log('new hour to > ', e.hour.value);
-        console.log('current hour to > ', this.dropTimeFrom.value);
+        console.log('f3 > new hour to > ', e.hour.value);
+        console.log('f3 > current hour to > ', this.dropTimeFrom.value);
     }
     adjustDropTimeTo(e) {
-        console.log('new hour from > ', e.hour.value);
-        console.log('current hour to > ', this.dropTimeTo.value);
+        console.log('f3 > new hour from > ', e.hour.value);
+        console.log('f3 > current hour to > ', this.dropTimeTo.value);
     }
 
     populateUserData() {
-        console.log('populate user data to pickup contact');
-        this.contactName = this.user.displayName;
-        this.contactPhone = this.profile.phonePrefix + this.profile.phoneMobile;
-        this.contactEmail = this.user.email;
+        console.log('f3 > populate dropContact with current user');
+        this.dropPersonName.setValue(this.user.displayName);
+        this.dropPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
+        this.dropPersonEmail.setValue(this.user.email);
     }
 
-    goToStep2() {
-        console.log('go back to step 2');
+    submit() {
+        console.log('f3 > process');
+        this.updateSending();
+        this.goToNextStep();
+    }
+
+    goBack() {
+        console.log('f3 > go back to f2');
+        this.updateSending();
+        this.goBacktoStep2();
     }
 
     cancelSending() {
-        console.log('cancel sending');
+        let alert = this.alertCtrl.create({
+            title: '¿Cancelar Envío?',
+            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f2 > cancel form > no, continue');
+
+                    }
+                },
+                {
+                    text: 'Si',
+                    handler: () => {
+                        console.log('f2 > cancel form > yes, cancel');
+                        this.navCtrl.setRoot(SendingsPage);
+                    }
+                }
+            ]
+        });
+        alert.present();
     }
 
     /**
@@ -94,25 +115,49 @@ export class SendingCreate3Page implements OnInit{
      */
 
     private goToNextStep() {
-        console.log('set nav param and go to next page');
+        console.log('f3 > go to f4, include this.sending in params');
         this.navCtrl.push(SendingCreate4Page, {
-            request: this.request
+            sending: this.sending
         });
     }
 
-    private setRequest() {
-        console.log('set request values from form');
-        this.request.dropAddressFullText = this.dropAddressFullText.value;
-        this.request.dropTimeFrom = this.dropTimeFrom.value;
-        this.request.dropTimeTo = this.dropTimeTo.value;
-        this.request.dropPersonName = this.dropPersonName.value;
-        this.request.dropPersonPhone = this.dropPersonPhone.value;
-        this.request.dropPersonEmail = this.dropPersonEmail.value;
-        console.log('sending request data ', this.request);
+    private goBacktoStep2() {
+        console.log('f3 > go to f2, include this.sending in params');
+        this.navCtrl.push(SendingCreate2Page, {
+            sending: this.sending
+        });
     }
 
-    private getRequestFromParams() {
-        this.request = this.navParams.get('request');
+    private updateSending() {
+        console.log('f3 > save form values in this.sending');
+        this.sending.dropAddressFullText = this.dropAddressFullText.value;
+        this.sending.dropTimeFrom = this.dropTimeFrom.value;
+        this.sending.dropTimeTo = this.dropTimeTo.value;
+        this.sending.dropPersonName = this.dropPersonName.value;
+        this.sending.dropPersonPhone = this.dropPersonPhone.value;
+        this.sending.dropPersonEmail = this.dropPersonEmail.value;
+        console.log('f3 > this.sending > ', this.sending);
+    }
+
+    private getSendingFromParams() {
+        console.log('f3 > get navParams > this.sending');
+        console.log('f3 > param > ', this.navParams.get('sending'));
+        this.sending = this.navParams.get('sending');
+        this.populateForm();
+    }
+
+    private populateForm() {
+        console.log('f3 > populate form with this.sending');
+        this.dropAddressFullText.setValue(this.sending.dropAddressFullText);
+        //datetime
+        this.dropTimeFrom.setValue(this.sending.dropTimeFrom);
+        this.dropTimeTo.setValue(this.sending.dropTimeTo);
+        this.rangeFrom = this.sending.dropTimeFrom;
+        this.rangeTo = this.sending.dropTimeTo;
+        // contact
+        this.dropPersonName.setValue(this.sending.dropPersonName);
+        this.dropPersonPhone.setValue(this.sending.dropPersonPhone);
+        this.dropPersonEmail.setValue(this.sending.dropPersonEmail);
     }
 
     private setUser(){
