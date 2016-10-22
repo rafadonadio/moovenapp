@@ -26,7 +26,7 @@ export class SendingCreatePage implements OnInit{
     objectDeclaredValue: AbstractControl;
     //aux
     rangeValue: any = 0;
-    cameraDefaultBg = 'assets/img/camera-bg-848x480.png';
+    cameraDefaultBg = 'assets/img/camera-bg-900x900.png';
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -134,16 +134,16 @@ export class SendingCreatePage implements OnInit{
                 sourceType : Camera.PictureSourceType.CAMERA,
                 allowEdit : true,
                 encodingType: Camera.EncodingType.JPEG,
-                targetWidth: 500,
-                targetHeight: 500,
+                targetWidth: 900,
+                targetHeight: 900,
                 saveToPhotoAlbum: true,
                 correctOrientation: true
             })
-            .then(imageData => {
+            .then((imageData) => {
                 let base64Image: string;
                 base64Image = "data:image/jpeg;base64," + imageData;
                 this.objectImageUrl.setValue(base64Image);
-            }, error => {
+            }, (error) => {
                 console.log("ERROR -> " + JSON.stringify(error));
             });
         }     

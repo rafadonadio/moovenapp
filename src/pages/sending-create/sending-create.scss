@@ -37,6 +37,12 @@ page-sending-create {
     ion-card.card-ios ion-item button ion-icon{
         font-size: 3.5rem;
     }
+    ion-card.card-md,
+    ion-card.card-ios{
+        width: 60%;
+        margin-left: 20%;
+        margin-right: 20%;        
+    }
     ion-list.list-md ion-item ion-label,
     ion-list.list-ios ion-item ion-label{
         color: #999;

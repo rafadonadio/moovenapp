@@ -126,14 +126,19 @@ ___
     declare namespace firebase.database.ServerValue {
         var TIMESTAMP: any;
     }        
+-  form envio
+    - inputs
+    - camera
+    - fix rangeTime change (min 2 hr)
+    - go back, go forward
+    - set maps
+    - set autocomplete
+    - save and set    
+
+    
         
 
 > to-do´s
-    - #email sending
-        *implementar mailgun
-    - login  
-        recuperar contraseña  
-        confirmar nro de movil  
     - settings  
         estado perfil para envíos  
         estado perfil para cargas  
