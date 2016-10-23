@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { EmailValidator } from '../../validators/email.validator';
+
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
@@ -27,6 +29,7 @@ export class SendingCreate3Page implements OnInit{
     // aux
     rangeFrom: any;
     rangeTo: any;
+    showErrors:boolean = false;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -43,9 +46,9 @@ export class SendingCreate3Page implements OnInit{
             'dropAddressFullText': ['', Validators.compose([Validators.required])],
             'dropTimeFrom': ['', Validators.compose([Validators.required])],
             'dropTimeTo': ['', Validators.compose([Validators.required])],
-            'dropPersonName': ['', Validators.compose([Validators.required])],
+            'dropPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
             'dropPersonPhone': ['', Validators.compose([Validators.required])],
-            'dropPersonEmail': ['', Validators.compose([Validators.required])],
+            'dropPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
         });
         this.dropAddressFullText = this.formThree.controls['dropAddressFullText'];
         this.dropTimeFrom = this.formThree.controls['dropTimeFrom'];
@@ -74,9 +77,16 @@ export class SendingCreate3Page implements OnInit{
     }
 
     submit() {
-        console.log('f3 > process');
-        this.updateSending();
-        this.goToNextStep();
+        console.log('f3 > submit');
+        if(!this.formThree.valid) {
+            console.log('f3 > submit > invalid');
+            this.showErrors = true;
+        }else{
+            console.log('f3 > submit > valid');
+            this.showErrors = false;
+            this.updateSending();
+            this.goToNextStep();
+        }    
     }
 
     goBack() {
@@ -94,14 +104,14 @@ export class SendingCreate3Page implements OnInit{
                     text: 'No',
                     role: 'cancel',
                     handler: () => {
-                        console.log('f2 > cancel form > no, continue');
+                        console.log('f3 > cancel form > no, continue');
 
                     }
                 },
                 {
                     text: 'Si',
                     handler: () => {
-                        console.log('f2 > cancel form > yes, cancel');
+                        console.log('f3 > cancel form > yes, cancel');
                         this.navCtrl.setRoot(SendingsPage);
                     }
                 }

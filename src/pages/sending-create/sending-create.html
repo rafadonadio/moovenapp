@@ -29,14 +29,18 @@
                         (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
                 </ion-item>
             </ion-card>
-            <div *ngIf="showErrors && objectImageUrl.value==''" class="input-optional">incluye una foto (opcional)</div>            
+            <div *ngIf="showErrors && objectImageUrl.value==''" 
+                class="input-optional">* incluye una foto (opcional)</div>            
             <ion-list-header>Descripción corta</ion-list-header>
             <ion-item>
                 <ion-input type="text" placeholder="Ej: folletos, imanes" formControlName="objectShortName"></ion-input>
             </ion-item>             
-            <div *ngIf="objectShortName.hasError('required') && objectShortName.touched || showErrors && objectShortName.valid==false" class="input-error">* ingresa una Descripción corta</div>
-            <div *ngIf="objectShortName.hasError('minlength') && objectShortName.touched" class="input-error">* mínimo 3 caracteres</div>
-            <div *ngIf="objectShortName.hasError('maxlength') && objectShortName.touched" class="input-error">* máximo 75 caracteres</div>
+            <div *ngIf="objectShortName.hasError('required') && objectShortName.touched || showErrors && objectShortName.valid==false" 
+                class="input-error">* ingresa una Descripción corta</div>
+            <div *ngIf="objectShortName.hasError('minlength') && objectShortName.touched" 
+                class="input-error">* mínimo 3 caracteres</div>
+            <div *ngIf="objectShortName.hasError('maxlength') && objectShortName.touched" 
+                class="input-error">* máximo 75 caracteres</div>
         </ion-list>
         <ion-list radio-group formControlName="objectType">
             <ion-list-header>Tipo de objeto</ion-list-header>
@@ -52,7 +56,8 @@
                 <ion-label>Objeto irregular</ion-label>
                 <ion-radio value="irregular"></ion-radio>
             </ion-item>
-            <div *ngIf="showErrors && objectType.valid==false" class="input-error">* selecciona el tipo de objeto</div>            
+            <div *ngIf="showErrors && objectType.valid==false" 
+                class="input-error">* selecciona el Tipo de objeto</div>            
         </ion-list>
         <ion-list>   
             <ion-list-header>Valor a declarar</ion-list-header>
@@ -70,7 +75,8 @@
                     formControlName="objectNoValueDeclared" 
                     (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
             </ion-item>
-            <div *ngIf="objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
+            <div *ngIf="showErrors && objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" 
+                class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
         </ion-list>
         <div margin>
             <button ion-button block color="primary" 

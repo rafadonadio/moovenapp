@@ -32,6 +32,7 @@ export class SendingCreate2Page implements OnInit {
     contactName: string;
     contactPhone: string;
     contactEmail: string;
+    showErrors: boolean = false;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -78,9 +79,15 @@ export class SendingCreate2Page implements OnInit {
     }
 
     submit() {
-        console.log('f2 > process');
-        this.updateSending();
-        this.goToNextStep();
+        console.log('f2 > submitted');
+        if(!this.formTwo.valid){
+            console.log('f2 > submit > invalid');
+            this.showErrors = true;
+        }else{
+            console.log('f2 > submit > valid');
+            this.updateSending();
+            this.goToNextStep();
+        }
     }
 
     goBack() {

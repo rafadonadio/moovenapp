@@ -26,6 +26,8 @@
             <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" formControlName="pickupAddressFullText"></ion-input>
             </ion-item>
+            <div *ngIf="showErrors && !pickupAddressFullText.valid" 
+                class="input-error">* Dirección de retiro es requerida</div>
             <ion-list-header margin-top>Banda horaria de Retiro</ion-list-header>
             <ion-item>
                 <ion-label>Desde</ion-label>
@@ -45,6 +47,8 @@
                 [(ngModel)]="rangeTo" 
                 (ionChange)="adjustPickupTimeFrom($event)"></ion-datetime>
             </ion-item>
+            <div *ngIf="showErrors && !pickupTimeFrom.touched && !pickupTimeTo.touched" 
+                class="input-optional"><small>* verifica que el horario de retiro sea correcto</small></div>
             <ion-list-header>
                 Contacto para Retiro
                 <button ion-button outline item-right small 
@@ -55,25 +59,26 @@
                     <ion-label>Nombre</ion-label>
                     <ion-input type="text" formControlName="pickupPersonName"></ion-input>
                 </ion-item>
-                <div *ngIf="pickupPersonName.hasError('required') && pickupPersonName.touched" 
-                    class="input-error">* ingresa un nombre</div>
+                <div *ngIf="pickupPersonName.hasError('required') && pickupPersonName.touched || showErrors && pickupPersonName.valid==false" 
+                    class="input-error">* ingresa un nombre de contacto</div>
                 <ion-item no-lines>
                     <ion-label>Telefono</ion-label>
                     <ion-input type="text" formControlName="pickupPersonPhone"></ion-input>
                 </ion-item>
-                <div *ngIf="pickupPersonPhone.hasError('required') && pickupPersonPhone.touched" 
-                    class="input-error">* ingresa un teléfono</div>                
+                <div *ngIf="pickupPersonPhone.hasError('required') && pickupPersonPhone.touched || showErrors && pickupPersonPhone.valid==false" 
+                    class="input-error">* ingresa un teléfono de contacto</div>                
                 <ion-item no-lines>
                     <ion-label>Email</ion-label>
                     <ion-input type="text" formControlName="pickupPersonEmail"></ion-input>
                 </ion-item>
+                <div *ngIf="showErrors && pickupPersonEmail.value==''" 
+                    class="input-optional">* ingresa un email de contacto (opcional)</div> 
                 <div *ngIf="pickupPersonEmail.value!='' && pickupPersonEmail.hasError('isValid') && pickupPersonEmail.touched" 
                     class="input-error">* ingresa una dirección válida</div>                
             </ion-list>
         </ion-list>
         <div margin>
             <button ion-button block color="primary" 
-                [disabled]="!formTwo.valid" 
                 (click)="submit()">Siguiente</button>
             <button ion-button block color="primary" outline margin-top 
                 (click)="goBack()">Volver</button>                
