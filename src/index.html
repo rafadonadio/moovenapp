@@ -20,14 +20,6 @@
     }
   </script>-->
 
-  <link href="build/main.css" rel="stylesheet">
-
-</head>
-<body>
-
-  <!-- Ionic's root component and where the app will load -->
-  <ion-app></ion-app>
-
   <!-- FIREBASE -->
   <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
   <script>
@@ -41,6 +33,14 @@
     firebase.initializeApp(config);
   </script>
 
+  <link href="build/main.css" rel="stylesheet">
+
+</head>
+<body>
+
+  <!-- Ionic's root component and where the app will load -->
+  <ion-app></ion-app>
+
   <!-- cordova.js required for cordova apps -->
   <script src="cordova.js"></script>
 
@@ -49,6 +49,9 @@
 
   <!-- The bundle js is generated during the build process -->
   <script src="build/main.js"></script>
+
+  <!-- GOOGLE MAPS -->
+  <script type=“text/javascript“ src=“https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCjxJik0HepcUsT_zcp6fRmmgpYgcqk-2U&libraries=places“></script>
 
 </body>
 </html>
