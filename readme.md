@@ -127,13 +127,14 @@ ___
         var TIMESTAMP: any;
     }        
 -  form envio
-    - inputs
+    - inputs validation
     - camera
     - fix rangeTime change (min 2 hr)
     - go back, go forward
     - set maps
     - set autocomplete
     - save and set    
+    - ID format AAA-999
 
     
         

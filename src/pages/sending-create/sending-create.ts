@@ -25,6 +25,7 @@ export class SendingCreatePage implements OnInit {
     objectNoValueDeclared: any;
     objectDeclaredValue: any;
     //aux
+    showErrors:boolean = false;
     rangeValue: any = 0;
     cameraDefaultBg = 'assets/img/camera-bg-900x900.png';
 
@@ -56,38 +57,26 @@ export class SendingCreatePage implements OnInit {
         this.initSending();
     }
 
-    submitInit() {
-        console.log('formOne > submited > confirm? ...');
-        // if not 'sobre' and photo not added, ask to add photo
-        if (this.objectImageUrl.value === '') {
-            let alert = this.alertCtrl.create({
-                title: 'Confirmar',
-                message: 'Seguro no deseas incluir una foto?',
-                buttons: [
-                    {
-                        text: 'Volver y agregar una foto',
-                        role: 'cancel',
-                        handler: () => {
-                            console.log('select: return to oneForm and add photo');
-                        }
-                    },
-                    {
-                        text: 'Continuar sin foto',
-                        handler: () => {
-                            console.log('select: go to process formOne');
-                            this.submitProcess();
-                        }
-                    }
-                ]
-            });
-            alert.present();
-        } else {
-            this.submitProcess();
-        }
+    submit() {
+        console.log('f1 > submited');
+        if(!this.isFormValid()) {
+            console.log('f1 > submit > invalid');
+            this.showErrors = true;
+        }else{    
+            console.log('f1 > submit > valid');
+            this.showErrors = false;                 
+            // if objectType not 'sobre' and photo not added, ask to add photo
+            if (this.objectType!='sobre' && this.objectImageUrl.value === '') {
+                console.log('f1 > submit > showPictureAlert');
+                this.showPictureAlert();
+            } else {
+                this.processForm();
+            }    
+        }    
     }
 
-    submitProcess() {
-        console.log('formOne > process > set this.sending');
+    processForm() {
+        console.log('f1 > processForm');
         this.saveSending();
         this.goToNextStep();
     }
@@ -101,14 +90,14 @@ export class SendingCreatePage implements OnInit {
                     text: 'No',
                     role: 'cancel',
                     handler: () => {
-                        console.log('formOne > cancel > no, continue');
+                        console.log('f1 > cancel > no, continue');
 
                     }
                 },
                 {
                     text: 'Si',
                     handler: () => {
-                        console.log('formOne > cancel > yes, cancel');
+                        console.log('f1 > cancel > yes, cancel');
                         this.navCtrl.setRoot(SendingsPage);
                     }
                 }
@@ -121,7 +110,7 @@ export class SendingCreatePage implements OnInit {
      * Reset value of range input
      */
     resetObjectDeclaredValue(e) {
-        console.log('formOne.objectDeclaredValue > reseted');
+        console.log('f1 > objectDeclaredValue > reseted');
         this.rangeValue = 0;
     }
 
@@ -129,6 +118,7 @@ export class SendingCreatePage implements OnInit {
      * Take picture and save imageData
      */
     takePicture() {
+        console.log('f1 > takePicture');
         Camera.getPicture({
             quality: 95,
             destinationType: Camera.DestinationType.DATA_URL,
@@ -140,13 +130,14 @@ export class SendingCreatePage implements OnInit {
             saveToPhotoAlbum: true,
             correctOrientation: true
         })
-            .then((imageData) => {
-                let base64Image: string;
-                base64Image = "data:image/jpeg;base64," + imageData;
-                this.objectImageUrl.setValue(base64Image);
-            }, (error) => {
-                console.log("ERROR -> " + JSON.stringify(error));
-            });
+        .then((imageData) => {
+            console.log('f1 > takePicture > success');
+            let base64Image: string;
+            base64Image = "data:image/jpeg;base64," + imageData;
+            this.objectImageUrl.setValue(base64Image);
+        }, (error) => {
+            console.log('f1 > takePicture > error > ' + JSON.stringify(error));
+        });
     }
 
 
@@ -154,8 +145,16 @@ export class SendingCreatePage implements OnInit {
     *  PRIVATE
     */
 
+    private isFormValid() {
+        var valid = this.objectShortName.valid 
+                        && this.objectType.valid 
+                        && (this.objectNoValueDeclared.value || this.objectDeclaredValue.valid); 
+        console.log('f1 > isFormValid > ', valid);
+        return valid;
+    }
+
     private saveSending() {
-        console.log('formOne > save form values in this.sending');
+        console.log('f1 > saveSending ...');
         // set input values to request
         this.sending.objectShortName = this.objectShortName.value;
         this.sending.objectType = this.objectType.value;
@@ -163,11 +162,11 @@ export class SendingCreatePage implements OnInit {
         this.sending.objectDeclaredValue = this.objectDeclaredValue.value;
         this.sending.objectImageSet = this.isObjectImageSet();
         this.sending.objectImageUrl = this.objectImageUrl.value;
-        console.log('formOne > this.sending > ', this.sending);
+        console.log('f1 > saveSending > this.sending > ', this.sending);
     }
 
     private goToNextStep() {
-        console.log('formOne > go to formTwo, include this.sending in params');
+        console.log('f1 > goToNextStep > f2 > include this.sending in params');
         this.navCtrl.setRoot(SendingCreate2Page, {
             sending: this.sending
         });
@@ -177,21 +176,45 @@ export class SendingCreatePage implements OnInit {
      *  HELPERS
      */
 
+    private showPictureAlert() {
+        let alert = this.alertCtrl.create({
+            title: 'Confirmar',
+            message: 'Seguro no deseas incluir una foto?',
+            buttons: [
+                {
+                    text: 'Volver y agregar una foto',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f1 > showPictureAlert > return and add photo');
+                    }
+                },
+                {
+                    text: 'Continuar sin foto',
+                    handler: () => {
+                        console.log('f1 > showPictureAlert > continue and processForm');
+                        this.processForm();
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
     private initSending() {
         // check if sending exist in params, else initiate it
         let paramValue = this.navParams.get('sending');
-        console.log('formOne > initSending > navParam value > ', paramValue);
+        console.log('f1 > initSending > navParam? > ', paramValue);
         if (paramValue) {
-            console.log('formOne > this.sending set from param');
+            console.log('f1 > initSending > this.sending set from param');
             this.sending = paramValue;
             // populate inputs
             this.populateForm();
         }
         else {
-            console.log('formOne > this.sending > initiated');
+            console.log('f1 > initSending > this.sending initiated');
             this.sending = this.sendingSrv.init();
         }
-        console.log('formOne > this.sending > ', this.sending);
+        console.log('f1 > this.sending > ', this.sending);
     }
 
     private isObjectImageSet() {
@@ -199,7 +222,7 @@ export class SendingCreatePage implements OnInit {
     }
 
     private populateForm() {
-        console.log('formOne > populate form values with this.sending');
+        console.log('f1 > populateForm > with this.sending');
         // set input values to request
         this.objectShortName.setValue(this.sending.objectShortName);
         this.objectType.setValue(this.sending.objectType);

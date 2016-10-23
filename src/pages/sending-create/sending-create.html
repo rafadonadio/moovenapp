@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content class="sending-create">
     <form [formGroup]="formOne">
-        <ion-list radio-group formControlName="objectType">
+        <ion-list>
             <ion-item-divider>Datos del Envío
                 <ion-note item-right>
                     <ion-icon name="radio-button-on"></ion-icon>
@@ -29,13 +29,16 @@
                         (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
                 </ion-item>
             </ion-card>
+            <div *ngIf="showErrors && objectImageUrl.value==''" class="input-optional">incluye una foto (opcional)</div>            
             <ion-list-header>Descripción corta</ion-list-header>
             <ion-item>
                 <ion-input type="text" placeholder="Ej: folletos, imanes" formControlName="objectShortName"></ion-input>
             </ion-item>             
-            <div *ngIf="objectShortName.hasError('required') && objectShortName.touched" class="input-error">* ingresa una descripción corta</div>
+            <div *ngIf="objectShortName.hasError('required') && objectShortName.touched || showErrors && objectShortName.valid==false" class="input-error">* ingresa una Descripción corta</div>
             <div *ngIf="objectShortName.hasError('minlength') && objectShortName.touched" class="input-error">* mínimo 3 caracteres</div>
             <div *ngIf="objectShortName.hasError('maxlength') && objectShortName.touched" class="input-error">* máximo 75 caracteres</div>
+        </ion-list>
+        <ion-list radio-group formControlName="objectType">
             <ion-list-header>Tipo de objeto</ion-list-header>
             <ion-item no-lines>
                 <ion-label>Sobre</ion-label>
@@ -49,6 +52,9 @@
                 <ion-label>Objeto irregular</ion-label>
                 <ion-radio value="irregular"></ion-radio>
             </ion-item>
+            <div *ngIf="showErrors && objectType.valid==false" class="input-error">* selecciona el tipo de objeto</div>            
+        </ion-list>
+        <ion-list>   
             <ion-list-header>Valor a declarar</ion-list-header>
             <ion-item no-lines>
                 <ion-range min="0" max="3000" step="100" 
@@ -69,8 +75,7 @@
         <div margin>
             <button ion-button block color="primary" 
                 class="submit" 
-                (click)="submitInit()" 
-                [disabled]="objectShortName.valid==false || objectType.valid==false || (objectNoValueDeclared.value==false && objectDeclaredValue.valid==false)"
+                (click)="submit()" 
                 >Siguiente</button>
             <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button>
         </div>       
