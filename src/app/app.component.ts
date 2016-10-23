@@ -13,6 +13,7 @@ import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
 declare var firebase: any;
+declare var google: any;
 declare var window: any;
 
 @Component({

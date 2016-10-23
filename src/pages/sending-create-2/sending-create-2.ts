@@ -9,6 +9,8 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 
+declare var google: any;
+
 @Component({
     selector: 'page-sending-create-2',
     templateUrl: 'sending-create-2.html'
@@ -61,6 +63,34 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];
         // set request from param
         this.getSendingFromParams();
+
+        //////////
+        // MAPS //
+        //////////
+
+        // get the field
+        let inputFrom = (<HTMLInputElement>document.getElementById('pickupaddress'));
+        // set the options
+        let options = {
+            types: [],
+            componentRestrictions: {country: 'ar'}
+        }        
+        let self = this;
+        // create the two autocompletes on the from and to fields
+        let autocomplete = new google.maps.places.Autocomplete(inputFrom, options);
+        // add the first listener
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+            let place = autocomplete.getPlace();
+            let geometry = place.geometry;
+            if ((geometry) !== undefined) {
+                console.log(place.name);
+                console.log(geometry.location.lng());
+                console.log(geometry.location.lat());
+            }else{
+                console.log('f2 > maps > geometry > ', geometry);
+            }    
+        });
+
     }
 
     adjustPickupTimeFrom(e) {
