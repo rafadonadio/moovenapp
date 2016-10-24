@@ -52,4 +52,24 @@ page-sending-create-2 {
         font-size: 1.4rem;
     }
 
+    /* autocomplete */
+    ion-list.list-md .ac-input,
+    ion-list.list-ios .ac-input{
+        padding-left: 16px;
+    }
+    ion-list.list-md .ac-input .ac-inner,
+    ion-list.list-ios .ac-input .ac-inner{           
+        border-bottom: 1px solid #dedede;
+    }
+    ion-list.list-md .ac-input input#pickupaddress,
+    ion-list.list-ios .ac-input input#pickupaddress{
+        margin: 13px 8px 13px 8px;
+        padding: 0;
+        width: calc(100% - 8px - 8px);
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        font-size: 1.6rem;
+    }
+
 }

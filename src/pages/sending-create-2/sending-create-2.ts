@@ -72,7 +72,7 @@ export class SendingCreate2Page implements OnInit {
         let inputFrom = (<HTMLInputElement>document.getElementById('pickupaddress'));
         // set the options
         let options = {
-            types: [],
+            types: ['address'],
             componentRestrictions: {country: 'ar'}
         }        
         let self = this;
@@ -80,14 +80,17 @@ export class SendingCreate2Page implements OnInit {
         let autocomplete = new google.maps.places.Autocomplete(inputFrom, options);
         // add the first listener
         google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            let place = autocomplete.getPlace();
-            let geometry = place.geometry;
+            let address = autocomplete.getPlace();
+            console.log('ac > address ', address);
+            let geometry = address.geometry;
             if ((geometry) !== undefined) {
-                console.log(place.name);
-                console.log(geometry.location.lng());
-                console.log(geometry.location.lat());
+                console.log('ac > formatted_address (full text) ', address.formatted_address);
+                console.log('ac > formatted_address (full text) ', address.formatted_address);
+
+                console.log('ac > address.geometry.location.lng', geometry.location.lng());
+                console.log('ac > address.geometry.location.lat', geometry.location.lat());
             }else{
-                console.log('f2 > maps > geometry > ', geometry);
+                console.log('f2 > maps > geometry > undefined ', geometry);
             }    
         });
 
