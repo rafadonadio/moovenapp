@@ -24,13 +24,11 @@
             </div>
             <ion-list-header>Dirección de Retiro</ion-list-header>
             <ion-item>
-                <ion-input type="text" placeholder="Ingresa la dirección" formControlName="pickupAddressFullText"></ion-input>
-            </ion-item>
-            <div class="ac-input">
-                <div class="ac-inner">
-                    <input type="text" id="pickupaddress" placeholder="ingresa la dirección y selecciona">
-                </div>    
-            </div>    
+                <ion-input type="text" placeholder="Ingresa la dirección" 
+                    formControlName="pickupAddressFullText"
+                    (click)="showSearchModal()"
+                    readlony></ion-input>
+            </ion-item>   
             <div *ngIf="showErrors && !pickupAddressFullText.valid" 
                 class="input-error">* Dirección de retiro es requerida</div>
             <ion-list-header margin-top>Banda horaria de Retiro</ion-list-header>

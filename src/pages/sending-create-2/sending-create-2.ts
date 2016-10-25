@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, AlertController, NavParams } from 'ionic-angular';
+import { NavController, AlertController, NavParams, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
@@ -8,8 +8,7 @@ import { UsersService } from '../../providers/users-service/users-service';
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
-
-declare var google: any;
+import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
 
 @Component({
     selector: 'page-sending-create-2',
@@ -17,6 +16,11 @@ declare var google: any;
 })
 export class SendingCreate2Page implements OnInit {
 
+    sending: any;
+    user: any;
+    profile: any;
+
+    // form
     formTwo: FormGroup;
     pickupAddressFullText: any;
     pickupTimeFrom: any;
@@ -24,10 +28,12 @@ export class SendingCreate2Page implements OnInit {
     pickupPersonName: any;
     pickupPersonPhone: any;
     pickupPersonEmail: any;
+   
+    // map
+    map: any;
+    markers = [];
+    address: any;
 
-    sending: any;
-    user: any;
-    profile: any;
     // aux
     rangeFrom: any;
     rangeTo: any;
@@ -40,7 +46,8 @@ export class SendingCreate2Page implements OnInit {
         public navParams: NavParams,
         public users: UsersService,
         public formBuilder: FormBuilder,
-        public alertCtrl: AlertController) {
+        public alertCtrl: AlertController,
+        public modalCtrl: ModalController) {
     }
 
     ngOnInit() {
@@ -63,38 +70,25 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];
         // set request from param
         this.getSendingFromParams();
-
-        //////////
-        // MAPS //
-        //////////
-
-        // get the field
-        let inputFrom = (<HTMLInputElement>document.getElementById('pickupaddress'));
-        // set the options
-        let options = {
-            types: ['address'],
-            componentRestrictions: {country: 'ar'}
-        }        
-        let self = this;
-        // create the two autocompletes on the from and to fields
-        let autocomplete = new google.maps.places.Autocomplete(inputFrom, options);
-        // add the first listener
-        google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            let address = autocomplete.getPlace();
-            console.log('ac > address ', address);
-            let geometry = address.geometry;
-            if ((geometry) !== undefined) {
-                console.log('ac > formatted_address (full text) ', address.formatted_address);
-                console.log('ac > formatted_address (full text) ', address.formatted_address);
-
-                console.log('ac > address.geometry.location.lng', geometry.location.lng());
-                console.log('ac > address.geometry.location.lat', geometry.location.lat());
-            }else{
-                console.log('f2 > maps > geometry > undefined ', geometry);
-            }    
-        });
-
     }
+
+    /**
+     *  METHODS
+     */
+
+    showSearchModal() {
+        let param = {
+            'modalTitle': 'Dirección de retiro'
+        };    
+        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
+        modal.onDidDismiss(data => {
+            console.log('f2 > modal dismissed > data param > ', data);
+            this.address = data;
+            // populate input
+            this.pickupAddressFullText.setValue(data.description);
+        });
+        modal.present();
+    }    
 
     adjustPickupTimeFrom(e) {
         console.log('f2 > new hour to > ', e.hour.value);
