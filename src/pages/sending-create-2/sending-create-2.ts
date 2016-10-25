@@ -10,6 +10,8 @@ import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
 
+declare var google:any;
+
 @Component({
     selector: 'page-sending-create-2',
     templateUrl: 'sending-create-2.html'
@@ -32,7 +34,8 @@ export class SendingCreate2Page implements OnInit {
     // map
     map: any;
     markers = [];
-    address: any;
+    addressResult: any;
+    placedetails: any;    
 
     // aux
     rangeFrom: any;
@@ -70,6 +73,7 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];
         // set request from param
         this.getSendingFromParams();
+        this.initMap();
     }
 
     /**
@@ -83,9 +87,7 @@ export class SendingCreate2Page implements OnInit {
         let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
         modal.onDidDismiss(data => {
             console.log('f2 > modal dismissed > data param > ', data);
-            this.address = data;
-            // populate input
-            this.pickupAddressFullText.setValue(data.description);
+            this.processAddressSearchResult(data);
         });
         modal.present();
     }    
@@ -206,5 +208,75 @@ export class SendingCreate2Page implements OnInit {
                 this.profile = snapshot.val();
             });
     }
+
+    /**
+     *  GOOGLE MAPS
+     */
+
+    private processAddressSearchResult(item:any) {
+        console.log('f2 > processAddressSearchResult');
+        if(item){            
+            this.addressResult = item;
+            // populate input
+            this.pickupAddressFullText.setValue(item.description);
+        }else{
+            console.log('f2 > processAddressSearchResult > item undefined > ', item);
+        }    
+    }
+
+    private getPlaceDetail(place_id:string) {
+        var self = this;
+        var request = {
+            placeId: place_id
+        };
+        let service = new google.maps.places.PlacesService(this.map);
+        service.getDetails(request, callback);
+        function callback(place, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+                console.log('page > getPlaceDetail > place > ', place);
+                // set place in map
+                self.map.setCenter(place.geometry.location);
+                self.createMapMarker(place);
+                
+                // populate 
+                self.placedetails = {
+                    fulladdress: place.formatted_address,
+                    streetnumber: place.address_components[0].short_name,
+                    streetname: place.address_components[1].long_name,
+                    area: place.address_components[2].short_name,
+                    locality: place.address_components[3].short_name,
+                    latitud: place.geometry.location.lat(),
+                    longitud: place.geometry.location.lng(),
+                    postalcode: place.address_components[7] ? place.address_components[7].short_name : 'n/d',
+                }
+                console.log('page > getPlaceDetail > details > ', self.placedetails);
+            }else{
+                console.log('page > getPlaceDetail > status > ', status);
+            }
+        }
+    }
+
+    private initMap() {
+        console.log('f2 > initMap');
+        var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
+        let divMap = (<HTMLInputElement>document.getElementById('map'));
+        this.map = new google.maps.Map(divMap, {
+            center: point,
+            zoom: 15,
+            disableDefaultUI: true,
+            draggable: false,
+            zoomControl: true            
+        });
+    }
+
+    private createMapMarker(place:any):void {
+        console.log('f2 > createMapMarker');
+        var placeLocation = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: this.map,
+          position: placeLocation
+        });    
+        this.markers.push(marker);
+    }     
 
 }

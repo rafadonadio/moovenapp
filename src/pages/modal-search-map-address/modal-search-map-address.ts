@@ -37,7 +37,21 @@ export class ModalSearchMapAddressPage implements OnInit{
 
     selectItem(item: any) {
         console.log('modal > chooseItem > item > ', item);
-        this.viewCtrl.dismiss(item);
+        // check item has a place_id
+        let place_id = item.place_id ? item.place_id : false;
+        if(place_id) {
+            console.log('modal > chooseItem > place_id ok > ', place_id);
+            this.viewCtrl.dismiss(item);
+        }else{
+            console.log('modal > chooseItem > place_id false > ', item.place_id);
+            let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'Ocurrió un error con el item seleccionado, por favor vuelve a intentarlo.',
+                buttons: ['Cerrar']
+            });
+            alert.present();            
+        }
+
     }
 
     updateSearch() {
@@ -64,10 +78,14 @@ export class ModalSearchMapAddressPage implements OnInit{
     showAlertHelp() {
         let alert = this.alertCtrl.create({
             title: 'Ayuda',
-            subTitle: 'A medida que escribas la dirección en el campo de búsqueda, se listaran coincidencias mas abajo, cuando encuentres la dirección correspondiente, seleccionala. ',
+            subTitle: 'A medida que escribas la dirección en el campo de búsqueda, se listaran coincidencias mas abajo, cuando encuentres la dirección correspondiente, seleccionala. En general es suficiente con escribir la calle, numeración y localidad. Ejemplo: Av Corrientes 555, Buenos Aires',
             buttons: ['Cerrar']
         });
         alert.present();
     }
+
+    /**
+     *  PRIVATE
+     */
 
 }

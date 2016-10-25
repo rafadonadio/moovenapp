@@ -33,7 +33,9 @@
                 class="input-optional">* incluye una foto (opcional)</div>            
             <ion-list-header>Descripción corta</ion-list-header>
             <ion-item>
-                <ion-input type="text" placeholder="Ej: folletos, imanes" formControlName="objectShortName"></ion-input>
+                <ion-input type="text" clearInput
+                    placeholder="Ej: folletos, imanes" 
+                    formControlName="objectShortName"></ion-input>
             </ion-item>             
             <div *ngIf="objectShortName.hasError('required') && objectShortName.touched || showErrors && objectShortName.valid==false" 
                 class="input-error">* ingresa una Descripción corta</div>
