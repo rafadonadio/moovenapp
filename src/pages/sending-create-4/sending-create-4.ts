@@ -81,7 +81,7 @@ export class SendingCreate4Page implements OnInit {
                 page = SendingCreate3Page;
                 break;                                
         }
-        this.navCtrl.push(page, {
+        this.navCtrl.setRoot(page, {
             sending: this.sending
         });
     }

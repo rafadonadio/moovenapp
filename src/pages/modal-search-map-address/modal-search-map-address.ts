@@ -36,6 +36,7 @@ export class ModalSearchMapAddressPage implements OnInit{
     }
 
     selectItem(item: any) {
+        console.info('modal > selectItem');
         console.log('modal > chooseItem > item > ', item);
         // check item has a place_id
         let place_id = item.place_id ? item.place_id : false;
@@ -43,7 +44,7 @@ export class ModalSearchMapAddressPage implements OnInit{
             console.log('modal > chooseItem > place_id ok > ', place_id);
             this.viewCtrl.dismiss(item);
         }else{
-            console.log('modal > chooseItem > place_id false > ', item.place_id);
+            console.error('modal > chooseItem > place_id false > ', item.place_id);
             let alert = this.alertCtrl.create({
                 title: 'Error',
                 subTitle: 'Ocurrió un error con el item seleccionado, por favor vuelve a intentarlo.',
@@ -55,7 +56,7 @@ export class ModalSearchMapAddressPage implements OnInit{
     }
 
     updateSearch() {
-        console.log('modal > updateSearch');        
+        console.info('modal > updateSearch');        
         if (this.autocomplete.query == '') {
             this.autocompleteItems = [];
             return;
@@ -85,9 +86,5 @@ export class ModalSearchMapAddressPage implements OnInit{
         });
         alert.present();
     }
-
-    /**
-     *  PRIVATE
-     */
 
 }

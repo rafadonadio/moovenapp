@@ -126,14 +126,14 @@ export class SendingCreate3Page implements OnInit{
 
     private goToNextStep() {
         console.log('f3 > go to f4, include this.sending in params');
-        this.navCtrl.push(SendingCreate4Page, {
+        this.navCtrl.setRoot(SendingCreate4Page, {
             sending: this.sending
         });
     }
 
     private goBacktoStep2() {
         console.log('f3 > go to f2, include this.sending in params');
-        this.navCtrl.push(SendingCreate2Page, {
+        this.navCtrl.setRoot(SendingCreate2Page, {
             sending: this.sending
         });
     }
