@@ -188,7 +188,7 @@ export class SendingCreate2Page implements OnInit {
         console.log('f2 > get navParams > this.sending');
         console.log('f2 > param > ', this.navParams.get('sending'));
         this.sending = this.navParams.get('sending');
-        this.populateForm();
+        this.populatePage();
     }
 
     private updateSending():void {
@@ -234,10 +234,23 @@ export class SendingCreate2Page implements OnInit {
      *  HELPERS - form
      */
 
-    private populateForm() {
-        console.log('f2 > populate form with this.sending');
+    private populatePage() {
+        console.log('f2 > populatePage with this.sending');
+        // map
+        this.initMap();
+        if(this.sending.pickupAddressSet) {
+            console.log('f2 > populatePage > map set');
+            var latlng = {
+                lat: this.sending.pickupAddressLat,
+                lng: this.sending.pickupAddressLng,
+            }
+            console.log('f2 > populatePage > latlng > ', latlng);
+            this.setMapCenter(latlng);
+            this.addMapMarker(latlng);
+        }
         // address
         this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
+        this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
         //datetime
         this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
         this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
@@ -317,9 +330,12 @@ export class SendingCreate2Page implements OnInit {
                 if(self.placesService.verifyDetailsMinRequirements(details)) {
                     console.log('f2 > getPlaceDetail > callback > details > verify ok ', details);
                     // map
-                    self.map.setCenter(place.geometry.location);
-                    self.map.setZoom(15);
-                    self.createMapMarker(place);
+                    let latlng = {
+                        lat: place.geometry.location.lat(),
+                        lng: place.geometry.location.lng()
+                    }
+                    self.setMapCenter(latlng);
+                    self.addMapMarker(latlng);
                     // populate
                     self.placeDetails = details;
                     self.placeDetails.set = true;
@@ -350,6 +366,7 @@ export class SendingCreate2Page implements OnInit {
 
     private initMap() {
         console.log('f2 > initMap');
+        this.map = null;
         var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
         let divMap = (<HTMLInputElement>document.getElementById('map'));
         this.map = new google.maps.Map(divMap, {
@@ -362,12 +379,18 @@ export class SendingCreate2Page implements OnInit {
         });
     }
 
-    private createMapMarker(place:any):void {
-        console.log('f2 > createMapMarker');
-        var placeLocation = place.geometry.location;
+    private setMapCenter(latlng: any):void {
+        console.log('f2 > setMapCenter');
+        console.log('f2 > setMapCenter > map', this.map);
+        this.map.setCenter(latlng);
+        this.map.setZoom(15);       
+    }
+
+    private addMapMarker(latlng:any):void {
+        console.log('f2 > addMapMarker');
         var marker = new google.maps.Marker({
           map: this.map,
-          position: placeLocation
+          position: latlng
         });    
         this.mapMarkers.push(marker);
     }     
