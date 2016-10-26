@@ -3,8 +3,9 @@ import { NavController, AlertController, NavParams, ModalController } from 'ioni
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
-
 import { UsersService } from '../../providers/users-service/users-service';
+import { GoogleMapsPlacesService } from '../../providers/google-maps-places-service/google-maps-places-service';
+
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
@@ -25,6 +26,7 @@ export class SendingCreate2Page implements OnInit {
     // form
     formTwo: FormGroup;
     pickupAddressFullText: any;
+    pickupAddressLine2: any;
     pickupTimeFrom: any;
     pickupTimeTo: any;
     pickupPersonName: any;
@@ -33,9 +35,8 @@ export class SendingCreate2Page implements OnInit {
    
     // map
     map: any;
-    markers = [];
-    addressResult: any;
-    placedetails: any;    
+    mapMarkers = [];
+    placeDetails: any;    
 
     // aux
     rangeFrom: any;
@@ -48,6 +49,7 @@ export class SendingCreate2Page implements OnInit {
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public users: UsersService,
+        public placesService: GoogleMapsPlacesService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
         public modalCtrl: ModalController) {
@@ -59,6 +61,7 @@ export class SendingCreate2Page implements OnInit {
         // init form
         this.formTwo = this.formBuilder.group({
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
+            'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
             'pickupTimeFrom': ['', Validators.compose([Validators.required])],
             'pickupTimeTo': ['', Validators.compose([Validators.required])],
             'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
@@ -66,6 +69,7 @@ export class SendingCreate2Page implements OnInit {
             'pickupPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
         });
         this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
+        this.pickupAddressLine2 = this.formTwo.controls['pickupAddressLine2'];
         this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
         this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
         this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
@@ -74,13 +78,25 @@ export class SendingCreate2Page implements OnInit {
         // set request from param
         this.getSendingFromParams();
         this.initMap();
+        this.initPlaceDetails();
     }
 
     /**
      *  METHODS
      */
 
+    resetPickupAddress() {
+        console.log('f2 > resetPickupAddressElements');
+        this.initMap();
+        this.populatePickupAddressInput('');
+        this.pickupAddressLine2.setValue('');
+        this.initPlaceDetails();
+    }
+
     showSearchModal() {
+        // reset 
+        this.resetPickupAddress();
+        // init
         let param = {
             'modalTitle': 'Dirección de retiro'
         };    
@@ -200,6 +216,18 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
     }
 
+    private populatePickupAddressInput(fullAddress:string) {
+        console.log('f2 > populatePickupAddressInput > ', fullAddress);
+        this.pickupAddressFullText.setValue(fullAddress);
+    }
+
+    private initPlaceDetails() {
+        console.log('f2 > initPlaceDetails');
+        this.placeDetails = {
+            set: false
+        };
+    }
+
     private setUser() {
         this.user = this.users.getCurrentUser();
         // set profile
@@ -216,42 +244,48 @@ export class SendingCreate2Page implements OnInit {
     private processAddressSearchResult(item:any) {
         console.log('f2 > processAddressSearchResult');
         if(item){            
-            this.addressResult = item;
-            // populate input
-            this.pickupAddressFullText.setValue(item.description);
+            // get place details with place_id
+            this.setPlaceDetailAndPopulateOrReset(item.place_id);
         }else{
-            console.log('f2 > processAddressSearchResult > item undefined > ', item);
+            console.log('f2 > processAddressSearchResult > item selected in modal is undefined > ', item);
         }    
     }
 
-    private getPlaceDetail(place_id:string) {
+    private setPlaceDetailAndPopulateOrReset(place_id:string) {
+        console.log('f2 > setPlaceDetail');
+        // init
         var self = this;
         var request = {
             placeId: place_id
         };
-        let service = new google.maps.places.PlacesService(this.map);
+        // init google service
+        let service = this.placesService.newService(this.map);
+        // run
         service.getDetails(request, callback);
+        // callback
         function callback(place, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-                console.log('page > getPlaceDetail > place > ', place);
-                // set place in map
+                console.log('f2 > getPlaceDetail > callback > place > ', place);
+                // center map and zoom
                 self.map.setCenter(place.geometry.location);
+                self.map.setZoom(15);
+                // draw pin in map
                 self.createMapMarker(place);
-                
-                // populate 
-                self.placedetails = {
-                    fulladdress: place.formatted_address,
-                    streetnumber: place.address_components[0].short_name,
-                    streetname: place.address_components[1].long_name,
-                    area: place.address_components[2].short_name,
-                    locality: place.address_components[3].short_name,
-                    latitud: place.geometry.location.lat(),
-                    longitud: place.geometry.location.lng(),
-                    postalcode: place.address_components[7] ? place.address_components[7].short_name : 'n/d',
+                // extract all iterate address_components result
+                let details = self.placesService.extractAddressComponents(place);
+                // check enad populate
+                if(self.placesService.verifyDetailsComplete(details)) {
+                    console.log('f2 > getPlaceDetail > callback > details > verify ok ', details);
+                    self.placeDetails = details;
+                    self.placeDetails.set = true;
+                    self.populatePickupAddressInput(details.full_address);
+                }else{
+                    console.log('f2 > getPlaceDetail > callback > details > verify error ', details);
+                    self.placeDetails.set = false;
                 }
-                console.log('page > getPlaceDetail > details > ', self.placedetails);
+                console.log('f2 > getPlaceDetail > callback > this.placeDetails ', self.placeDetails);
             }else{
-                console.log('page > getPlaceDetail > status > ', status);
+                console.log('f2 > setPlaceDetail > PlacesServiceStatus not OK > ', status);
             }
         }
     }
@@ -262,9 +296,10 @@ export class SendingCreate2Page implements OnInit {
         let divMap = (<HTMLInputElement>document.getElementById('map'));
         this.map = new google.maps.Map(divMap, {
             center: point,
-            zoom: 15,
+            zoom: 10,
             disableDefaultUI: true,
             draggable: false,
+            clickableIcons: false,
             zoomControl: true            
         });
     }
@@ -276,7 +311,7 @@ export class SendingCreate2Page implements OnInit {
           map: this.map,
           position: placeLocation
         });    
-        this.markers.push(marker);
+        this.mapMarkers.push(marker);
     }     
 
 }

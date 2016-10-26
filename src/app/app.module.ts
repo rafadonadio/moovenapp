@@ -37,6 +37,7 @@ import { AuthenticationService } from '../providers/authentication-service/authe
 import { ProfileService } from '../providers/profile-service/profile-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { UsersService } from '../providers/users-service/users-service';
+import { GoogleMapsPlacesService } from '../providers/google-maps-places-service/google-maps-places-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 
@@ -117,6 +118,7 @@ import { CapitalizePipe } from '../pipes/capitalize-pipe';
     ProfileService,
     SendingService,    
     UsersService,
+    GoogleMapsPlacesService
   ],
 })
 export class AppModule {}

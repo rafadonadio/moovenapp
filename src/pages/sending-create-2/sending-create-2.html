@@ -28,7 +28,22 @@
                     formControlName="pickupAddressFullText"
                     (click)="showSearchModal()"
                     readonly></ion-input>
-            </ion-item>   
+            </ion-item> 
+            <ion-item *ngIf="placeDetails.set==true">
+                <ion-input type="text" placeholder="Ingresa datos adicionales: piso, depto, etc" 
+                    formControlName="pickupAddressLine2"
+                    ></ion-input>
+            </ion-item> 
+            <ion-item *ngIf="placeDetails.set==true">
+                <ion-icon name="pin" item-left></ion-icon>
+                <h2>{{ placeDetails?.components.route.short }} {{ placeDetails?.components.street_number.short }}</h2>
+                <h3>{{ placeDetails?.components.locality.long }}</h3>
+                <p>{{ placeDetails?.components.administrative_area_level_1.long }}</p>
+                <button ion-button item-right clear color="sublight"
+                    (click)="resetPickupAddress()">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>                
+            </ion-item>              
             <div *ngIf="showErrors && !pickupAddressFullText.valid" 
                 class="input-error">* Dirección de retiro es requerida</div>
             <ion-list-header margin-top>Banda horaria de Retiro</ion-list-header>
