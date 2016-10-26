@@ -85,17 +85,9 @@ export class SendingCreate2Page implements OnInit {
      *  METHODS
      */
 
-    resetPickupAddress() {
-        console.log('f2 > resetPickupAddressElements');
-        this.initMap();
-        this.populatePickupAddressInput('');
-        this.pickupAddressLine2.setValue('');
-        this.initPlaceDetails();
-    }
-
     showSearchModal() {
         // reset 
-        this.resetPickupAddress();
+        this.resetPickupAddressElements();
         // init
         let param = {
             'modalTitle': 'Dirección de retiro'
@@ -106,7 +98,11 @@ export class SendingCreate2Page implements OnInit {
             this.processAddressSearchResult(data);
         });
         modal.present();
-    }    
+    }
+
+    resetPickupAddress() {
+        this.resetPickupAddressElements();
+    }
 
     adjustPickupTimeFrom(e) {
         console.log('f2 > new hour to > ', e.hour.value);
@@ -167,7 +163,7 @@ export class SendingCreate2Page implements OnInit {
     }
 
     /**
-     *  PRIVATE
+     *  HELPERS - navigation
      */
 
     private goToNextStep() {
@@ -184,17 +180,10 @@ export class SendingCreate2Page implements OnInit {
         });
     }
 
-    private updateSending() {
-        console.log('f2 > save form values in this.sending');
-        this.sending.pickupAddressFullText = this.pickupAddressFullText.value;
-        this.sending.pickupTimeFrom = this.pickupTimeFrom.value;
-        this.sending.pickupTimeTo = this.pickupTimeTo.value;
-        this.sending.pickupPersonName = this.pickupPersonName.value;
-        this.sending.pickupPersonPhone = this.pickupPersonPhone.value;
-        this.sending.pickupPersonEmail = this.pickupPersonEmail.value;
-        console.log('f2 > this.sending > ', this.sending);
-    }
-
+    /**
+     *  HELPERS - this.sending
+     */
+    
     private getSendingFromParams() {
         console.log('f2 > get navParams > this.sending');
         console.log('f2 > param > ', this.navParams.get('sending'));
@@ -202,8 +191,52 @@ export class SendingCreate2Page implements OnInit {
         this.populateForm();
     }
 
+    private updateSending():void {
+        console.log('f2 > updateSending > save form values in this.sending');   
+        // address - aux
+        this.sending.pickupAddressLine2 = this.pickupAddressLine2.value;
+        // time
+        this.sending.pickupTimeFrom = this.pickupTimeFrom.value;
+        this.sending.pickupTimeTo = this.pickupTimeTo.value;
+        // contact
+        this.sending.pickupPersonName = this.pickupPersonName.value;
+        this.sending.pickupPersonPhone = this.pickupPersonPhone.value;
+        this.sending.pickupPersonEmail = this.pickupPersonEmail.value;
+        console.log('f2 > this.sending > ', this.sending);
+    }
+
+    private updateSendingAddressPlaceDetails():void {
+        console.log('f2 > updateSendingAddressPlaceDetails > save address values in this.sending');           
+        this.sending.pickupAddressSet = this.placeDetails.set;
+        this.sending.pickupAddressIsComplete = this.placeDetails.complete;
+        this.sending.pickupAddressUserForcedValidation = this.placeDetails.forced;
+        this.sending.pickupAddressPlaceId = this.placeDetails.place_id;
+        this.sending.pickupAddressLat = this.placeDetails.lat;
+        this.sending.pickupAddressLng = this.placeDetails.lng;            
+        this.sending.pickupAddressFullText = this.placeDetails.full_address;
+        this.sending.pickupAddressStreetShort = this.placeDetails.components.route.short;
+        this.sending.pickupAddressStreetLong = this.placeDetails.components.route.long;
+        this.sending.pickupAddressNumber = this.placeDetails.components.street_number.long;
+        this.sending.pickupAddressPostalCode = this.placeDetails.components.postal_code.long + this.placeDetails.components.postal_code_suffix.long;            
+        this.sending.pickupAddressCityAreaShort = this.placeDetails.components.sublocality_level_1.short;
+        this.sending.pickupAddressCityAreaLong = this.placeDetails.components.sublocality_level_1.long;
+        this.sending.pickupAddressCityShort = this.placeDetails.components.locality.short;
+        this.sending.pickupAddressCityLong = this.placeDetails.components.locality.long;
+        this.sending.pickupAddressStateAreaShort = this.placeDetails.components.administrative_area_level_2.short;
+        this.sending.pickupAddressStateAreaLong = this.placeDetails.components.administrative_area_level_2.long;        
+        this.sending.pickupAddressStateShort = this.placeDetails.components.administrative_area_level_1.short;
+        this.sending.pickupAddressStateLong = this.placeDetails.components.administrative_area_level_1.long;
+        this.sending.pickupAddressCountry = this.placeDetails.components.country.long;           
+        console.log('f2 > this.sending > ', this.sending);
+    }
+
+    /**
+     *  HELPERS - form
+     */
+
     private populateForm() {
         console.log('f2 > populate form with this.sending');
+        // address
         this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
         //datetime
         this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
@@ -220,6 +253,18 @@ export class SendingCreate2Page implements OnInit {
         console.log('f2 > populatePickupAddressInput > ', fullAddress);
         this.pickupAddressFullText.setValue(fullAddress);
     }
+
+    private resetPickupAddressElements() {
+        console.log('f2 > resetPickupAddressElements');
+        this.initMap();
+        this.populatePickupAddressInput('');
+        this.pickupAddressLine2.setValue('');
+        this.initPlaceDetails();
+    }
+
+    /**
+     *  HELPERS - Init
+     */
 
     private initPlaceDetails() {
         console.log('f2 > initPlaceDetails');
@@ -238,7 +283,7 @@ export class SendingCreate2Page implements OnInit {
     }
 
     /**
-     *  GOOGLE MAPS
+     *  HELPERS - GOOGLE MAPS / pickupAddressFullText
      */
 
     private processAddressSearchResult(item:any) {
@@ -251,7 +296,7 @@ export class SendingCreate2Page implements OnInit {
         }    
     }
 
-    private setPlaceDetailAndPopulateOrReset(place_id:string) {
+    private setPlaceDetailAndPopulateOrReset(place_id:string):void {
         console.log('f2 > setPlaceDetail');
         // init
         var self = this;
@@ -266,25 +311,38 @@ export class SendingCreate2Page implements OnInit {
         function callback(place, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
                 console.log('f2 > getPlaceDetail > callback > place > ', place);
-                // center map and zoom
-                self.map.setCenter(place.geometry.location);
-                self.map.setZoom(15);
-                // draw pin in map
-                self.createMapMarker(place);
                 // extract all iterate address_components result
                 let details = self.placesService.extractAddressComponents(place);
                 // check enad populate
-                if(self.placesService.verifyDetailsComplete(details)) {
+                if(self.placesService.verifyDetailsMinRequirements(details)) {
                     console.log('f2 > getPlaceDetail > callback > details > verify ok ', details);
+                    // map
+                    self.map.setCenter(place.geometry.location);
+                    self.map.setZoom(15);
+                    self.createMapMarker(place);
+                    // populate
                     self.placeDetails = details;
                     self.placeDetails.set = true;
+                    self.placeDetails.complete = true;
                     self.populatePickupAddressInput(details.full_address);
+                    // save
+                    self.updateSendingAddressPlaceDetails();
                 }else{
-                    console.log('f2 > getPlaceDetail > callback > details > verify error ', details);
+                    // verify failed
+                    console.log('f2 > getPlaceDetail > callback > details > verify failed ', details);
+                    // alert user
+                    let alert = self.alertCtrl.create({
+                        title: 'Dirección incompleta',
+                        subTitle: 'Debe indicarse una dirección de retiro exacta, que incluya nombre de calle, númeración y ciudad. Vuelve a intentarlo.',
+                        buttons: ['Cerrar']
+                    });
+                    alert.present();                    
                     self.placeDetails.set = false;
+                    self.placeDetails.complete = false;
                 }
                 console.log('f2 > getPlaceDetail > callback > this.placeDetails ', self.placeDetails);
             }else{
+                // service status failed
                 console.log('f2 > setPlaceDetail > PlacesServiceStatus not OK > ', status);
             }
         }

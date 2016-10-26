@@ -16,6 +16,7 @@ export class GoogleMapsPlacesService {
         // init
         var details = this.initDetails();
         // run
+        details.place_id = place.place_id,
         details.full_address = place.formatted_address ? place.formatted_address : '';
         details.lat = place.geometry.location.lat() ? place.geometry.location.lat() : '';
         details.lng = place.geometry.location.lng() ? place.geometry.location.lng() : '';
@@ -27,20 +28,27 @@ export class GoogleMapsPlacesService {
                 details.components[addressType].long = place.address_components[i]['long_name'];
             }                                     
         }    
-        console.log('google maps service > extractPlaceAddressComponents > done');
+        console.log('gmapService > extractPlaceAddressComponents > done');
         return details;
     }
 
     /**
      *  Verify minimum data is present in place detail
      */
-    verifyDetailsComplete(details: any) {
-        // full address
+    verifyDetailsMinRequirements(details: any) {
+        console.log('gmapService > verifyDetailsMinRequirements > init');
+        var passed = true;
         // lat, lng
+        passed = details.lat == '' ? false : passed;
+        passed = details.lng == '' ? false : passed;
         // street name
+        passed = details.components.route.long == '' ? false : passed;
         // street number
-        // city 
-        return true;
+        passed = details.components.street_number.long == '' ? false : passed;
+        // locality 
+        passed = details.components.locality.long == '' ? false : passed;
+        console.log('gmapService > verifyDetailsMinRequirements > result > ', passed);        
+        return passed;
     }
 
     /**
@@ -56,7 +64,10 @@ export class GoogleMapsPlacesService {
      */
     initDetails() {
         var details = {
-            set: false,
+            set: false,       // is set, but may or not be complete
+            complete: false,  // min values are complete
+            forced: false,    // is not complete, but forced to set by user
+            place_id: '',
             full_address: '',
             lat: '',
             lng: '',

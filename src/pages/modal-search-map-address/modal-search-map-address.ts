@@ -68,10 +68,12 @@ export class ModalSearchMapAddressPage implements OnInit{
         }
         this.acService.getPlacePredictions(config, function (predictions, status) {
             console.log('modal > getPlacePredictions > status > ', status);
-            self.autocompleteItems = [];            
-            predictions.forEach(function (prediction) {              
-                self.autocompleteItems.push(prediction);
-            });
+            self.autocompleteItems = [];
+            if(predictions && predictions.length > 0) {            
+                predictions.forEach(function (prediction) {              
+                    self.autocompleteItems.push(prediction);
+                });
+            }
         });
     }
 
