@@ -87,4 +87,11 @@ export class ModalSearchMapAddressPage implements OnInit{
         alert.present();
     }
 
+    /**
+     *  PRIVATE
+     */
+
+
+
+
 }

@@ -150,7 +150,6 @@ export class SendingCreate2Page implements OnInit {
                     role: 'cancel',
                     handler: () => {
                         console.log('f2 > cancel form > no, continue');
-
                     }
                 },
                 {
