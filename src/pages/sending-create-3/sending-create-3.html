@@ -19,13 +19,32 @@
                     <ion-icon name="radio-button-off"></ion-icon>
                 </ion-note>
             </ion-item-divider>  
-            <div>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d13134.365872335158!2d-58.38880525!3d-34.61449064999999!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sar!4v1470177425680" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
+            <div class="map-container">
+                <div id="mapf3"></div>
             </div>
             <ion-list-header>Dirección de Entrega</ion-list-header>
             <ion-item>
-                <ion-input type="text" placeholder="Ingresa la dirección" formControlName="dropAddressFullText"></ion-input>
+                <ion-input type="text" placeholder="Ingresa la dirección" 
+                    formControlName="dropAddressFullText"
+                    (click)="showAddressSearchModal()"
+                    readonly></ion-input>
             </ion-item>
+            <ion-item *ngIf="placeDetails.set==true">
+                <ion-input type="text" clearInput 
+                    placeholder="Ingresa datos adicionales: piso, depto, etc" 
+                    formControlName="dropAddressLine2"
+                    ></ion-input>
+            </ion-item>          
+            <ion-item *ngIf="sending.dropAddressSet==true">
+                <ion-icon name="pin" item-left></ion-icon>
+                <h2>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h2>
+                <h3>{{ sending.dropAddressCityShort }}</h3>
+                <p>{{ sending.dropAddressStateLong }}</p>
+                <button ion-button item-right clear color="sublight"
+                    (click)="resetAddress()">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>                
+            </ion-item>                
             <div *ngIf="showErrors && !dropAddressFullText.valid"
                 class="input-error">* Direccion de entrega es requerida</div>
             <ion-list-header margin-top>Banda horaria de Entrega</ion-list-header>
@@ -51,8 +70,9 @@
                 class="input-optional"><small>* verifica que el horario de entrega sea correcto</small></div>            
             <ion-list-header>
                 Contacto para Retiro
-                <button ion-button outline item-right (click)="populateUserData()">
-                    Copiar mis datos
+                <button ion-button outline item-right 
+                    (click)="populateContactWithUserData()">
+                    Pegar mis datos
                 </button>
             </ion-list-header>
             <ion-list inset>
@@ -84,7 +104,7 @@
             <button ion-button block color="primary" outline margin-top 
                 (click)="goBack()">Volver</button>      
             <button ion-button block color="subdark" clear margin-top 
-                (click)="cancelSending()">Cancelar</button>            
+                (click)="cancel()">Cancelar</button>            
         </div>
     </form>
 </ion-content>

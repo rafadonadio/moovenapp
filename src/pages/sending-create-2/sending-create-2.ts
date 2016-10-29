@@ -38,9 +38,6 @@ export class SendingCreate2Page implements OnInit {
     // form aux
     rangeFrom: any;
     rangeTo: any;
-    contactName: string;
-    contactPhone: string;
-    contactEmail: string;
     showErrors: boolean = false;
 
     // map
@@ -51,9 +48,9 @@ export class SendingCreate2Page implements OnInit {
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public users: UsersService,
-        public placesService: GoogleMapsPlacesService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
+        public placesService: GoogleMapsPlacesService,
         public modalCtrl: ModalController) {
     }
 
@@ -138,12 +135,12 @@ export class SendingCreate2Page implements OnInit {
      *  FORM HELPERS
      */
 
-    showPickupAddressSearchModal() {
+    showAddressSearchModal() {
         // reset 
-        this.resetPickupAddressElements();
+        this.resetAddressElements();
         // init
         let param = {
-            'modalTitle': 'Dirección de retiro'
+            'modalTitle': 'Dirección de Retiro'
         };    
         let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
         modal.onDidDismiss(data => {
@@ -171,18 +168,18 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail.setValue(this.user.email);
     }
 
-    resetPickupAddress() {
-        this.resetPickupAddressElements();
+    resetAddress() {
+        this.resetAddressElements();
     }
 
-    private resetPickupAddressElements() {
+    private resetAddressElements() {
         console.info('f2 > resetPickupAddressElements');
         this.initMap();
-        this.populatePickupAddressInput('');
+        this.populateAddressInput('');
         this.pickupAddressLine2.setValue('');
         this.initPlaceDetails();
 
-        // init all sending address related
+        // reset all sending address related
         this.sending.pickupAddressSet = false;
         this.sending.pickupAddressIsComplete = false;
         this.sending.pickupAddressUserForcedValidation = false;
@@ -212,7 +209,7 @@ export class SendingCreate2Page implements OnInit {
     private goToNextStep() {
         console.info('f2 > go to f3, include params');
         console.groupEnd();
-        this.navCtrl.push(SendingCreate3Page, {
+        this.navCtrl.setRoot(SendingCreate3Page, {
             sending: this.sending
         });
     }
@@ -220,7 +217,7 @@ export class SendingCreate2Page implements OnInit {
     private goBacktoStep1() {
         console.info('f2 > go to f1, include params');
         console.groupEnd();
-        this.navCtrl.push(SendingCreatePage, {
+        this.navCtrl.setRoot(SendingCreatePage, {
             sending: this.sending
         });
     }
@@ -229,29 +226,15 @@ export class SendingCreate2Page implements OnInit {
      *  SUBMIT HELPERS
      */
 
-    private update():void {
-        console.info('f2 > updateSending > save form values in this.sending');   
-        // address - aux
-        this.sending.pickupAddressLine2 = this.pickupAddressLine2.value;
-        // time
-        this.sending.pickupTimeFrom = this.pickupTimeFrom.value;
-        this.sending.pickupTimeTo = this.pickupTimeTo.value;
-        // contact
-        this.sending.pickupPersonName = this.pickupPersonName.value;
-        this.sending.pickupPersonPhone = this.pickupPersonPhone.value;
-        this.sending.pickupPersonEmail = this.pickupPersonEmail.value;
-        console.log('f2 > this.sending > ', this.sending);
-    }
-
-    private updateSendingAddressPlaceDetails():void {
+    private updateAddressDetails():void {
         console.info('f2 > updateSendingAddressPlaceDetails > save address values in this.sending');           
+        this.sending.pickupAddressFullText = this.placeDetails.full_address;
         this.sending.pickupAddressSet = this.placeDetails.set;
         this.sending.pickupAddressIsComplete = this.placeDetails.complete;
         this.sending.pickupAddressUserForcedValidation = this.placeDetails.forced;
         this.sending.pickupAddressPlaceId = this.placeDetails.place_id;
         this.sending.pickupAddressLat = this.placeDetails.lat;
         this.sending.pickupAddressLng = this.placeDetails.lng;            
-        this.sending.pickupAddressFullText = this.placeDetails.full_address;
         this.sending.pickupAddressStreetShort = this.placeDetails.components.route.short;
         this.sending.pickupAddressStreetLong = this.placeDetails.components.route.long;
         this.sending.pickupAddressNumber = this.placeDetails.components.street_number.long;
@@ -268,26 +251,23 @@ export class SendingCreate2Page implements OnInit {
         console.log('f2 > this.sending > ', this.sending);
     }
 
+    private update():void {
+        console.info('f2 > updateSending > save form values in this.sending');   
+        // address - aux
+        this.sending.pickupAddressLine2 = this.pickupAddressLine2.value;
+        // time
+        this.sending.pickupTimeFrom = this.pickupTimeFrom.value;
+        this.sending.pickupTimeTo = this.pickupTimeTo.value;
+        // contact
+        this.sending.pickupPersonName = this.pickupPersonName.value;
+        this.sending.pickupPersonPhone = this.pickupPersonPhone.value;
+        this.sending.pickupPersonEmail = this.pickupPersonEmail.value;
+        console.log('f2 > this.sending > ', this.sending);
+    }
+
     /**
      *  GOOGLE MAPS HELPERS
      */
-
-    private initMap() {
-        console.info('f2 > initMap');
-        this.map = null;
-        var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
-        let divMap = (<HTMLInputElement>document.getElementById('map'));
-        this.map = new google.maps.Map(divMap, {
-            center: point,
-            zoom: 10,
-            disableDefaultUI: true,
-            draggable: false,
-            clickableIcons: false,
-            zoomControl: true,
-            mapTypeId: google.maps.MapTypeId.ROADMAP            
-        });
-        console.log('f2 > initMap > map > ', this.map);
-    }
 
     private processAddressSearchResult(item:any) {
         console.info('f2 > processAddressSearchResult');
@@ -331,9 +311,9 @@ export class SendingCreate2Page implements OnInit {
                     self.placeDetails = details;
                     self.placeDetails.set = true;
                     self.placeDetails.complete = true;
-                    self.populatePickupAddressInput(details.full_address);
+                    self.populateAddressInput(details.full_address);
                     // save
-                    self.updateSendingAddressPlaceDetails();
+                    self.updateAddressDetails();
                 }else{
                     // verify failed
                     console.error('f2 > getPlaceDetail > callback > details > verify failed ', details);
@@ -371,6 +351,23 @@ export class SendingCreate2Page implements OnInit {
         this.mapMarkers.push(marker);
     }     
 
+    private initMap() {
+        console.info('f2 > initMap');
+        this.map = null;
+        var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
+        let divMap = (<HTMLInputElement>document.getElementById('mapf2'));
+        this.map = new google.maps.Map(divMap, {
+            center: point,
+            zoom: 10,
+            disableDefaultUI: true,
+            draggable: false,
+            clickableIcons: false,
+            zoomControl: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP            
+        });
+        console.log('f2 > initMap > map > ', this.map);
+    }
+
     /**
      *  INIT HELPERS
      */
@@ -383,6 +380,11 @@ export class SendingCreate2Page implements OnInit {
                 this.profile = snapshot.val();
             });
     }    
+
+    private initPlaceDetails() {
+        console.info('f2 > initPlaceDetails');
+        this.placeDetails = this.placesService.initDetails();
+    }
 
     private getSendingFromParams() {
         console.info('f2 > getSendingFromParams');
@@ -417,16 +419,9 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
     }
 
-    private populatePickupAddressInput(fullAddress:string) {
-        console.log('f2 > populatePickupAddressInput > ', fullAddress);
+    private populateAddressInput(fullAddress:string) {
+        console.log('f2 > populateAddressInput > ', fullAddress);
         this.pickupAddressFullText.setValue(fullAddress);
-    }
-
-    private initPlaceDetails() {
-        console.info('f2 > initPlaceDetails');
-        this.placeDetails = {
-            set: false
-        };
     }
 
 }

@@ -20,13 +20,13 @@
                 </ion-note>
             </ion-item-divider>             
             <div class="map-container">
-                <div id="map"></div>
+                <div id="mapf2"></div>
             </div>
             <ion-list-header>Dirección de Retiro</ion-list-header>
             <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="pickupAddressFullText"
-                    (click)="showPickupAddressSearchModal()"
+                    (click)="showAddressSearchModal()"
                     readonly></ion-input>
             </ion-item> 
             <ion-item *ngIf="placeDetails.set==true">
@@ -41,7 +41,7 @@
                 <h3>{{ sending.pickupAddressCityShort }}</h3>
                 <p>{{ sending.pickupAddressStateLong }}</p>
                 <button ion-button item-right clear color="sublight"
-                    (click)="resetPickupAddress()">
+                    (click)="resetAddress()">
                     <ion-icon name="close-circle"></ion-icon>
                 </button>                
             </ion-item>              
@@ -71,12 +71,13 @@
             <ion-list-header>
                 Contacto para Retiro
                 <button ion-button outline item-right small 
-                    (click)="populateContactWithUserData()">Copiar mis datos</button>
+                    (click)="populateContactWithUserData()">Pegar mis datos</button>
             </ion-list-header>
             <ion-list inset>
                 <ion-item no-lines>
                     <ion-label>Nombre</ion-label>
-                    <ion-input type="text" clearInput formControlName="pickupPersonName"></ion-input>
+                    <ion-input type="text" clearInput 
+                        formControlName="pickupPersonName"></ion-input>
                 </ion-item>
                 <div *ngIf="pickupPersonName.hasError('required') && pickupPersonName.touched || showErrors && pickupPersonName.valid==false" 
                     class="input-error">* ingresa un nombre de contacto</div>
