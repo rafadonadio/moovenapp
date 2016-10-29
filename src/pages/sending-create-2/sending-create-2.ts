@@ -19,7 +19,10 @@ declare var google:any;
 })
 export class SendingCreate2Page implements OnInit {
 
+    // sending model
     sending: any;
+
+    // user
     user: any;
     profile: any;
 
@@ -32,19 +35,18 @@ export class SendingCreate2Page implements OnInit {
     pickupPersonName: any;
     pickupPersonPhone: any;
     pickupPersonEmail: any;
-   
-    // map
-    map: any;
-    mapMarkers = [];
-    placeDetails: any;    
-
-    // aux
+    // form aux
     rangeFrom: any;
     rangeTo: any;
     contactName: string;
     contactPhone: string;
     contactEmail: string;
     showErrors: boolean = false;
+
+    // map
+    map: any;
+    mapMarkers = [];
+    placeDetails: any;    
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -81,44 +83,18 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];
         // set request from param
         this.getSendingFromParams();
+        // populate page
+        this.populatePage();
     }
 
     /**
-     *  METHODS
+     * MAIN ACTIONS
      */
 
-    showSearchModal() {
-        // reset 
-        this.resetPickupAddressElements();
-        // init
-        let param = {
-            'modalTitle': 'Dirección de retiro'
-        };    
-        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
-        modal.onDidDismiss(data => {
-            console.log('f2 > modal dismissed > data param > ', data);
-            this.processAddressSearchResult(data);
-        });
-        modal.present();
-    }
-
-    resetPickupAddress() {
-        this.resetPickupAddressElements();
-    }
-
-    adjustPickupTimeFrom(e) {
-        console.log('f2 > new hour to > ', e.hour.value);
-        console.log('f2 > current hour to > ', this.pickupTimeFrom.value);
-    }
-    adjustPickupTimeTo(e) {
-        console.log('f2 > new hour from > ', e.hour.value);
-        console.log('f2 > current hour to > ', this.pickupTimeTo.value);
-    }
-    populateUserDataInContact() {
-        console.log('f2 > populate pickupContact with current user');
-        this.pickupPersonName.setValue(this.user.displayName);
-        this.pickupPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
-        this.pickupPersonEmail.setValue(this.user.email);
+    goBack() {
+        console.info('f2 > go back to f1');
+        this.update();
+        this.goBacktoStep1();
     }
 
     submit() {
@@ -128,18 +104,12 @@ export class SendingCreate2Page implements OnInit {
             this.showErrors = true;
         }else{
             console.log('f2 > submit > valid');
-            this.updateSending();
+            this.update();
             this.goToNextStep();
         }
     }
 
-    goBack() {
-        console.info('f2 > go back to f1');
-        this.updateSending();
-        this.goBacktoStep1();
-    }
-
-    cancelSending() {
+    cancel() {
         console.info('f2 > cancelSending');
         let alert = this.alertCtrl.create({
             title: '¿Cancelar Envío?',
@@ -165,7 +135,78 @@ export class SendingCreate2Page implements OnInit {
     }
 
     /**
-     *  HELPERS - navigation
+     *  FORM HELPERS
+     */
+
+    showPickupAddressSearchModal() {
+        // reset 
+        this.resetPickupAddressElements();
+        // init
+        let param = {
+            'modalTitle': 'Dirección de retiro'
+        };    
+        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
+        modal.onDidDismiss(data => {
+            console.log('f2 > modal dismissed > data param > ', data);
+            this.processAddressSearchResult(data);
+        });
+        modal.present();
+        console.log('f2 > modal present');
+    }
+
+    adjustPickupTimeFrom(e) {
+        console.log('f2 > new hour to > ', e.hour.value);
+        console.log('f2 > current hour to > ', this.pickupTimeFrom.value);
+    }
+
+    adjustPickupTimeTo(e) {
+        console.log('f2 > new hour from > ', e.hour.value);
+        console.log('f2 > current hour to > ', this.pickupTimeTo.value);
+    }
+
+    populateContactWithUserData() {
+        console.log('f2 > populate pickupContact with current user');
+        this.pickupPersonName.setValue(this.user.displayName);
+        this.pickupPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
+        this.pickupPersonEmail.setValue(this.user.email);
+    }
+
+    resetPickupAddress() {
+        this.resetPickupAddressElements();
+    }
+
+    private resetPickupAddressElements() {
+        console.info('f2 > resetPickupAddressElements');
+        this.initMap();
+        this.populatePickupAddressInput('');
+        this.pickupAddressLine2.setValue('');
+        this.initPlaceDetails();
+
+        // init all sending address related
+        this.sending.pickupAddressSet = false;
+        this.sending.pickupAddressIsComplete = false;
+        this.sending.pickupAddressUserForcedValidation = false;
+        this.sending.pickupAddressPlaceId = '';
+        this.sending.pickupAddressLat = '';
+        this.sending.pickupAddressLng = '';            
+        this.sending.pickupAddressFullText = '';
+        this.sending.pickupAddressStreetShort = '';
+        this.sending.pickupAddressStreetLong = '';
+        this.sending.pickupAddressNumber = '';
+        this.sending.pickupAddressPostalCode = '';            
+        this.sending.pickupAddressCityAreaShort = '';
+        this.sending.pickupAddressCityAreaLong = '';
+        this.sending.pickupAddressCityShort = '';
+        this.sending.pickupAddressCityLong = '';
+        this.sending.pickupAddressStateAreaShort = '';
+        this.sending.pickupAddressStateAreaLong = '';        
+        this.sending.pickupAddressStateShort = '';
+        this.sending.pickupAddressStateLong = '';
+        this.sending.pickupAddressCountry = '';         
+    }    
+
+    /**
+     *  NAVIGATION
      */
 
     private goToNextStep() {
@@ -185,17 +226,10 @@ export class SendingCreate2Page implements OnInit {
     }
 
     /**
-     *  HELPERS - this.sending
+     *  SUBMIT HELPERS
      */
-    
-    private getSendingFromParams() {
-        console.info('f2 > getSendingFromParams');
-        console.log('f2 > param > ', this.navParams.get('sending'));
-        this.sending = this.navParams.get('sending');
-        this.populatePage();
-    }
 
-    private updateSending():void {
+    private update():void {
         console.info('f2 > updateSending > save form values in this.sending');   
         // address - aux
         this.sending.pickupAddressLine2 = this.pickupAddressLine2.value;
@@ -235,94 +269,25 @@ export class SendingCreate2Page implements OnInit {
     }
 
     /**
-     *  HELPERS - form
+     *  GOOGLE MAPS HELPERS
      */
 
-    private populatePage() {
-        console.info('f2 > populatePage with this.sending');
-        // map
-        if(this.sending.pickupAddressSet==true) {
-            console.info('f2 > populatePage > set map');
-            var latlng = {
-                lat: this.sending.pickupAddressLat,
-                lng: this.sending.pickupAddressLng,
-            }
-            console.log('f2 > populatePage > latlng > ', latlng);
-            this.setMapCenter(latlng);
-            this.addMapMarker(latlng);
-        }
-        // address
-        this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
-        this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
-        //datetime
-        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
-        this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
-        this.rangeFrom = this.sending.pickupTimeFrom;
-        this.rangeTo = this.sending.pickupTimeTo;
-        // contact
-        this.pickupPersonName.setValue(this.sending.pickupPersonName);
-        this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
-        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
+    private initMap() {
+        console.info('f2 > initMap');
+        this.map = null;
+        var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
+        let divMap = (<HTMLInputElement>document.getElementById('map'));
+        this.map = new google.maps.Map(divMap, {
+            center: point,
+            zoom: 10,
+            disableDefaultUI: true,
+            draggable: false,
+            clickableIcons: false,
+            zoomControl: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP            
+        });
+        console.log('f2 > initMap > map > ', this.map);
     }
-
-    private populatePickupAddressInput(fullAddress:string) {
-        console.log('f2 > populatePickupAddressInput > ', fullAddress);
-        this.pickupAddressFullText.setValue(fullAddress);
-    }
-
-    private resetPickupAddressElements() {
-        console.info('f2 > resetPickupAddressElements');
-        this.initMap();
-        this.populatePickupAddressInput('');
-        this.pickupAddressLine2.setValue('');
-        this.initPlaceDetails();
-
-        // init all sending address related
-        this.sending.pickupAddressSet = false;
-        this.sending.pickupAddressIsComplete = false;
-        this.sending.pickupAddressUserForcedValidation = false;
-        this.sending.pickupAddressPlaceId = '';
-        this.sending.pickupAddressLat = '';
-        this.sending.pickupAddressLng = '';            
-        this.sending.pickupAddressFullText = '';
-        this.sending.pickupAddressStreetShort = '';
-        this.sending.pickupAddressStreetLong = '';
-        this.sending.pickupAddressNumber = '';
-        this.sending.pickupAddressPostalCode = '';            
-        this.sending.pickupAddressCityAreaShort = '';
-        this.sending.pickupAddressCityAreaLong = '';
-        this.sending.pickupAddressCityShort = '';
-        this.sending.pickupAddressCityLong = '';
-        this.sending.pickupAddressStateAreaShort = '';
-        this.sending.pickupAddressStateAreaLong = '';        
-        this.sending.pickupAddressStateShort = '';
-        this.sending.pickupAddressStateLong = '';
-        this.sending.pickupAddressCountry = '';         
-    }
-
-    /**
-     *  HELPERS - Init
-     */
-
-    private initPlaceDetails() {
-        console.info('f2 > initPlaceDetails');
-        this.placeDetails = {
-            set: false
-        };
-    }
-
-    private setUser() {
-        this.user = this.users.getCurrentUser();
-        // set profile
-        this.users.getCurrentUserProfile()
-            .then((snapshot) => {
-                this.profile = snapshot.val();
-            });
-    }
-
-    /**
-     *  HELPERS - GOOGLE MAPS / pickupAddressFullText
-     */
 
     private processAddressSearchResult(item:any) {
         console.info('f2 > processAddressSearchResult');
@@ -336,8 +301,7 @@ export class SendingCreate2Page implements OnInit {
     }
 
     private setPlaceDetailAndPopulateOrReset(place_id:string):void {
-        console.info('f2 > setPlaceDetailAndPopulateOrReset');
-        console.log('f2 > setPlaceDetailAndPopulateOrReset > place_id > ', place_id);
+        console.info('f2 > setPlaceDetailAndPopulateOrReset > place_id > ', place_id);
         // init
         var self = this;
         var request = {
@@ -356,7 +320,7 @@ export class SendingCreate2Page implements OnInit {
                 // check enad populate
                 if(self.placesService.verifyDetailsMinRequirements(details)) {
                     console.log('f2 > getPlaceDetail > callback > details > verify ok ', details);
-                    // map
+                    // update map
                     let latlng = {
                         lat: place.geometry.location.lat(),
                         lng: place.geometry.location.lng()
@@ -391,23 +355,6 @@ export class SendingCreate2Page implements OnInit {
         }
     }
 
-    private initMap() {
-        console.info('f2 > initMap');
-        this.map = null;
-        var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
-        let divMap = (<HTMLInputElement>document.getElementById('map'));
-        this.map = new google.maps.Map(divMap, {
-            center: point,
-            zoom: 10,
-            disableDefaultUI: true,
-            draggable: false,
-            clickableIcons: false,
-            zoomControl: true,
-            mapTypeId: google.maps.MapTypeId.ROADMAP            
-        });
-        console.log('f2 > initMap > map > ', this.map);
-    }
-
     private setMapCenter(latlng: any):void {
         console.info('f2 > setMapCenter');
         console.log('f2 > setMapCenter > map', this.map);
@@ -423,5 +370,63 @@ export class SendingCreate2Page implements OnInit {
         });    
         this.mapMarkers.push(marker);
     }     
+
+    /**
+     *  INIT HELPERS
+     */
+
+    private setUser() {
+        this.user = this.users.getCurrentUser();
+        // set profile
+        this.users.getCurrentUserProfile()
+            .then((snapshot) => {
+                this.profile = snapshot.val();
+            });
+    }    
+
+    private getSendingFromParams() {
+        console.info('f2 > getSendingFromParams');
+        console.log('f2 > param > ', this.navParams.get('sending'));
+        this.sending = this.navParams.get('sending');
+    }
+
+    private populatePage() {
+        console.info('f2 > populatePage with this.sending');
+        // map
+        if(this.sending.pickupAddressSet==true) {
+            console.info('f2 > populatePage > set map');
+            var latlng = {
+                lat: this.sending.pickupAddressLat,
+                lng: this.sending.pickupAddressLng,
+            }
+            console.log('f2 > populatePage > latlng > ', latlng);
+            this.setMapCenter(latlng);
+            this.addMapMarker(latlng);
+        }
+        // address
+        this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
+        this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
+        //datetime
+        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
+        this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
+        this.rangeFrom = this.sending.pickupTimeFrom;
+        this.rangeTo = this.sending.pickupTimeTo;
+        // contact
+        this.pickupPersonName.setValue(this.sending.pickupPersonName);
+        this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
+        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
+    }
+
+    private populatePickupAddressInput(fullAddress:string) {
+        console.log('f2 > populatePickupAddressInput > ', fullAddress);
+        this.pickupAddressFullText.setValue(fullAddress);
+    }
+
+    private initPlaceDetails() {
+        console.info('f2 > initPlaceDetails');
+        this.placeDetails = {
+            set: false
+        };
+    }
 
 }

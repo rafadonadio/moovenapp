@@ -26,7 +26,7 @@
             <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="pickupAddressFullText"
-                    (click)="showSearchModal()"
+                    (click)="showPickupAddressSearchModal()"
                     readonly></ion-input>
             </ion-item> 
             <ion-item *ngIf="placeDetails.set==true">
@@ -71,7 +71,7 @@
             <ion-list-header>
                 Contacto para Retiro
                 <button ion-button outline item-right small 
-                    (click)="populateUserDataInContact()">Copiar mis datos</button>
+                    (click)="populateContactWithUserData()">Copiar mis datos</button>
             </ion-list-header>
             <ion-list inset>
                 <ion-item no-lines>
@@ -101,7 +101,8 @@
                 (click)="submit()">Siguiente</button>
             <button ion-button block color="primary" outline margin-top 
                 (click)="goBack()">Volver</button>                
-            <button ion-button block color="subdark" clear margin-top (click)="cancelSending()">Cancelar</button>
+            <button ion-button block color="subdark" clear margin-top 
+                (click)="cancel()">Cancelar</button>
         </div>
     </form>
 </ion-content>
