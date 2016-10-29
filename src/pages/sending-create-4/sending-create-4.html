@@ -50,7 +50,11 @@
         <ion-item no-lines>
             <ion-icon name="home" item-left></ion-icon>
             <p>Dirección</p>
-            <h2>{{ sending.pickupAddressFullText }}</h2>
+            <h2>{{ sending.pickupAddressStreetShort }} {{ sending.pickupAddressNumber }}</h2>
+            <h2 *ngIf="sending.pickupAddressCityAreaLong!=''">{{ sending.pickupAddressCityAreaLong }}</h2>  
+            <h3 *ngIf="sending.pickupAddressLine2!=''">{{ sending.pickupAddressLine2 }}</h3>          
+            <h2><span *ngIf="sending.pickupAddressPostalCode!=''">({{ sending.pickupAddressPostalCode }})</span> {{ sending.pickupAddressCityLong }}</h2>
+            <h2>{{ sending.pickupAddressStateLong }}</h2>            
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="time" item-left></ion-icon>
@@ -71,7 +75,11 @@
         <ion-item no-lines>
             <ion-icon name="pin" item-left></ion-icon>
             <p>Dirección</p>
-            <h2>{{ sending.dropAddressFullText }}</h2>
+            <h2>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h2>
+            <h2 *ngIf="sending.dropAddressCityAreaLong!=''">{{ sending.dropAddressCityAreaLong }}</h2>  
+            <h3 *ngIf="sending.dropAddressLine2!=''">{{ sending.dropAddressLine2 }}</h3>          
+            <h2><span *ngIf="sending.dropAddressPostalCode!=''">({{ sending.dropAddressPostalCode }})</span> {{ sending.dropAddressCityLong }}</h2>
+            <h2>{{ sending.dropAddressStateLong }}</h2> 
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="time" item-left></ion-icon>

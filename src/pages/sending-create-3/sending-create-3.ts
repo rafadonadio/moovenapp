@@ -254,7 +254,7 @@ export class SendingCreate3Page implements OnInit{
 
     private update() {
         console.log('f3 > save form values in this.sending');
-        this.sending.dropAddressFullText = this.dropAddressFullText.value;
+        this.sending.dropAddressLine2 = this.dropAddressLine2.value;
         this.sending.dropTimeFrom = this.dropTimeFrom.value;
         this.sending.dropTimeTo = this.dropTimeTo.value;
         this.sending.dropPersonName = this.dropPersonName.value;

@@ -17,7 +17,7 @@ page-sending-create-2 {
     .input-optional{
         margin-left: 20px;
         margin-top: 5px;
-        color: orange;
+        color: color($colors, warn);
     }    
     button.submit{
         margin-top: 30px;

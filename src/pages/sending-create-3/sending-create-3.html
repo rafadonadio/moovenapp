@@ -29,9 +29,10 @@
                     (click)="showAddressSearchModal()"
                     readonly></ion-input>
             </ion-item>
-            <ion-item *ngIf="placeDetails.set==true">
+            <ion-item *ngIf="sending.dropAddressSet==true">
+                <ion-label color="warn" stacked>Info adicional de la dirección</ion-label>
                 <ion-input type="text" clearInput 
-                    placeholder="Ingresa datos adicionales: piso, depto, etc" 
+                    placeholder="nro de piso, depto, oficina, etc" 
                     formControlName="dropAddressLine2"
                     ></ion-input>
             </ion-item>          
