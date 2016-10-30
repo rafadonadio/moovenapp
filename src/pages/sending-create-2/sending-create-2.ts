@@ -270,10 +270,8 @@ export class SendingCreate2Page implements OnInit {
 
     private processAddressSearchResult(item:any) {
         console.info('f2 > processAddressSearchResult');
-
         if(item){            
             // get place details with place_id
-            //this.setPlaceDetailAndPopulateOrReset(item.place_id);
             this.setPlaceDetails(item.place_id);
         }else{
             // item is undefined, cant process

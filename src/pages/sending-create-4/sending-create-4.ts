@@ -2,15 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { GoogleMapsDistanceService } from '../../providers/google-maps-service/google-maps-distance-service';
-import { GoogleMapsDirectionsService } from '../../providers/google-maps-service/google-maps-directions-service';
+import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
-
-declare var google:any;
 
 @Component({
     selector: 'page-sending-create-4',
@@ -19,6 +16,7 @@ declare var google:any;
 export class SendingCreate4Page implements OnInit {
 
     sending: any;
+    map: any;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -26,8 +24,7 @@ export class SendingCreate4Page implements OnInit {
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
         public sendings: SendingService,
-        public distanceSrv: GoogleMapsDistanceService,
-        public directionsSrv: GoogleMapsDirectionsService) {
+        public gmapsSrv: GoogleMapsService) {
     }
 
     ngOnInit() {
@@ -35,7 +32,9 @@ export class SendingCreate4Page implements OnInit {
         // get sending data
         this.getSendingFromParams();
         // calculate distance
+        this.initMap();
         this.getRoute();
+        // get price
     }
 
     /** 
@@ -172,30 +171,22 @@ export class SendingCreate4Page implements OnInit {
 
     private getRoute() {
         console.info('f4 > getRoute > init');
-        var origin = new google.maps.LatLng(this.sending.pickupAddressLat, this.sending.pickupAddressLng);
-        var destination = new google.maps.LatLng(this.sending.dropAddressLat, this.sending.dropAddressLng);
-        this.directionsSrv.getRoute(origin, destination)
+        // latlng
+        let origin = this.gmapsSrv.setlatLng(this.sending.pickupAddressLat, this.sending.pickupAddressLng);
+        let destination = this.gmapsSrv.setlatLng(this.sending.dropAddressLat, this.sending.dropAddressLng);
+        // display map
+        let directionsDisplay = this.gmapsSrv.getDirectionsRenderer();
+        directionsDisplay.setMap(this.map);
+        // get
+        this.gmapsSrv.getRouteDirections(origin, destination)
             .then((response) => {
                 console.log('f4 > getRoute success > ', response);
+                directionsDisplay.setDirections(response);
             })
             .catch((error) => {
                 console.error('f4 > getRoute > error > ', error);
             });        
     }
-
-    private getDistance() {
-        console.info('getDistance > init');
-        var origin = new google.maps.LatLng(this.sending.pickupAddressLat, this.sending.pickupAddressLng);
-        var destination = new google.maps.LatLng(this.sending.dropAddressLat, this.sending.dropAddressLng);
-        this.distanceSrv.getDistance(origin, destination)
-            .then((response) => {
-                console.log('getDistance result success', response);
-                this.setDistance(response);
-            }) 
-            .catch((error) => {
-                console.error('getDistance status error > ', error);
-            });
-   }    
 
     private setDistance(response: any) {
         console.log('f4 > setDistance > response > ', response);
@@ -228,5 +219,12 @@ export class SendingCreate4Page implements OnInit {
         console.log('f4 > param > ', this.navParams.get('sending'));
         this.sending = this.navParams.get('sending');
     }
+
+    private initMap() {
+        console.info('f4 > initMap');
+        let latlng = this.gmapsSrv.setlatLng(-34.603684, -58.381559);
+        let divMap = (<HTMLInputElement>document.getElementById('mapf4'));
+        this.map = this.gmapsSrv.initMap(latlng, divMap);
+    }  
 
 }

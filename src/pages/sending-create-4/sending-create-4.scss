@@ -45,6 +45,10 @@ page-sending-create-4 {
     ion-list.list-md ion-item ion-label h2,
     ion-list.list-ios ion-item ion-label h2{
         color: color($colors, primary);
-    }         
+    }     
 
+    #mapf4 {
+        height: 250px;
+        width: 100%;
+    }
 }

@@ -7,6 +7,15 @@ export class GoogleMapsService {
 
     constructor() {}
 
+    /////////////////
+    // google.maps //
+    /////////////////
+
+    setlatLng(lat:any, lng:any):any {
+       let latlng = new google.maps.LatLng(lat, lng);
+        return latlng;
+    }   
+
     ///////////////////// 
     // google.maps.MAP //
     /////////////////////
@@ -106,13 +115,6 @@ export class GoogleMapsService {
         return passed;
     }
 
-    setlatLng(lat:any, lng:any):any {
-        return {
-            lat: lat,
-            lng: lng
-        }
-    }
-
     initPlaceDetails() {
         var details = {
             set: false,       // is set, but may or not be complete
@@ -137,5 +139,63 @@ export class GoogleMapsService {
         return details;
     }
 
+    /////////////////////////////
+    //  google.maps.DIRECTIONS //
+    /////////////////////////////
+
+    getRouteDirections(start:any, end:any): Promise<any> {
+        let directionsSrv = new google.maps.DirectionsService;
+        return new Promise((resolve, reject) => {
+            directionsSrv.route({
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING',
+                unitSystem: google.maps.UnitSystem.METRIC,
+                region: 'AR',
+                avoidHighways: false,
+                avoidTolls: false
+            }, function (response, status) {
+                console.log('getRoute response > ', response);
+                console.log('getRoute status > ', status);                   
+                if (status === 'OK') {            
+                    resolve(response);
+                }else{
+                    console.log('getRoute > error > ', status);
+                    reject(response);                    
+                }
+            }); 
+        });
+    }
+
+    getDirectionsRenderer() {
+        return new google.maps.DirectionsRenderer();
+    }
+
+    //////////////////////////
+    // google.maps.DISTANCE //
+    //////////////////////////
+
+    getDistance(origin:any, destination:any):Promise<any> {
+        let service = new google.maps.DistanceMatrixService;
+        return new Promise((resolve, reject) =>{
+            service.getDistanceMatrix({
+                origins: [origin],
+                destinations: [destination],
+                travelMode: 'DRIVING',
+                unitSystem: google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            }, function (response, status) {
+                console.log('getDistance response > ', response);
+                console.log('getDistance status > ', status);                   
+                if (status == 'OK') {            
+                    resolve(response);
+                }else{
+                    console.log('f4 > calculateDistance > error > ', status);
+                    reject(response);                    
+                }
+            });          
+        });
+    }    
 
 }    
