@@ -11,7 +11,7 @@ export class GoogleMapsDistanceService {
         let service = new google.maps.DistanceMatrixService;
         return new Promise((resolve, reject) =>{
             service.getDistanceMatrix({
-                origins: ['kj kj kj k jk j'],
+                origins: [origin],
                 destinations: [destination],
                 travelMode: 'DRIVING',
                 unitSystem: google.maps.UnitSystem.METRIC,
