@@ -37,8 +37,10 @@ import { AuthenticationService } from '../providers/authentication-service/authe
 import { ProfileService } from '../providers/profile-service/profile-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { UsersService } from '../providers/users-service/users-service';
-import { GoogleMapsPlacesService } from '../providers/google-maps-places-service/google-maps-places-service';
-import { GoogleMapsDistanceService } from '../providers/google-maps-distance-service/google-maps-distance-service';
+import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
+import { GoogleMapsPlacesService } from '../providers/google-maps-service/google-maps-places-service';
+import { GoogleMapsDistanceService } from '../providers/google-maps-service/google-maps-distance-service';
+import { GoogleMapsDirectionsService } from '../providers/google-maps-service/google-maps-directions-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 
@@ -119,8 +121,10 @@ import { CapitalizePipe } from '../pipes/capitalize-pipe';
     ProfileService,
     SendingService,    
     UsersService,
+    GoogleMapsService,
     GoogleMapsPlacesService,
-    GoogleMapsDistanceService
+    GoogleMapsDistanceService,
+    GoogleMapsDirectionsService
   ],
 })
 export class AppModule {}

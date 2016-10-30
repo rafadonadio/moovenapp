@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
-import { GoogleMapsPlacesService } from '../../providers/google-maps-places-service/google-maps-places-service';
+import { GoogleMapsPlacesService } from '../../providers/google-maps-service/google-maps-places-service';
 
 import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';

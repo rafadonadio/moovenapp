@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
 
-declare var google:any;
+import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
+
 
 @Component({
     selector: 'page-modal-search-map-address',
@@ -12,18 +13,16 @@ export class ModalSearchMapAddressPage implements OnInit{
     modalTitle:string = '';
     autocompleteItems: any;
     autocomplete: any;
-    acService:any;
-    placesService: any;
 
     constructor(public navCtrl: NavController,
         public params:NavParams,
         public viewCtrl:ViewController,
-        public alertCtrl: AlertController) { 
+        public alertCtrl: AlertController,
+        public gmapsSrv: GoogleMapsService) { 
     }
 
     ngOnInit() {
         this.modalTitle = this.params.get('modalTitle');
-        this.acService = new google.maps.places.AutocompleteService();
         this.autocompleteItems = [];
         this.autocomplete = {
             query: ''
@@ -62,20 +61,19 @@ export class ModalSearchMapAddressPage implements OnInit{
             return;
         }
         let self = this;
-        let config = { 
-            types:  ['geocode'],
-            input: this.autocomplete.query, 
-            componentRestrictions: { country: 'AR' } 
-        }
-        this.acService.getPlacePredictions(config, function (predictions, status) {
-            console.log('modal > getPlacePredictions > status > ', status);
-            self.autocompleteItems = [];
-            if(predictions && predictions.length > 0) {            
-                predictions.forEach(function (prediction) {              
-                    self.autocompleteItems.push(prediction);
-                });
-            }
-        });
+        this.gmapsSrv.getPlacePredictions(this.autocomplete.query)
+            .then((predictions) => {
+                console.log('modal > updateSearch > predictions count > ', predictions.length);
+                self.autocompleteItems = [];
+                if(predictions && predictions.length > 0) {            
+                    predictions.forEach(function (prediction) {              
+                        self.autocompleteItems.push(prediction);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log('modal > updateSearch > error > ', error);
+            });
     }
 
     showAlertHelp() {
@@ -86,12 +84,5 @@ export class ModalSearchMapAddressPage implements OnInit{
         });
         alert.present();
     }
-
-    /**
-     *  PRIVATE
-     */
-
-
-
 
 }

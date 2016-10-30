@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { GoogleMapsDistanceService } from '../../providers/google-maps-distance-service/google-maps-distance-service';
+import { GoogleMapsDistanceService } from '../../providers/google-maps-service/google-maps-distance-service';
+import { GoogleMapsDirectionsService } from '../../providers/google-maps-service/google-maps-directions-service';
 
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
@@ -25,7 +26,8 @@ export class SendingCreate4Page implements OnInit {
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
         public sendings: SendingService,
-        public distanceSrv: GoogleMapsDistanceService) {
+        public distanceSrv: GoogleMapsDistanceService,
+        public directionsSrv: GoogleMapsDirectionsService) {
     }
 
     ngOnInit() {
@@ -33,7 +35,7 @@ export class SendingCreate4Page implements OnInit {
         // get sending data
         this.getSendingFromParams();
         // calculate distance
-        this.getDistance();
+        this.getRoute();
     }
 
     /** 
@@ -168,13 +170,26 @@ export class SendingCreate4Page implements OnInit {
             });
     }
 
+    private getRoute() {
+        console.info('f4 > getRoute > init');
+        var origin = new google.maps.LatLng(this.sending.pickupAddressLat, this.sending.pickupAddressLng);
+        var destination = new google.maps.LatLng(this.sending.dropAddressLat, this.sending.dropAddressLng);
+        this.directionsSrv.getRoute(origin, destination)
+            .then((response) => {
+                console.log('f4 > getRoute success > ', response);
+            })
+            .catch((error) => {
+                console.error('f4 > getRoute > error > ', error);
+            });        
+    }
+
     private getDistance() {
-        console.log('getDistance > init');
+        console.info('getDistance > init');
         var origin = new google.maps.LatLng(this.sending.pickupAddressLat, this.sending.pickupAddressLng);
         var destination = new google.maps.LatLng(this.sending.dropAddressLat, this.sending.dropAddressLng);
         this.distanceSrv.getDistance(origin, destination)
             .then((response) => {
-                console.info('getDistance result success', response);
+                console.log('getDistance result success', response);
                 this.setDistance(response);
             }) 
             .catch((error) => {

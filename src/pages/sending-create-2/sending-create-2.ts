@@ -4,14 +4,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
-import { GoogleMapsPlacesService } from '../../providers/google-maps-places-service/google-maps-places-service';
+import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
 
-declare var google:any;
 
 @Component({
     selector: 'page-sending-create-2',
@@ -50,7 +49,7 @@ export class SendingCreate2Page implements OnInit {
         public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
-        public placesService: GoogleMapsPlacesService,
+        public gmapsService: GoogleMapsService,
         public modalCtrl: ModalController) {
     }
 
@@ -271,101 +270,70 @@ export class SendingCreate2Page implements OnInit {
 
     private processAddressSearchResult(item:any) {
         console.info('f2 > processAddressSearchResult');
+
         if(item){            
             // get place details with place_id
-            this.setPlaceDetailAndPopulateOrReset(item.place_id);
+            //this.setPlaceDetailAndPopulateOrReset(item.place_id);
+            this.setPlaceDetails(item.place_id);
         }else{
             // item is undefined, cant process
             console.error('f2 > processAddressSearchResult > item selected in modal is undefined > ', item);
         }    
     }
 
-    private setPlaceDetailAndPopulateOrReset(place_id:string):void {
-        console.info('f2 > setPlaceDetailAndPopulateOrReset > place_id > ', place_id);
-        // init
-        var self = this;
-        var request = {
-            placeId: place_id
-        };
-        // init google service
-        let service = this.placesService.newService(this.map);
-        // run
-        service.getDetails(request, callback);
-        // callback
-        function callback(place, status) {
-            if (status == google.maps.places.PlacesServiceStatus.OK) {
-                console.log('f2 > getPlaceDetail > callback > place > ', place);
-                // extract all iterate address_components result
-                let details = self.placesService.extractAddressComponents(place);
-                // check enad populate
-                if(self.placesService.verifyDetailsMinRequirements(details)) {
-                    console.log('f2 > getPlaceDetail > callback > details > verify ok ', details);
-                    // update map
-                    let latlng = {
-                        lat: place.geometry.location.lat(),
-                        lng: place.geometry.location.lng()
-                    }
-                    self.setMapCenter(latlng);
-                    self.addMapMarker(latlng);
+    private setPlaceDetails(place_id:string) {
+        console.info('f2 > setPlaceDetails > init');
+        this.gmapsService.getPlaceDetails(place_id, this.map)
+            .then((place) => {
+                console.log('f2 > setPlaceDetails > success ');
+                let details = this.gmapsService.extractPlaceDetails(place);
+                console.log('details extracted > ', details);
+                if(this.gmapsService.isPlaceAddressComplete(details)) {
+                    let latlng = this.gmapsService.setlatLng(details.lat, details.lng);
+                    this.setMapCenter(latlng);
+                    this.addMapMarker(latlng); 
                     // populate
-                    self.placeDetails = details;
-                    self.placeDetails.set = true;
-                    self.placeDetails.complete = true;
-                    self.populateAddressInput(details.full_address);
+                    this.placeDetails = details;
+                    this.placeDetails.set = true;
+                    this.placeDetails.complete = true;
+                    this.populateAddressInput(details.full_address);
                     // save
-                    self.updateAddressDetails();
+                    this.updateAddressDetails();                           
                 }else{
-                    // verify failed
-                    console.error('f2 > getPlaceDetail > callback > details > verify failed ', details);
+                     console.error('f2 > setPlaceDetails > address incomplete ', details);
                     // alert user
-                    let alert = self.alertCtrl.create({
+                    let alert = this.alertCtrl.create({
                         title: 'Dirección incompleta',
                         subTitle: 'Debe indicarse una dirección de retiro exacta, que incluya nombre de calle, númeración y ciudad. Vuelve a intentarlo.',
                         buttons: ['Cerrar']
                     });
                     alert.present();                    
-                    self.placeDetails.set = false;
-                    self.placeDetails.complete = false;
-                }
-                console.log('f2 > getPlaceDetail > callback > this.placeDetails ', self.placeDetails);
-            }else{
-                // service status failed
-                console.error('f2 > setPlaceDetail > PlacesServiceStatus not OK > ', status);
-            }
-        }
+                    this.placeDetails.set = false;
+                    this.placeDetails.complete = false;                    
+                }    
+            })
+            .catch((error) => {
+                console.error('f2 > setPlaceDetails > error > ', error);
+            });
     }
 
     private setMapCenter(latlng: any):void {
         console.info('f2 > setMapCenter');
-        console.log('f2 > setMapCenter > map', this.map);
         this.map.setCenter(latlng);
         this.map.setZoom(15);       
     }
 
     private addMapMarker(latlng:any):void {
         console.info('f2 > addMapMarker');
-        var marker = new google.maps.Marker({
-          map: this.map,
-          position: latlng
-        });    
+        let marker = this.gmapsService.addMapMarker(latlng, this.map);
         this.mapMarkers.push(marker);
     }     
 
     private initMap() {
         console.info('f2 > initMap');
-        this.map = null;
-        var point = {lat: -34.603684, lng: -58.381559}; // Buenos Aires
+        let latlng = this.gmapsService.setlatLng(-34.603684, -58.381559);
         let divMap = (<HTMLInputElement>document.getElementById('mapf2'));
-        this.map = new google.maps.Map(divMap, {
-            center: point,
-            zoom: 10,
-            disableDefaultUI: true,
-            draggable: false,
-            clickableIcons: false,
-            zoomControl: true,
-            mapTypeId: google.maps.MapTypeId.ROADMAP            
-        });
-        console.log('f2 > initMap > map > ', this.map);
+        this.map = this.gmapsService.initMap(latlng, divMap);
     }
 
     /**
@@ -383,9 +351,9 @@ export class SendingCreate2Page implements OnInit {
 
     private initPlaceDetails() {
         console.info('f2 > initPlaceDetails');
-        this.placeDetails = this.placesService.initDetails();
+        this.placeDetails = this.gmapsService.initPlaceDetails();
     }
-
+ 
     private getSendingFromParams() {
         console.info('f2 > getSendingFromParams');
         console.log('f2 > param > ', this.navParams.get('sending'));
