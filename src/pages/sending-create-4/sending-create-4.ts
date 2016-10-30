@@ -17,6 +17,7 @@ export class SendingCreate4Page implements OnInit {
 
     sending: any;
     map: any;
+    routeDetails: any;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -33,6 +34,7 @@ export class SendingCreate4Page implements OnInit {
         this.getSendingFromParams();
         // calculate distance
         this.initMap();
+        this.initRouteDetails();
         this.getRoute();
         // get price
     }
@@ -180,35 +182,35 @@ export class SendingCreate4Page implements OnInit {
         // get
         this.gmapsSrv.getRouteDirections(origin, destination)
             .then((response) => {
-                console.log('f4 > getRoute success > ', response);
-                directionsDisplay.setDirections(response);
+                if(response.status === 'OK'){
+                    console.log('f4 > getRoute success > ', response);
+                    // show directions in map
+                    directionsDisplay.setDirections(response);
+                    // get routeDetails
+                    this.routeDetails = this.gmapsSrv.inspectRouteDetails(response);
+                    // update sending
+                    this.updateSendingRoute();
+                }else{
+                    console.error('f4 > getRoute > response error > ', response.status);
+                }
             })
             .catch((error) => {
                 console.error('f4 > getRoute > error > ', error);
             });        
     }
 
-    private setDistance(response: any) {
-        console.log('f4 > setDistance > response > ', response);
-        var origins = response.originAddresses;
-        var destinations = response.destinationAddresses;
-        for (var i = 0; i < origins.length; i++) {
-            var results = response.rows[i].elements;
-            for (var j = 0; j < results.length; j++) {
-                var element = results[j];
-                if(element.status == 'OK') {
-                    console.info('setDistance result > element.status > OK ');
-                    var distance = element.distance.text;
-                    var duration = element.duration.text;
-                    var from = origins[i];
-                    var to = destinations[j];
-                    console.info('setDistance result ', i, ' > ', element, distance, duration, from, to);
-                }else{
-                    console.info('setDistance result > element.status > error ', element.status);
-                }    
-            }
-        }
+    /**
+     * Sending
+     */
+
+    private updateSendingRoute() {
+        this.sending.routeDistanceMt = this.routeDetails.totalDistance.meters;
+        this.sending.routeDistanceKm = this.routeDetails.totalDistance.kms;
+        this.sending.routeDistanceTxt = this.routeDetails.totalDistance.text;
+        this.sending.routeDurationMin = this.routeDetails.totalDuration.min;
+        this.sending.routeDurationTxt = this.routeDetails.totalDuration.text;                
     }
+
 
     /**
      *  INIT 
@@ -218,6 +220,10 @@ export class SendingCreate4Page implements OnInit {
         console.log('f4 > get navParams > this.sending');
         console.log('f4 > param > ', this.navParams.get('sending'));
         this.sending = this.navParams.get('sending');
+    }
+
+    private initRouteDetails() {
+        this.routeDetails = this.gmapsSrv.initRouteDetails();
     }
 
     private initMap() {

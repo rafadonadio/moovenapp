@@ -22,6 +22,17 @@
             <div id="mapf4"></div>
         </div>        
         <ion-list-header>
+            Mapa
+        </ion-list-header>
+        <ion-item no-lines>
+            <ion-icon name="pin" item-left></ion-icon>
+            <p>Distancia aproximada *<br><small>(distancia aproximada promedio)</small><p>
+            <h2>{{ sending.routeDistanceTxt }}</h2>
+            <div margin></div>
+            <p>Duración estimada *<br><small>(tiempo estimado en condiciones óptimas)</small><p>
+            <h2>{{ sending.routeDurationTxt }}</h2>            
+        </ion-item>
+        <ion-list-header>
             Objeto
             <button ion-button outline item-right (click)="goBack(1)">Modificar</button>
         </ion-list-header>
@@ -101,9 +112,6 @@
             <ion-icon name="card" item-left></ion-icon>
             <p>Costo del envío</p>
             <h2>$ 79,00</h2>
-            <div margin></div>
-            <p>Distancia aproximada<p>
-            <h2>15 km</h2>
         </ion-item>
     </ion-list>
     <div margin>

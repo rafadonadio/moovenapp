@@ -77,8 +77,8 @@ export class GoogleMapsService {
     }
 
     // get all address components
-    extractPlaceDetails(place:any):any {
-        console.info('gmapService > extractPlaceDetails > init');
+    inspectPlaceDetails(place:any):any {
+        console.info('gmapService > inspectPlaceDetails > init');
         // init
         var details = this.initPlaceDetails();
         // run
@@ -94,7 +94,7 @@ export class GoogleMapsService {
                 details.components[addressType].long = place.address_components[i]['long_name'];
             }                                     
         }    
-        console.info('gmapService > extractPlaceDetails > done');
+        console.info('gmapService > inspectPlaceDetails > done');
         return details;
     }
 
@@ -167,9 +167,40 @@ export class GoogleMapsService {
         });
     }
 
+    inspectRouteDetails(routeResponse:any):any {
+        // detail
+        let details = this.initRouteDetails();
+        // we are using 1 waypoint (A to B), so there is only one "leg" to read
+        let leg = routeResponse.routes[0].legs[0];
+        // distance
+        details.totalDistance.meters = leg.distance.value;
+        details.totalDistance.kms = leg.distance.value/1000;
+        details.totalDistance.text = leg.distance.text;
+        // duration
+        details.totalDuration.min = leg.duration.value;
+        details.totalDuration.text = leg.duration.text;
+        return details;
+    }
+
     getDirectionsRenderer() {
         return new google.maps.DirectionsRenderer();
     }
+
+    initRouteDetails() {
+        var details = {
+            totalDistance: {
+                meters: 0,  // in meters
+                kms: 0,     // in km
+                text: ''    // textual
+            },
+            totalDuration: {
+                min: 0,     // minutes
+                text: ''    // textual
+            }
+        }
+        return details;
+    }
+    
 
     //////////////////////////
     // google.maps.DISTANCE //

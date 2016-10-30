@@ -281,7 +281,7 @@ export class SendingCreate3Page implements OnInit{
         this.gmapsService.getPlaceDetails(place_id, this.map)
             .then((place) => {
                 console.log('f3 > setPlaceDetails > success ');
-                let details = this.gmapsService.extractPlaceDetails(place);
+                let details = this.gmapsService.inspectPlaceDetails(place);
                 console.log('details extracted > ', details);
                 if(this.gmapsService.isPlaceAddressComplete(details)) {
                     let latlng = this.gmapsService.setlatLng(details.lat, details.lng);
