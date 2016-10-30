@@ -1,7 +1,4 @@
-import {
-    GoogleMapsPlacesService
-} from '../../../.tmp/providers/google-maps-places-service/google-maps-places-service';
-import { Component, OnInit, state } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
@@ -36,7 +33,7 @@ export class SendingCreate4Page implements OnInit {
         // get sending data
         this.getSendingFromParams();
         // calculate distance
-        this.calculateDistance();
+        this.getDistance();
     }
 
     /** 
@@ -171,39 +168,40 @@ export class SendingCreate4Page implements OnInit {
             });
     }
 
-    private calculateDistance() {
-        var service = this.distanceSrv.newService();
+    private getDistance() {
+        console.log('getDistance > init');
         var origin = new google.maps.LatLng(this.sending.pickupAddressLat, this.sending.pickupAddressLng);
         var destination = new google.maps.LatLng(this.sending.dropAddressLat, this.sending.dropAddressLng);
-        service.getDistanceMatrix({
-            origins: [origin],
-            destinations: [destination],
-            travelMode: 'DRIVING',
-            unitSystem: google.maps.UnitSystem.METRIC,
-            avoidHighways: false,
-            avoidTolls: false
-        }, callback);
+        this.distanceSrv.getDistance(origin, destination)
+            .then((response) => {
+                console.info('getDistance result success', response);
+                this.setDistance(response);
+            }) 
+            .catch((error) => {
+                console.error('getDistance status error > ', error);
+            });
+   }    
 
-        function callback(response, status) {
-            if (status == 'OK') {
-                var origins = response.originAddresses;
-                var destinations = response.destinationAddresses;
-                for (var i = 0; i < origins.length; i++) {
-                    var results = response.rows[i].elements;
-                    for (var j = 0; j < results.length; j++) {
-                        var element = results[j];
-                        var distance = element.distance.text;
-                        var duration = element.duration.text;
-                        var from = origins[i];
-                        var to = destinations[j];
-                        console.info('callback result ', i, ' > ',element, distance, duration, from, to);
-                    }
-                }
-            }else{
-                console.log('f4 > calculateDistance > error > ', status);
+    private setDistance(response: any) {
+        console.log('f4 > setDistance > response > ', response);
+        var origins = response.originAddresses;
+        var destinations = response.destinationAddresses;
+        for (var i = 0; i < origins.length; i++) {
+            var results = response.rows[i].elements;
+            for (var j = 0; j < results.length; j++) {
+                var element = results[j];
+                if(element.status == 'OK') {
+                    console.info('setDistance result > element.status > OK ');
+                    var distance = element.distance.text;
+                    var duration = element.duration.text;
+                    var from = origins[i];
+                    var to = destinations[j];
+                    console.info('setDistance result ', i, ' > ', element, distance, duration, from, to);
+                }else{
+                    console.info('setDistance result > element.status > error ', element.status);
+                }    
             }
         }
-
     }
 
     /**
