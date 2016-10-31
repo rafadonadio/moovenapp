@@ -98,6 +98,7 @@ export class SendingCreatePage implements OnInit {
                     text: 'Si',
                     handler: () => {
                         console.log('f1 > cancel > yes, cancel');
+                        alert.dismiss();
                         this.navCtrl.setRoot(SendingsPage);
                     }
                 }

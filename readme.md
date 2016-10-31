@@ -131,13 +131,25 @@ ___
     - camera
     - fix rangeTime change (min 2 hr)
     - go back, go forward
-    - set maps
-    - set autocomplete
+    - maps autocomplete
+    - maps set center
+    - maps set marker
+    - maps set directions
+    - maps set distance  
     - save and set    
     - ID format AAA-999
 
     
-        
+# device debug
+    
+    "Attempt to use a destroyed view: detectChanges"
+    "Error: Attempt to use a destroyed view: detectChanges 
+        at e [as constructor] (file:///android_asset/www/build/main.js:5:13512)
+
+    main.js:6 EXCEPTION: Firebase.update failed: 
+        First argument contains undefined in property 
+            'usersSendings.BEmkzTfvzDNefFWbTDDsJ1qBNUF3.active.-KVN54Ed6CM0TrqKcfVw.pickupAddressCity'
+
 
 > to-do´s
     - settings  
@@ -156,3 +168,5 @@ ___
     - notificaciones
     - pagos
     - ayuda
+
+

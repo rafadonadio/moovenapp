@@ -29,6 +29,7 @@ export class ModalSearchMapAddressPage implements OnInit{
         };        
     }
 
+    
     dismiss() {
         console.log('modal > dismiss');
         this.viewCtrl.dismiss();
