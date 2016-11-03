@@ -5,7 +5,7 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 // constants
 const NODE_SENDINGS = '/sendings/';
 const NODE_USERSENDINGS = '/usersSendings/';
-// const NODE_SENDINGSSTATUS = '/sendingsStatus/';
+const NODE_SENDINGSSTATUS = '/sendingsStatus/';
 // const NODE_PROGRESSSTATUS = '/sendingsProgress/';
 
 @Injectable()
@@ -57,11 +57,11 @@ export class SendingService {
         // save
         var updates = {};
         // save ref to user
-        updates['/usersSendings/' + this.user.uid + '/active/'+ key] = userSending;
+        updates[NODE_USERSENDINGS + this.user.uid + '/active/'+ key] = userSending;
         // save status
-        updates['/sendingsStatus/' + key] = status;
+        updates[NODE_SENDINGSSTATUS + key] = status;
         // update
-        updates['/sendings/' + key] = request;
+        updates[NODE_SENDINGS + key] = request;
         return this.fd.ref().update(updates);
     }
 
