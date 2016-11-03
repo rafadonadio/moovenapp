@@ -62,6 +62,7 @@ export class SettingsPage implements OnInit{
 
     private setUser(){
         this.user = this.users.getCurrentUser();
+        console.log('testing > af > user > ', this.user);        
         // set profile
         this.users.getCurrentUserProfile()
             .then((snapshot) => {

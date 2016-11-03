@@ -69,13 +69,9 @@ export class MyApp{
             { title: 'Notificaciones', component: NotificationsPage, icon: 'notifications', navigationType: 'push' },
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' }
         ];
-        this.onAuthStateChange();
 
-    }
-
-    onAuthStateChange() {
-        // observer for user auth
-        this.usersService.onAuthStateChanged((user) => {
+        // observer for firebase auth
+        af.auth.subscribe( user => {
             if (user) {
                 console.log('app > authStateChanged > user signed in > user uid', user.uid);
                 this.currentUser = user;
@@ -89,7 +85,7 @@ export class MyApp{
                 console.log('app > authStateChanged > no user signed in, user null');
                 this.nav.setRoot(StartPage);
             }
-        });
+        });        
 
     }
 

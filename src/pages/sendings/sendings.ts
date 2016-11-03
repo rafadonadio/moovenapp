@@ -46,23 +46,22 @@ export class SendingsPage implements OnInit{
      */
 
     private getAllActive() {
-        // init array
-        var self = this;
-        var ref = this.sendingsService.getAllActiveRef();
-        ref.on('value', snapshot => {
-            let result = snapshot.val();
-            console.log(result);
-            self.sendings = [];        
-            for (var key in result) {
-                var item = result[key];
-                self.sendings.push(item);
-                console.log('array > ', self.sendings);
-            }
-            if(self.sendings.length > 0) {
-                self.sendingsEmpty = false;
-                console.log(self.sendingsEmpty);
-            }
-        });
+        let listRef = this.sendingsService.getAllActiveRef();
+        listRef
+            .subscribe(snapshots => {
+                console.log('sendings > getAllActive > subscribe > init');                
+                this.sendings = [];
+                snapshots.forEach(snapshot => {
+                    //let key = snapshot.key;
+                    let item = snapshot.val();
+                    this.sendings.push(item); 
+                });
+                if(this,SendingsPage.length > 0) {
+                    this.sendingsEmpty = false;
+                }else{
+                    this.sendingsEmpty = true;
+                }
+            });
     }
 
 }

@@ -2,16 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { UsersService } from '../users-service/users-service';
 
-declare var firebase: any;
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 @Injectable()
 export class SendingService {
 
     user: any;
-
-    constructor(private users: UsersService) {
-        this.setUser();
-    }
+    sendingsList: FirebaseListObservable<any>;
 
     // FIREBASE DATABASE REFERENCES
     sendingsNode = '/sendings/';
@@ -23,6 +20,10 @@ export class SendingService {
     fdRef: any = firebase.database().ref();
     sendingsRef: any = firebase.database().ref(this.sendingsNode);
 
+    constructor(private users: UsersService,
+        public af: AngularFire) {
+        this.setUser();
+    }
 
     /**
      * Init sending data object
@@ -71,16 +72,26 @@ export class SendingService {
 
     /**
      * Get REF of All sendings from current user
-     * @return {[type]} [description]
+     * @return firebase snapshots
      */
     getAllActiveRef() {
-        console.log('sendings.getAllActiveRef > user uid > ', this.user.uid);
-        return this.fd.ref('/usersSendings/' + this.user.uid + '/active/');
+        return this.getAllMyActiveSendingsRef();
     }
+
 
     /**
      *  PRIVATE
-     */
+     */ 
+
+    // return snapshots
+    private getAllMyActiveSendingsRef() {
+        return this.af.database.list('/usersSendings/' + this.user.uid + '/active/', { preserveSnapshot: true });
+    }
+
+    // return list observable, 
+    private getAllMyActiveSendings() {
+        return this.af.database.list('/usersSendings/' + this.user.uid + '/active/');
+    }    
 
     private setUser(){
         this.user = this.users.getCurrentUser();

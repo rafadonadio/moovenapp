@@ -85,10 +85,6 @@ export class UsersService {
      *  AUTHENTICATION
      */
 
-    // authentication state change watcher
-    onAuthStateChanged(callback) {
-        return this.auth.onAuthStateChanged(callback);
-    }
     // login
     signIn(user: UserCredentials) {
         return this.auth.signInWithEmailAndPassword(user.email, user.password);
