@@ -26,7 +26,7 @@ export class AccountEmailVerificationService {
     // First save the current request and then send the email
     create(user: any) {
         // get db timestamp
-        var timestamp = '';//firebase.database.ServerValue.TIMESTAMP;
+        var timestamp = firebase.database.ServerValue.TIMESTAMP;
         // data to set in account
         var basicdata = {
             email: user.email,
@@ -77,7 +77,7 @@ export class AccountEmailVerificationService {
                 console.log('snapshot.val / snapshot.key', snapshot.val(), snapshot.key);
                 // update database value
                 var key = snapshot.key;
-                var timestamp = '';//firebase.database.ServerValue.TIMESTAMP;
+                var timestamp = firebase.database.ServerValue.TIMESTAMP;
                 var updates = {};
                 updates['/usersAccount/' + uid + '/emailVerified/'] = emailVerified;
                 updates['/usersEmailVerificationAttempts/' + key + '/verified/'] = emailVerified;

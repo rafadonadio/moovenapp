@@ -38,7 +38,7 @@ export class AccountService {
             phoneVerificationAttempts: {},
             lastTosVersionAccepted: '',
             active: 1,
-            createdAt: '' //firebase.database.ServerValue.TIMESTAMP
+            createdAt: firebase.database.ServerValue.TIMESTAMP
         };
         return account;
     }

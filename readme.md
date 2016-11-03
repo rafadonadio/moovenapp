@@ -122,7 +122,7 @@ ___
 
 **0.4.0**
 - update ionic RC0 > RC1 
-    // firebase type fix firebase/firebase.d.ts:286
+    // firebase type fix angularfire/node_modules/firebase/firebase.d.ts:286
     declare namespace firebase.database.ServerValue {
         var TIMESTAMP: any;
     }        

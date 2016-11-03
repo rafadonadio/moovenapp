@@ -42,7 +42,7 @@ export class MyApp{
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public af:AngularFire) {
+        public af:AngularFire) {     
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -69,7 +69,6 @@ export class MyApp{
             { title: 'Notificaciones', component: NotificationsPage, icon: 'notifications', navigationType: 'push' },
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' }
         ];
-
         this.onAuthStateChange();
 
     }
