@@ -46,7 +46,7 @@ export class SendingsPage implements OnInit{
      */
 
     private getAllActive() {
-        let listRef = this.sendingsService.getAllActiveRef();
+        let listRef = this.sendingsService.getAllMyActiveRef();
         listRef
             .subscribe(snapshots => {
                 console.log('sendings > getAllActive > subscribe > init');                

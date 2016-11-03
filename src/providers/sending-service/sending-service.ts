@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
-
 import { UsersService } from '../users-service/users-service';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
-import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+// constants
+const NODE_SENDINGS = '/sendings/';
+const NODE_USERSENDINGS = '/usersSendings/';
+// const NODE_SENDINGSSTATUS = '/sendingsStatus/';
+// const NODE_PROGRESSSTATUS = '/sendingsProgress/';
 
 @Injectable()
 export class SendingService {
@@ -10,15 +14,10 @@ export class SendingService {
     user: any;
     sendingsList: FirebaseListObservable<any>;
 
-    // FIREBASE DATABASE REFERENCES
-    sendingsNode = '/sendings/';
-    statusNode = '/sendingsStatus/';
-    progressNode = '/sendingsProgress/';
-
     // DATABASE
     fd: any = firebase.database();
     fdRef: any = firebase.database().ref();
-    sendingsRef: any = firebase.database().ref(this.sendingsNode);
+    sendingsRef: any = firebase.database().ref(NODE_SENDINGS);
 
     constructor(private users: UsersService,
         public af: AngularFire) {
@@ -49,16 +48,12 @@ export class SendingService {
             ref: request.ref,
             currentStatus: status.current,
             timestamp: request.timestamp,
-            objectType: request.objectType,
-            objectShortName: request.objectShortName,
-            pickupAddressFullText: request.pickupAddressFullText,
-            pickupAddressCity: request.pickupAddressCity,
             dropAddressCity: request.dropAddressCity,
             dropAddressFullText: request.dropAddressFullText,
         }
 
         // set db key
-        var key = this.fdRef.child(this.sendingsNode).push().key;
+        var key = this.fdRef.child(NODE_SENDINGS).push().key;
         // save
         var updates = {};
         // save ref to user
@@ -74,7 +69,7 @@ export class SendingService {
      * Get REF of All sendings from current user
      * @return firebase snapshots
      */
-    getAllActiveRef() {
+    getAllMyActiveRef() {
         return this.getAllMyActiveSendingsRef();
     }
 
@@ -85,13 +80,8 @@ export class SendingService {
 
     // return snapshots
     private getAllMyActiveSendingsRef() {
-        return this.af.database.list('/usersSendings/' + this.user.uid + '/active/', { preserveSnapshot: true });
-    }
-
-    // return list observable, 
-    private getAllMyActiveSendings() {
-        return this.af.database.list('/usersSendings/' + this.user.uid + '/active/');
-    }    
+        return this.af.database.list(NODE_USERSENDINGS + this.user.uid + '/active/', { preserveSnapshot: true });
+    }  
 
     private setUser(){
         this.user = this.users.getCurrentUser();
