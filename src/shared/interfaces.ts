@@ -19,7 +19,7 @@ export interface UserAccount {
     },
     lastTosVersionAccepted: string,
     active: number,
-    createdAt: string
+    createdAt: any
 }
 
 export interface UserProfile {
