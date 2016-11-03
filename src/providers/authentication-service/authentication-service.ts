@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-declare var firebase: any;
+import { AngularFire } from 'angularfire2';
 
 @Injectable()
 export class AuthenticationService {
@@ -9,7 +9,7 @@ export class AuthenticationService {
     fbAuth: any = firebase.auth;
     authRef: any = firebase.auth();
 
-    constructor() {}
+    constructor(public af:AngularFire) {}
 
 
     /**

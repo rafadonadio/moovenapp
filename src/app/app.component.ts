@@ -12,7 +12,8 @@ import { NotificationsPage } from '../pages/notifications/notifications';
 import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
-declare var firebase: any;
+import { AngularFire } from 'angularfire2';
+
 declare var google: any;
 declare var window: any;
 
@@ -40,7 +41,8 @@ export class MyApp{
         public menu: MenuController,
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
-        public loadingCtrl: LoadingController) {
+        public loadingCtrl: LoadingController,
+        public af:AngularFire) {
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.

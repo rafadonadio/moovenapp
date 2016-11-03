@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { UserAccount } from '../../shared/interfaces';
 
-declare var firebase: any;
+import { AngularFire } from 'angularfire2';
+
 
 @Injectable()
 export class AccountService {
@@ -14,7 +15,7 @@ export class AccountService {
     usersAccountRef: any = firebase.database().ref(this.node);
 
 
-    constructor() {
+    constructor(public af:AngularFire) {
 
     }
 
@@ -37,7 +38,7 @@ export class AccountService {
             phoneVerificationAttempts: {},
             lastTosVersionAccepted: '',
             active: 1,
-            createdAt: firebase.database.ServerValue.TIMESTAMP
+            createdAt: '' //firebase.database.ServerValue.TIMESTAMP
         };
         return account;
     }

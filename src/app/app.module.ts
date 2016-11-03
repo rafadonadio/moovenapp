@@ -41,6 +41,21 @@ import { GoogleMapsService } from '../providers/google-maps-service/google-maps-
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 
+// AngularFire
+import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
+// AF2 Settings
+export const firebaseConfig = {
+    apiKey: "AIzaSyC6tq6l0EVThcHsvkWHEoPYenGZg2p7PiU",
+    authDomain: "mooven-f9e3c.firebaseapp.com",
+    databaseURL: "https://mooven-f9e3c.firebaseio.com",
+    storageBucket: "mooven-f9e3c.appspot.com",
+    messagingSenderId: "301998553220"
+};
+const myFirebaseAuthConfig = {
+    provider: AuthProviders.Password,
+    method: AuthMethods.Password
+}
+
 @NgModule({
   declarations: [
     MyApp,
@@ -77,7 +92,8 @@ import { CapitalizePipe } from '../pipes/capitalize-pipe';
     CapitalizePipe
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [

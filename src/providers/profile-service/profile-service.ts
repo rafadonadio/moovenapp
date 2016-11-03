@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-declare var firebase: any;
+import { AngularFire } from 'angularfire2';
 
 @Injectable()
 export class ProfileService {
@@ -12,7 +12,7 @@ export class ProfileService {
     usersProfileRef: any = firebase.database().ref(this.node);
 
 
-    constructor() {
+    constructor(public af:AngularFire) {
 
     }
 
