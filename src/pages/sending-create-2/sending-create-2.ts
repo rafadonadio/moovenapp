@@ -5,12 +5,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
+import { DateService } from '../../providers/date-service/date-service';
 
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
 
+const MIN_TIMEDIFF_MINUTES = 120;
 
 @Component({
     selector: 'page-sending-create-2',
@@ -49,8 +51,9 @@ export class SendingCreate2Page implements OnInit {
         public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
+        public modalCtrl: ModalController,        
         public gmapsService: GoogleMapsService,
-        public modalCtrl: ModalController) {
+        public dateSrv: DateService) {
     }
 
     ngOnInit() {
@@ -151,13 +154,41 @@ export class SendingCreate2Page implements OnInit {
     }
 
     adjustPickupTimeFrom(e) {
-        console.log('f2 > new hour to > ', e.hour.value);
-        console.log('f2 > current hour to > ', this.pickupTimeFrom.value);
+        console.group('adjustPickupTimeFrom');
+        console.log('from/to > ', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let subtract = MIN_TIMEDIFF_MINUTES;
+            let newFrom = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);
+            newFrom.subtract(subtract, "minutes");
+            console.log('from > ', from.format('HH:mm'));            
+            console.log('newTo > ', newFrom.format('HH:mm'));
+            this.pickupTimeFrom.setValue(newFrom.format('HH:mm'));
+        }else{
+            console.log('diff ok');
+        }
+        console.groupEnd();        
     }
 
     adjustPickupTimeTo(e) {
-        console.log('f2 > new hour from > ', e.hour.value);
-        console.log('f2 > current hour to > ', this.pickupTimeTo.value);
+        console.group('adjustPickupTimeTo');
+        console.log('from/to > ', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let add = MIN_TIMEDIFF_MINUTES;
+            let newTo = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
+            newTo.add(add, "minutes");
+            console.log('from > ', from.format('HH:mm'));            
+            console.log('newTo > ', newTo.format('HH:mm'));
+            this.pickupTimeTo.setValue(newTo.format('HH:mm'));
+        }else{
+            console.log('diff ok');
+        }
+        console.groupEnd();
     }
 
     populateContactWithUserData() {
