@@ -135,10 +135,14 @@ ___
     - maps set center
     - maps set marker
     - maps set directions
-    - maps set distance  
+    - maps set distance
+
+**0.5.0**
+- update ionic RC1 > RC2      
     - save and set    
     - ID format AAA-999
 
+    
     
 # device debug
     
