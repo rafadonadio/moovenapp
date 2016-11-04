@@ -5,11 +5,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
+import { DateService } from '../../providers/date-service/date-service';
 
 import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
+
+const MIN_TIMEDIFF_MINUTES = 120;
 
 @Component({
     selector: 'page-sending-create-3',
@@ -48,8 +51,9 @@ export class SendingCreate3Page implements OnInit{
         public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
+        public modalCtrl: ModalController,
         public gmapsService: GoogleMapsService,
-        public modalCtrl: ModalController) {
+        public dateSrv: DateService) {
     }
 
     ngOnInit() {
@@ -151,13 +155,41 @@ export class SendingCreate3Page implements OnInit{
     }
 
     adjustDropTimeFrom(e) {
-        console.log('f3 > new hour to > ', e.hour.value);
-        console.log('f3 > current hour to > ', this.dropTimeFrom.value);
+        console.group('adjustPickupTimeFrom');
+        console.log('from/to > ', this.dropTimeFrom.value, this.dropTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.dropTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.dropTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let subtract = MIN_TIMEDIFF_MINUTES;
+            let newFrom = this.dateSrv.setTimeMoment(this.dropTimeTo.value);
+            newFrom.subtract(subtract, "minutes");
+            console.log('from > ', from.format('HH:mm'));            
+            console.log('newTo > ', newFrom.format('HH:mm'));
+            this.dropTimeFrom.setValue(newFrom.format('HH:mm'));
+        }else{
+            console.log('diff ok');
+        }
+        console.groupEnd();        
     }
 
     adjustDropTimeTo(e) {
-        console.log('f3 > new hour from > ', e.hour.value);
-        console.log('f3 > current hour to > ', this.dropTimeTo.value);
+        console.group('adjustPickupTimeTo');
+        console.log('from/to > ', this.dropTimeFrom.value, this.dropTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.dropTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.dropTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let add = MIN_TIMEDIFF_MINUTES;
+            let newTo = this.dateSrv.setTimeMoment(this.dropTimeFrom.value);
+            newTo.add(add, "minutes");
+            console.log('from > ', from.format('HH:mm'));            
+            console.log('newTo > ', newTo.format('HH:mm'));
+            this.dropTimeTo.setValue(newTo.format('HH:mm'));
+        }else{
+            console.log('diff ok');
+        }
+        console.groupEnd();
     }
 
     populateContactWithUserData() {
