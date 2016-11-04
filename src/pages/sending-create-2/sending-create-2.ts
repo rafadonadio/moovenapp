@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, AlertController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, AlertController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
@@ -51,7 +51,8 @@ export class SendingCreate2Page implements OnInit {
         public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
-        public modalCtrl: ModalController,        
+        public modalCtrl: ModalController,
+        public toastCtrl: ToastController,        
         public gmapsService: GoogleMapsService,
         public dateSrv: DateService) {
     }
@@ -163,9 +164,11 @@ export class SendingCreate2Page implements OnInit {
             let subtract = MIN_TIMEDIFF_MINUTES;
             let newFrom = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);
             newFrom.subtract(subtract, "minutes");
-            console.log('from > ', from.format('HH:mm'));            
-            console.log('newTo > ', newFrom.format('HH:mm'));
-            this.pickupTimeFrom.setValue(newFrom.format('HH:mm'));
+            let newFromString = newFrom.format('HH:mm');
+            console.log('newFrom/to: ', newFromString, to.format('HH:mm'));            
+            this.pickupTimeFrom.setValue(newFromString);
+            // show message
+            this.showTimeRangeToast('Desde', newFromString);            
         }else{
             console.log('diff ok');
         }
@@ -182,9 +185,11 @@ export class SendingCreate2Page implements OnInit {
             let add = MIN_TIMEDIFF_MINUTES;
             let newTo = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
             newTo.add(add, "minutes");
-            console.log('from > ', from.format('HH:mm'));            
-            console.log('newTo > ', newTo.format('HH:mm'));
-            this.pickupTimeTo.setValue(newTo.format('HH:mm'));
+            let newToString = newTo.format('HH:mm');
+            console.log('from/newTo: ', from.format('HH:mm'), newToString);
+            this.pickupTimeTo.setValue(newToString);
+            // show message
+            this.showTimeRangeToast('Hasta', newToString);
         }else{
             console.log('diff ok');
         }
@@ -231,6 +236,17 @@ export class SendingCreate2Page implements OnInit {
         this.sending.pickupAddressStateLong = '';
         this.sending.pickupAddressCountry = '';         
     }    
+
+    private showTimeRangeToast(input:string, newTime:string) {
+        let toast = this.toastCtrl.create({
+            message: 'Diferencia mínima del horario es 2 hs, se ajustó "' + input + '" a "' + newTime + '"',
+            duration: 6000,
+            position: 'bottom',
+            showCloseButton: true,
+            closeButtonText: 'OK'
+        });
+        toast.present();    
+    }
 
     /**
      *  NAVIGATION
