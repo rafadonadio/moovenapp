@@ -6,8 +6,9 @@ import { HashService } from '../hash-service/hash-service';
 
 // database nodes
 const DB_SENDINGS = '/sendings/';
-const DB_USERSENDINGS = '/usersSendings/';
-const DB_SENDINGSSTATUS = '/sendingsStatus/';
+const DB_USERS_SENDINGS = '/usersSendings/';
+const DB_SENDINGS_STATUS = '/sendingsStatus/';
+const DB_SENDINGS_HASHID = '/sendingsHashid/';
 // storage nodes
 const STRG_USER_FILES = '/userFiles/';
 
@@ -37,6 +38,7 @@ export class SendingService {
     }
 
     create(sending:any):Promise<any> {
+        console.log('create() > init');
         // set db reference
         sending.publicId = this.hashSrv.genId();
         // aditional values
@@ -44,27 +46,40 @@ export class SendingService {
         sending.userUid = this.user.uid;
 
         // init status
-        var status = this.initStatus();
+        let status = this.initStatus();
         status.enabled = true;
         status.current = 'enabled';
 
         // set basic sending data
-        var userSending = {
-            ref: sending.ref,
-            currentStatus: status.current,
+        let userSending = {
+            publicId: sending.publicId,
+            objectShortName: sending.objectShortName,
             timestamp: sending.timestamp,
-            dropAddressCity: sending.dropAddressCityLong,
-            dropAddressFullText: sending.dropAddressFullText,
+            pickupAddress: sending.pickupAddressStreetShort + ' ' + sending.pickupAddressNumber + ', ' + sending.pickupAddressCityShort,
+            dropAddress: sending.dropAddressStreetShort + ' ' + sending.dropAddressNumber + ', ' + sending.dropAddressCityShort,
+        }       
+        // set db key
+        let key = this.fdRef.child(DB_SENDINGS).push().key;
+
+        // upload image
+        if(this.sendingsRef.objectImageSet) {
+            this.uploadSendingImageURL(key, this.sendingsRef.objectImageUrl)
+                .then((result) => {
+                    console.log(result);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
 
-        // set db key
-        var key = this.fdRef.child(DB_SENDINGS).push().key;
         // save
-        var updates = {};
+        let updates = {};
         // save ref to user
-        updates[DB_USERSENDINGS + this.user.uid + '/active/'+ key] = userSending;
+        updates[DB_USERS_SENDINGS + this.user.uid + '/active/'+ key] = userSending;
         // save status
-        updates[DB_SENDINGSSTATUS + key] = status;
+        updates[DB_SENDINGS_STATUS + key] = status;
+        // save publicid > hashid
+        updates[DB_SENDINGS_HASHID + sending.publicId] = key;
         // update
         updates[DB_SENDINGS + key] = sending;
         return this.fd.ref().update(updates);
@@ -82,9 +97,32 @@ export class SendingService {
      *  STORAGE
      */
 
-    uploadSendingImage() {
-
+    uploadSendingImageURL(sendingId:string, imageURL: string): Promise<any> {
+        console.group('uploadSendingImageURL');
+        const storageRef = firebase.storage().ref(STRG_USER_FILES);
+        return new Promise((resolve, reject) => {
+            // upload 
+            let uploadTask = storageRef
+                    .child(this.user.uid).child(sendingId)
+                    .putString(imageURL, 'base64', {contentType: 'image/jpeg'});
+            uploadTask.on('state_changed', function(snapshot) {
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.info('Upload is ' + progress + '% done');
+            }, function (error:any) {
+                // error
+                console.log('failed > ', error.code);
+                reject(error);
+                console.groupEnd();
+            }, function() {
+                // success
+                let downloadURL = uploadTask.snapshot.downloadURL;
+                let ref = uploadTask.snapshot.ref;
+                console.log('success > ', downloadURL, ref);
+                console.groupEnd();                
+            });
+        });
     }
+
 
     /**
      *  PRIVATE
@@ -92,7 +130,7 @@ export class SendingService {
 
     // return snapshots
     private getAllMyActiveSendingsRef() {
-        return this.af.database.list(DB_USERSENDINGS + this.user.uid + '/active/', { preserveSnapshot: true });
+        return this.af.database.list(DB_USERS_SENDINGS + this.user.uid + '/active/', { preserveSnapshot: true });
     }  
 
     private setUser(){
@@ -123,7 +161,7 @@ export class SendingService {
             routeDurationMin: 0,
             routeDurationTxt: '',      
             objectShortName: '',
-            objectImageSet: '',
+            objectImageSet: false,
             objectImageUrl: '',
             objectType: '',
             objectNoValueDeclared: false,
@@ -155,19 +193,33 @@ export class SendingService {
             pickupPersonName: '',
             pickupPersonPhone: '',
             pickupPersonEmail: '',
+            dropAddressSet: false,
+            dropAddressIsComplete: false,
+            dropAddressUserForcedValidation: false,
+            dropAddressPlaceId: '',
+            dropAddressLat: '',
+            dropAddressLng: '',            
             dropAddressFullText: '',
-            dropAddressStreet: '',
+            dropAddressLine2: '',
+            dropAddressStreetShort: '',
+            dropAddressStreetLong: '',
             dropAddressNumber: '',
-            dropAddressCity: '',
-            dropAddressZipcode: '',
-            dropLat: '',
-            dropLng: '',
+            dropAddressPostalCode: '',
+            dropAddressCityAreaShort: '',
+            dropAddressCityAreaLong: '',            
+            dropAddressCityShort: '',
+            dropAddressCityLong: '',
+            dropAddressStateAreaShort: '',
+            dropAddressStateAreaLong: '',            
+            dropAddressStateShort: '',
+            dropAddressStateLong: '',
+            dropAddressCountry: '',
             dropDate: '',
-            dropTimeFrom: '14:00',
-            dropTimeTo: '16:00',
+            dropTimeFrom: '09:00',
+            dropTimeTo: '11:00',
             dropPersonName: '',
             dropPersonPhone: '',
-            dropPersonEmail: ''
+            dropPersonEmail: '',
         }
         return data;
     }

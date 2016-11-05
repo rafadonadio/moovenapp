@@ -56,7 +56,7 @@ export class SendingsPage implements OnInit{
                     let item = snapshot.val();
                     this.sendings.push(item); 
                 });
-                if(this,SendingsPage.length > 0) {
+                if(this.sendings.length > 0) {
                     this.sendingsEmpty = false;
                 }else{
                     this.sendingsEmpty = true;
