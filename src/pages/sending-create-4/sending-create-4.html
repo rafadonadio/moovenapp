@@ -112,6 +112,7 @@
             <ion-icon name="card" item-left></ion-icon>
             <p>Costo del envío</p>
             <h2>$ {{ sending.price }}</h2>
+            <p *ngIf="sending.priceMinFareApplied">* tarifa mínima aplicada</p>
         </ion-item>
     </ion-list>
     <div margin>

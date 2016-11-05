@@ -39,6 +39,7 @@ import { SendingService } from  '../providers/sending-service/sending-service';
 import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
+import { HashService } from '../providers/hash-service/hash-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 
@@ -136,7 +137,8 @@ const myFirebaseAuthConfig = {
     SendingService,    
     UsersService,
     GoogleMapsService,
-    DateService
+    DateService,
+    HashService
   ],
 })
 export class AppModule {}

@@ -10,7 +10,6 @@ import { NumberValidator } from '../../validators/number.validator';
 
 import { Camera } from 'ionic-native';
 
-
 @Component({
     selector: 'page-sending-create',
     templateUrl: 'sending-create.html'

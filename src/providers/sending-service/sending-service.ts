@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { UsersService } from '../users-service/users-service';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
-// constants
-const NODE_SENDINGS = '/sendings/';
-const NODE_USERSENDINGS = '/usersSendings/';
-const NODE_SENDINGSSTATUS = '/sendingsStatus/';
-// const NODE_PROGRESSSTATUS = '/sendingsProgress/';
+import { UsersService } from '../users-service/users-service';
+import { HashService } from '../hash-service/hash-service';
+
+// database nodes
+const DB_SENDINGS = '/sendings/';
+const DB_USERSENDINGS = '/usersSendings/';
+const DB_SENDINGSSTATUS = '/sendingsStatus/';
+// storage nodes
+const STRG_USER_FILES = '/userFiles/';
 
 @Injectable()
 export class SendingService {
@@ -17,10 +20,11 @@ export class SendingService {
     // DATABASE
     fd: any = firebase.database();
     fdRef: any = firebase.database().ref();
-    sendingsRef: any = firebase.database().ref(NODE_SENDINGS);
+    sendingsRef: any = firebase.database().ref(DB_SENDINGS);
 
-    constructor(private users: UsersService,
-        public af: AngularFire) {
+    constructor(public users: UsersService,
+        public af: AngularFire,
+        public hashSrv: HashService) {
         this.setUser();
     }
 
@@ -32,36 +36,37 @@ export class SendingService {
         return this.getSendingObject();
     }
 
-    create(request: any): Promise<any> {
-        // set ref data
-        request.ref = Math.floor((Math.random() * 10000000000) + 1);
-        request.timestamp = firebase.database.ServerValue.TIMESTAMP;
-        request.userUid = this.user.uid;
+    create(sending:any):Promise<any> {
+        // set db reference
+        sending.publicId = this.hashSrv.genId();
+        // aditional values
+        sending.timestamp = firebase.database.ServerValue.TIMESTAMP;
+        sending.userUid = this.user.uid;
 
         // init status
         var status = this.initStatus();
         status.enabled = true;
         status.current = 'enabled';
 
-        // set basic request data
+        // set basic sending data
         var userSending = {
-            ref: request.ref,
+            ref: sending.ref,
             currentStatus: status.current,
-            timestamp: request.timestamp,
-            dropAddressCity: request.dropAddressCity,
-            dropAddressFullText: request.dropAddressFullText,
+            timestamp: sending.timestamp,
+            dropAddressCity: sending.dropAddressCityLong,
+            dropAddressFullText: sending.dropAddressFullText,
         }
 
         // set db key
-        var key = this.fdRef.child(NODE_SENDINGS).push().key;
+        var key = this.fdRef.child(DB_SENDINGS).push().key;
         // save
         var updates = {};
         // save ref to user
-        updates[NODE_USERSENDINGS + this.user.uid + '/active/'+ key] = userSending;
+        updates[DB_USERSENDINGS + this.user.uid + '/active/'+ key] = userSending;
         // save status
-        updates[NODE_SENDINGSSTATUS + key] = status;
+        updates[DB_SENDINGSSTATUS + key] = status;
         // update
-        updates[NODE_SENDINGS + key] = request;
+        updates[DB_SENDINGS + key] = sending;
         return this.fd.ref().update(updates);
     }
 
@@ -73,6 +78,13 @@ export class SendingService {
         return this.getAllMyActiveSendingsRef();
     }
 
+    /**
+     *  STORAGE
+     */
+
+    uploadSendingImage() {
+
+    }
 
     /**
      *  PRIVATE
@@ -80,7 +92,7 @@ export class SendingService {
 
     // return snapshots
     private getAllMyActiveSendingsRef() {
-        return this.af.database.list(NODE_USERSENDINGS + this.user.uid + '/active/', { preserveSnapshot: true });
+        return this.af.database.list(DB_USERSENDINGS + this.user.uid + '/active/', { preserveSnapshot: true });
     }  
 
     private setUser(){
@@ -88,7 +100,7 @@ export class SendingService {
     }
 
     private initStatus() {
-        var status = {
+        let status = {
             current: '',
             enabled: false,
             payment: false,
@@ -99,17 +111,17 @@ export class SendingService {
         return status;
     }
     private getSendingObject(): any {
-        var data = {
-            ref: '',
+        let data = {
+            publicId: '',
             timestamp: '',
             userUid: '',
+            price: 0,   
+            priceMinFareApplied: false,               
             routeDistanceMt: 0,
             routeDistanceKm: 0,
             routeDistanceTxt: '',
             routeDurationMin: 0,
-            routeDurationTxt: '',
-            price: 0,   
-            priceMinFareApplied: false,         
+            routeDurationTxt: '',      
             objectShortName: '',
             objectImageSet: '',
             objectImageUrl: '',
