@@ -239,7 +239,7 @@ export class SendingCreate2Page implements OnInit {
 
     private showTimeRangeToast(input:string, newTime:string) {
         let toast = this.toastCtrl.create({
-            message: 'Diferencia mínima del horario es 2 hs, se ajustó "' + input + '" a "' + newTime + '"',
+            message: 'Indica al menos 2 hs de margen horario, se ajustó "' + input + '" a "' + newTime + '"',
             duration: 6000,
             position: 'bottom',
             showCloseButton: true,

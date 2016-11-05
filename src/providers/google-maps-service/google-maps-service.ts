@@ -152,7 +152,7 @@ export class GoogleMapsService {
                 travelMode: 'DRIVING',
                 unitSystem: google.maps.UnitSystem.METRIC,
                 region: 'AR',
-                avoidHighways: false,
+                avoidHighways: true,
                 avoidTolls: false
             }, function (response, status) {
                 console.log('getRoute response > ', response);

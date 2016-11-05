@@ -9,15 +9,23 @@ import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 
+const MIN_FARE_PRICE_IN_ARS = 75;
+const PRICE_PER_KM_IN_ARS = 10;
+
 @Component({
     selector: 'page-sending-create-4',
     templateUrl: 'sending-create-4.html',
 })
+
 export class SendingCreate4Page implements OnInit {
 
     sending: any;
     map: any;
     routeDetails: any;
+    price = {
+        value:0,
+        minFareApplied: false,
+    };
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -36,7 +44,6 @@ export class SendingCreate4Page implements OnInit {
         this.initMap();
         this.initRouteDetails();
         this.getRoute();
-        // get price
     }
 
     /** 
@@ -50,7 +57,7 @@ export class SendingCreate4Page implements OnInit {
     submit() {
         let alert = this.alertCtrl.create({
             title: 'Confirmar envío',
-            message: 'Se debitarán $79,00 de tu cuenta y tu envío será confirmado',
+            message: 'Se debitarán $' + this.sending.price + ' de tu cuenta y tu envío será confirmado',
             buttons: [
                 {
                     text: 'Cancelar',
@@ -188,7 +195,10 @@ export class SendingCreate4Page implements OnInit {
                     directionsDisplay.setDirections(response);
                     // get routeDetails
                     this.routeDetails = this.gmapsSrv.inspectRouteDetails(response);
+                    // set price
+                    this.setPrice();
                     // update sending
+                    this.updateSendingPrice();
                     this.updateSendingRoute();
                 }else{
                     console.error('f4 > getRoute > response error > ', response.status);
@@ -203,12 +213,34 @@ export class SendingCreate4Page implements OnInit {
      * Sending
      */
 
+    private setPrice():void {
+        console.log('setSendingPrice > ', this.routeDetails.totalDistance.kms + ' * ' + PRICE_PER_KM_IN_ARS);
+        let price = 0;
+        let minFareApplied = false;
+        let result = this.routeDetails.totalDistance.kms * PRICE_PER_KM_IN_ARS;
+        console.log('setSendingPrice > ', this.routeDetails.totalDistance.kms + ' * ' + PRICE_PER_KM_IN_ARS + ' = ' + price);
+        let roundResult = Math.round(result);
+        if(roundResult < MIN_FARE_PRICE_IN_ARS) {
+            price = MIN_FARE_PRICE_IN_ARS;
+            minFareApplied = true;
+        }else{
+            price = roundResult;
+        }
+        this.price.value = price;
+        this.price.minFareApplied = minFareApplied;
+    }
+
+    private updateSendingPrice() {
+        this.sending.price = this.price.value;
+        this.sending.priceMinFareApplied = this.price.minFareApplied; 
+    }
+
     private updateSendingRoute() {
         this.sending.routeDistanceMt = this.routeDetails.totalDistance.meters;
         this.sending.routeDistanceKm = this.routeDetails.totalDistance.kms;
         this.sending.routeDistanceTxt = this.routeDetails.totalDistance.text;
         this.sending.routeDurationMin = this.routeDetails.totalDuration.min;
-        this.sending.routeDurationTxt = this.routeDetails.totalDuration.text;                
+        this.sending.routeDurationTxt = this.routeDetails.totalDuration.text;               
     }
 
 
