@@ -24,23 +24,31 @@
         </button>
     </ion-list>
     <div [virtualScroll]="sendings" approxItemHeight="500px">
-        <ion-card *virtualItem="let item" (click)="goToDetail()">
+        <ion-card *virtualItem="let item" (click)="goToDetail(item.key)">
             <ion-item class="header">  
-                <h2>{{ item.objectShortName | capitalizePipe }}</h2>
-                <ion-note item-right>#{{ item.publicId }}</ion-note>
+                <h2>{{ item.data.objectShortName | capitalizePipe }}</h2>
+                <ion-note item-right>#{{ item.data.publicId }}</ion-note>
             </ion-item>                   
             <ion-item class="content">                 
-                <p><span>Desde</span> {{ item.pickupAddress }}</p>
-                <p><span>Hasta</span> {{ item.dropAddress }}</p> 
-                <p><span><small> {{ item.timestamp | ts2datePipe }}</small></span></p> 
+                <p><span>Desde</span> {{ item.data.pickupAddress }}</p>
+                <p><span>Hasta</span> {{ item.data.dropAddress }}</p> 
+                <p><span><small> {{ item.data.timestamp | ts2datePipe }}</small></span></p> 
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>    
             <ion-item class="footer">             
-                <ion-icon name="time" item-left class="active"></ion-icon> 
-                <ion-icon name="home" item-left></ion-icon>
-                <ion-icon name="pin" item-left></ion-icon>
-                <ion-icon name="checkmark-circle" item-left></ion-icon>            
-                <ion-note item-right>Aguardando transporte</ion-note>                   
+                <ion-icon name="time" item-left 
+                    [class.active]="item.data.currentStatus=='created' || item.data.currentStatus=='vacant'">
+                    </ion-icon> 
+                <ion-icon name="home" item-left
+                    [class.active]="item.data.currentStatus=='holdforpickup'">
+                    </ion-icon>
+                <ion-icon name="pin" item-left
+                    [class.active]="item.data.currentStatus=='intransit'">
+                </ion-icon>
+                <ion-icon name="checkmark-circle" item-left
+                    [class.active]="item.data.currentStatus=='completed'">
+                </ion-icon>            
+                <ion-note item-right>{{ getStatusMessage(item.data.currentStatus) }}</ion-note>                   
             </ion-item>                                      
         </ion-card>
     </div>  

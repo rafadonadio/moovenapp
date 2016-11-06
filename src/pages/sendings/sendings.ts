@@ -22,7 +22,8 @@ export class SendingsPage implements OnInit{
         this.getAllActive();
     }
 
-    goToDetail() {
+    goToDetail(key:string) {
+        console.log('go to detail > ', key);
         this.navCtrl.push(SendingDetailPage);
     }
 
@@ -41,6 +42,28 @@ export class SendingsPage implements OnInit{
         }, 2000);
     }
 
+    getStatusMessage(currentStatus) {
+        let message = '';
+        switch(currentStatus){
+            case 'created':
+                message = 'Procesando ...';
+                break;
+            case 'vacant':
+                message = 'Aguardando transporte';
+                break;
+            case 'holdforpickup':
+                message = 'Aguardando retiro';
+                break;
+            case 'intransit':
+                message = 'En transito';
+                break;                
+            case 'completed':
+                message = 'Entregado en destino';
+                break;                             
+        }
+        return message;
+    }
+
     /**
      *  PRIVATE
      */
@@ -52,8 +75,11 @@ export class SendingsPage implements OnInit{
                 console.log('sendings > getAllActive > subscribe > init');                
                 this.sendings = [];
                 snapshots.forEach(snapshot => {
-                    //let key = snapshot.key;
-                    let item = snapshot.val();
+                    let key = snapshot.key;
+                    let item = {
+                        key: key,
+                        data: snapshot.val(),
+                    };
                     this.sendings.push(item); 
                 });
                 if(this.sendings.length > 0) {
