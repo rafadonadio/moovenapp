@@ -32,8 +32,9 @@
             <ion-item class="content">                 
                 <p><span>Desde</span> {{ item.pickupAddress }}</p>
                 <p><span>Hasta</span> {{ item.dropAddress }}</p> 
-                <ion-icon name="arrow-forward" item-right></ion-icon>            
-            </ion-item>  
+                <p><span><small> {{ item.timestamp | ts2datePipe }}</small></span></p> 
+                <ion-icon name="arrow-forward" item-right></ion-icon>
+            </ion-item>    
             <ion-item class="footer">             
                 <ion-icon name="time" item-left class="active"></ion-icon> 
                 <ion-icon name="home" item-left></ion-icon>

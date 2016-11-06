@@ -42,6 +42,7 @@ import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
+import { Ts2DatePipe } from '../pipes/ts2date-pipe';
 
 // AngularFire
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
@@ -91,7 +92,8 @@ const myFirebaseAuthConfig = {
     UpdatePhoneNumberPage,
     VerifyPhonePage,
     // PIPES
-    CapitalizePipe
+    CapitalizePipe,
+    Ts2DatePipe
   ],
   imports: [
     IonicModule.forRoot(MyApp),

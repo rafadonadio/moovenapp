@@ -9,6 +9,7 @@ const DB_SENDINGS = '/sendings/';
 const DB_USERS_SENDINGS = '/usersSendings/';
 const DB_SENDINGS_STATUS = '/sendingsStatus/';
 const DB_SENDINGS_HASHID = '/sendingsHashid/';
+const DB_CHILD_ACTIVE = '/active/';
 // storage nodes
 const STRG_USER_FILES = '/userFiles/';
 
@@ -46,16 +47,31 @@ export class SendingService {
         // created  At
         sending.timestamp = firebase.database.ServerValue.TIMESTAMP;
         // user id
-        sending.userUid = this.user.uid;        
-        // status
-        let status = this.initStatus();
+        sending.userUid = this.user.uid;      
+        
+        /* init status */
+        let status:any = this.initStatus();
         status.enabled = true;
-        status.current = 'enabled';        
+        status.current = 'enabled';     
+
+        /* summary for quick view */
+        let summary = {
+            publicId: sending.publicId,
+            objectShortName: sending.objectShortName,
+            timestamp: sending.timestamp,
+            pickupAddress: sending.pickupAddressStreetShort + ' ' 
+                            + sending.pickupAddressNumber + ', ' 
+                            + sending.pickupAddressCityShort,
+            dropAddress: sending.dropAddressStreetShort + ' ' 
+                            + sending.dropAddressNumber + ', ' 
+                            + sending.dropAddressCityShort,
+        }
+
         // get a new db key 
         let newKey = this.fdRef.child(DB_SENDINGS).push().key;
 
         return new Promise((resolve, reject) => {
-            this.writeNewSending(sending, newKey)
+            this.writeNewSending(sending, summary, status, newKey)
                 .then(() => {
                     console.log('1- write success ');
                     // upload image
@@ -97,38 +113,31 @@ export class SendingService {
      *  DATABASE
      */ 
 
-    private writeNewSending(sending:any, newKey:string):Promise<any> {
-        console.log('writeNewSending() > init');
-        // basic sending for user node
-        let userSending = {
-            publicId: sending.publicId,
-            objectShortName: sending.objectShortName,
-            timestamp: sending.timestamp,
-            pickupAddress: sending.pickupAddressStreetShort + ' ' 
-                            + sending.pickupAddressNumber + ', ' 
-                            + sending.pickupAddressCityShort,
-            dropAddress: sending.dropAddressStreetShort + ' ' 
-                            + sending.dropAddressNumber + ', ' 
-                            + sending.dropAddressCityShort,
-        }      
+    private writeNewSending(sending:any, summary:any, status:any, newKey:string):Promise<any> {
+        console.log('writeNewSending() > init');     
         // create array with all data to write simultaneously
         let updates = {};
-        // user sending reference
-        updates[DB_USERS_SENDINGS + this.user.uid + '/active/'+ newKey] = userSending;
+        // sending full object
+        updates[DB_SENDINGS + newKey] = sending;        
         // sending status
         updates[DB_SENDINGS_STATUS + newKey] = status;
         // sending publicId hash reference 
         updates[DB_SENDINGS_HASHID + sending.publicId] = newKey;
-        // sending full object
-        updates[DB_SENDINGS + newKey] = sending;
+        // user sending reference
+        updates[DB_USERS_SENDINGS + this.user.uid + DB_CHILD_ACTIVE + newKey] = summary;
         // update and return promise
         return this.fd.ref().update(updates);
     }
-
+ 
     // return snapshots
     private getAllMyActiveSendingsRef() {
         return this.af.database
-                .list(DB_USERS_SENDINGS + this.user.uid + '/active/', { preserveSnapshot: true });
+                .list(DB_USERS_SENDINGS + this.user.uid + DB_CHILD_ACTIVE, { 
+                    preserveSnapshot: true,
+                    query: {
+                        orderByKey: true,
+                    } 
+                });
     }  
 
 

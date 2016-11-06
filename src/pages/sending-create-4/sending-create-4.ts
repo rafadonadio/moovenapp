@@ -161,7 +161,7 @@ export class SendingCreate4Page implements OnInit {
                     });
             })
             .catch((error) => {
-                console.log('f4 > create sending > error', error.code);
+                console.log('f4 > create sending > error', error);
                 loader.dismiss()
                     .then(() => {
                         let alertError = this.alertCtrl.create({
