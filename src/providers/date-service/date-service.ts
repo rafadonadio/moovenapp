@@ -17,6 +17,7 @@ export class DateService {
         return diff;
     }
 
+    // set moment from string format > HH:mm
     setTimeMoment(timeString:string): any{
         console.info('setTimeMoment');
         let timeArray:Array<any> = timeString.split(":");
@@ -28,5 +29,12 @@ export class DateService {
         return time;                      
     }
 
+    // transform a timestamp to date
+    transformTimestampToHuman(timestamp:string):string {
+        console.info('dateService > transformTimestampToHuman > timestamp > ', timestamp);
+        let day = moment(timestamp);
+        let human = day.format('DD/MM/YYYY HH:mm');
+        return human;
+    }
 
 }
