@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar color="primary">
-        <ion-title>Descripción del item</ion-title>
+        <ion-title>{{ sending.objectShortName }}</ion-title>
         <ion-buttons end>
             <button ion-button>
                 <ion-icon name="more"></ion-icon>
@@ -35,32 +35,32 @@
             <ion-item-divider dark>Estado</ion-item-divider>
             <ion-item no-lines>
                 <ion-icon name="send" item-left></ion-icon>
-                <h3>Envío #ABC-123 </h3>
-                <p>Registrado el 99/99/9999, 00:00 hs</p>
+                <h3>#{{ sending.publicId }}</h3>
+                <p>Registrado el {{ sending.timestamp | ts2datePipe }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
             <ion-item no-lines>
                 <ion-icon name="card" item-left></ion-icon>
                 <h3>Pago</h3>
-                <p>Se debitó $79.00 de tu cuenta</p>
+                <p>Se debitó ${{ sending.price }} de tu cuenta</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
             <ion-item no-lines>
                 <ion-icon name="person" item-left></ion-icon>
                 <h3>Transportista</h3>
-                <p>Confirmado</p>
-                <ion-icon name="checkmark" item-right></ion-icon>
+                <p>vacante</p>
+                <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item no-lines>
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
-                <p>01/08/2016 11:45</p>
-                <ion-icon name="checkmark" item-right></ion-icon>
+                <p></p>
+                <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item>
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entrega</h3>
-                <p>En transito</p>
+                <p></p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item-divider dark>Notificaciones</ion-item-divider>
@@ -107,14 +107,14 @@
 
         <ion-list *ngSwitchCase="'shipment'">
             <ion-list-header>Detalles del Envío</ion-list-header>
-            <ion-item-divider>Transportista
+            <ion-item-divider *ngIf="sending.status.vacant==false">Transportista
                 <button ion-button outline item-right icon-left
                     color="primary">
                     <ion-icon name="call"></ion-icon>
                     Llamar
                 </button> 
             </ion-item-divider>
-            <ion-item no-lines>
+            <ion-item no-lines *ngIf="sending.status.vacant==false">
                 <ion-thumbnail item-left>
                     <img src="http://placehold.it/200x200">
                 </ion-thumbnail>
@@ -126,8 +126,8 @@
                 <ion-item-divider>Precio</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="card" item-left light></ion-icon>
-                    <h3>Distancia aproximada: 15 km</h3>
-                    <h2><b>$ 79.00</b></h2>
+                    <h3>Distancia aproximada: {{ sending.routeDistanceTxt }}</h3>
+                    <h2><b>$ {{ sending.price }}</b></h2>
                 </ion-item>
                 <ion-item-divider>Objeto</ion-item-divider>
             </ion-item-group>
@@ -139,10 +139,10 @@
                     <ion-col width-50>
                         <ion-item no-lines>
                             <p>Objeto a enviar</p>
-                            <h2>Caja</h2>
+                            <h2>{{ sending.objectType }}</h2>
                             <br>
                             <p>Valor declarado</p>
-                            <h2>$1000,00</h2>
+                            <h2>$ {{ sending.objectDeclaredValue }}</h2>
                         </ion-item>
                     </ion-col>
                 </ion-row>

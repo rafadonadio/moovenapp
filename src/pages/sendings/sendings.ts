@@ -24,7 +24,11 @@ export class SendingsPage implements OnInit{
 
     goToDetail(key:string) {
         console.log('go to detail > ', key);
-        this.navCtrl.push(SendingDetailPage);
+        let service = this.sendingsService.getSending(key);
+        service.subscribe(snapshot => {
+            console.log('getSending > success');
+            this.navCtrl.push(SendingDetailPage, { sending: snapshot.val() });
+        });         
     }
 
     createSending() {
