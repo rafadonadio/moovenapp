@@ -6,7 +6,8 @@ import { HashService } from '../hash-service/hash-service';
 
 // database childs   
 const DB_CHILD_ACTIVE = '_active/';                          // status: created, vacant, holdforpickup, intransit, completed  
-const DB_CHILD_INACTIVE = 'inactive/';                       // status: the rest
+const DB_CHILD_INACTIVE = 'inactive/';
+const DB_CHILD_STATUS_LOG = 'statusLog/';                    
 // database nodes
 const DB_SENDINGS = 'sendings/';
 const DB_SENDINGS_HASHID_MAP = 'sendingsHashid/';
@@ -17,9 +18,9 @@ const DB_SENDINGS_CREATED = '_sendingsCreated/';            // status: created, 
 //const DB_SENDINGS_EXPIRED = 'sendingsExpired/';           // status: expired (vacant not assigned to shipper)
 //const DB_SENDINGS_COMPLETED = 'sendingsCompleted/';       // status: active that has been completed
 //const DB_SENDINGS_UNCONCLUDED = 'sendingsUnconcluded/';   // status: active unconcluded
-const DB_SENDINGS_UPDATES_LOG = 'sendingsUpdatesLog/';      // log all updates (triplicate in sendings and user)
+const DB_SENDINGS_STATUS_UPDATES_LOG = 'sendingsStatusUpdatesLog/';      // log all updates (triplicate in sendings and user)
 // shipper view
-//const DB_SENDINGS_VACANT = '_sendingsVacant/';               // status: vacant > shipper view
+const DB_SENDINGS_VACANT = '_sendingsVacant/';               // status: vacant > shipper view
 
 // storage nodes
 const STRG_USER_FILES = 'userFiles/';
@@ -53,9 +54,9 @@ export class SendingService {
         console.log('create() > init');
 
         /* init status */
-        let status:any = this.initStatus();
-        let newStatus = 'created';
-        status = this.setStatus(status, newStatus);   
+        let statusObj:any = this.initStatus();
+        let newStatus = 'vacant';
+        statusObj = this.setStatus(statusObj, newStatus);   
 
         /* Complete sending object */
         // gen public ID for reference
@@ -65,10 +66,10 @@ export class SendingService {
         // user id
         sending.userUid = this.user.uid;
         // status
-        sending.status = status;             
+        sending.status = statusObj;             
         
         /* summary for quick view and avoid db joins */
-        let summary = this.setSendingSummary(sending, status.current);
+        let summary = this.setSendingSummary(sending, statusObj.current);
 
         // get a new db key 
         let newKey = this.fdRef.child(DB_SENDINGS).push().key;
@@ -77,12 +78,13 @@ export class SendingService {
             this.writeNewSending(sending, summary, newKey)
                 .then(() => {
                     console.log('1- write success ');
+                    this.logSendingStatusUpdate(newKey, '', newStatus);
                     // upload image
                     if(sending.objectImageSet) {
                         console.log('2- uploadSendingImageURL > init');
                         this.uploadSendingImageURL(newKey, sending.objectImageUrl)
                             .then((result) => {
-                                console.log('upload image > success', result);
+                                console.log('1.b- upload image > success', result);
 
                                 // save image id
                                 // save image URL
@@ -91,16 +93,18 @@ export class SendingService {
                             });
                     }else{
                         // no image tu upload
-                        console.log('2- no image to upload');
+                        console.log('no image to upload');
                         resolve('OK');
                     }                    
                 })
-                .then(() => {
-                    console.log('set payment');
-                })
-                .then(() => {
-                    console.log('set sending as vacant');
-                })                
+                // .then(() => {
+                //     console.log('2- process payment and set status to enabled');
+                //     this.updateSendingStatusToEnabled(newKey, statusObj)
+                //         .then(() => {
+                //             console.log('3- set status to vacant');
+
+                //         });
+                // })                
                 .catch((error) => {
                     console.log('create(), something went wrong > ', error);
                     reject(error);
@@ -122,6 +126,21 @@ export class SendingService {
      *  DATABASE WRITE
      */ 
 
+    // private updateSendingStatusToEnabled(sendingId:any, statusObj:any):Promise<any> {
+    //     let newStatus = 'enabled';
+    //     this.logSendingStatusUpdate(sendingId, statusObj.current, newStatus);        
+    //     statusObj = this.setStatus(statusObj, newStatus);        
+    //     let updates = {};
+    //     // update sendings
+    //     updates[DB_SENDINGS + sendingId + '/status/'] = statusObj;
+    //     // update _sendingsCreated
+    //     updates[DB_SENDINGS_CREATED + sendingId + '/currentStatus/'] = newStatus;
+    //     // update userSendings
+    //     updates[DB_USERS_SENDINGS + this.user.uid + '/_active/' + sendingId + '/currentStatus/'] = newStatus;
+    //     // update and return promise
+    //     return this.fd.ref().update(updates);        
+    // }
+
     private writeNewSending(sending:any, summary:any, newKey:string):Promise<any> {
         console.log('writeNewSending() > init');     
         // create array with all data to write simultaneously
@@ -132,13 +151,38 @@ export class SendingService {
         updates[DB_SENDINGS_HASHID_MAP + sending.publicId] = newKey;
         /* Duplicates */
         // sending status
-        updates[DB_SENDINGS_CREATED + newKey] = summary;
+        updates[DB_SENDINGS_VACANT + newKey] = summary;
         // user active sendings reference
         updates[DB_USERS_SENDINGS + this.user.uid + '/' + DB_CHILD_ACTIVE + newKey] = summary;
         // update and return promise
         return this.fd.ref().update(updates);
     }
  
+    private logSendingStatusUpdate(sendingId:any, OldStatus:any, newStatus:any, relatedData:any = {}):void {
+        console.log('logSendingStatusUpdate');
+        // timestamp 
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        // set data        
+        let data = {
+            sendingId: sendingId,
+            oldStatus: OldStatus,
+            newStatus: newStatus,
+            timestamp: timestamp,
+            relatedData: relatedData
+        }
+        let updates = {};
+        // write to log
+        updates[DB_SENDINGS_STATUS_UPDATES_LOG + sendingId + '/' + newStatus] = data;
+        // write timestamp change to sending
+        updates[DB_SENDINGS + sendingId + '/' + DB_CHILD_STATUS_LOG + newStatus] = timestamp;     
+        this.fd.ref().update(updates)
+            .then(()=>{
+                console.log('logSendingStatusUpdate > success');
+            })
+            .catch((error) => {
+                console.log('logSendingStatusUpdate > error > ', error);
+            });
+    }
 
     /**
      *  DATABASE READ

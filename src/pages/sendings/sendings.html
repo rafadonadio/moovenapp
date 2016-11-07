@@ -37,7 +37,10 @@
             </ion-item>    
             <ion-item class="footer">             
                 <ion-icon name="time" item-left 
-                    [class.active]="item.data.currentStatus=='created' || item.data.currentStatus=='vacant'">
+                    [class.active]="item.data.currentStatus=='created' || item.data.currentStatus=='enabled'">
+                    </ion-icon> 
+                <ion-icon name="send" item-left 
+                    [class.active]="item.data.currentStatus=='vacant'">
                     </ion-icon> 
                 <ion-icon name="home" item-left
                     [class.active]="item.data.currentStatus=='holdforpickup'">
