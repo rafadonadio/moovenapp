@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 import { UsersService } from '../users-service/users-service';
 import { HashService } from '../hash-service/hash-service';
@@ -121,6 +121,10 @@ export class SendingService {
         return this.getMyLiveSendingsRef();
     }
 
+    getSending(id:string) {
+        return this.getSendingById(id);
+    }
+
 
     /**
      *  DATABASE WRITE
@@ -196,6 +200,11 @@ export class SendingService {
                 });
     }  
 
+    private getSendingById(sendingId:string) {
+        return this.af.database.object(DB_SENDINGS + sendingId, {
+            preserveSnapshot: true,
+        });       
+    }
 
     /**
      *  SENDING STATUS
