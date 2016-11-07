@@ -83,12 +83,12 @@ export class SendingService {
                     if(sending.objectImageSet) {
                         console.log('2- uploadSendingImageURL > init');
                         this.uploadSendingImageURL(newKey, sending.objectImageUrl)
-                            .then((result) => {
-                                console.log('1.b- upload image > success', result);
-
-                                // save image id
-                                // save image URL
-
+                            .then((snapshot) => {
+                                console.info('1.b- upload image > success');
+                                console.log('url > ', snapshot.downloadURL);
+                                console.log('ref > ', snapshot.ref.name, snapshot.ref.fullPath, );                               
+                                // save image URL, name, fullpath 
+                                this.updateSendingImage(newKey, snapshot.downloadURL, snapshot.ref.name, snapshot.ref.fullPath);
                                 resolve();                                
                             });
                     }else{
@@ -186,6 +186,23 @@ export class SendingService {
             .catch((error) => {
                 console.log('logSendingStatusUpdate > error > ', error);
             });
+    }
+
+    private updateSendingImage(sendingId, downloadURL, imageName, imageFullpathRef):void {
+        console.log('updateSendingImage > init');
+        let updates = {};
+        updates[DB_SENDINGS + sendingId + '/objectImageDownloadUrl/'] = downloadURL;
+        updates[DB_SENDINGS + sendingId + '/objectImageName/'] = imageName;
+        updates[DB_SENDINGS + sendingId + '/objectImageFullPathRef/'] = imageFullpathRef;
+        // delete objectImageURL because we already uploaded to storage
+        updates[DB_SENDINGS + sendingId + '/objectImageUrl/'] = '';        
+        this.fd.ref().update(updates)
+            .then(()=>{
+                console.log('updateSendingImage > success');
+            })
+            .catch((error) => {
+                console.log('updateSendingImage > error > ', error);
+            });        
     }
 
     /**
@@ -368,7 +385,10 @@ export class SendingService {
             status: {},      
             objectShortName: '',
             objectImageSet: false,
-            objectImageUrl: '',
+            objectImageUrl: '', // temp, this must be deleted once uploaded
+            objectImageDownloadUrl: '',
+            objectImageName: '',
+            objectImageFullPathRef: '',
             objectType: '',
             objectNoValueDeclared: false,
             objectDeclaredValue: 0,
@@ -454,10 +474,8 @@ export class SendingService {
                 console.groupEnd();
             }, function() {
                 // success
-                let downloadURL = uploadTask.snapshot.downloadURL;
-                let ref = uploadTask.snapshot.ref;
                 resolve(uploadTask.snapshot);
-                console.log('upload success > ', downloadURL, ref);
+                console.log('uploadSendingImageURL > success');
                 console.groupEnd();                
             });
         });

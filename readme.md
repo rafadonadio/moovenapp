@@ -139,8 +139,8 @@ ___
 
 **0.5.0**
 - update ionic RC1 > RC2      
-    - save and set    
-    - ID format AAA-999
+    - save and set - angularfire
+    - ID format AAA-999 (hashid)
 
     
     
