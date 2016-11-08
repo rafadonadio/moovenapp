@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController  } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
-import { UserCredentials } from '../../shared/interfaces';
+import { UserCredentials } from '../../shared/user-interface';
 import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 

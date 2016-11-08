@@ -36,6 +36,8 @@ import { AccountService } from '../providers/account-service/account-service';
 import { AuthenticationService } from '../providers/authentication-service/authentication-service';
 import { ProfileService } from '../providers/profile-service/profile-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
+import { SendingStatusService } from  '../providers/sending-service/sending-status/service';
+import { SendingStageService } from  '../providers/sending-service/sending-stage/service';
 import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
@@ -136,7 +138,9 @@ const myFirebaseAuthConfig = {
     AccountService,
     AuthenticationService,
     ProfileService,
-    SendingService,    
+    SendingService, 
+    SendingStatusService, 
+    SendingStageService,            
     UsersService,
     GoogleMapsService,
     DateService,

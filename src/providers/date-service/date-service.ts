@@ -37,4 +37,8 @@ export class DateService {
         return human;
     }
 
+    getTimestamp():any {
+        return moment();
+    }
+
 }

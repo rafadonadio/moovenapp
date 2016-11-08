@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 import { UsersService } from '../users-service/users-service';
+import { SendingStatusService } from '../sending-service/sending-status-service';
+import { SendingStageService } from '../sending-service/sending-stage-service';
 import { HashService } from '../hash-service/hash-service';
+
+import { SendingRequest, SendingCurrentStatus, SendingStages, StatusNode } from '../../shared/sending-interface';
 
 // database childs   
 const DB_CHILD_ACTIVE = '_active/';                          // status: created, vacant, holdforpickup, intransit, completed  
@@ -38,7 +42,9 @@ export class SendingService {
 
     constructor(public users: UsersService,
         public af: AngularFire,
-        public hashSrv: HashService) {
+        public hashSrv: HashService,
+        public statusSrv: SendingStatusService,
+        public stageSrv: SendingStageService) {
         this.setUser();
     }
 
@@ -47,16 +53,18 @@ export class SendingService {
      * @return {object} [description]
      */
     init() {
-        return this.getSendingObject();
+        return this.initSending();
     }
 
-    create(sending:any):Promise<any> {
+    create(sending:SendingRequest):Promise<any> {
         console.log('create() > init');
 
-        /* init status */
-        let statusObj:any = this.initStatus();
-        let newStatus = 'vacant';
-        statusObj = this.setStatus(statusObj, newStatus);   
+        /* init status and stages */
+        let newStage = this.stageSrv.stage.CREATED;
+        let currentStatus = this.statusSrv.get();  
+        let stages = this.stageSrv.get();        
+        /* update status and stage */
+        stages = this.stageSrv.update(stages, newStage);
 
         /* Complete sending object */
         // gen public ID for reference
@@ -66,10 +74,10 @@ export class SendingService {
         // user id
         sending.userUid = this.user.uid;
         // status
-        sending.status = statusObj;             
+        sending.currentStatus = currentStatus;             
         
         /* summary for quick view and avoid db joins */
-        let summary = this.setSendingSummary(sending, statusObj.current);
+        let summary = this.setSendingSummary(sending, currentStatus.current);
 
         // get a new db key 
         let newKey = this.fdRef.child(DB_SENDINGS).push().key;
@@ -99,7 +107,7 @@ export class SendingService {
                 })
                 // .then(() => {
                 //     console.log('2- process payment and set status to enabled');
-                //     this.updateSendingStatusToEnabled(newKey, statusObj)
+                //     this.updateSendingStatusToEnabled(newKey, currentStatus)
                 //         .then(() => {
                 //             console.log('3- set status to vacant');
 
@@ -130,22 +138,7 @@ export class SendingService {
      *  DATABASE WRITE
      */ 
 
-    // private updateSendingStatusToEnabled(sendingId:any, statusObj:any):Promise<any> {
-    //     let newStatus = 'enabled';
-    //     this.logSendingStatusUpdate(sendingId, statusObj.current, newStatus);        
-    //     statusObj = this.setStatus(statusObj, newStatus);        
-    //     let updates = {};
-    //     // update sendings
-    //     updates[DB_SENDINGS + sendingId + '/status/'] = statusObj;
-    //     // update _sendingsCreated
-    //     updates[DB_SENDINGS_CREATED + sendingId + '/currentStatus/'] = newStatus;
-    //     // update userSendings
-    //     updates[DB_USERS_SENDINGS + this.user.uid + '/_active/' + sendingId + '/currentStatus/'] = newStatus;
-    //     // update and return promise
-    //     return this.fd.ref().update(updates);        
-    // }
-
-    private writeNewSending(sending:any, summary:any, newKey:string):Promise<any> {
+    private writeNewSending(sending:SendingRequest, summary:any, newKey:string):Promise<any> {
         console.log('writeNewSending() > init');     
         // create array with all data to write simultaneously
         let updates = {};
@@ -227,7 +220,7 @@ export class SendingService {
      *  SENDING STATUS
      */
 
-    private setSendingSummary(sending:any, currentStatus:string):any {
+    private setSendingSummary(sending:SendingRequest, currentStatus:string):any {
         let summary:any = {}
         // base
         summary = {
@@ -324,57 +317,39 @@ export class SendingService {
         return sendingStatus;        
     }
 
-    private initStatus() {
-        let status = {
-            current: '',
-            // initial states
-            created: false,
-            enabled: false,
-            vacant: false,
-            expired: false,
-            // in progress states
-            holdforpickup: false,
-            intransit: false,
-            completed: false,
-            archived: false,
-            // issues states
-            canceled: false,
-            unconcluded: false,            
-        }
-        return status;
-    }
-
     /**
      *  SENDING OBJECT
      */
 
-    private getSendingPickupAddressSummary(sending:any) {
+    private getSendingPickupAddressSummary(sending:SendingRequest) {
         return sending.pickupAddressStreetShort 
                 + ' ' 
                 + sending.pickupAddressNumber + ', ' 
                 + sending.pickupAddressCityShort;
     }
 
-    private getSendingDropAddressSummary(sending:any) {
+    private getSendingDropAddressSummary(sending:SendingRequest) {
         return sending.dropAddressStreetShort 
                 + ' ' 
                 + sending.dropAddressNumber + ', ' 
                 + sending.dropAddressCityShort;
     }    
 
-    private getSendingPickupLatLng(sending:any) {
+    private getSendingPickupLatLng(sending:SendingRequest) {
         return { lat: sending.pickupAddressLat, lng: sending.pickupAddressLng };
     }
 
-    private getSendingDropLatLng(sending:any) {
+    private getSendingDropLatLng(sending:SendingRequest) {
         return { lat: sending.dropAddressLat, lng: sending.dropAddressLng };
     }    
 
-    private getSendingObject(): any {
+    private initSending(): SendingRequest {
         let data = {
             publicId: '',
-            timestamp: '',
+            timestamp: 0,
             userUid: '',
+            currentStatus: {},  
+            stages: {},               
             price: 0,   
             priceMinFareApplied: false,               
             routeDistanceMt: 0,
@@ -382,7 +357,6 @@ export class SendingService {
             routeDistanceTxt: '',
             routeDurationMin: 0,
             routeDurationTxt: '',
-            status: {},      
             objectShortName: '',
             objectImageSet: false,
             objectImageUrl: '', // temp, this must be deleted once uploaded
@@ -396,8 +370,8 @@ export class SendingService {
             pickupAddressIsComplete: false,
             pickupAddressUserForcedValidation: false,
             pickupAddressPlaceId: '',
-            pickupAddressLat: '',
-            pickupAddressLng: '',            
+            pickupAddressLat: 0,
+            pickupAddressLng: 0,            
             pickupAddressFullText: '',
             pickupAddressLine2: '',
             pickupAddressStreetShort: '',
@@ -423,8 +397,8 @@ export class SendingService {
             dropAddressIsComplete: false,
             dropAddressUserForcedValidation: false,
             dropAddressPlaceId: '',
-            dropAddressLat: '',
-            dropAddressLng: '',            
+            dropAddressLat: 0,
+            dropAddressLng: 0,            
             dropAddressFullText: '',
             dropAddressLine2: '',
             dropAddressStreetShort: '',

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { UserAccount } from '../../shared/interfaces';
+import { UserAccount } from '../../shared/user-interface';
 
 import { AngularFire } from 'angularfire2';
 
