@@ -161,14 +161,14 @@
                 </ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="home" item-left></ion-icon>
-                    <h2>Av. de Mayo 432</h2>
-                    <h3>Buenos Aires</h3>
+                    <h2>{{ sending.pickupAddressStreetShort }} {{ sending.pickupAddressNumber }}</h2>
+                    <h3>{{ sending.pickupAddressCityLong }}</h3>
                 </ion-item>
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
                     <p>Banda horaria para el retiro.</p>
-                    <h2>11:00 a 13:00</h2>
+                    <h2>{{ sending.pickupTimeFrom }}:{{ sending.pickupTimeTo }}</h2>
                 </ion-item>
             </ion-item-group>
             <ion-item-divider>Persona que entrega
@@ -179,8 +179,9 @@
             </button></ion-item-divider>
             <button ion-item no-lines>
                 <ion-icon name="person" item-left></ion-icon>
-                <h2>Marco Polo</h2>
-                <h3>+5491165432100</h3>
+                <h2>{{ sending.pickupPersonName }}</h2>
+                <h3>{{ sending.pickupPersonPhone }}</h3>
+                <h3>{{ sending.pickupPersonEmail }}</h3>
             </button>
             <ion-item-divider>Código de seguridad</ion-item-divider>
             <ion-item no-lines>
@@ -201,14 +202,14 @@
                     </button></ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="pin" item-left></ion-icon>
-                    <h3>Gorriti 1234</h3>
-                    <h3>Buenos Aires</h3>
+                    <h3>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h3>
+                    <h3>{{ sending.dropAddressCityLong }}</h3>
                 </ion-item>
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
                     <p>Banda horaria para hacer la entrega.</p>                    
-                    <h3>15:00 a 17:00</h3>
+                    <h3>{{ sending.dropTimeFrom }}:{{ sending.dropTimeTo }}</h3>
                 </ion-item>
                 <ion-item-divider>Persona que recibe
                     <button ion-button outline item-right icon-left
@@ -218,10 +219,9 @@
                     </button></ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="person" item-left></ion-icon>
-                    <h3><span>Nombre</span> Arturo Mengano</h3>
-                    <h3><span>DNI</span> 99.999.999</h3>
-                    <h3><span>Teléfono</span> (11) 15 9876 5432</h3>
-                    <h3><span>Email</span> amengano@gmail.com</h3>
+                    <h3>{{ sending.dropPersonName }}</h3>
+                    <h3>{{ sending.dropPersonPhone }}</h3>
+                    <h3>{{ sending.dropPersonEmail }}</h3>
                 </ion-item>
                 <ion-item-divider>Código de Seguridad</ion-item-divider>
                 <ion-item>
