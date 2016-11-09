@@ -6,10 +6,9 @@ import { DateService } from '../date-service/date-service';
 @Injectable()
 export class SendingStageService {
 
-    public stage = {
+    public STAGE = {
         CREATED: 'created',
         PAYMENT: 'payment',
-        BONUS: 'bonus',
         ENABLED: 'enabled',
         OPERATOR: 'operator',
         PICKUP: 'pickup',
@@ -24,62 +23,68 @@ export class SendingStageService {
     }
 
 
+    populateStage(newStage:string, timestamp:number, data:any = {}) {
+        let stageNode:StageNode = {
+            value: true, 
+            timestamp: timestamp,
+            data: data,
+            text: this.getMessageForStage(newStage) 
+        } 
+        this.stages[newStage] = stageNode;
+    }
+
     init() {
-        let initNode:StageNode = { 
-                value:false, 
-                timestamp:0,
-                text:'' 
-            };
         let stages = {
-            created: initNode,
-            payment: initNode,
-            bonus: initNode,
-            enabled: initNode,
-            operator: initNode,
-            pickup: initNode,
-            drop: initNode,
-            canceled: initNode,
-            unconcluded: initNode
+            created: this.getInitNode(),
+            payment: this.getInitNode(),
+            enabled: this.getInitNode(),
+            operator: this.getInitNode(),
+            pickup: this.getInitNode(),
+            drop: this.getInitNode(),
+            canceled: this.getInitNode(),
+            unconcluded: this.getInitNode()
         }
         this.stages = stages;
     }
 
-    get():SendingStages {
-        return this.stages;
+    private getInitNode():any {
+        return { 
+                value: false, 
+                timestamp: 0,
+                text: '',
+                data: {} 
+            };
     }
 
-    update(stages:SendingStages, newStage:string):SendingStages {
-        switch(newStage) {
-            case this.stage.CREATED:
-                    stages.created.value = true;
-                    stages.created.timestamp = this.dateSrv.getTimestamp();
-                    stages.created.text = '';
+    private getMessageForStage(stage:string):string {
+        let message = '';
+        switch(stage) {
+            case this.STAGE.CREATED:
+                    message = '';
                 break;
-            case this.stage.PAYMENT:
-
+            case this.STAGE.PAYMENT:
+                    message = '';
                 break;
-            case this.stage.BONUS:
-
+            case this.STAGE.ENABLED:
+                    message = '';
                 break;
-            case this.stage.ENABLED:
-
+            case this.STAGE.OPERATOR:
+                    message = '';
                 break;
-            case this.stage.OPERATOR:
-
+            case this.STAGE.PICKUP:
+                    message = '';
                 break;
-            case this.stage.PICKUP:
-
-                break;
-            case this.stage.DROP:
-
+            case this.STAGE.DROP:
+                    message = '';
                 break;          
-            case this.stage.CANCELED:
-
+            case this.STAGE.CANCELED:
+                    message = '';
                 break;
-            case this.stage.UNCONCLUDED:
-
+            case this.STAGE.UNCONCLUDED:
+                    message = '';
                 break;                                                                                                                      
         }
-        return stages;
+        return message;
     }
+
 }

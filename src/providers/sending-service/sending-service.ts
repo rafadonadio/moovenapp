@@ -1,30 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 import { UsersService } from '../users-service/users-service';
+import { SendingDbService } from '../sending-service/sending-db-service';
+import { SendingRequestService } from '../sending-service/sending-request-service';
 import { SendingStatusService } from '../sending-service/sending-status-service';
 import { SendingStageService } from '../sending-service/sending-stage-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SendingRequest, SendingCurrentStatus, SendingStages, StatusNode } from '../../shared/sending-interface';
+import { SendingRequest } from '../../shared/sending-interface';
 
-// database childs   
-const DB_CHILD_ACTIVE = '_active/';                          // status: created, vacant, holdforpickup, intransit, completed  
-const DB_CHILD_INACTIVE = 'inactive/';
-const DB_CHILD_STATUS_LOG = 'statusLog/';                    
-// database nodes
-const DB_SENDINGS = 'sendings/';
-const DB_SENDINGS_HASHID_MAP = 'sendingsHashid/';
-const DB_USERS_SENDINGS = 'usersSendings/'; 
-// management
-const DB_SENDINGS_CREATED = '_sendingsCreated/';            // status: created, not enabled (when enabled set live and vacant)    
-//const DB_SENDINGS_LIVE = '_sendingsLive/';                // status: vacant, holdforpickup, intransit
-//const DB_SENDINGS_EXPIRED = 'sendingsExpired/';           // status: expired (vacant not assigned to shipper)
-//const DB_SENDINGS_COMPLETED = 'sendingsCompleted/';       // status: active that has been completed
-//const DB_SENDINGS_UNCONCLUDED = 'sendingsUnconcluded/';   // status: active unconcluded
-const DB_SENDINGS_STATUS_UPDATES_LOG = 'sendingsStatusUpdatesLog/';      // log all updates (triplicate in sendings and user)
-// shipper view
-const DB_SENDINGS_VACANT = '_sendingsVacant/';               // status: vacant > shipper view
 
 // storage nodes
 const STRG_USER_FILES = 'userFiles/';
@@ -33,16 +17,11 @@ const STRG_USER_FILES = 'userFiles/';
 export class SendingService {
 
     user: any;
-    sendingsList: FirebaseListObservable<any>;
-
-    // DATABASE
-    fd: any = firebase.database();
-    fdRef: any = firebase.database().ref();
-    sendingsRef: any = firebase.database().ref(DB_SENDINGS);
 
     constructor(public users: UsersService,
-        public af: AngularFire,
         public hashSrv: HashService,
+        public reqSrv: SendingRequestService,
+        public dbSrv: SendingDbService,
         public statusSrv: SendingStatusService,
         public stageSrv: SendingStageService) {
         this.setUser();
@@ -52,70 +31,69 @@ export class SendingService {
      * Init sending data object
      * @return {object} [description]
      */
-    init() {
-        return this.initSending();
+    initRequest() {
+        this.reqSrv.init();
+        return this.reqSrv.request;
     }
 
     create(sending:SendingRequest):Promise<any> {
-        console.log('create() > init');
+        console.info('create() > start');
+        /* aux */
+        let publicIdHash = this.hashSrv.genId();
+        let timestamp = this.dbSrv.getTimestamp();
+        let userId = this.user.uid;
+        let newStage = this.stageSrv.STAGE.CREATED; 
 
-        /* init status and stages */
-        let newStage = this.stageSrv.stage.CREATED;
-        let currentStatus = this.statusSrv.get();  
-        let stages = this.stageSrv.get();        
-        /* update status and stage */
-        stages = this.stageSrv.update(stages, newStage);
+        this.stageSrv.init();
+        sending.stages = this.stageSrv.stages;
+        this.statusSrv.init();        
+        sending.statuses = this.statusSrv.statuses;   
+        /* process */
+        console.log('pre process', sending.statuses);
+        this.stageSrv.populateStage(newStage, timestamp);
+        this.statusSrv.updateForCurrentStage(newStage, timestamp);
+        console.log('post process', sending.statuses);
 
-        /* Complete sending object */
-        // gen public ID for reference
-        sending.publicId = this.hashSrv.genId();
-        // created  At
-        sending.timestamp = firebase.database.ServerValue.TIMESTAMP;
-        // user id
-        sending.userUid = this.user.uid;
-        // status
-        sending.currentStatus = currentStatus;             
-        
-        /* summary for quick view and avoid db joins */
-        let summary = this.setSendingSummary(sending, currentStatus.current);
+        /* complete */
+        sending.publicId = publicIdHash;
+        sending.timestamp = timestamp;
+        sending.userUid = userId;
+        sending.currentStatus = this.statusSrv.getCurrent();
 
         // get a new db key 
-        let newKey = this.fdRef.child(DB_SENDINGS).push().key;
+        let newKey = this.dbSrv.newSendingKey();
 
         return new Promise((resolve, reject) => {
-            this.writeNewSending(sending, summary, newKey)
+            let flag = { created: false, imageSet: false, imageUploaded: false };
+            this.writeNewSending(sending, newKey, userId)
                 .then(() => {
-                    console.log('1- write success ');
-                    this.logSendingStatusUpdate(newKey, '', newStatus);
-                    // upload image
+                    console.info('writeNewSending > success');
+                    flag.created = true;
                     if(sending.objectImageSet) {
-                        console.log('2- uploadSendingImageURL > init');
-                        this.uploadSendingImageURL(newKey, sending.objectImageUrl)
+                        // ImageSet: upload and save
+                        flag.imageSet = true;
+                        this.uploadSendingImage(newKey, sending.objectImageUrlTemp)
                             .then((snapshot) => {
-                                console.info('1.b- upload image > success');
-                                console.log('url > ', snapshot.downloadURL);
-                                console.log('ref > ', snapshot.ref.name, snapshot.ref.fullPath, );                               
-                                // save image URL, name, fullpath 
+                                flag.imageUploaded = true;
                                 this.updateSendingImage(newKey, snapshot.downloadURL, snapshot.ref.name, snapshot.ref.fullPath);
-                                resolve();                                
+                                console.log(flag);
+                                resolve(flag);                                
                             });
                     }else{
                         // no image tu upload
-                        console.log('no image to upload');
-                        resolve('OK');
+                        console.log(flag);
+                        resolve(flag);
                     }                    
-                })
-                // .then(() => {
-                //     console.log('2- process payment and set status to enabled');
-                //     this.updateSendingStatusToEnabled(newKey, currentStatus)
-                //         .then(() => {
-                //             console.log('3- set status to vacant');
-
-                //         });
-                // })                
+                })               
                 .catch((error) => {
-                    console.log('create(), something went wrong > ', error);
-                    reject(error);
+                    if(flag.created) {
+                        console.error('Image upload failed > ', error);
+                        // do something about it ?
+                        resolve(flag);
+                    }else{
+                        console.error('writeNewSending > error ', error);
+                        reject(error);
+                    }
                 })
         });
 
@@ -138,299 +116,49 @@ export class SendingService {
      *  DATABASE WRITE
      */ 
 
-    private writeNewSending(sending:SendingRequest, summary:any, newKey:string):Promise<any> {
-        console.log('writeNewSending() > init');     
-        // create array with all data to write simultaneously
-        let updates = {};
-        // sending full object
-        updates[DB_SENDINGS + newKey] = sending;        
-        // sending publicId hash reference 
-        updates[DB_SENDINGS_HASHID_MAP + sending.publicId] = newKey;
-        /* Duplicates */
-        // sending status
-        updates[DB_SENDINGS_VACANT + newKey] = summary;
-        // user active sendings reference
-        updates[DB_USERS_SENDINGS + this.user.uid + '/' + DB_CHILD_ACTIVE + newKey] = summary;
-        // update and return promise
-        return this.fd.ref().update(updates);
+    private writeNewSending(
+        sending:SendingRequest, 
+        newKey:string, 
+        userId:string):Promise<any> {  
+            console.info('writeNewSending > start');
+            let dbList = this.dbSrv.AUX_LIST.CREATED;
+            let summary:any = this.reqSrv.getSummaryForDbList(sending, dbList);
+            return this.dbSrv.newSending(sending, summary, newKey, userId); 
     }
  
-    private logSendingStatusUpdate(sendingId:any, OldStatus:any, newStatus:any, relatedData:any = {}):void {
-        console.log('logSendingStatusUpdate');
-        // timestamp 
-        let timestamp = firebase.database.ServerValue.TIMESTAMP;
-        // set data        
-        let data = {
-            sendingId: sendingId,
-            oldStatus: OldStatus,
-            newStatus: newStatus,
-            timestamp: timestamp,
-            relatedData: relatedData
-        }
-        let updates = {};
-        // write to log
-        updates[DB_SENDINGS_STATUS_UPDATES_LOG + sendingId + '/' + newStatus] = data;
-        // write timestamp change to sending
-        updates[DB_SENDINGS + sendingId + '/' + DB_CHILD_STATUS_LOG + newStatus] = timestamp;     
-        this.fd.ref().update(updates)
-            .then(()=>{
-                console.log('logSendingStatusUpdate > success');
-            })
-            .catch((error) => {
-                console.log('logSendingStatusUpdate > error > ', error);
-            });
-    }
-
-    private updateSendingImage(sendingId, downloadURL, imageName, imageFullpathRef):void {
-        console.log('updateSendingImage > init');
-        let updates = {};
-        updates[DB_SENDINGS + sendingId + '/objectImageDownloadUrl/'] = downloadURL;
-        updates[DB_SENDINGS + sendingId + '/objectImageName/'] = imageName;
-        updates[DB_SENDINGS + sendingId + '/objectImageFullPathRef/'] = imageFullpathRef;
-        // delete objectImageURL because we already uploaded to storage
-        updates[DB_SENDINGS + sendingId + '/objectImageUrl/'] = '';        
-        this.fd.ref().update(updates)
-            .then(()=>{
-                console.log('updateSendingImage > success');
-            })
-            .catch((error) => {
-                console.log('updateSendingImage > error > ', error);
-            });        
+    private updateSendingImage(
+        sendingId:string, 
+        downloadURL:string, 
+        imageName:string, 
+        imageFullpathRef:string):void {
+            console.info('updateSendingImage > start');
+            this.dbSrv.updateSendingImageData(sendingId, downloadURL, imageName, imageFullpathRef)
+                .then(()=>{
+                    console.log('updateSendingImage > success');
+                })
+                .catch((error) => {
+                    console.error('updateSendingImage > error > ', error);
+                });        
     }
 
     /**
      *  DATABASE READ
      */
 
-    // return snapshots
-    private getMyLiveSendingsRef() {
-        return this.af.database
-                .list(DB_USERS_SENDINGS + this.user.uid + '/' + DB_CHILD_ACTIVE, { 
-                    preserveSnapshot: true,
-                });
+    private getMyLiveSendingsRef():any {
+        return this.dbSrv.getSendingsLiveByUser(this.user.uid);
     }  
 
     private getSendingById(sendingId:string) {
-        return this.af.database.object(DB_SENDINGS + sendingId, {
-            preserveSnapshot: true,
-        });       
+        return this.dbSrv.getSendingById(sendingId);
     }
-
-    /**
-     *  SENDING STATUS
-     */
-
-    private setSendingSummary(sending:SendingRequest, currentStatus:string):any {
-        let summary:any = {}
-        // base
-        summary = {
-            publicId: sending.publicId,
-            objectShortName: sending.objectShortName,
-            timestamp: sending.timestamp,
-            currentStatus: currentStatus              
-        };
-        switch(currentStatus) {         
-            case 'created':
-            case 'enabled':
-            case 'vacant':
-                summary.pickupAddress = this.getSendingPickupAddressSummary(sending);
-                summary.pickupAddressLatLng = this.getSendingPickupLatLng(sending);                          
-                summary.dropAddress = this.getSendingDropAddressSummary(sending);
-                summary.dropAddressLatLng = this.getSendingDropLatLng(sending);
-                break;
-            case 'expired':
-
-                break;
-            case 'holdforpickup':
-
-                break;
-            case 'intransit':
-
-                break;                
-            case 'canceled':
-            case 'completed':
-            case 'archived':
-
-                break;         
-            case 'unconcluded':
-
-                break;                                                                       
-        }
-        return summary;
-    }
-
-    private setStatus(sendingStatus:any, newStatus:string) {
-        console.log('setStatus() > new > ', newStatus);
-        // flag
-        let statusNotFound:boolean = false;    
-        switch(newStatus) {
-            case 'created': // created 
-                    sendingStatus.created = true;
-                break;
-            case 'enabled':
-                    sendingStatus.enabled = true;
-                break;
-            case 'vacant':   
-                    sendingStatus.vacant = true;
-                break;
-            case 'expired':   
-                    sendingStatus.vacant = false;
-                    sendingStatus.expired = true;
-                break;
-            case 'holdforpickup':  
-                    sendingStatus.vacant = false;
-                    sendingStatus.holdforpickup = true;
-                break;
-            case 'intransit':               
-                    sendingStatus.holdforpickup = false;
-                    sendingStatus.intransit = true;
-                break;
-            case 'completed':
-                    sendingStatus.intransit = false;
-                    sendingStatus.completed = true;                                
-                break;         
-            case 'archived':
-                    sendingStatus.archived = true;                                
-                break;  
-            case 'canceled':
-                    sendingStatus.vacant = false;
-                    sendingStatus.holdforpickup = false;
-                    sendingStatus.intransit = false;
-                    sendingStatus.completed = false;
-                    sendingStatus.canceled = true;
-                    sendingStatus.unconcluded = false;                                  
-                break;
-            case 'unconcluded':
-                    sendingStatus.completed = false;
-                    sendingStatus.canceled = false;
-                    sendingStatus.unconcluded = true;                                  
-                break;                                                                       
-            default:
-                statusNotFound = true;
-        }      
-        // set current     
-        if(statusNotFound===false){
-            sendingStatus.current = newStatus;              
-        }else{
-            console.error('setStatus() > newStatus not found')
-        }
-        return sendingStatus;        
-    }
-
-    /**
-     *  SENDING OBJECT
-     */
-
-    private getSendingPickupAddressSummary(sending:SendingRequest) {
-        return sending.pickupAddressStreetShort 
-                + ' ' 
-                + sending.pickupAddressNumber + ', ' 
-                + sending.pickupAddressCityShort;
-    }
-
-    private getSendingDropAddressSummary(sending:SendingRequest) {
-        return sending.dropAddressStreetShort 
-                + ' ' 
-                + sending.dropAddressNumber + ', ' 
-                + sending.dropAddressCityShort;
-    }    
-
-    private getSendingPickupLatLng(sending:SendingRequest) {
-        return { lat: sending.pickupAddressLat, lng: sending.pickupAddressLng };
-    }
-
-    private getSendingDropLatLng(sending:SendingRequest) {
-        return { lat: sending.dropAddressLat, lng: sending.dropAddressLng };
-    }    
-
-    private initSending(): SendingRequest {
-        let data = {
-            publicId: '',
-            timestamp: 0,
-            userUid: '',
-            currentStatus: {},  
-            stages: {},               
-            price: 0,   
-            priceMinFareApplied: false,               
-            routeDistanceMt: 0,
-            routeDistanceKm: 0,
-            routeDistanceTxt: '',
-            routeDurationMin: 0,
-            routeDurationTxt: '',
-            objectShortName: '',
-            objectImageSet: false,
-            objectImageUrl: '', // temp, this must be deleted once uploaded
-            objectImageDownloadUrl: '',
-            objectImageName: '',
-            objectImageFullPathRef: '',
-            objectType: '',
-            objectNoValueDeclared: false,
-            objectDeclaredValue: 0,
-            pickupAddressSet: false,
-            pickupAddressIsComplete: false,
-            pickupAddressUserForcedValidation: false,
-            pickupAddressPlaceId: '',
-            pickupAddressLat: 0,
-            pickupAddressLng: 0,            
-            pickupAddressFullText: '',
-            pickupAddressLine2: '',
-            pickupAddressStreetShort: '',
-            pickupAddressStreetLong: '',
-            pickupAddressNumber: '',
-            pickupAddressPostalCode: '',
-            pickupAddressCityAreaShort: '',
-            pickupAddressCityAreaLong: '',            
-            pickupAddressCityShort: '',
-            pickupAddressCityLong: '',
-            pickupAddressStateAreaShort: '',
-            pickupAddressStateAreaLong: '',            
-            pickupAddressStateShort: '',
-            pickupAddressStateLong: '',
-            pickupAddressCountry: '',
-            pickupDate: '',
-            pickupTimeFrom: '09:00',
-            pickupTimeTo: '11:00',
-            pickupPersonName: '',
-            pickupPersonPhone: '',
-            pickupPersonEmail: '',
-            dropAddressSet: false,
-            dropAddressIsComplete: false,
-            dropAddressUserForcedValidation: false,
-            dropAddressPlaceId: '',
-            dropAddressLat: 0,
-            dropAddressLng: 0,            
-            dropAddressFullText: '',
-            dropAddressLine2: '',
-            dropAddressStreetShort: '',
-            dropAddressStreetLong: '',
-            dropAddressNumber: '',
-            dropAddressPostalCode: '',
-            dropAddressCityAreaShort: '',
-            dropAddressCityAreaLong: '',            
-            dropAddressCityShort: '',
-            dropAddressCityLong: '',
-            dropAddressStateAreaShort: '',
-            dropAddressStateAreaLong: '',            
-            dropAddressStateShort: '',
-            dropAddressStateLong: '',
-            dropAddressCountry: '',
-            dropDate: '',
-            dropTimeFrom: '14:00',
-            dropTimeTo: '16:00',
-            dropPersonName: '',
-            dropPersonPhone: '',
-            dropPersonEmail: '',
-        }
-        return data;
-    }
-
 
     /**
      *  STORAGE UPLOAD
      */
 
-    uploadSendingImageURL(sendingId:string, imageURL: string): Promise<any> {
-        console.group('uploadSendingImageURL');
+    uploadSendingImage(sendingId:string, imageURL: string): Promise<any> {
+        console.group('uploadSendingImage');
         const storageRef = firebase.storage().ref(STRG_USER_FILES);
         return new Promise((resolve, reject) => {
             // upload 
@@ -449,7 +177,7 @@ export class SendingService {
             }, function() {
                 // success
                 resolve(uploadTask.snapshot);
-                console.log('uploadSendingImageURL > success');
+                console.log('uploadSendingImage > success');
                 console.groupEnd();                
             });
         });

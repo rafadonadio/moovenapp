@@ -10,11 +10,12 @@ export interface SendingRequest{
     routeDistanceTxt: string,
     routeDurationMin: number,
     routeDurationTxt: string,
-    currentStatus: {},   
-    stages: {},  
+    currentStatus:string,
+    statuses?: SendingCurrentStatuses,   
+    stages?: SendingStages,  
     objectShortName: string,
     objectImageSet: boolean,
-    objectImageUrl: string, 
+    objectImageUrlTemp: string,  // deleted once uploaded
     objectImageDownloadUrl: string,
     objectImageName: string,
     objectImageFullPathRef: string,
@@ -80,7 +81,6 @@ export interface SendingRequest{
 export interface SendingStages {
     created: StageNode,
     payment: StageNode,
-    bonus: StageNode,
     enabled: StageNode,
     operator: StageNode,
     pickup: StageNode,
@@ -92,10 +92,11 @@ export interface SendingStages {
 export interface StageNode {
     value:boolean, 
     timestamp:number, 
-    text:string 
+    text:string,
+    data?: {} 
 }
 
-export interface SendingCurrentStatus {
+export interface SendingCurrentStatuses {
     _current: string,
     registered: StatusNode,
     vacant: StatusNode,

@@ -212,7 +212,7 @@ export class SendingCreatePage implements OnInit {
         }
         else {
             console.log('f1 > initSending > this.sending initiated');
-            this.sending = this.sendingSrv.init();
+            this.sending = this.sendingSrv.initRequest();
         }
         console.log('f1 > this.sending > ', this.sending);
     }
