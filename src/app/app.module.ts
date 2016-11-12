@@ -31,10 +31,10 @@ import { StartPage } from '../pages/start/start';
 import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone-number';
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 // PROVIDERS
-import { AccountEmailVerificationService } from '../providers/account-email-verification-service/account-email-verification-service';
-import { AccountService } from '../providers/account-service/account-service';
-import { AuthenticationService } from '../providers/authentication-service/authentication-service';
-import { ProfileService } from '../providers/profile-service/profile-service';
+import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
+import { AccountService } from '../providers/users-service/account-service';
+import { AuthenticationService } from '../providers/users-service/authentication-service';
+import { ProfileService } from '../providers/users-service/profile-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
 import { SendingStatusService } from  '../providers/sending-service/sending-status-service';

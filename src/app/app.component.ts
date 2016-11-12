@@ -72,16 +72,17 @@ export class MyApp{
 
         // observer for firebase auth
         af.auth.subscribe( user => {
+            console.info('app.components');
             if (user) {
-                console.log('app > authStateChanged > user signed in > user uid', user.uid);
+                console.log('app > authStateChanged > user signed in > uid > ', user.uid);
                 this.currentUser = user.auth;
                 this.setCurrentUserAccount()
                     .then((account) => {
                         if(account === null) {
-                            console.error('app > setCurrentUserAccount > NULL ');
+                            console.error('app > setCurrentUserAccount > account==NULL ');
                             this.currentUserAccount = false;
                         }else{
-                            console.log('app > setCurrentUserAccount > success > ', account);
+                            console.log('app > setCurrentUserAccount > account > ', account);
                             this.currentUserAccount = account;
                         }
                         // check if user state is OK
@@ -91,7 +92,7 @@ export class MyApp{
                 this.nav.setRoot(SendingsPage);
             } else {
                 // If there's no user logged in send him to the StartPage
-                console.log('app > authStateChanged > no user signed in, user > ', user);
+                console.log('authStateChanged > no user signed in', user);
                 this.nav.setRoot(StartPage);
             }
         });        
@@ -128,16 +129,16 @@ export class MyApp{
 
     checkAccountStatusAndGo():void {
         console.info('app > checkAccountStatusAndGo');
-        this.presentLoader('app > checkAccountStatusAndGo > verificando credenciales ...');
+        this.presentLoader('Verificando credenciales ...');
         this.usersService.getCurrentUserAccount()
             .then((snapshot) => {
                 let account:any;
                 if(snapshot.val() === null) {
                     account = null;
-                    console.error('app > checkAccountStatusAndGo > account data NULL');
+                    console.error('app > checkAccountStatusAndGo > account==NULL');
                 }else{
                     account = snapshot.val();
-                    console.log('app > checkAccountStatusAndGo > account data ok');
+                    console.log('app > checkAccountStatusAndGo > account > ', account);
                 }    
                 // close loader and do some background checks
                 this.loader.dismiss()
@@ -174,25 +175,27 @@ export class MyApp{
     }
 
     userAccountIsActiveOrDie(account: any){
+        console.info('app > userAccountIsActiveOrDie');
         if(this.usersService.isAccountActive(account)===false) {
             // account is inactive, show error and signout
-            console.log('app > userAccountIsActiveOrDie > is active > FALSE');
+            console.log('app > userAccountIsActiveOrDie > active==FALSE');
             this.presentAlertAndAction('Cuenta inactiva',
                 'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
                 'signout'
                 );
         }else{
-            console.log('app > userAccountIsActiveOrDie > is active > ok');
+            console.log('app > userAccountIsActiveOrDie > active==TRUE');
         }
     }
 
     checkAccountProfileIsCompleteOrGo(account: any, profileType: string): void {
+        console.info('app > checkAccountProfileIsCompleteOrGo');
         if(this.usersService.isProfileComplete(account, profileType)===false) {
-            console.log('app > checkAccountProfileIsCompleteOrGo > is incomplete > FALSE');
+            console.warn('app > checkAccountProfileIsCompleteOrGo > incomplete==TRUE, goTo MergePage');
             this.nav.setRoot(SignupMergePage);
         }
         else{
-            console.log('app > checkAccountProfileIsCompleteOrGo > is incomplete > ok');
+            console.log('app > checkAccountProfileIsCompleteOrGo > incomplete==FALSE, ok');
         }
     }
     
@@ -203,12 +206,13 @@ export class MyApp{
      * 3- update account value to whatever is
      */
     checkAccountEmailIsVerifiedOrGo(): void {
+        console.info('app > checkAccountEmailIsVerifiedOrGo');
         var self = this;
         //is account defined?
         if(typeof this.currentUserAccount === 'undefined') {
-            console.log('app > checkAccountEmailIsVerifiedOrGo > error > currentUserAccount not defined yet');
+            console.error('app > checkAccountEmailIsVerifiedOrGo > error > currentUserAccount not defined yet');
         }else{
-            console.log('app > checkAccountEmailIsVerifiedOrGo > error > currentUserAccount ok');
+            console.log('app > checkAccountEmailIsVerifiedOrGo > currentUserAccount > ', this.currentUserAccount);
             // is account.emailVerified value true?
             console.log('app > checkAccountEmailIsVerifiedOrGo > emailVerifiedRef retrieving ...');
             // get firebase database Ref

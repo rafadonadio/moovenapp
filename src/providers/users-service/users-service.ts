@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { AuthenticationService } from '../authentication-service/authentication-service';
-import { AccountService } from '../account-service/account-service';
-import { ProfileService } from '../profile-service/profile-service';
-import { AccountEmailVerificationService } from '../account-email-verification-service/account-email-verification-service';
+import { AuthenticationService } from '../users-service/authentication-service';
+import { AccountService } from '../users-service/account-service';
+import { ProfileService } from '../users-service/profile-service';
+import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
 import { UserCredentials } from '../../shared/user-interface';
 import { UserAccount } from '../../shared/user-interface';

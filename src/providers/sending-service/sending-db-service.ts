@@ -87,7 +87,6 @@ export class SendingDbService {
      */
 
     getSendingsLiveByUser(userid:string, getSnapshot:boolean = true) {
-        console.log(userid);
         return this.af.database
                 .list(DB_USERS_SENDINGS + userid + '/' + DB_CHILD_ACTIVE, { 
                     preserveSnapshot: getSnapshot,
