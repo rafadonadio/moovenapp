@@ -41,7 +41,7 @@ export class SignupPage implements OnInit {
         console.info('signup > submitSignupForm > ', value);
         if(this.signupForm.valid!==true) {
             // something went wrong, errors on view
-            console.log('signupform valid = false')
+            console.error('signup > signupform.valid==false')
         }else{
             // loader effect
             let loader = this.loadingCtrl.create({
@@ -57,22 +57,22 @@ export class SignupPage implements OnInit {
             // create new user
             this.users.createUserWithEmailAndPassword(newUser)
                 .then((user) => {
-                    console.log('signup > submitSignupForm > user created > uid', user.uid);
+                    console.log('submitSignupForm > createUserWithEmailAndPassword > success > uid ', user.uid);
                     // create account in DB
-                    this.users.createAccountFromCurrentUser()
+                    this.users.createAccountFromCurrentUser(user)
                         .then(() => {
-                            console.log('cuenta db creada');
-                            // verify email address
+                            console.log('submitSignupForm > createUserWithEmailAndPassword > createAccountFromCurrentUser > success');
+                            // send email address verification
                             this.users.sendEmailVerification();
                     });
             })
             .catch((error) => {
+                console.error('createUserWithEmailAndPassword > error > ', error);
                 loader.dismiss()
                     .then(() => {
                         this.presentErrorAlert(error.code);
                     });
             });
-
         }
     }
 

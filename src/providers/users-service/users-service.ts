@@ -29,14 +29,10 @@ export class UsersService {
     }
 
     // Create User account and profile in firebase database
-    createAccountFromCurrentUser() {
-        var user = this.getCurrentUser();
-        console.log('createAccountFromCurrentUser > user ', user);
-        // init account
+    createAccountFromCurrentUser(user:any):Promise<void> {
+        // init account and profile, and write to db
         var account: UserAccount = this.account.initAccountData(user);
-        // init profile
         var profile = this.profile.initProfileData();
-        // create account and profile
         return this.account.createAccountAndProfileInFirebaseDB(user.uid, account, profile);
     }
 

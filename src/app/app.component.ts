@@ -74,11 +74,11 @@ export class MyApp{
         af.auth.subscribe( user => {
             if (user) {
                 console.log('app > authStateChanged > user signed in > user uid', user.uid);
-                this.currentUser = user;
+                this.currentUser = user.auth;
                 this.setCurrentUserAccount()
                     .then((account) => {
                         if(account === null) {
-                            console.log('app > setCurrentUserAccount > NULL ');
+                            console.error('app > setCurrentUserAccount > NULL ');
                             this.currentUserAccount = false;
                         }else{
                             console.log('app > setCurrentUserAccount > success > ', account);
@@ -117,23 +117,24 @@ export class MyApp{
         }
     }
 
-    goToSettings(): void {
+    goToSettings():void {
         this.menu.close();
         this.nav.push(SettingsPage);
     }
 
-    goToDefaultPage(): void {
+    goToDefaultPage():void {
         this.rootPage = SendingsPage;
     }
 
-    checkAccountStatusAndGo(): void{
+    checkAccountStatusAndGo():void {
+        console.info('app > checkAccountStatusAndGo');
         this.presentLoader('app > checkAccountStatusAndGo > verificando credenciales ...');
         this.usersService.getCurrentUserAccount()
             .then((snapshot) => {
                 let account:any;
                 if(snapshot.val() === null) {
                     account = null;
-                    console.log('app > checkAccountStatusAndGo > account data NULL');
+                    console.error('app > checkAccountStatusAndGo > account data NULL');
                 }else{
                     account = snapshot.val();
                     console.log('app > checkAccountStatusAndGo > account data ok');
