@@ -31,6 +31,7 @@ export class UsersService {
     // Create User account and profile in firebase database
     createAccountFromCurrentUser() {
         var user = this.getCurrentUser();
+        console.log('createAccountFromCurrentUser > user ', user);
         // init account
         var account: UserAccount = this.account.initAccountData(user);
         // init profile
@@ -104,7 +105,7 @@ export class UsersService {
      */
 
     // get user account data
-    getCurrentUserAccount(): Promise<any> {
+    getCurrentUserAccount():Promise<any> {
         var user = this.getCurrentUser();
         return this.account.getByUid(user.uid);
     }

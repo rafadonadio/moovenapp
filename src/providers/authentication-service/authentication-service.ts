@@ -39,13 +39,15 @@ export class AuthenticationService {
         return this.fbAuthRef.sendPasswordResetEmail(email);
     }
 
+    
+
 
     /**
      *  GETTERS
      */
 
     getCurrentFirebaseUser() {
-        return this.fireAuth;
+        return this.fbAuthRef.currentUser;
     }
 
 

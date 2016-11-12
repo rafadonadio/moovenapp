@@ -62,7 +62,8 @@ ___
     preview en ionic View (Android/iOS)  
     validación UI/UX
 
-#### 09/2016  
+#### 09/2016
+
 **0.1.1**  
 - Implementación Firebase  
     integración librería  
@@ -101,6 +102,8 @@ ___
 - Sendings
     - form step 1
 
+#### 10/2016
+
 **0.3.1** 
 - update ionic beta11 > RC0
     - ref:   https://github.com/driftyco/ionic/blob/master/CHANGELOG.md#steps-to-upgrade-to-rc0
@@ -137,12 +140,17 @@ ___
     - maps set directions
     - maps set distance
 
+#### 11/2016
+
 **0.5.0**
 - update ionic RC1 > RC2      
     - save and set - angularfire
-    - ID format AAA-999 (hashid)
+    - public ID (hashid)
+    - storage photo
+         
 
-    
+
+
     
 # device debug
     
@@ -172,5 +180,15 @@ ___
     - notificaciones
     - pagos
     - ayuda
+
+    # meetings
+        - agregar fecha a los envíos
+        -cambiar
+            transport > operador
+            envios > servicios
+        - sidemenu > user name
+            dejar icono mapa
+
+
 
 

@@ -43,17 +43,12 @@ export class SendingService {
         let timestamp = this.dbSrv.getTimestamp();
         let userId = this.user.uid;
         let newStage = this.stageSrv.STAGE.CREATED; 
-
-        this.stageSrv.init();
-        sending.stages = this.stageSrv.stages;
-        this.statusSrv.init();        
-        sending.statuses = this.statusSrv.statuses;   
+        /* stage and status */
+        sending.stages = this.stageSrv.stages;       
+        sending.status = this.statusSrv.status;   
         /* process */
-        console.log('pre process', sending.statuses);
         this.stageSrv.populateStage(newStage, timestamp);
         this.statusSrv.updateForCurrentStage(newStage, timestamp);
-        console.log('post process', sending.statuses);
-
         /* complete */
         sending.publicId = publicIdHash;
         sending.timestamp = timestamp;

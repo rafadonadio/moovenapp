@@ -38,30 +38,26 @@ export class SignupPage implements OnInit {
      * Signup Form Submit
      */
     submitSignupForm(value: any):void {
-
-        // verify inputs are valid
+        console.info('signup > submitSignupForm > ', value);
         if(this.signupForm.valid!==true) {
-            // something went wrong
+            // something went wrong, errors on view
             console.log('signupform valid = false')
         }else{
-
             // loader effect
             let loader = this.loadingCtrl.create({
                 content: 'Registrando tu cuenta ...',
                 dismissOnPageChange: true
             });
             loader.present();
-
             // init user
             let newUser: UserCredentials = {
                 email: value.email,
                 password: value.password
             };
-
             // create new user
             this.users.createUserWithEmailAndPassword(newUser)
                 .then((user) => {
-                    console.log('user created - uid', user.uid);
+                    console.log('signup > submitSignupForm > user created > uid', user.uid);
                     // create account in DB
                     this.users.createAccountFromCurrentUser()
                         .then(() => {

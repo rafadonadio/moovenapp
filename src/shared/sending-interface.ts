@@ -11,7 +11,7 @@ export interface SendingRequest{
     routeDurationMin: number,
     routeDurationTxt: string,
     currentStatus:string,
-    statuses?: SendingCurrentStatuses,   
+    status?: SendingCurrentStatuses,   
     stages?: SendingStages,  
     objectShortName: string,
     objectImageSet: boolean,

@@ -75,14 +75,23 @@ export class MyApp{
             if (user) {
                 console.log('app > authStateChanged > user signed in > user uid', user.uid);
                 this.currentUser = user;
-                this.setCurrentUserAccount();
-                // check if user state is OK
-                this.checkAccountStatusAndGo();
-                //self.goToDefaultPage();
+                this.setCurrentUserAccount()
+                    .then((account) => {
+                        if(account === null) {
+                            console.log('app > setCurrentUserAccount > NULL ');
+                            this.currentUserAccount = false;
+                        }else{
+                            console.log('app > setCurrentUserAccount > success > ', account);
+                            this.currentUserAccount = account;
+                        }
+                        // check if user state is OK
+                        this.checkAccountStatusAndGo();                                                
+                    });
+
                 this.nav.setRoot(SendingsPage);
             } else {
                 // If there's no user logged in send him to the StartPage
-                console.log('app > authStateChanged > no user signed in, user null');
+                console.log('app > authStateChanged > no user signed in, user > ', user);
                 this.nav.setRoot(StartPage);
             }
         });        
@@ -121,8 +130,14 @@ export class MyApp{
         this.presentLoader('app > checkAccountStatusAndGo > verificando credenciales ...');
         this.usersService.getCurrentUserAccount()
             .then((snapshot) => {
-                var account:any = snapshot.val();
-                console.log('app > checkAccountStatusAndGo > account data ok');
+                let account:any;
+                if(snapshot.val() === null) {
+                    account = null;
+                    console.log('app > checkAccountStatusAndGo > account data NULL');
+                }else{
+                    account = snapshot.val();
+                    console.log('app > checkAccountStatusAndGo > account data ok');
+                }    
                 // close loader and do some background checks
                 this.loader.dismiss()
                     .then(() => {
@@ -143,16 +158,18 @@ export class MyApp{
     /**
      * USER ACCOUNT HELPER
      */
-    setCurrentUserAccount(): void {
-        this.usersService.getCurrentUserAccount()
-            .then((snapshot) => {
-                console.log('app > setCurrentUserAccount > success', snapshot.val());
-                this.currentUserAccount = snapshot.val();
-            })
-            .catch((error) => {
-                this.currentUserAccount = false;
-                console.log('app > setCurrentUserAccount > failed', error);
-            });
+    setCurrentUserAccount():Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.usersService.getCurrentUserAccount()
+                .then((snapshot) => {
+                    console.log('setCurrentUserAccount > snapshot > ok ');
+                    resolve(snapshot.val());
+                })
+                .catch((error) => {
+                    console.log('app > setCurrentUserAccount > failed', error);
+                });
+        });
+           
     }
 
     userAccountIsActiveOrDie(account: any){

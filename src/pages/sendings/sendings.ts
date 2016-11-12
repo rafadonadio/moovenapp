@@ -78,14 +78,16 @@ export class SendingsPage implements OnInit{
             .subscribe(snapshots => {
                 console.log('sendings > getAllActive > subscribe > init');                
                 this.sendings = [];
-                snapshots.forEach(snapshot => {
-                    let key = snapshot.key;
-                    let item = {
-                        key: key,
-                        data: snapshot.val(),
-                    };
-                    this.sendings.push(item); 
-                });
+                if(snapshots) {
+                    snapshots.forEach(snapshot => {
+                        let key = snapshot.key;
+                        let item = {
+                            key: key,
+                            data: snapshot.val(),
+                        };
+                        this.sendings.push(item); 
+                    });
+                }
                 if(this.sendings.length > 0) {
                     this.sendingsEmpty = false;
                 }else{

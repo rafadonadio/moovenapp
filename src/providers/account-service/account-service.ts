@@ -44,7 +44,7 @@ export class AccountService {
     }
 
     // create database node for user account
-    createAccountAndProfileInFirebaseDB(userId: string, account: any, profile: any) {
+    createAccountAndProfileInFirebaseDB(userId: string, account: any, profile: any):Promise<void> {
         var updates = {};
         updates['/usersAccount/' + userId] = account;
         updates['/usersProfile/' + userId] = profile;

@@ -15,69 +15,69 @@ export class SendingStatusService {
         ISSUE: 'issue'
     }
 
-    public statuses:SendingCurrentStatuses;
+    public status:SendingCurrentStatuses;
 
     constructor(public stageSrv: SendingStageService) {
         this.init();
     }
 
     getCurrent() {
-        return this.statuses._current;
+        return this.status._current;
     }
 
     updateForCurrentStage(stage:string, timestamp:number):void {        
-        console.log('updateForCurrentStage, init value > ', this.statuses);
+        console.log('updateForCurrentStage, init value > ', this.status);
         console.log('stage > ', stage);
         switch(stage) {
             case this.stageSrv.STAGE.CREATED:
-                    this.statuses.registered.set = true;
-                    this.statuses.registered.value = true;
-                    this.statuses.registered.timestamp = timestamp;
-                    this.statuses.registered.text = '';
-                    this.statuses._current = this.LIST.REGISTERED;
+                    this.status.registered.set = true;
+                    this.status.registered.value = true;
+                    this.status.registered.timestamp = timestamp;
+                    this.status.registered.text = '';
+                    this.status._current = this.LIST.REGISTERED;
                 break;
             case this.stageSrv.STAGE.PAYMENT:
                     // no status update
                 break;
             case this.stageSrv.STAGE.ENABLED:
-                    this.statuses.vacant.set = true;
-                    this.statuses.vacant.value = true;
-                    this.statuses.vacant.timestamp = timestamp;
-                    this.statuses.vacant.text = '';                    
-                    this.statuses._current = this.LIST.VACANT;
+                    this.status.vacant.set = true;
+                    this.status.vacant.value = true;
+                    this.status.vacant.timestamp = timestamp;
+                    this.status.vacant.text = '';                    
+                    this.status._current = this.LIST.VACANT;
                 break;
             case this.stageSrv.STAGE.OPERATOR:
-                    this.statuses.holdforpickup.set = true;
-                    this.statuses.holdforpickup.value = true;
-                    this.statuses.holdforpickup.timestamp = timestamp;
-                    this.statuses.holdforpickup.text = '';                 
-                    this.statuses._current = this.LIST.HOLDFORPICKUP;   
+                    this.status.holdforpickup.set = true;
+                    this.status.holdforpickup.value = true;
+                    this.status.holdforpickup.timestamp = timestamp;
+                    this.status.holdforpickup.text = '';                 
+                    this.status._current = this.LIST.HOLDFORPICKUP;   
                 break;
             case this.stageSrv.STAGE.PICKUP:
-                    this.statuses.transit.set = true;
-                    this.statuses.transit.value = true;
-                    this.statuses.transit.timestamp = timestamp;
-                    this.statuses.transit.text = '';                 
-                    this.statuses._current = this.LIST.TRANSIT;                       
+                    this.status.transit.set = true;
+                    this.status.transit.value = true;
+                    this.status.transit.timestamp = timestamp;
+                    this.status.transit.text = '';                 
+                    this.status._current = this.LIST.TRANSIT;                       
                 break;
             case this.stageSrv.STAGE.DROP:
-                    this.statuses.success.set = true;
-                    this.statuses.success.value = true;
-                    this.statuses.success.timestamp = timestamp;
-                    this.statuses.success.text = '';                 
-                    this.statuses._current = this.LIST.SUCCESS;                       
+                    this.status.success.set = true;
+                    this.status.success.value = true;
+                    this.status.success.timestamp = timestamp;
+                    this.status.success.text = '';                 
+                    this.status._current = this.LIST.SUCCESS;                       
                 break;          
             case this.stageSrv.STAGE.CANCELED:
             case this.stageSrv.STAGE.UNCONCLUDED:
                 // if its canceled or unconcluded, there might be an issue
-                    this.statuses.issue.set = true;
-                    this.statuses.issue.value = true;
-                    this.statuses.issue.timestamp = timestamp;
-                    this.statuses.issue.text = '';                 
-                    this.statuses._current = this.LIST.ISSUE;                                       
+                    this.status.issue.set = true;
+                    this.status.issue.value = true;
+                    this.status.issue.timestamp = timestamp;
+                    this.status.issue.text = '';                 
+                    this.status._current = this.LIST.ISSUE;                                       
                 break;                                                                                                                      
         }
-        console.log('updateForCurrentStage, end > ', this.statuses);
+        console.log('updateForCurrentStage, end > ', this.status);
     }
 
 
@@ -96,7 +96,7 @@ export class SendingStatusService {
             issue: this.getInitNode()
         }
         console.log('init > done ', statuses);
-        this.statuses = statuses;
+        this.status = statuses;
     }
 
     private getInitNode():any {
