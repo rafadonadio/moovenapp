@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
-import { UserCredentials } from '../../shared/user-interface';
+import { UserCredentials } from '../../models/user-model';
 import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password';

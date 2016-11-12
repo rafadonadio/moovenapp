@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { SendingStages, StageNode } from '../../shared/sending-interface';
+import { SendingStages, StageNode } from '../../models/sending-model';
 import { DateService } from '../date-service/date-service';
 
 @Injectable()

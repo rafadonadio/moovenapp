@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { SendingRequest } from '../../shared/sending-interface';
+import { SendingRequest } from '../../models/sending-model';
 
 @Injectable()
 export class SendingRequestService {

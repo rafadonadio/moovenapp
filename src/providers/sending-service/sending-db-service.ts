@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 
-import { SendingRequest, SendingCurrentStatuses, SendingStages, StatusNode } from '../../shared/sending-interface';
+import { SendingRequest, SendingCurrentStatuses, SendingStages, StatusNode } from '../../models/sending-model';
 
 // database childs   
 const DB_CHILD_ACTIVE = '_active/';                          // status: created, vacant, holdforpickup, intransit, completed  

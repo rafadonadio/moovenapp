@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SendingStageService } from '../sending-service/sending-stage-service';
 
-import { SendingCurrentStatuses, StatusNode } from '../../shared/sending-interface';
+import { SendingCurrentStatuses, StatusNode } from '../../models/sending-model';
 
 @Injectable()
 export class SendingStatusService {

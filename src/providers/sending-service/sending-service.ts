@@ -7,7 +7,7 @@ import { SendingStatusService } from '../sending-service/sending-status-service'
 import { SendingStageService } from '../sending-service/sending-stage-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SendingRequest } from '../../shared/sending-interface';
+import { SendingRequest } from '../../models/sending-model';
 
 
 // storage nodes

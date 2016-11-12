@@ -5,8 +5,7 @@ import { AccountService } from '../users-service/account-service';
 import { ProfileService } from '../users-service/profile-service';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
-import { UserCredentials } from '../../shared/user-interface';
-import { UserAccount } from '../../shared/user-interface';
+import { UserCredentials, UserAccount } from '../../models/user-model';
 
 
 @Injectable()
