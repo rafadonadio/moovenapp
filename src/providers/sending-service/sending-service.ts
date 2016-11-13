@@ -184,7 +184,7 @@ export class SendingService {
      */
 
     private setUser(){
-        this.user = this.users.getCurrentUser();
+        this.user = this.users.getUser();
     }
 
 }

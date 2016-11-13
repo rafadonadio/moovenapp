@@ -51,7 +51,7 @@ export class ModalUserEditNamePage implements OnInit{
 
     private setUser() {
         // set user
-        this.user = this.users.getCurrentUser();
+        this.user = this.users.getUser();
         // set profile
         this.users.getCurrentUserProfile()
             .then((snapshot) => {

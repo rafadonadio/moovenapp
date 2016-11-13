@@ -48,7 +48,7 @@ export class UsersService {
      * @return {Promise<any>}          [description]
      */
     updateUserEmail(newEmail: string): Promise<any> {
-        var user = this.getCurrentUser();
+        var user = this.getUser();
         return new Promise((resolve, reject) => {
             this.auth.updateEmail(user, newEmail)
                 .then(() => {
@@ -65,12 +65,12 @@ export class UsersService {
     }
 
     // update authenticated user displayName
-    updateCurrentUserDisplayName(displayName: string) {
+    updateUserDisplayName(displayName: string) {
         return this.auth.updateFirebaseUserDisplayName(displayName);
     }
 
     // get authenticated user
-    getCurrentUser(): any {
+    getUser(): any {
         return this.auth.getCurrentFirebaseUser();
     }
 
@@ -103,13 +103,13 @@ export class UsersService {
      */
 
     // get user account data
-    getCurrentUserAccount():Promise<any> {
-        var user = this.getCurrentUser();
+    getUserAccount():Promise<any> {
+        var user = this.getUser();
         return this.accountSrv.getByUid(user.uid);
     }
 
     getAccountEmailVerifiedRef() {
-        var user = this.getCurrentUser();
+        var user = this.getUser();
         return this.accountSrv.emailVerifiedRef(user.uid);
     }
 
@@ -132,18 +132,18 @@ export class UsersService {
      */
 
     getCurrentUserProfile(): Promise<any> {
-        var user = this.getCurrentUser();
+        var user = this.getUser();
         return this.profile.getByUid(user.uid);
     }
 
     updateUserProfile(data: any): any {
-        var user = this.getCurrentUser();
+        var user = this.getUser();
         var uid = user.uid;
         return this.profile.update(uid, data);
     }
 
     checkUserProfileCompleteStatus() {
-        var user = this.getCurrentUser();
+        var user = this.getUser();
         this.profile.getByUid(user.uid)
             .then((snapshot) => {
                 var profile = snapshot.val();
@@ -177,7 +177,7 @@ export class UsersService {
 
     // send email verification code and record the process
     sendEmailVerification(): void {
-        var user:any = this.getCurrentUser();
+        var user:any = this.getUser();
         this.emailVerification.create(user);
     }
 
@@ -189,7 +189,7 @@ export class UsersService {
             this.reloadCurrentUser()
                 .then(() => {
                     console.log('reloadCurrentUser ok');
-                    var user = this.getCurrentUser();
+                    var user = this.getUser();
                     if(user.emailVerified === true) {
                         resolve(this.emailVerification.saveSuccess(user));
                     }else{

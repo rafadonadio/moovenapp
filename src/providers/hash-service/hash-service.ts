@@ -11,7 +11,7 @@ export class HashService {
     userSalt:any;
 
     constructor(public users:UsersService) {
-        this.user = users.getCurrentUser();
+        this.user = users.getUser();
         this.userSalt = this.user.uid;
     }
 

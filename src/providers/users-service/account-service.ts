@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-import { UserAccount, UserProfileData, UserProfileStatus, UserProfileVerifications, DB_REF, USER_ACCOUNT_CFG } from '../../models/user-model';
+import { UserAccount, UserProfileData, UserProfileStatus, UserProfileVerifications, DB_REF } from '../../models/user-model';
 
 const REF_USER_ACCOUNT = DB_REF.USER_ACCOUNT;
 
@@ -47,12 +47,7 @@ export class AccountService {
 
     // check if value of account.active is 1
     isActive(account: UserAccount):boolean {
-        var isActive:boolean = false;
-        if(account.active === 1)
-        {
-            isActive = true;
-        }
-        return isActive;
+        return account.active;
     }
 
     isEmailVerified (account: UserAccount): boolean {
@@ -61,7 +56,6 @@ export class AccountService {
 
     // check user account.profileComplete.type value is 1
     isProfileComplete(account: UserAccount, profileId: string):boolean {
-        console.log('profile status > profileType:', profileId, ' > ', account.profile.status[profileId]);
         return account.profile.status[profileId].complete;
     }
 
@@ -82,7 +76,7 @@ export class AccountService {
         console.info('accountSrv.initData');
         // set
         let account:UserAccount = {
-            active: 1, 
+            active: true, 
             createdAt: firebase.database.ServerValue.TIMESTAMP,
             providerId: fbuser.providerId,
             profile: {

@@ -72,7 +72,7 @@ export class ModalUserEditEmailPage implements OnInit {
      */
 
     private setCurrentUser() {
-        this.currentUser = this.users.getCurrentUser();
+        this.currentUser = this.users.getUser();
     }
 
     private showAlert(code) {

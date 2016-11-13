@@ -74,7 +74,7 @@ export class SignupMergePage implements OnInit{
                     this.users.checkUserProfileCompleteStatus();
                     // update firebase user displayName
                     var displayName = profile.firstName + ' ' + profile.lastName;
-                    this.users.updateCurrentUserDisplayName(displayName);
+                    this.users.updateUserDisplayName(displayName);
                 })
                 .then((result) => {
                     console.log('user profile updated');
@@ -132,7 +132,7 @@ export class SignupMergePage implements OnInit{
      */
 
      private setCurrentUser() {
-         this.currentUser = this.users.getCurrentUser();
+         this.currentUser = this.users.getUser();
      }
 
 }

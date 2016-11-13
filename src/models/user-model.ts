@@ -5,7 +5,7 @@ export class UserCredentials {
 }
 
 export class UserAccount {
-    active: number;
+    active: boolean;
     createdAt: number;
     providerId: string;
     profile: {
