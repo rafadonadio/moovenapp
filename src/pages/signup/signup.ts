@@ -17,7 +17,7 @@ export class SignupPage implements OnInit {
     password: AbstractControl;
 
     constructor(public navCtrl: NavController,
-        public users: UsersService,
+        public usersSrv: UsersService,
         public formBuilder: FormBuilder,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
@@ -44,41 +44,47 @@ export class SignupPage implements OnInit {
             console.error('signup > signupform.valid==false')
         }else{
             // loader effect
-            let loader = this.loadingCtrl.create({
-                content: 'Registrando tu cuenta ...',
-                dismissOnPageChange: true
-            });
-            loader.present();
+            let loader = this.setLoader();
             // init user
-            let newUser: UserCredentials = {
-                email: value.email,
-                password: value.password
-            };
-            // create new user
-            this.users.createUserWithEmailAndPassword(newUser)
-                .then((user) => {
-                    console.log('submitSignupForm > createUserWithEmailAndPassword > success > uid ', user.uid);
-                    // create account in DB
-                    this.users.createAccountFromCurrentUser(user)
-                        .then(() => {
-                            console.log('submitSignupForm > createUserWithEmailAndPassword > createAccountFromCurrentUser > success');
-                            // send email address verification
-                            this.users.sendEmailVerification();
-                    });
-            })
-            .catch((error) => {
-                console.error('createUserWithEmailAndPassword > error > ', error);
-                loader.dismiss()
-                    .then(() => {
-                        this.presentErrorAlert(error.code);
-                    });
-            });
+            let newUser: UserCredentials = { email: value.email, password: value.password };
+            this.createUser(newUser, loader);
         }
     }
 
     /**
-     *  PRIVATE METHODS
+     *  HELPERS
      */
+
+    private createUser(newUser: UserCredentials, loader:any) {
+        this.usersSrv.createUserWithEmailAndPassword(newUser)
+            .then((fbuser:firebase.User) => {
+                console.log('submitSignupForm > createUserWithEmailAndPassword > success > fbuser ', fbuser);
+                // create account in DB
+                this.usersSrv.createUserAccount(fbuser)
+                    .then(() => {
+                        console.log('submitSignupForm > createUserWithEmailAndPassword > createAccountFromCurrentUser > success');
+                        // send email address verification
+                        this.usersSrv.sendEmailVerification();
+                });
+        })
+        .catch((error) => {
+            console.error('createUserWithEmailAndPassword > error > ', error);
+            loader.dismiss()
+                .then(() => {
+                    this.presentErrorAlert(error.code);
+                });
+        });
+    }
+
+    private setLoader():any {
+        // loader effect
+        let loader = this.loadingCtrl.create({
+            content: 'Registrando tu cuenta ...',
+            dismissOnPageChange: true
+        });
+        loader.present();
+        return loader;
+    }
 
     private presentErrorAlert(msgCode: string ):void {
         // set strings

@@ -12,7 +12,7 @@ import { UserCredentials, UserAccount } from '../../models/user-model';
 export class UsersService {
 
     constructor(public auth: AuthenticationService,
-        public account: AccountService,
+        public accountSrv: AccountService,
         public profile: ProfileService,
         public emailVerification: AccountEmailVerificationService) {
     }
@@ -23,16 +23,19 @@ export class UsersService {
      */
 
     // create firebase user
-    createUserWithEmailAndPassword(user: UserCredentials) {
+    createUserWithEmailAndPassword(user: UserCredentials):Promise<firebase.User> {
      return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
     }
 
     // Create User account and profile in firebase database
-    createAccountFromCurrentUser(user:any):Promise<void> {
-        // init account and profile, and write to db
-        var account: UserAccount = this.account.initAccountData(user);
-        var profile = this.profile.initProfileData();
-        return this.account.createAccountAndProfileInFirebaseDB(user.uid, account, profile);
+    createUserAccount(fbuser:firebase.User):Promise<void> {
+        console.info('userSrv.creatUserAccount');
+        // init account
+        let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
+        let profileStatus = this.accountSrv.initAccountProfileStatus();
+        let profileVerifications = this.accountSrv.initAccountVerifications();
+        let account = this.accountSrv.initData(profileData, profileStatus, profileVerifications, fbuser);
+        return this.accountSrv.writeToFirebaseDb(fbuser.uid, account);
     }
 
     /**
@@ -102,25 +105,25 @@ export class UsersService {
     // get user account data
     getCurrentUserAccount():Promise<any> {
         var user = this.getCurrentUser();
-        return this.account.getByUid(user.uid);
+        return this.accountSrv.getByUid(user.uid);
     }
 
     getAccountEmailVerifiedRef() {
         var user = this.getCurrentUser();
-        return this.account.emailVerifiedRef(user.uid);
+        return this.accountSrv.emailVerifiedRef(user.uid);
     }
 
     // check if value of UserAccount.active is 1
     isAccountActive(accountData: UserAccount):boolean {
-        return this.account.isActive(accountData);
+        return this.accountSrv.isActive(accountData);
     }
     // returns account emailVerified value
     isAccountEmailVerified (accountData: UserAccount): boolean {
-        return this.account.isEmailVerified(accountData);
+        return this.accountSrv.isEmailVerified(accountData);
     }
     // check user account.profileComplete.type value is 1
     isProfileComplete(accountData: UserAccount, profileType: string):boolean {
-        return this.account.isProfileComplete(accountData, profileType);
+        return this.accountSrv.isProfileComplete(accountData, profileType);
     }
 
 
@@ -154,7 +157,7 @@ export class UsersService {
                 // more ...
                 console.log('checked ProfileCompleteStatus > ', status);
                 // update DB
-                this.account.updateProfileCompleteStatus(user.uid, status)
+                this.accountSrv.updateProfileCompleteStatus(user.uid, status)
                     .then(function(result) {
                         console.log('account update ok');
                     })

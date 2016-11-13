@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
-import { UsersService } from '../providers/users-service/users-service';
 import { StartPage } from '../pages/start/start';
 import { SettingsPage } from '../pages/settings/settings';
 import { SendingsPage } from '../pages/sendings/sendings';
@@ -13,8 +12,10 @@ import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
 import { AngularFire } from 'angularfire2';
+import { UsersService } from '../providers/users-service/users-service';
 
-declare var google: any;
+import { userAccount } from '../models/user-models';
+
 declare var window: any;
 
 @Component({
@@ -32,9 +33,9 @@ export class MyApp{
                     icon: string,
                     navigationType: string
                 } >;
-    loader: any;
-    currentUser;
-    currentUserAccount;                
+    loader:any;
+    user:firebase.User;
+    userAccount;                
 
     constructor(public platform: Platform,
         public usersService: UsersService,
@@ -72,18 +73,19 @@ export class MyApp{
 
         // observer for firebase auth
         af.auth.subscribe( user => {
-            console.info('app.components');
+            console.info('MyApp > authStateChanged');
             if (user) {
-                console.log('app > authStateChanged > user signed in > uid > ', user.uid);
-                this.currentUser = user.auth;
+                console.log('> user signedIn > user.uid: ', user.uid);
+                this.setUser(user.auth);
+
                 this.setCurrentUserAccount()
                     .then((account) => {
                         if(account === null) {
                             console.error('app > setCurrentUserAccount > account==NULL ');
-                            this.currentUserAccount = false;
+                            this.userAccount = false;
                         }else{
                             console.log('app > setCurrentUserAccount > account > ', account);
-                            this.currentUserAccount = account;
+                            this.userAccount = account;
                         }
                         // check if user state is OK
                         this.checkAccountStatusAndGo();                                                
@@ -209,10 +211,10 @@ export class MyApp{
         console.info('app > checkAccountEmailIsVerifiedOrGo');
         var self = this;
         //is account defined?
-        if(typeof this.currentUserAccount === 'undefined') {
+        if(typeof this.userAccount === 'undefined') {
             console.error('app > checkAccountEmailIsVerifiedOrGo > error > currentUserAccount not defined yet');
         }else{
-            console.log('app > checkAccountEmailIsVerifiedOrGo > currentUserAccount > ', this.currentUserAccount);
+            console.log('app > checkAccountEmailIsVerifiedOrGo > currentUserAccount > ', this.userAccount);
             // is account.emailVerified value true?
             console.log('app > checkAccountEmailIsVerifiedOrGo > emailVerifiedRef retrieving ...');
             // get firebase database Ref
@@ -280,5 +282,9 @@ export class MyApp{
             default:
                 console.log('app > alertActionTrigger not found > ', action);
         }
+    }
+
+    private setUser(userData:firebase.User) {
+        this.user = userData;
     }
 }

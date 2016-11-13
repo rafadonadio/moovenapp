@@ -55,7 +55,7 @@ export class AuthenticationService {
      *  SETTERS
      */
 
-    createFirebaseUserWithEmailAndPassword(email: string, password: string) {
+    createFirebaseUserWithEmailAndPassword(email: string, password: string):Promise<firebase.User> {
         return this.fbAuthRef.createUserWithEmailAndPassword(email, password);
     }
 
