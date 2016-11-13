@@ -50,7 +50,7 @@ export class UsersService {
     updateUserEmail(newEmail: string): Promise<any> {
         var user = this.getUser();
         return new Promise((resolve, reject) => {
-            this.auth.updateEmail(user, newEmail)
+            this.auth.updateFirebaseUserEmail(user, newEmail)
                 .then(() => {
                     console.log('auth.updateEmail > ok');
                     console.log('init create email verification ...');

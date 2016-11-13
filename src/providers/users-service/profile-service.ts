@@ -11,7 +11,6 @@ export class ProfileService {
     fdRef: any = firebase.database().ref();
     usersProfileRef: any = firebase.database().ref(this.node);
 
-
     constructor(public af:AngularFire) {
 
     }

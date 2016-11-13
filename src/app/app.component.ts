@@ -137,8 +137,8 @@ export class MyApp{
                         }
                         else{
                             console.log('profileIsComplete==TRUE');
-                        }
-                        console.groupEnd();                        
+                        }                   
+                        console.groupEnd();     
                     });                
             })
             .catch((error) => {

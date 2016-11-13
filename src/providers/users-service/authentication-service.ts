@@ -39,9 +39,6 @@ export class AuthenticationService {
         return this.fbAuthRef.sendPasswordResetEmail(email);
     }
 
-    
-
-
     /**
      *  GETTERS
      */
@@ -49,7 +46,6 @@ export class AuthenticationService {
     getCurrentFirebaseUser() {
         return this.fbAuthRef.currentUser;
     }
-
 
     /**
      *  SETTERS
@@ -66,11 +62,9 @@ export class AuthenticationService {
             });
     }
 
-    // update authenticated user email
-    updateEmail(user: any, newEmail: string): Promise<any> {
+    updateFirebaseUserEmail(user: any, newEmail: string): Promise<any> {
         return user.updateEmail(newEmail);
     }
-
 
     /**
      *  HELPERS
