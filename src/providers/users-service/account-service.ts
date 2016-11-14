@@ -24,15 +24,15 @@ export class AccountService {
      */
 
     // create database node for user account
-    create(userId: string, account: UserAccount):firebase.Promise<any> {
+    createStep1(userId: string, account: UserAccount):firebase.Promise<any> {
         let updates = {};
         updates[ACCOUNT_REF + userId] = account;
         return this.dbRef.update(updates);
     }
 
     // update user profile (updates only the included nodes)
-    completeSignup(userId: string, data: any):firebase.Promise<any>  {
-        console.info('completeSignup > start');
+    createStep2(userId: string, data: any):firebase.Promise<any>  {
+        console.info('createStep2 > start');
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         let ToS = {
             id: TOS_CFG.CURRENT_VERSION_ID,
@@ -42,7 +42,7 @@ export class AccountService {
                 timestamp: timestamp 
             }
         }
-        let updates = {};
+        let updates = {}; // must be an object of arrays not an array of arrays
         let newHistoryKey = this.dbRef.child(ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.TOS.HISTORY).push().key; 
         // update profile data
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'firstName'] = data.firstName;

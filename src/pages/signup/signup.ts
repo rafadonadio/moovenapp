@@ -66,7 +66,7 @@ export class SignupPage implements OnInit {
             .then((fbuser:firebase.User) => {
                 console.log('submitSignupForm > createUserWithEmailAndPassword > success > fbuser ', fbuser);
                 // create account in DB
-                this.usersSrv.createAccount(fbuser)
+                this.usersSrv.createAccountStep1(fbuser)
                     .then(() => {
                         console.log('submitSignupForm > createUserWithEmailAndPassword > createAccountFromCurrentUser > success');
                         // send email address verification

@@ -68,9 +68,9 @@ export class SignupMergePage implements OnInit{
             // display name
             let displayName = value.firstName + ' ' + value.lastName;
             // update
-            this.users.completeAccountSignup(profileData)
+            this.users.createAccountStep2(profileData)
                 .then((result) => {
-                    console.log('completeAccountSignup > ok', result);
+                    console.log('createAccountComplete > ok', result);
                     this.users.updateAccountProfileStatus();
                     // update firebase user displayName
                     this.users.updateUserDisplayName(displayName);

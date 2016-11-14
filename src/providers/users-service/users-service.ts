@@ -25,19 +25,19 @@ export class UsersService {
     }
 
     // Create User account and profile in firebase database
-    createAccount(fbuser:firebase.User):firebase.Promise<void> {
-        console.info('userSrv.creatUserAccount');
+    createAccountStep1(fbuser:firebase.User):firebase.Promise<void> {
+        console.info('userSrv.createAccountStep1');
         // init account
         let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
         let profileStatus = this.accountSrv.initAccountProfileStatus();
         let profileVerifications = this.accountSrv.initAccountVerifications();
         let account = this.accountSrv.init(profileData, profileStatus, profileVerifications, fbuser);
-        return this.accountSrv.create(fbuser.uid, account);
+        return this.accountSrv.createStep1(fbuser.uid, account);
     }
 
-    completeAccountSignup(data: any): any {
+    createAccountStep2(data: any): any {
         let fbuser = this.getUser();
-        return this.accountSrv.completeSignup(fbuser.uid, data);
+        return this.accountSrv.createStep2(fbuser.uid, data);
     }
 
     // update authenticated user displayName
