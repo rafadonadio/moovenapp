@@ -14,8 +14,6 @@ import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
 
-import { userAccount } from '../models/user-models';
-
 declare var window: any;
 
 @Component({
@@ -71,7 +69,9 @@ export class MyApp{
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' }
         ];
 
-        // observer for firebase auth
+        /**
+         *  FIREBASE AUTH OBSERVER
+         */
         af.auth.subscribe( user => {
             console.info('MyApp > authStateChanged');
             if (user) {
@@ -90,6 +90,12 @@ export class MyApp{
 
     }
 
+    /**
+     *  USER ACCOUNT VERIFICATION 
+     *  1- get user account
+     *  2- check account is active
+     *  3- check profile.basic is complete 
+     */
     private runUserAccountVerification() {
         console.info('[0] user account verification start');
         console.group('account verification');
@@ -105,9 +111,10 @@ export class MyApp{
                     this.userAccount = false;
                     console.error('[1] getUserAccount: NULL, SignOut');
                     this.presentAlertAndAction('Cuenta inválida',
-                        'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo',
+                        'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
                         'signout'
-                        );                    
+                        );           
+                    console.groupEnd();             
                 }else{
                     account = snapshot.val();
                     this.userAccount = account;
@@ -124,14 +131,15 @@ export class MyApp{
                                 'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
                                 'signout'
                                 );
+                            console.groupEnd();        
                         }else{
                             console.log('UserAccount active==TRUE');
                         }
                     })
                     .then(() => {
                         // is basic profile complete ? 
-                        console.info('[3] profileIsComplete');
-                        if(this.usersService.isProfileComplete(account, 'basic')===false) {
+                        console.info('[3] IsAccountProfileComplete');
+                        if(this.usersService.isAccountProfileComplete(account, 'basic')===false) {
                             console.warn('profileIsComplete==FALSE, goTo MergePage');
                             this.nav.setRoot(SignupMergePage);
                         }

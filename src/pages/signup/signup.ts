@@ -55,12 +55,18 @@ export class SignupPage implements OnInit {
      *  HELPERS
      */
 
-    private createUser(newUser: UserCredentials, loader:any) {
-        this.usersSrv.createUserWithEmailAndPassword(newUser)
+    /**
+     *  CREATE NEW USER
+     *  1- create firebase user with email and password
+     *  2- create account in database, with user id and email
+     *  3- send email verification
+     */
+    private createUser(newUser: UserCredentials, loader:any):void {
+        this.usersSrv.createUser(newUser)
             .then((fbuser:firebase.User) => {
                 console.log('submitSignupForm > createUserWithEmailAndPassword > success > fbuser ', fbuser);
                 // create account in DB
-                this.usersSrv.createUserAccount(fbuser)
+                this.usersSrv.createAccount(fbuser)
                     .then(() => {
                         console.log('submitSignupForm > createUserWithEmailAndPassword > createAccountFromCurrentUser > success');
                         // send email address verification

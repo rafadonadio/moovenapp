@@ -1,48 +1,107 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-import { UserAccount, UserProfileData, UserProfileStatus, UserProfileVerifications, DB_REF } from '../../models/user-model';
+import { UserAccount, UserProfileData, UserProfileStatus, UserProfileVerifications, USER_DB_REF, USER_CFG } from '../../models/user-model';
 
-const REF_USER_ACCOUNT = DB_REF.USER_ACCOUNT;
+const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
+const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
+const ACCOUNT_CFG = USER_CFG.ACCOUNT;
 
 @Injectable()
 export class AccountService {
 
-    // FIREBASE DATABASE REFERENCES
-    fd: any = firebase.database();
-    fdRef: any = firebase.database().ref();
-    usersAccountRef: any = firebase.database().ref(REF_USER_ACCOUNT);
+    db = firebase.database();
+    dbRef = firebase.database().ref();
 
     constructor(public af:AngularFire) {
     }
-
 
     /**
      *  WRITE
      */
 
     // create database node for user account
-    writeToFirebaseDb(userId: string, account: UserAccount):Promise<void> {
+    writeNewAccount(userId: string, account: UserAccount):firebase.Promise<any> {
         var updates = {};
-        updates[REF_USER_ACCOUNT + userId] = account;
-        return this.fd.ref().update(updates);
+        updates[ACCOUNT_REF + userId] = account;
+        return this.dbRef.update(updates);
+    }
+
+    // update user profile (updates only the included nodes)
+    updateProfileData(userId: string, data: any): firebase.Promise<any> {
+        var profileData:any = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phonePrefix: data.phonePrefix,
+            phoneMobile: data.phoneMobile
+            //***photoURL > update in separate method***
+        };
+        var updates = {};
+        for(let field in profileData) {
+            updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + field] = profileData[field];
+        }
+        return this.dbRef.update(updates);
+    }
+
+    updateProfileStatus(userId: string): void {
+        console.info('updateProfileStatus > start');
+        console.group('profileStatus');
+        this.getProfileDataByUid(userId)
+            .then((snapshot) => {
+                // set profile
+                let profile:UserProfileData = snapshot.val();
+                let status = this.initAccountProfileStatus();
+                
+                // check required fields for basic
+                // start in true
+                // set false if at least one field is empty
+                status.basic.complete = true; //
+                ACCOUNT_CFG.PROFILE.REQUIRED_FIELDS.BASIC
+                    .forEach( function(item, index){
+                        console.log('foreach > ', item, index);
+                        if(profile[item]==='') {
+                            status.basic.complete = false;
+                        }
+                    }); 
+                let updates = {};
+                updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.STATUS._NODE] = status;
+                console.groupEnd();
+                return this.dbRef.update(updates);
+            })
+            .catch((error) => {
+                console.error('updateProfileStatus > getProfile > error: ', error);
+                console.groupEnd();
+            });
     }
 
     /**
-     *  READ
+     *  READ FROM DATABASE
      */
 
     // get user account node from firebase database
-    getByUid(userId: string): Promise<any> {
-        return this.fd.ref(REF_USER_ACCOUNT + userId).once('value');
+    getByUid(userId: string):firebase.Promise<any> {
+        return this.dbRef
+                .child(ACCOUNT_REF + userId)
+                .once('value');
     }
 
+    // get account.profile.data from firebase database
+    getProfileDataByUid(userId: string): firebase.Promise<any> {
+        let child = ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._NODE;
+        console.log('getProfileDataByUid > child ', child);
+        return this.dbRef
+                .child(child)
+                .once('value');
+    }    
+
     // get user account email verified node from firebase database
-    emailVerifiedRef(userId: string): any {
-        return this.fd.ref(REF_USER_ACCOUNT + userId + '/emailVerified/');
+    emailVerifiedRef(userId: string): firebase.database.Reference {
+        return this.dbRef
+                .child(ACCOUNT_REF + userId)
+                .child(ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED);
     }
 
     /**
-     *  HELPERS
+     *  READ FROM ACCOUNT
      */
 
     // check if value of account.active is 1
@@ -59,14 +118,8 @@ export class AccountService {
         return account.profile.status[profileId].complete;
     }
 
-    updateProfileCompleteStatus(userId: string, status: any) {
-        var updates = {};
-        updates[REF_USER_ACCOUNT + userId + '/profileComplete/'] = status;
-        return this.fd.ref().update(updates);
-    }
-
     /**
-     *  INITS
+     *  INITIALIZATION OF ACCOUNT DATA
      */
 
     initData(profileData:UserProfileData, 
@@ -158,12 +211,14 @@ export class AccountService {
             },
             residenceAddress: {
                 verified: false,
+                verifiedAddress: '',
                 verifiedTimestamp: 0,
                 imageUrl: '',
                 verifiedBy: '',
             },
             legalIdentityNumber: {
                 verified: false,
+                verifiedNumber: '',
                 verifiedTimestamp: 0,
                 imageUrl: '',
                 verifiedBy: '',
@@ -172,5 +227,7 @@ export class AccountService {
         console.log('initAccountVerifications > verifications > ', verifications);
         return verifications;
     }
+
+
 
 }

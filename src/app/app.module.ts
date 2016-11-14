@@ -34,7 +34,6 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
 import { AccountService } from '../providers/users-service/account-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
-import { ProfileService } from '../providers/users-service/profile-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
 import { SendingStatusService } from  '../providers/sending-service/sending-status-service';
@@ -139,7 +138,6 @@ const myFirebaseAuthConfig = {
     AccountEmailVerificationService,
     AccountService,
     AuthenticationService,
-    ProfileService,
     SendingService,
     SendingDbService,
     SendingRequestService, 

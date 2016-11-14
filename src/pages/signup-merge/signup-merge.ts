@@ -20,7 +20,7 @@ export class SignupMergePage implements OnInit{
     phoneMobile: AbstractControl;
     confirmTos: AbstractControl;
 
-    currentUser: any;
+    user: any;
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -32,7 +32,7 @@ export class SignupMergePage implements OnInit{
     }
 
     ngOnInit() {
-        this.setCurrentUser();
+        this.setUser();
         this.signupMergeForm = this.formBuilder.group({
             'firstName': ['', Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(50)])],
             'lastName': ['', Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(50)])],
@@ -68,13 +68,12 @@ export class SignupMergePage implements OnInit{
                 phoneMobile: value.phoneMobile
             };
 
-            this.users.updateUserProfile(profile)
+            this.users.updateAccountProfile(profile)
                 .then((result) => {
-                    // update profileComplete status
-                    this.users.checkUserProfileCompleteStatus();
                     // update firebase user displayName
-                    var displayName = profile.firstName + ' ' + profile.lastName;
+                    let displayName = profile.firstName + ' ' + profile.lastName;
                     this.users.updateUserDisplayName(displayName);
+                    this.users.updateAccountProfileStatus();
                 })
                 .then((result) => {
                     console.log('user profile updated');
@@ -131,8 +130,8 @@ export class SignupMergePage implements OnInit{
      * PRIVATE
      */
 
-     private setCurrentUser() {
-         this.currentUser = this.users.getUser();
+     private setUser() {
+         this.user = this.users.getUser();
      }
 
 }

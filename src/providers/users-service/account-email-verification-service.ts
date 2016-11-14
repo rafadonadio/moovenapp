@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
-
 import { AngularFire } from 'angularfire2';
+import { UserProfileEmailVerification, USER_DB_REF } from '../../models/user-model';
+import { LogUserEmailVerificationAttempts, LOG_DB_REF } from '../../models/log-model';
 
+// firebase references
+const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
+const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
+const REF_LOG_EMAIL_VERIFICATIONS = LOG_DB_REF.LOG_USER_EMAIL_VERIFICATION_ATTEMPTS;
+const REF_LOG_EMAIL_VERIFICATIONS_NODE = LOG_DB_REF.LOG_USER_EMAIL_VERIFICATION_ATTEMPTS_NODE;
 
 @Injectable()
 export class AccountEmailVerificationService {
 
-    // FIREBASE DATABASE REFERENCES
-    fd: any = firebase.database();
-    fdRef: any = firebase.database().ref();
-    node = '/usersEmailVerificationAttempts/';
-    usersEmailVerificationAttemptsRef: any = firebase.database().ref(this.node);
-
+    dbRef = firebase.database().ref();
 
     constructor(public af:AngularFire) {
 
@@ -24,75 +25,57 @@ export class AccountEmailVerificationService {
     // set email verified false
     // send email verification to current user
     // First save the current request and then send the email
-    create(user: any) {
-        // get db timestamp
-        var timestamp = firebase.database.ServerValue.TIMESTAMP;
+    create(fbuser: firebase.User): void {
+        // aux
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
         // data to set in account
-        var basicdata = {
-            email: user.email,
-            createdAt: timestamp
+        let profileVerificationAttempt:any = {
+           timestamp: timestamp, 
+           reference:fbuser.email
         };
         // data to set in attempts
-        var fulldata = {
-            uid: user.uid,
-            email: user.email,
-            createAt: timestamp,
-            verified: 0,
-            verifiedConfirmedAt: ''
+        let logData: LogUserEmailVerificationAttempts = {
+            timestamp: timestamp,
+            email: fbuser.email,
+            userId: fbuser.uid,
         };
-        // get db new key
-        var key = this.fdRef.child('usersEmailVerificationAttempts').push().key;
+        // get log new key
+        let logKey = this.dbRef.child(REF_LOG_EMAIL_VERIFICATIONS).push().key;
         // db aupdates array
-        var updates = {};
-        // set user current email value
-        updates['/usersAccount/' + user.uid + '/email/'] = user.email;
-        // set email verified to false
-        updates['/usersAccount/' + user.uid + '/emailVerified/'] = false;
-        // set account attempt data
-        updates['/usersAccount/' + user.uid + '/emailVerificationAttempts/' +  key] = basicdata;
-        // set attempt full data
-        updates[this.node + key] = fulldata;
+        let updates = {};
+        // update account email
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
+        // update account validation values
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED] = false;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.ATTEMPTS_IDS +  logKey] = profileVerificationAttempt;
+        // save data to log 
+        updates[REF_LOG_EMAIL_VERIFICATIONS + logKey] = logData;
         // update!
-        this.fdRef.update(updates)
+        this.dbRef.update(updates)
             .then(() => {
                 console.log('email verification create > ok');
                 // send the verification email with firebase
-                user.sendEmailVerification();
+                fbuser.sendEmailVerification();
             })
-            .catch((error) => {
+            .catch((error:any) => {
                 console.log('email verification creation failed ', error.code);
             });
     }
 
-    saveSuccess(user): Promise<any> {
-        var self = this;
-        var uid = user.uid;
-        var emailVerified = user.emailVerified;
-        // database reference
-        var ref = this.fd.ref('/usersAccount/' + uid + '/emailVerificationAttempts');
-
-        return new Promise((resolve, reject) => {
-            // get database value
-            ref.limitToFirst(1).on("child_added", function(snapshot) {
-                console.log('snapshot.val / snapshot.key', snapshot.val(), snapshot.key);
-                // update database value
-                var key = snapshot.key;
-                var timestamp = firebase.database.ServerValue.TIMESTAMP;
-                var updates = {};
-                updates['/usersAccount/' + uid + '/emailVerified/'] = emailVerified;
-                updates['/usersEmailVerificationAttempts/' + key + '/verified/'] = emailVerified;
-                updates['/usersEmailVerificationAttempts/' + key + '/verifiedConfirmedAt/'] = timestamp;
-                self.fdRef.update(updates)
-                    .then(() => {
-                        console.log('updateAccountEmailVerified ok');
-                        resolve(true);
-                    })
-                    .catch((error) => {
-                        console.log('updateAccountEmailVerified failed', error);
-                        resolve(false);
-                    });
-                });
-            });
+    setVerified(fbuser:firebase.User): firebase.Promise<any> {
+        let self = this;
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let userId = fbuser.uid;
+        let emailVerified = fbuser.emailVerified;
+        let updates = [];
+        // account email value
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
+        // account vericitaion values
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED] = true;        
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED_ADDRESS] = fbuser.email;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED_TIMESTAMP] = timestamp;        
+        // update!
+        return this.dbRef.update(updates);           
     }
 
 }

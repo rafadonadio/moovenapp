@@ -18,7 +18,6 @@ export class AuthenticationService {
         });
     }
 
-
     /**
      *  SIGNIN/OUT
      */
@@ -43,7 +42,7 @@ export class AuthenticationService {
      *  GETTERS
      */
 
-    getCurrentFirebaseUser() {
+    getFirebaseUser() {
         return this.fbAuthRef.currentUser;
     }
 
@@ -55,11 +54,9 @@ export class AuthenticationService {
         return this.fbAuthRef.createUserWithEmailAndPassword(email, password);
     }
 
-    updateFirebaseUserDisplayName(displayName: string) {
-        var user = this.getCurrentFirebaseUser();
-        return user.updateProfile({
-                displayName: displayName
-            });
+    updateFirebaseUserDisplayName(displayName: string):firebase.Promise<any> {
+        let fbuser:any = this.getFirebaseUser();
+        return fbuser.updateProfile({ displayName: displayName });
     }
 
     updateFirebaseUserEmail(user: any, newEmail: string): Promise<any> {
@@ -70,7 +67,7 @@ export class AuthenticationService {
      *  HELPERS
      */
 
-    reloadCurrentFirebaseUser() {
+    reloadFirebaseUser() {
         var user = this.fbAuthRef.currentUser;
         return user.reload();
     }

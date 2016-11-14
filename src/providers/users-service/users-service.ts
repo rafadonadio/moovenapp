@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { AuthenticationService } from '../users-service/authentication-service';
 import { AccountService } from '../users-service/account-service';
-import { ProfileService } from '../users-service/profile-service';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
 import { UserCredentials, UserAccount } from '../../models/user-model';
@@ -13,29 +12,42 @@ export class UsersService {
 
     constructor(public auth: AuthenticationService,
         public accountSrv: AccountService,
-        public profile: ProfileService,
         public emailVerification: AccountEmailVerificationService) {
     }
-
 
     /**
      * USER CRUD
      */
 
     // create firebase user
-    createUserWithEmailAndPassword(user: UserCredentials):Promise<firebase.User> {
+    createUser(user: UserCredentials):Promise<firebase.User> {
      return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
     }
 
     // Create User account and profile in firebase database
-    createUserAccount(fbuser:firebase.User):Promise<void> {
+    createAccount(fbuser:firebase.User):firebase.Promise<void> {
         console.info('userSrv.creatUserAccount');
         // init account
         let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
         let profileStatus = this.accountSrv.initAccountProfileStatus();
         let profileVerifications = this.accountSrv.initAccountVerifications();
         let account = this.accountSrv.initData(profileData, profileStatus, profileVerifications, fbuser);
-        return this.accountSrv.writeToFirebaseDb(fbuser.uid, account);
+        return this.accountSrv.writeNewAccount(fbuser.uid, account);
+    }
+
+    // update authenticated user displayName
+    updateUserDisplayName(displayName: string) {
+        return this.auth.updateFirebaseUserDisplayName(displayName);
+    }
+
+    // get authenticated user
+    getUser(): firebase.User {
+        return this.auth.getFirebaseUser();
+    }
+
+    // Reload authenticated user data
+    reloadUser(): Promise<void> {
+        return this.auth.reloadFirebaseUser();
     }
 
     /**
@@ -48,7 +60,7 @@ export class UsersService {
      * @return {Promise<any>}          [description]
      */
     updateUserEmail(newEmail: string): Promise<any> {
-        var user = this.getUser();
+        let user = this.getUser();
         return new Promise((resolve, reject) => {
             this.auth.updateFirebaseUserEmail(user, newEmail)
                 .then(() => {
@@ -63,22 +75,6 @@ export class UsersService {
                 });
         });
     }
-
-    // update authenticated user displayName
-    updateUserDisplayName(displayName: string) {
-        return this.auth.updateFirebaseUserDisplayName(displayName);
-    }
-
-    // get authenticated user
-    getUser(): any {
-        return this.auth.getCurrentFirebaseUser();
-    }
-
-    // Reload authenticated user data
-    reloadCurrentUser(): Promise<void> {
-        return this.auth.reloadCurrentFirebaseUser();
-    }
-
 
     /**
      *  AUTHENTICATION
@@ -103,13 +99,13 @@ export class UsersService {
      */
 
     // get user account data
-    getUserAccount():Promise<any> {
-        var user = this.getUser();
+    getUserAccount():firebase.Promise<any> {
+        let user = this.getUser();
         return this.accountSrv.getByUid(user.uid);
     }
 
     getAccountEmailVerifiedRef() {
-        var user = this.getUser();
+        let user = this.getUser();
         return this.accountSrv.emailVerifiedRef(user.uid);
     }
 
@@ -122,52 +118,28 @@ export class UsersService {
         return this.accountSrv.isEmailVerified(accountData);
     }
     // check user account.profileComplete.type value is 1
-    isProfileComplete(accountData: UserAccount, profileType: string):boolean {
+    isAccountProfileComplete(accountData: UserAccount, profileType: string):boolean {
         return this.accountSrv.isProfileComplete(accountData, profileType);
     }
 
 
     /**
-     *  PROFILE
+     *  ACCOUNT PROFILE
      */
 
-    getCurrentUserProfile(): Promise<any> {
-        var user = this.getUser();
-        return this.profile.getByUid(user.uid);
+    getAccountProfile(): firebase.Promise<any> {
+        let user = this.getUser();
+        return this.accountSrv.getProfileDataByUid(user.uid);
     }
 
-    updateUserProfile(data: any): any {
-        var user = this.getUser();
-        var uid = user.uid;
-        return this.profile.update(uid, data);
+    updateAccountProfile(data: any): any {
+        let fbuser = this.getUser();
+        return this.accountSrv.updateProfileData(fbuser.uid, data);
     }
 
-    checkUserProfileCompleteStatus() {
-        var user = this.getUser();
-        this.profile.getByUid(user.uid)
-            .then((snapshot) => {
-                var profile = snapshot.val();
-                console.log('user profile > ', profile);
-                // check profile status
-                var status = {basic: 0, image: 0, documentation: 0};
-                // basic
-                status.basic = this.profile.isBasicComplete(profile) ? 1 : 0;
-                // image
-                status.image = this.profile.isImageComplete(profile) ? 1 : 0;
-                // more ...
-                console.log('checked ProfileCompleteStatus > ', status);
-                // update DB
-                this.accountSrv.updateProfileCompleteStatus(user.uid, status)
-                    .then(function(result) {
-                        console.log('account update ok');
-                    })
-                    .catch(function(error) {
-                        console.log('account update failed > ', error);
-                    });
-            })
-            .catch((error) => {
-                console.log('read profile error > ', error);
-            });
+    updateAccountProfileStatus(): void {
+        let fbuser = this.getUser();        
+        this.accountSrv.updateProfileStatus(fbuser.uid);
     }
 
 
@@ -177,7 +149,7 @@ export class UsersService {
 
     // send email verification code and record the process
     sendEmailVerification(): void {
-        var user:any = this.getUser();
+        let user:firebase.User = this.getUser();
         this.emailVerification.create(user);
     }
 
@@ -186,12 +158,12 @@ export class UsersService {
     runUserEmailVerificationCheck(): Promise<boolean> {
         // relaod user and check
         return new Promise((resolve, reject) => {
-            this.reloadCurrentUser()
+            this.reloadUser()
                 .then(() => {
                     console.log('reloadCurrentUser ok');
-                    var user = this.getUser();
+                    let user = this.getUser();
                     if(user.emailVerified === true) {
-                        resolve(this.emailVerification.saveSuccess(user));
+                        resolve(this.emailVerification.setVerified(user));
                     }else{
                         resolve(false);
                     }
