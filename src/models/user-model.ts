@@ -38,17 +38,20 @@ export class UserAccount {
     active: boolean;
     createdAt: number;
     providerId: string;
-    profile: {
-        data: UserProfileData,
-        status: UserProfileStatus,
-    };
+    profile: UserAccountProfile;
     verifications: UserProfileVerifications
     ToS: {
-        accepted: boolean;
+        accepted: boolean,
         acceptedTimestamp: number,
-        acceptedVersion: string,
-        history: Array<{ version:string, timestamp:number}>
+        acceptedVersionId: number,
+        acceptedVersionTag: string,
+        history: Array<{ versionId:string, timestamp:number}>
     };
+}
+
+export class UserAccountProfile {
+    data: UserProfileData;
+    status: UserProfileStatus;    
 }
 
 export class UserProfileData {
@@ -171,7 +174,9 @@ export const USER_DB_REF = {
             _NODE: '/ToS',
             ACCEPTED: '/ToS/accepted',
             ACCEPTED_TIMESTAMP: '/ToS/acceptedTimestamp',
-            ACCEPTED_VERSION: '/ToS/acceptedVersion'
+            ACCEPTED_VERSION_ID: '/ToS/acceptedVersionId',
+            ACCEPTED_VERSION_TAG: '/ToS/acceptedVersionTag',
+            HISTORY: '/ToS/history/',
         },
         VERIFICATIONS: {
             _NODE: '/verifications',

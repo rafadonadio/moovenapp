@@ -33,6 +33,8 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 // PROVIDERS
 import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
 import { AccountService } from '../providers/users-service/account-service';
+import { AccountProfileService } from '../providers/users-service/account-profile-service';
+import { AccountVerificationsService } from '../providers/users-service/account-verifications-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
@@ -137,6 +139,8 @@ const myFirebaseAuthConfig = {
   providers: [
     AccountEmailVerificationService,
     AccountService,
+    AccountProfileService,
+    AccountVerificationsService,
     AuthenticationService,
     SendingService,
     SendingDbService,

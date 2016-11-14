@@ -52,30 +52,30 @@ export class SignupMergePage implements OnInit{
             // something is not good
             console.log('signupMergeForm = false');
         }else{
-
             // loader effect
             let loader = this.loadingCtrl.create({
                 content: 'Guardando ...',
                 dismissOnPageChange: true
             });
             loader.present();
-
-            // init profile
-            let profile = {
+            // profile data
+            let profileData = {
                 firstName: value.firstName,
                 lastName: value.lastName,
                 phonePrefix: value.phonePrefix,
                 phoneMobile: value.phoneMobile
             };
-
-            this.users.updateAccountProfile(profile)
+            // display name
+            let displayName = value.firstName + ' ' + value.lastName;
+            // update
+            this.users.completeAccountSignup(profileData)
                 .then((result) => {
-                    // update firebase user displayName
-                    let displayName = profile.firstName + ' ' + profile.lastName;
-                    this.users.updateUserDisplayName(displayName);
+                    console.log('completeAccountSignup > ok', result);
                     this.users.updateAccountProfileStatus();
+                    // update firebase user displayName
+                    this.users.updateUserDisplayName(displayName);
                 })
-                .then((result) => {
+                .then(() => {
                     console.log('user profile updated');
                     // all good, go to confirm mobile phone
                     this.navCtrl.push(VerifyPhonePage);

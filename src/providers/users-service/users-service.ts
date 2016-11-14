@@ -31,8 +31,13 @@ export class UsersService {
         let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
         let profileStatus = this.accountSrv.initAccountProfileStatus();
         let profileVerifications = this.accountSrv.initAccountVerifications();
-        let account = this.accountSrv.initData(profileData, profileStatus, profileVerifications, fbuser);
-        return this.accountSrv.writeNewAccount(fbuser.uid, account);
+        let account = this.accountSrv.init(profileData, profileStatus, profileVerifications, fbuser);
+        return this.accountSrv.create(fbuser.uid, account);
+    }
+
+    completeAccountSignup(data: any): any {
+        let fbuser = this.getUser();
+        return this.accountSrv.completeSignup(fbuser.uid, data);
     }
 
     // update authenticated user displayName
@@ -93,7 +98,6 @@ export class UsersService {
         return this.auth.sendPasswordResetEmail(email);
     }
 
-
     /**
      *  ACCOUNT
      */
@@ -102,11 +106,6 @@ export class UsersService {
     getUserAccount():firebase.Promise<any> {
         let user = this.getUser();
         return this.accountSrv.getByUid(user.uid);
-    }
-
-    getAccountEmailVerifiedRef() {
-        let user = this.getUser();
-        return this.accountSrv.emailVerifiedRef(user.uid);
     }
 
     // check if value of UserAccount.active is 1
@@ -122,6 +121,10 @@ export class UsersService {
         return this.accountSrv.isProfileComplete(accountData, profileType);
     }
 
+    getAccountEmailVerifiedRef():firebase.database.Reference {
+        let user = this.getUser();
+        return this.accountSrv.getEmailVerifiedRef(user.uid);
+    }
 
     /**
      *  ACCOUNT PROFILE
@@ -132,16 +135,10 @@ export class UsersService {
         return this.accountSrv.getProfileDataByUid(user.uid);
     }
 
-    updateAccountProfile(data: any): any {
-        let fbuser = this.getUser();
-        return this.accountSrv.updateProfileData(fbuser.uid, data);
-    }
-
     updateAccountProfileStatus(): void {
         let fbuser = this.getUser();        
         this.accountSrv.updateProfileStatus(fbuser.uid);
     }
-
 
     /**
      *  EMAIL VERIFICATION
