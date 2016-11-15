@@ -15,46 +15,7 @@ export class AccountVerificationsService {
     constructor(public af:AngularFire) {
     }
 
-    // get fireebase REF for user account email verified node
-    getRef_emailVerified(userId: string): firebase.database.Reference {
-        return this.dbRef
-                .child(ACCOUNT_REF + userId)
-                .child(ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED);
-    }
 
-    init():UserProfileVerifications {
-        console.info('initAccountVerifications');
-        let verifications:UserProfileVerifications;
-        verifications = {
-            email: {
-                verified: false,
-                verifiedAddress: '',
-                verifiedTimestamp: 0,
-                attemptsIds: [],
-            },
-            phone: {
-                verified: false,
-                verifiedNumber: '',
-                verifiedTimestamp: 0,
-                attemptsIds: [],            
-            },
-            residenceAddress: {
-                verified: false,
-                verifiedAddress: '',
-                verifiedTimestamp: 0,
-                imageUrl: '',
-                verifiedBy: '',
-            },
-            legalIdentityNumber: {
-                verified: false,
-                verifiedNumber: '',
-                verifiedTimestamp: 0,
-                imageUrl: '',
-                verifiedBy: '',
-            } 
-        }
-        console.log('initAccountVerifications > verifications > ', verifications);
-        return verifications;
-    }
+
 
 }

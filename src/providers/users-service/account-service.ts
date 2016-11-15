@@ -100,7 +100,7 @@ export class AccountService {
 
     // get user account email verified node from firebase database
     getEmailVerifiedRef(userId: string): firebase.database.Reference {
-        return this.verificSrv.getRef_emailVerified(userId);
+        return this.profileSrv.getRef_emailVerified(userId);
     }
 
     /**
@@ -162,7 +162,7 @@ export class AccountService {
     }
 
     initAccountVerifications():UserProfileVerifications {
-        return this.verificSrv.init();
+        return this.profileSrv.initVerifications();
     }
 
 }
