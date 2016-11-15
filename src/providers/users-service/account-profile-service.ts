@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-import { UserProfileData, UserProfileStatus, USER_DB_REF, USER_CFG } from '../../models/user-model';
+import { USER_CFG, USER_DB_REF, UserAccountProfile, UserProfileData, UserProfileStatus, UserProfileVerifications } from '../../models/user-model';
 
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
@@ -40,29 +40,66 @@ export class AccountProfileService {
         return this.dbRef.update(updates);
     }
 
-    updateStatus(userId:string, profileData: UserProfileData): firebase.Promise<any> {
+    updateStatus(userId:string, profile: UserAccountProfile ): firebase.Promise<any> {
         console.info('accountProfileStatus > update > start');
         console.group('update');
-        // init profile
+        // init status object
         let status = this.initStatus();
-        // check required fields for basic
-        // start in true
-        // set false if at least one field is empty
-        status.basic.complete = true; //
-        ACCOUNT_CFG.PROFILE.REQUIRED_FIELDS.BASIC
-            .forEach( function(item, index){
-                console.log('foreach > ', item, index);
-                if(profileData[item]==='') {
-                    status.basic.complete = false;
-                }
-            }); 
+        status = this.setFieldsCompleteStatus(status, profile.data);
+        status = this.setVerificationsCompleteStatus(status, profile.verifications);
         let updates = {};
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.STATUS._NODE] = status;
         console.groupEnd();
         return this.dbRef.update(updates);
     }
 
+    private setFieldsCompleteStatus(profileStatus:UserProfileStatus, profileData:UserProfileData):UserProfileStatus {
+        // iterate each profile type
+        let notFilled = []; 
+        for(let key in ACCOUNT_CFG.PROFILE.LIST) {
+            let typeUpper = key;
+            let typeLower = ACCOUNT_CFG.PROFILE.LIST[key];
+            let requiredFields = ACCOUNT_CFG.PROFILE.REQUIRED_FIELDS[typeUpper];
+            let notFound = [];
+            // set false if at least one field is empty
+            profileStatus[typeLower].fieldsComplete = true; //
+            requiredFields.forEach( function(item, index){
+                    //console.log('foreach > ', item, index);
+                    // if at least one is empty, complete flag stays false
+                    if(profileData[item]==='') {
+                        profileStatus[typeLower].fieldsComplete = false;
+                        notFound.push(item);
+                    }
+                }); 
+           notFilled[typeLower] = notFound;     
+        }
+        console.log('setFieldsCompleteStatus > notFilled > ', notFilled);
+        return profileStatus;
+    }
 
+    private setVerificationsCompleteStatus(profileStatus:UserProfileStatus, accountVerifications:UserProfileVerifications):UserProfileStatus {
+        // iterate each profile type
+        let notVerified = []; 
+        for(let key in ACCOUNT_CFG.PROFILE.LIST) {
+            let typeUpper = key;
+            let typeLower = ACCOUNT_CFG.PROFILE.LIST[key];
+            let requiredVerifications = ACCOUNT_CFG.PROFILE.REQUIRED_VERIFICATIONS[typeUpper];
+            let unverified = [];
+            // set false if at least one field is empty
+            profileStatus[typeLower].verificationsComplete = true; //
+            requiredVerifications.forEach( function(item, index){
+                    //console.log('foreach > ', item, index);
+                    // if at least one is false, complete flag is false
+                    if(accountVerifications[item].verified===false) {
+                        profileStatus[typeLower].verificationsComplete = false;
+                        unverified.push(item);
+                    }
+                }); 
+           notVerified[typeLower] = unverified;     
+        }
+        console.log('setVerificationsCompleteStatus > notVerified > ', notVerified);
+        return profileStatus;
+    }    
 
     /**
      *  INITIALIZATION OF ACCOUNT STATUS DATA
@@ -94,19 +131,16 @@ export class AccountProfileService {
         let status:UserProfileStatus;
         status = {
             basic: {
-                requiredFields: false,
-                requiredVerifications: false,
-                complete: false
+                fieldsComplete: false,
+                verificationsComplete:false
             },
             sender: {
-                requiredFields: false,
-                requiredVerifications: false,
-                complete: false
+                fieldsComplete: false,
+                verificationsComplete:false
             },            
             operator: {
-                requiredFields: false,
-                requiredVerifications: false,
-                complete: false
+                fieldsComplete: false,
+                verificationsComplete:false
             },            
         };
         console.log('initAccountProfileStatus > status ', status);

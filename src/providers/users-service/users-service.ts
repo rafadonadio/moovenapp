@@ -55,13 +55,13 @@ export class UsersService {
                     console.log('[1] createStep2 > success');
                     steps.create = true;                    
                     // update account profile status                    
-                    return this.updateAccountProfileStatus();
+                    return this.accountSrv.updateProfileStatus(fbuser.uid);
                 })
                 .then(() => {
                     console.log('[2] updateProfileStatus > success');
                     steps.status = true
                     // update firebase user displayName
-                    return this.updateUserDisplayName(displayName);                    
+                    return this.auth.updateFirebaseUserDisplayName(displayName);                    
                 })
                 .then(() => {
                     console.log('[3] updateDisplayName > success');
@@ -79,11 +79,6 @@ export class UsersService {
                     console.groupEnd();
                 });
         });
-    }
-
-    // update authenticated user displayName
-    updateUserDisplayName(displayName: string) {
-        return this.auth.updateFirebaseUserDisplayName(displayName);
     }
 
     // get authenticated user
@@ -150,16 +145,13 @@ export class UsersService {
     }
 
     // check if value of UserAccount.active is 1
-    isAccountActive(accountData: UserAccount):boolean {
+    accountIsActive(accountData: UserAccount):boolean {
         return this.accountSrv.isActive(accountData);
     }
-    // returns account emailVerified value
-    isAccountEmailVerified (accountData: UserAccount): boolean {
-        return this.accountSrv.isEmailVerified(accountData);
-    }
+
     // check user account.profileComplete.type value is 1
-    isAccountProfileComplete(accountData: UserAccount, profileType: string):boolean {
-        return this.accountSrv.isProfileComplete(accountData, profileType);
+    accountProfileFieldsIsComplete(accountData: UserAccount, profileType: string):boolean {
+        return this.accountSrv.isProfileFieldsComplete(accountData, profileType);
     }
 
     getAccountEmailVerifiedRef():firebase.database.Reference {
@@ -176,10 +168,6 @@ export class UsersService {
         return this.accountSrv.getProfileDataByUid(user.uid);
     }
 
-    updateAccountProfileStatus(): void {
-        let fbuser = this.getUser();        
-        this.accountSrv.updateProfileStatus(fbuser.uid);
-    }
 
     /**
      *  EMAIL VERIFICATION

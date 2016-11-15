@@ -19,7 +19,7 @@ export class AccountVerificationsService {
     getRef_emailVerified(userId: string): firebase.database.Reference {
         return this.dbRef
                 .child(ACCOUNT_REF + userId)
-                .child(ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED);
+                .child(ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED);
     }
 
     init():UserProfileVerifications {

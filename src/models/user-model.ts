@@ -40,7 +40,6 @@ export class UserAccount {
     deletedAt: number;
     providerId: string;
     profile: UserAccountProfile;
-    verifications: UserProfileVerifications
     ToS: {
         accepted: boolean,
         acceptedTimestamp: number,
@@ -52,7 +51,8 @@ export class UserAccount {
 
 export class UserAccountProfile {
     data: UserProfileData;
-    status: UserProfileStatus;    
+    status: UserProfileStatus;   
+    verifications: UserProfileVerifications 
 }
 
 export class UserProfileData {
@@ -73,19 +73,16 @@ export class UserProfileData {
 
 export class UserProfileStatus {
     basic: {
-        requiredFields: boolean,
-        requiredVerifications: boolean,
-        complete: boolean
+        fieldsComplete: boolean,
+        verificationsComplete: boolean
     };
     sender: {
-        requiredFields: boolean,
-        requiredVerifications: boolean,
-        complete: boolean
+        fieldsComplete: boolean,
+        verificationsComplete: boolean
     };            
     operator: {
-        requiredFields: boolean,
-        requiredVerifications: boolean,
-        complete: boolean
+        fieldsComplete: boolean,
+        verificationsComplete: boolean
     };            
 }
 
@@ -170,6 +167,39 @@ export const USER_DB_REF = {
                     REQUIRED_VERIFICATIONS: '/profile/status/sender/requiredVerifications',
                 }
             },
+            VERIFICATIONS: {
+                _NODE: '/profile/verifications',
+                EMAIL: {
+                    _NODE: '/profile/verifications/email',
+                    VERIFIED: '/profile/verifications/email/verified',
+                    VERIFIED_ADDRESS: '/profile/verifications/email/verifiedAddress',
+                    VERIFIED_TIMESTAMP: '/profile/verifications/email/verifiedTimestamp',
+                    ATTEMPTS_IDS: '/profile/verifications/email/attemptsIds/'
+                },
+                PHONE: {
+                    _NODE: '/profile/verifications/phone',
+                    VERIFIED: '/profile/verifications/phone/verified',
+                    VERIFIED_NUMBER: '/profile/verifications/phone/verifiedNumber',
+                    VERIFIED_TIMESTAMP: '/profile/verifications/phone/verifiedTimestamp',
+                    ATTEMPTS_IDS: '/profile/verifications/phone/attemptsIds/'
+                },     
+                LEGAL_IDENTITY_NUMBER: {
+                    _NODE: '/profile/verifications/legalIdentityNumber',
+                    VERIFIED: '/profile/verifications/legalIdentityNumber/verified',
+                    VERIFIED_NUMBER: '/profile/verifications/legalIdentityNumber/verifiedNumber',
+                    VERIFIED_TIMESTAMP: '/profile/verifications/legalIdentityNumber/verifiedTimestamp', 
+                    VERIFIED_BY: '/profile/verifications/legalIdentityNumber/verifiedBy',
+                    IMAGE_URL: '/profile/verifications/legalIdentityNumber/imageUrl',                 
+                },
+                RESIDENCE_ADDRESS: {
+                    _NODE: '/profile/verifications/residenceAddress',
+                    VERIFIED: '/profile/verifications/residenceAddress/verified',
+                    VERIFIED_ADDRESS: '/profile/verifications/residenceAddress/verifiedAddress',
+                    VERIFIED_TIMESTAMP: '/profile/verifications/residenceAddress/verifiedTimestamp', 
+                    VERIFIED_BY: '/profile/verifications/residenceAddress/verifiedBy',
+                    IMAGE_URL: '/profile/verifications/residenceAddress/imageUrl',     
+                }
+            }            
         },
         TOS: {
             _NODE: '/ToS',
@@ -179,39 +209,6 @@ export const USER_DB_REF = {
             ACCEPTED_VERSION_TAG: '/ToS/acceptedVersionTag',
             HISTORY: '/ToS/history/',
         },
-        VERIFICATIONS: {
-            _NODE: '/verifications',
-            EMAIL: {
-                _NODE: '/verifications/email',
-                VERIFIED: '/verifications/email/verified',
-                VERIFIED_ADDRESS: '/verifications/email/verifiedAddress',
-                VERIFIED_TIMESTAMP: '/verifications/email/verifiedTimestamp',
-                ATTEMPTS_IDS: '/verifications/email/attemptsIds/'
-            },
-            PHONE: {
-                _NODE: '/verifications/phone',
-                VERIFIED: '/verifications/phone/verified',
-                VERIFIED_NUMBER: '/verifications/phone/verifiedNumber',
-                VERIFIED_TIMESTAMP: '/verifications/phone/verifiedTimestamp',
-                ATTEMPTS_IDS: '/verifications/phone/attemptsIds/'
-            },     
-            LEGAL_IDENTITY_NUMBER: {
-                _NODE: '/verifications/legalIdentityNumber',
-                VERIFIED: '/verifications/legalIdentityNumber/verified',
-                VERIFIED_NUMBER: '/verifications/legalIdentityNumber/verifiedNumber',
-                VERIFIED_TIMESTAMP: '/verifications/legalIdentityNumber/verifiedTimestamp', 
-                VERIFIED_BY: '/verifications/legalIdentityNumber/verifiedBy',
-                IMAGE_URL: '/verifications/legalIdentityNumber/imageUrl',                 
-            },
-            RESIDENCE_ADDRESS: {
-                _NODE: '/verifications/residenceAddress',
-                VERIFIED: '/verifications/residenceAddress/verified',
-                VERIFIED_ADDRESS: '/verifications/residenceAddress/verifiedAddress',
-                VERIFIED_TIMESTAMP: '/verifications/residenceAddress/verifiedTimestamp', 
-                VERIFIED_BY: '/verifications/residenceAddress/verifiedBy',
-                IMAGE_URL: '/verifications/residenceAddress/imageUrl',     
-            }
-        }
     }
 }
 

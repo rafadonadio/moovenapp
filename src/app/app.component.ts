@@ -13,8 +13,11 @@ import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
 import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
+import { USER_CFG } from '../models/user-model';
 
 declare var window: any;
+
+const PROFILE_BASIC = USER_CFG.ACCOUNT.PROFILE.LIST.BASIC;
 
 @Component({
     templateUrl: 'app.html'
@@ -118,35 +121,35 @@ export class MyApp{
                     account = snapshot.val();
                     this.userAccount = account;
                     console.log('[1] getUserAccount: ', account);
-                }              
-                this.loader.dismiss()
-                    .then(() => {
-                        // is user active?
-                        console.info('[2] isAccountActive');
-                        if(this.usersService.isAccountActive(account)===false) {
-                            // account is inactive, show error and signout
-                            console.log('UserAccount active==FALSE, SignOut');
-                            this.presentAlertAndAction('Cuenta inactiva',
-                                'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
-                                'signout'
-                                );
-                            console.groupEnd();        
-                        }else{
-                            console.log('UserAccount active==TRUE');
-                        }
-                    })
-                    .then(() => {
-                        // is basic profile complete ? 
-                        console.info('[3] IsAccountProfileComplete');
-                        if(this.usersService.isAccountProfileComplete(account, 'basic')===false) {
-                            console.warn('profileIsComplete==FALSE, goTo MergePage');
-                            this.nav.setRoot(SignupMergePage);
-                        }
-                        else{
-                            console.log('profileIsComplete==TRUE');
-                        }                   
-                        console.groupEnd();     
-                    });                
+                    this.loader.dismiss()
+                        .then(() => {
+                            // is user active?
+                            console.info('[2] isAccountActive');
+                            if(this.usersService.accountIsActive(account)===false) {
+                                // account is inactive, show error and signout
+                                console.log('UserAccount active==FALSE, SignOut');
+                                this.presentAlertAndAction('Cuenta inactiva',
+                                    'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
+                                    'signout'
+                                    );
+                                console.groupEnd();        
+                            }else{
+                                console.log('UserAccount active==TRUE');
+                            }
+                        })
+                        .then(() => {
+                            // is basic profile complete ? 
+                            console.info('[3] accountProfileIsComplete');
+                            if(this.usersService.accountProfileFieldsIsComplete(account, PROFILE_BASIC)===false) {
+                                console.warn('profileIsComplete==FALSE, goTo MergePage');
+                                this.nav.setRoot(SignupMergePage);
+                            }
+                            else{
+                                console.log('profileIsComplete==TRUE');
+                            }                   
+                            console.groupEnd();     
+                        });    
+                }                         
             })
             .catch((error) => {
                 console.log('verifyUserAccount > failed', error);

@@ -61,16 +61,25 @@ export class AccountService {
         return this.dbRef.update(updates);
     }
 
-    updateProfileStatus(userId: string): void {
+    updateProfileStatus(userId: string): Promise<any> {
         console.info('updateProfileStatus > start');
-        this.getProfileDataByUid(userId)
-            .then((snapshot) => {
-                let profileData: UserProfileData = snapshot.val();
-                return this.profileSrv.updateStatus(userId, profileData);
-            })
-            .catch((error) => {
-                console.error('updateProfileStatus > getProfile > error: ', error);
-            });
+        return new Promise((resolve, reject) => {
+            this.getByUid(userId)
+                .then((snapshot) => {
+                    console.log('updateProfileStatus > getProfile > ok');
+                    let account:UserAccount = snapshot.val();
+                    return this.profileSrv.updateStatus(userId, account.profile);
+                })
+                .then((result) => {
+                    console.log('updateProfileStatus > update > success');
+                    resolve(result);
+                })
+                .catch((error) => {
+                    console.error('updateProfileStatus > error: ', error);
+                    reject(error);
+                });
+        })
+
     }
 
     /**
@@ -104,12 +113,12 @@ export class AccountService {
     }
 
     isEmailVerified (account: UserAccount): boolean {
-        return account.verifications.email.verified;
+        return account.profile.verifications.email.verified;
     }
 
     // check user account.profileComplete.type value is 1
-    isProfileComplete(account: UserAccount, profileId: string):boolean {
-        return account.profile.status[profileId].complete;
+    isProfileFieldsComplete(account: UserAccount, profileType: string):boolean {
+        return account.profile.status[profileType].fieldsComplete;
     }
 
     /**
@@ -129,9 +138,9 @@ export class AccountService {
             providerId: fbuser.providerId,
             profile: {
                 data: profileData,
-                status: profileStatus
+                status: profileStatus,
+                verifications: profileVerifications                
             },
-            verifications: profileVerifications,
             ToS: {
                 accepted: false,
                 acceptedTimestamp: 0,

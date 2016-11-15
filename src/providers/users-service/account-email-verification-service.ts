@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-import { UserProfileEmailVerification, USER_DB_REF } from '../../models/user-model';
+import { USER_DB_REF } from '../../models/user-model';
 import { LogUserEmailVerificationAttempts, LOG_DB_REF } from '../../models/log-model';
 
 // firebase references
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
 const REF_LOG_EMAIL_VERIFICATIONS = LOG_DB_REF.LOG_USER_EMAIL_VERIFICATION_ATTEMPTS;
-const REF_LOG_EMAIL_VERIFICATIONS_NODE = LOG_DB_REF.LOG_USER_EMAIL_VERIFICATION_ATTEMPTS_NODE;
 
 @Injectable()
 export class AccountEmailVerificationService {
@@ -46,8 +45,8 @@ export class AccountEmailVerificationService {
         // update account email
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
         // update account validation values
-        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED] = false;
-        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.ATTEMPTS_IDS +  logKey] = profileVerificationAttempt;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED] = false;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.ATTEMPTS_IDS +  logKey] = profileVerificationAttempt;
         // save data to log 
         updates[REF_LOG_EMAIL_VERIFICATIONS + logKey] = logData;
         // update!
@@ -63,17 +62,14 @@ export class AccountEmailVerificationService {
     }
 
     setVerified(fbuser:firebase.User): firebase.Promise<any> {
-        let self = this;
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
-        let userId = fbuser.uid;
-        let emailVerified = fbuser.emailVerified;
         let updates = [];
         // account email value
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
         // account vericitaion values
-        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED] = true;        
-        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED_ADDRESS] = fbuser.email;
-        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.VERIFICATIONS.EMAIL.VERIFIED_TIMESTAMP] = timestamp;        
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED] = fbuser.emailVerified;        
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED_ADDRESS] = fbuser.email;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED_TIMESTAMP] = timestamp;        
         // update!
         return this.dbRef.update(updates);           
     }
