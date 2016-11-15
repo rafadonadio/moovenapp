@@ -37,6 +37,7 @@ export class UserCredentials {
 export class UserAccount {
     active: boolean;
     createdAt: number;
+    deletedAt: number;
     providerId: string;
     profile: UserAccountProfile;
     verifications: UserProfileVerifications

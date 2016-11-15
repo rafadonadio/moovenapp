@@ -9,9 +9,9 @@ export class AccountToS {
 
 export const TOS_CFG = {
     CURRENT_VERSION_TAG: '2016.11.01.0001',
-    CURRENT_VERSION_ID: 0,
+    CURRENT_VERSION_ID: 1,
     VERSIONS: {
-        0: {
+        1: {
             tag: '2016.11.01.0001',
             date: '2016-11-03',
         }

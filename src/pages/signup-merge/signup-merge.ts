@@ -65,28 +65,19 @@ export class SignupMergePage implements OnInit{
                 phonePrefix: value.phonePrefix,
                 phoneMobile: value.phoneMobile
             };
-            // display name
-            let displayName = value.firstName + ' ' + value.lastName;
             // update
             this.users.createAccountStep2(profileData)
-                .then((result) => {
-                    console.log('createAccountComplete > ok', result);
-                    this.users.updateAccountProfileStatus();
-                    // update firebase user displayName
-                    this.users.updateUserDisplayName(displayName);
-                })
-                .then(() => {
-                    console.log('user profile updated');
-                    // all good, go to confirm mobile phone
+                .then((result) => {                    
+                    console.log('createAccountStep2 > success', result);
                     this.navCtrl.push(VerifyPhonePage);
                 })
                 .catch((error) => {
-                    console.log('updateUserProfile error > ', error);
+                    console.log('createAccountStep2 > error > ', error);
                     loader.dismiss()
                         .then(() => {
                             let alert = this.alertCtrl.create({
                                 title: 'Atención',
-                                subTitle: 'Ocurrió un error, por favor vuelve a intentar',
+                                subTitle: 'Ocurrió un error al crear tu cuenta, por favor vuelve a intentarlo',
                                 buttons: [
                                     {
                                         text: 'Cerrar',

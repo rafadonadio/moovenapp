@@ -55,8 +55,9 @@ export class AccountService {
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.TOS.ACCEPTED_TIMESTAMP] = timestamp;
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.TOS.ACCEPTED_VERSION_ID] = ToS.id;
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.TOS.ACCEPTED_VERSION_TAG] = ToS.tag;
+        // add log tos history array
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.TOS.HISTORY + newHistoryKey] = ToS.historyData;
-        console.log('completeSignup > data > ', ToS, updates, newHistoryKey);
+        console.log('createStep2 > vars > ', ToS, updates, newHistoryKey);
         return this.dbRef.update(updates);
     }
 
@@ -124,6 +125,7 @@ export class AccountService {
         let account:UserAccount = {
             active: true, 
             createdAt: firebase.database.ServerValue.TIMESTAMP,
+            deletedAt: 0,
             providerId: fbuser.providerId,
             profile: {
                 data: profileData,
