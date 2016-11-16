@@ -2,11 +2,19 @@ import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 import { AccountProfileService } from '../users-service/account-profile-service';
 import { AccountVerificationsService } from '../users-service/account-verifications-service';
-import { UserAccount, UserProfileData, UserProfileStatus, UserProfileVerifications, USER_DB_REF } from '../../models/user-model';
+import {
+    USER_CFG,
+    USER_DB_REF,
+    UserAccount,
+    UserProfileData,
+    UserProfileStatus,
+    UserProfileVerifications
+} from '../../models/user-model';
 import { TOS_CFG } from '../../models/tos-model';
 
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
+const PROFILES_LIST = USER_CFG.ACCOUNT.PROFILE.LIST;
 
 @Injectable()
 export class AccountService {
@@ -20,7 +28,7 @@ export class AccountService {
     }
 
     /**
-     *  WRITE
+     *  WRITE TO DATABASE
      */
 
     // create database node for user account
@@ -30,7 +38,7 @@ export class AccountService {
         return this.dbRef.update(updates);
     }
 
-    // update user profile (updates only the included nodes)
+    // Updates account created in step1, with required fields
     createStep2(userId: string, data: any):firebase.Promise<any>  {
         console.info('createStep2 > start');
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
@@ -97,6 +105,11 @@ export class AccountService {
     getProfileDataByUid(userId: string): firebase.Promise<any> {
         return this.profileSrv.getDataByUid(userId);
     }    
+    // get account.profile.data from firebase database
+    getProfileVerificationByUid(userId: string): firebase.Promise<any> {
+        return this.profileSrv.getVerificationsByUid(userId);
+    }    
+
 
     /**
      *  GET DATABASE REFERENCE
@@ -115,15 +128,30 @@ export class AccountService {
     isActive(account: UserAccount):boolean {
         return account.active;
     }
-
+    // set status of each of accounts profiles (basic, sender, operator), based on completion
+    getProfilesStatus(account: UserAccount): any {
+        let status = {};
+        for(let typeU in PROFILES_LIST) {  
+            let typeL = PROFILES_LIST[typeU];          
+            status[typeL] = false;
+            if(account.profile.status[typeL].fieldsComplete===true 
+                && account.profile.status[typeL].verificationsComplete===true){
+                status[typeL] = true;
+            }
+        }
+        console.log('getProfilesStatus > ', status);
+        return status;
+    }
+    //get account.profile.verifications.email.verified
     isEmailVerified (account: UserAccount): boolean {
         return account.profile.verifications.email.verified;
     }
-
-    // check user account.profileComplete.type value is 1
+    // get user account.profileComplete.type value is 1
     isProfileFieldsComplete(account: UserAccount, profileType: string):boolean {
         return account.profile.status[profileType].fieldsComplete;
     }
+
+
 
     /**
      *  INITIALIZATION OF ACCOUNT DATA

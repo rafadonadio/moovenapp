@@ -15,14 +15,39 @@ export class AccountProfileService {
     constructor(public af:AngularFire) {
     }
 
+    /**
+     *  GET DATABASE REFERENCE
+     */
+
+    // get fireebase REF for user account email verified node
+    getRef_emailVerification(userId: string): firebase.database.Reference {
+        return this.dbRef
+                .child(ACCOUNT_REF + userId)
+                .child(ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED);
+    }
+
+    /**
+     *  READ
+     */
+
     // get account.profile.data from firebase database
     getDataByUid(userId: string): firebase.Promise<any> {
         let child = ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._NODE;
-        console.log('getProfileDataByUid > child ', child);
         return this.dbRef
                 .child(child)
                 .once('value');
     }  
+
+    getVerificationsByUid(userid:string): firebase.Promise<any> {
+        let child = ACCOUNT_REF + userid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS._NODE;
+        return this.dbRef   
+                .child(child)
+                .once('value');
+    }
+
+    /**
+     *  WRITE
+     */
 
     // update user profile (updates only the included nodes)
     updateData(userId: string, data: any): firebase.Promise<any> {
@@ -52,6 +77,10 @@ export class AccountProfileService {
         console.groupEnd();
         return this.dbRef.update(updates);
     }
+
+    /**
+     *  HELPERS
+     */
 
     private setFieldsCompleteStatus(profileStatus:UserProfileStatus, profileData:UserProfileData):UserProfileStatus {
         // iterate each profile type
@@ -100,13 +129,6 @@ export class AccountProfileService {
         console.log('setVerificationsCompleteStatus > notVerified > ', notVerified);
         return profileStatus;
     }    
-
-    // get fireebase REF for user account email verified node
-    getRef_emailVerification(userId: string): firebase.database.Reference {
-        return this.dbRef
-                .child(ACCOUNT_REF + userId)
-                .child(ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED);
-    }
 
     /**
      *  INITIALIZATION OF ACCOUNT STATUS DATA

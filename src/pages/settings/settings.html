@@ -9,6 +9,9 @@
     </ion-navbar>
 </ion-header>
 <ion-content class="settings">
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>    
     <ion-fab top right>
         <button ion-fab color="subdark">
             <ion-icon name="camera"></ion-icon>
@@ -17,60 +20,58 @@
     <div class="profile">
         <img src="assets/img/mooven_avatar.png">
     </div>
-    <ion-grid>
-        <ion-row>
-            <ion-col width-50>
-                <button ion-item detail-none class="item-input">
-                    <ion-label stacked>Nombre</ion-label>
-                    <ion-input type="text" value="{{ profile?.firstName }}"
-                        [disabled]="inputDisabled.names"></ion-input>
-                </button>
-            </ion-col>
-            <ion-col width-50>
-                <button ion-item detail-none class="item-input">
-                    <ion-label stacked>Apellido</ion-label>
-                    <ion-input type="text" value="{{ profile?.lastName }}"
-                        [disabled]="inputDisabled.names"></ion-input>
-                </button>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col>
-                <button ion-item detail-none>
-                    <ion-label stacked>Email</ion-label>
-                    <ion-input type="email"
-                        value="{{ user.email }}"
-                        disabled></ion-input>
-                    <ion-icon name="checkmark-circle" item-right color="light" [hidden]="user.emailVerified==false"></ion-icon>
-                    <ion-icon name="help" item-right color="subdark" [hidden]="user.emailVerified==true"></ion-icon>
-                </button>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col>
-                <button ion-item detail-none>
-                    <ion-label stacked>Móvil</ion-label>
-                    <ion-input type="text" value="{{ profile?.phonePrefix }}{{ profile?.phoneMobile }}"
-                        [disabled]="inputDisabled.phoneMobile"></ion-input>
-                </button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
     <ion-list>
+        <ion-item-divider color="subdark">
+            Datos personales
+        </ion-item-divider>
+        <ion-item>
+            <ion-icon name='person' item-left></ion-icon>
+            <h3>{{ profData?.firstName }} {{ profData?.lastName }}</h3>
+            <p>No validado</p>
+            <ion-icon name='time' item-right color="sublight"></ion-icon>
+        </ion-item> 
+        <ion-item>
+            <ion-icon name='mail' item-left></ion-icon>
+            <h3>{{ profData?.email }}</h3>
+            <p [hidden]="profVrfs?.email.verified==true">No validado</p>
+            <ion-icon name="time" item-right color="sublight" [hidden]="profVrfs?.email.verified==true"></ion-icon>
+            <p [hidden]="profVrfs?.email.verified==false">Validado</p>
+            <ion-icon name="checkmark" item-right [hidden]="profVrfs?.email.verified==false"></ion-icon>
+        </ion-item>  
+        <ion-item>
+            <ion-icon name='call' item-left></ion-icon>
+            <h3>{{ profData?.phonePrefix }}{{ profData?.phoneMobile }}</h3>
+            <p [hidden]="profVrfs?.phone.verified==true">No validado</p>
+            <ion-icon name="time" item-right color="sublight" [hidden]="profVrfs?.phone.verified==true"></ion-icon>
+            <p [hidden]="profVrfs?.phone.verified==false">Validado</p>
+            <ion-icon name="checkmark" item-right [hidden]="profVrfs?.phone.verified==false"></ion-icon>
+        </ion-item>                    
         <ion-item-divider color="subdark">
             Perfiles
         </ion-item-divider>
         <ion-item>
+            <ion-icon name='contact' item-left></ion-icon>
+            Básico
+            <ion-note item-right [hidden]="accountStatus?.basic==true">Incompleto</ion-note>
+            <ion-icon name='time' item-right [hidden]="accountStatus?.basic==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.basic==false">Válido</ion-note>
+            <ion-icon name='checkmark' item-right [hidden]="accountStatus?.basic==false"></ion-icon>
+        </ion-item>
+        <ion-item>
             <ion-icon name='send' item-left></ion-icon>
-            Envíos
-            <ion-note item-right>Aprobado</ion-note>
-            <ion-icon name='checkmark' item-right primary></ion-icon>
+            Servicio
+            <ion-note item-right [hidden]="accountStatus?.sender==true">Incompleto</ion-note>
+            <ion-icon name='time' item-right [hidden]="accountStatus?.sender==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.sender==false">Válido</ion-note>
+            <ion-icon name='checkmark' item-right [hidden]="accountStatus?.sender==false"></ion-icon>
         </ion-item>
         <ion-item>
             <ion-icon name='cube' item-left></ion-icon>
-            Cargas
-            <ion-note item-right>Verificar</ion-note>
-            <ion-icon name='arrow-forward' item-right></ion-icon>
+            Operador
+            <ion-note item-right [hidden]="accountStatus?.operator==true">Incompleto</ion-note>
+            <ion-icon name='time' item-right [hidden]="accountStatus?.operator==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.operator==false">Válido</ion-note>
+            <ion-icon name='checkmark' item-right [hidden]="accountStatus?.operator==false"></ion-icon>
         </ion-item>
     </ion-list>
     <ion-list>

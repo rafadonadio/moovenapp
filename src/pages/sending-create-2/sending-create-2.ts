@@ -388,7 +388,7 @@ export class SendingCreate2Page implements OnInit {
     private setUser() {
         this.user = this.users.getUser();
         // set profile
-        this.users.getAccountProfile()
+        this.users.getAccountProfileData()
             .then((snapshot) => {
                 this.profile = snapshot.val();
             });

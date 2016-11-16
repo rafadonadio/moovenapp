@@ -139,10 +139,30 @@ export class UsersService {
      */
 
     // get user account data
-    getUserAccount():firebase.Promise<any> {
+    getAccount():firebase.Promise<any> {
         let user = this.getUser();
         return this.accountSrv.getByUid(user.uid);
     }
+
+    getAccountProfileData(): firebase.Promise<any> {
+        let user = this.getUser();
+        return this.accountSrv.getProfileDataByUid(user.uid);
+    }
+
+    getAccountProfileVerifications(): firebase.Promise<any> {
+        let user = this.getUser();
+        return this.accountSrv.getProfileVerificationByUid(user.uid);
+    }
+
+    // get reference for profile verification email
+    getRef_AccountEmailVerification():firebase.database.Reference {
+        let user = this.getUser();
+        return this.accountSrv.getRef_profileVerificationEmail(user.uid);
+    }
+
+    /**
+     *  ACCOUNT - READ DATA
+     */
 
     // check if value of UserAccount.active is 1
     accountIsActive(accountData: UserAccount):boolean {
@@ -154,21 +174,10 @@ export class UsersService {
         return this.accountSrv.isProfileFieldsComplete(accountData, profileType);
     }
 
-    // get reference for profile verification email
-    getRef_AccountEmailVerification():firebase.database.Reference {
-        let user = this.getUser();
-        return this.accountSrv.getRef_profileVerificationEmail(user.uid);
+    // get profiles status
+    accountProfilesStatus(accountData: UserAccount) {
+        return this.accountSrv.getProfilesStatus(accountData);
     }
-
-    /**
-     *  ACCOUNT PROFILE
-     */
-
-    getAccountProfile(): firebase.Promise<any> {
-        let user = this.getUser();
-        return this.accountSrv.getProfileDataByUid(user.uid);
-    }
-
 
     /**
      *  EMAIL VERIFICATION

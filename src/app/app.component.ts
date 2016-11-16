@@ -104,7 +104,7 @@ export class MyApp{
         // show loader
         this.presentLoader('Verificando credenciales ...');
         // get account data
-        this.usersService.getUserAccount()
+        this.usersService.getAccount()
             .then((snapshot) => {
                 // check account is set
                 let account:any;

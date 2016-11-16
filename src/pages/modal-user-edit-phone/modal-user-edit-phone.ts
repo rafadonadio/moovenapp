@@ -50,7 +50,7 @@ export class ModalUserEditPhonePage implements OnInit{
         // set user
         this.user = this.users.getUser();
         // set profile
-        this.users.getAccountProfile()
+        this.users.getAccountProfileData()
             .then((snapshot) => {
                 this.profile = snapshot.val();
                 console.log(this.profile);

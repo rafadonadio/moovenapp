@@ -1,3 +1,4 @@
+import { UserAccount, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
@@ -11,9 +12,10 @@ import { SettingsPopoverPage } from '../settings-popover/settings-popover';
 })
 export class SettingsPage implements OnInit{
 
-    user: any;
-    profile: any;
-    account: any;
+    fbuser: firebase.User;
+    profData: UserProfileData;
+    profVrfs: UserProfileVerifications;
+    accountStatus: any;
     input = {
         firstName: '',
         lastName: '',
@@ -34,8 +36,17 @@ export class SettingsPage implements OnInit{
     }
 
     ngOnInit() {
-        this.setUser();
+        this.setAccountData();
         this.initInputs();
+    }
+
+    doRefresh(refresher) {
+        console.log('Begin async operation', refresher);
+        this.setAccountData();
+        setTimeout(() => {
+            console.log('Async operation has ended');
+            refresher.complete();
+        }, 2000);
     }
 
     presentPopover(myEvent) {
@@ -60,22 +71,23 @@ export class SettingsPage implements OnInit{
      *  PRIVATE METHODS
      */
 
-    private setUser(){
-        this.user = this.users.getUser();
-        console.log('testing > af > user > ', this.user);        
-        // set profile
-        this.users.getAccountProfile()
-            .then((snapshot) => {
-                this.profile = snapshot.val();
-        });
-        this.users.getUserAccount()
-            .then((snapshot)  => {
-                this.account = snapshot.val();
-        });
+    private setAccountData(){
+        let account: UserAccount;
+        this.fbuser = this.users.getUser();
+        if(this.fbuser){     
+            this.users.getAccount()
+                .then((snapshot) => {
+                    //console.log(snapshot.val());
+                    account = snapshot.val();              
+                    this.profData = account.profile.data;
+                    this.profVrfs = account.profile.verifications;
+                    this.accountStatus = this.users.accountProfilesStatus(account);
+                });
+        }
     }
 
     private initInputs() {
-        this.input.email = this.user.email;
+        this.input.email = this.fbuser.email;
     }
 
 
