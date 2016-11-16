@@ -154,9 +154,10 @@ export class UsersService {
         return this.accountSrv.isProfileFieldsComplete(accountData, profileType);
     }
 
-    getAccountEmailVerifiedRef():firebase.database.Reference {
+    // get reference for profile verification email
+    getRef_AccountEmailVerification():firebase.database.Reference {
         let user = this.getUser();
-        return this.accountSrv.getEmailVerifiedRef(user.uid);
+        return this.accountSrv.getRef_profileVerificationEmail(user.uid);
     }
 
     /**
@@ -181,21 +182,42 @@ export class UsersService {
 
     // run email verification
     // reload user > check emailVerified value > if true, save success and update account
-    runUserEmailVerificationCheck(): Promise<boolean> {
+    runAuthEmailVerification(): Promise<boolean> {
         // relaod user and check
+        let fbuser = this.getUser();
+        let steps = {
+            reload: false,
+            setVerified: false,
+            updateStatus: false
+        };
+        console.group('runAuthEmailVerification');
         return new Promise((resolve, reject) => {
             this.reloadUser()
-                .then(() => {
-                    console.log('reloadCurrentUser ok');
-                    let user = this.getUser();
-                    if(user.emailVerified === true) {
-                        resolve(this.emailVerification.setVerified(user));
+                .then((result) => {
+                    console.log('reloadAuthUser > success');
+                    steps.reload = true;
+                    if(fbuser.emailVerified === true) {
+                        return this.emailVerification.setVerified(fbuser);
                     }else{
-                        resolve(false);
+                        console.groupEnd();
+                        resolve(steps);
                     }
                 })
+                .then((result) => {
+                    console.log('setVerified > success');
+                    steps.setVerified = true;
+                    return this.accountSrv.updateProfileStatus(fbuser.uid);
+                })                
+                .then((result) => {
+                    console.log('updateProfileStatus > success');
+                    steps.updateStatus = true;
+                    console.groupEnd();
+                    resolve(steps);
+                })
                 .catch((error) => {
-                    console.log('reloadCurrentUser failed');
+                    console.log('something failed');
+                    console.groupEnd();
+                    reject(steps);
                 });
         });
     }

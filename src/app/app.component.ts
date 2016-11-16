@@ -136,6 +136,7 @@ export class MyApp{
                             }else{
                                 console.log('UserAccount active==TRUE');
                             }
+                            return;
                         })
                         .then(() => {
                             // is basic profile complete ? 
@@ -146,6 +147,8 @@ export class MyApp{
                             }
                             else{
                                 console.log('profileIsComplete==TRUE');
+                                // all good, audit if account email is verified
+                                this.auditAccountEmailIsVerified();                                
                             }                   
                             console.groupEnd();     
                         });    
@@ -157,43 +160,36 @@ export class MyApp{
             });     
     }
 
-
     /**
      * USER ACCOUNT HELPER
      */
-   
+
     /**
      * Check email verification in 3 steps
-     * 1- check value in account (instant)
-     * 2- if false, check firebase user if already verified (promise)
-     * 3- update account value to whatever is
+     * 1- check profile.verifications.email.verified == true
+     * 2- if false, check value of firebase.User.emailVerified
+     * 3- update account verification to whatever is
      */
-    checkAccountEmailIsVerifiedOrGo(): void {
-        console.info('app > checkAccountEmailIsVerifiedOrGo');
-        var self = this;
-        //is account defined?
-        if(typeof this.userAccount === 'undefined' || this.userAccount === false) {
-            console.error('checkAccountEmailIsVerifiedOrGo > UserAccount: ', this.userAccount);            
+    auditAccountEmailIsVerified(): void {
+        let self = this;
+        if(this.userAccount === false) {
+            console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
         }else{
-            // is account.emailVerified value true?
-            console.log('app > checkAccountEmailIsVerifiedOrGo > emailVerifiedRef retrieving ...');
-            // get firebase database Ref
-            var emailVerifiedRef = this.usersService.getAccountEmailVerifiedRef();
-            // retrieve value event
-            emailVerifiedRef.on('value', function(snapshot) {
-                console.log('app > checkAccountEmailIsVerifiedOrGo > emailVerifiedRef value > ', snapshot.val());
-                var isVerified: boolean = snapshot.val();
-                console.log('app > checkAccountEmailIsVerifiedOrGo > account email is verified > ', isVerified);
-                // if false, check fb user value if already verified, then run updates
-                if(isVerified === false) {
-                    console.log('app > checkAccountEmailIsVerifiedOrGo > run email verification ..');
-                    // check fbuser if emailVerified is true and update account
-                    self.usersService.runUserEmailVerificationCheck()
+            console.info('app > auditAccountEmailIsVerified > start');
+            console.group('auditAccountEmailIsVerified');
+            let ref = this.usersService.getRef_AccountEmailVerification();
+            ref.once('value', function(snapshot) {
+                console.log('profile.verification.email.verified == ', snapshot.val());
+                let isVerified:boolean = snapshot.val();
+                if(isVerified === false) {                 
+                    self.usersService.runAuthEmailVerification()
                         .then((result) => {
-                            console.log('app > checkAccountEmailIsVerifiedOrGo > email verification check > ', result);
+                            console.log('checkAuthEmailIsVerified > ', result);
+                            console.groupEnd();
                         })
                         .catch((error) => {
-                            console.log('app > checkAccountEmailIsVerifiedOrGo > email verification check failed > ', error);
+                            console.log('checkAuthEmailIsVerified > error > ', error);
+                            console.groupEnd();
                         });
                 }
             });
@@ -208,11 +204,8 @@ export class MyApp{
     openPage(page): void {
         // close the menu when clicking a link from the menu
         this.menu.close();
-
-        // user validations check
-        // before going to requested page, lets check if validations are true
-        this.checkAccountEmailIsVerifiedOrGo();
-
+        // audit if account email is verified
+        this.auditAccountEmailIsVerified();
         // navigate to the new page if it is not the current page
         switch(page.navigationType) {
             case 'root':

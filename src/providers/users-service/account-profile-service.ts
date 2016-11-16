@@ -102,7 +102,7 @@ export class AccountProfileService {
     }    
 
     // get fireebase REF for user account email verified node
-    getRef_emailVerified(userId: string): firebase.database.Reference {
+    getRef_emailVerification(userId: string): firebase.database.Reference {
         return this.dbRef
                 .child(ACCOUNT_REF + userId)
                 .child(ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED);

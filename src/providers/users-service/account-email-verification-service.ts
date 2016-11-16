@@ -62,11 +62,12 @@ export class AccountEmailVerificationService {
     }
 
     setVerified(fbuser:firebase.User): firebase.Promise<any> {
+        console.info('account email setVerified, start');
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
-        let updates = [];
-        // account email value
+        let updates = {};
+        // set account.profile.data.email
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
-        // account vericitaion values
+        // set account.profile.verifications values
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED] = fbuser.emailVerified;        
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED_ADDRESS] = fbuser.email;
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED_TIMESTAMP] = timestamp;        

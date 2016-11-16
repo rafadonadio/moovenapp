@@ -98,9 +98,13 @@ export class AccountService {
         return this.profileSrv.getDataByUid(userId);
     }    
 
+    /**
+     *  GET DATABASE REFERENCE
+     */
+
     // get user account email verified node from firebase database
-    getEmailVerifiedRef(userId: string): firebase.database.Reference {
-        return this.profileSrv.getRef_emailVerified(userId);
+    getRef_profileVerificationEmail(userId: string): firebase.database.Reference {
+        return this.profileSrv.getRef_emailVerification(userId);
     }
 
     /**
