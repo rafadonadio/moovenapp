@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="dark">
         <ion-title>
             Cambiar número de móvil
         </ion-title>
@@ -20,14 +20,14 @@
                 </ion-col>
             </ion-row>
             <ion-row>
-                <ion-col width-20>
+                <ion-col width-25>
                     <ion-item>
-                        <ion-input #input type="text" [formControl]="phonePrefix" value="{{ profile.phonePrefix }}" disabled></ion-input>
+                        <ion-input #input type="text" [formControl]="phonePrefix" disabled></ion-input>
                     </ion-item>
                 </ion-col>
-                <ion-col width-80>
+                <ion-col width-75>
                     <ion-item>
-                        <ion-input #input type="text" [formControl]="phoneMobile" value="{{ profile.phoneMobile }}"></ion-input>
+                        <ion-input #input type="text" [formControl]="phoneMobile"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>

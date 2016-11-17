@@ -1,5 +1,6 @@
+import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
@@ -13,25 +14,22 @@ export class ModalUserEditNamePage implements OnInit{
     editForm: FormGroup;
     firstName: AbstractControl;
     lastName: AbstractControl;
-    user: any;
-    profile = {
-        firstName: '',
-        lastName: ''
-    };
+    user: firebase.User;
+    profData: UserProfileData 
 
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
         public formBuilder: FormBuilder,
-        public users: UsersService) {
+        public users: UsersService,
+        public params: NavParams) {
+            this.profData = params.data.profData;
     }
 
     ngOnInit() {
-        // auth user data
-        this.setUser();
         // form init
         this.editForm = this.formBuilder.group({
-            'firstName':  ['', Validators.compose([Validators.required, Validators.maxLength(100)])],
-            'lastName':  ['', Validators.compose([Validators.required, Validators.maxLength(100)])],
+            'firstName':  [this.profData.firstName, Validators.compose([Validators.required, Validators.maxLength(100)])],
+            'lastName':  [this.profData.lastName, Validators.compose([Validators.required, Validators.maxLength(100)])],
         });
         this.firstName = this.editForm.controls['firstName'];
         this.lastName = this.editForm.controls['lastName'];
@@ -42,22 +40,7 @@ export class ModalUserEditNamePage implements OnInit{
     }
 
     submit(formValues: any) {
-        console.log('form submitted');
-    }
-
-    /**
-     * PRIVATE
-     */
-
-    private setUser() {
-        // set user
-        this.user = this.users.getUser();
-        // set profile
-        this.users.getAccountProfileData()
-            .then((snapshot) => {
-                this.profile = snapshot.val();
-                console.log(this.profile);
-        });
+        console.log('form submitted', formValues);
     }
 
 

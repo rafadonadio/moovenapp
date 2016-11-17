@@ -16,17 +16,6 @@ export class SettingsPage implements OnInit{
     profData: UserProfileData;
     profVrfs: UserProfileVerifications;
     accountStatus: any;
-    input = {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phoneMobile: ''
-    }
-    inputDisabled = {
-        names: true,
-        email: true,
-        phoneMobile: true
-    }
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -37,7 +26,6 @@ export class SettingsPage implements OnInit{
 
     ngOnInit() {
         this.setAccountData();
-        this.initInputs();
     }
 
     doRefresh(refresher) {
@@ -50,7 +38,9 @@ export class SettingsPage implements OnInit{
     }
 
     presentPopover(myEvent) {
-        let popover = this.popoverCtrl.create(SettingsPopoverPage);
+        let popover = this.popoverCtrl.create(SettingsPopoverPage, { 
+            profData: this.profData
+        });
         popover.present({
             ev: myEvent
         });       
@@ -82,13 +72,10 @@ export class SettingsPage implements OnInit{
                     this.profData = account.profile.data;
                     this.profVrfs = account.profile.verifications;
                     this.accountStatus = this.users.accountProfilesStatus(account);
+                })
+                .catch((error) => {
+                    console.log('setAccountData > error ', error);
                 });
         }
     }
-
-    private initInputs() {
-        this.input.email = this.fbuser.email;
-    }
-
-
 }
