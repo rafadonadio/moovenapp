@@ -12,24 +12,16 @@ page-settings {
 		border-radius: 50%;
 	}
 
-	ion-item.item-input,
-    button.item{
-		padding-left: 0;
-	}
-
     ion-item-divider.item{
         background: color($colors, subdark);
         color: #fff;
     }
-
-    ion-list ion-item ion-icon{
-        color: color($colors, subdark);
+    ion-list.list-md ion-item ion-icon{
+        color: color($colors, sublight);
     }
     ion-list.list-md ion-item ion-label p{
         color: color($colors, sublight);
     } 
 
-    .text-input[disabled] {
-        opacity: .7;
-    }
+
 }

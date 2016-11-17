@@ -28,12 +28,12 @@
             <ion-icon name='person' item-left></ion-icon>
             <h3>{{ profData?.firstName }} {{ profData?.lastName }}</h3>
             <p>No validado</p>
-            <ion-icon name='time' item-right color="sublight"></ion-icon>
+            <ion-icon name='information-circle' item-right color="sublight"></ion-icon>
         </ion-item> 
         <ion-item>
             <ion-icon name='mail' item-left></ion-icon>
             <h3>{{ profData?.email }}</h3>
-            <p [hidden]="profVrfs?.email.verified==true">No validado</p>
+            <p [hidden]="profVrfs?.email.verified==true">Validar</p>
             <ion-icon name="time" item-right color="sublight" [hidden]="profVrfs?.email.verified==true"></ion-icon>
             <p [hidden]="profVrfs?.email.verified==false">Validado</p>
             <ion-icon name="checkmark" item-right [hidden]="profVrfs?.email.verified==false"></ion-icon>
@@ -41,7 +41,7 @@
         <ion-item>
             <ion-icon name='call' item-left></ion-icon>
             <h3>{{ profData?.phonePrefix }}{{ profData?.phoneMobile }}</h3>
-            <p [hidden]="profVrfs?.phone.verified==true">No validado</p>
+            <p [hidden]="profVrfs?.phone.verified==true">Validar</p>
             <ion-icon name="time" item-right color="sublight" [hidden]="profVrfs?.phone.verified==true"></ion-icon>
             <p [hidden]="profVrfs?.phone.verified==false">Validado</p>
             <ion-icon name="checkmark" item-right [hidden]="profVrfs?.phone.verified==false"></ion-icon>
@@ -51,9 +51,9 @@
         </ion-item-divider>
         <ion-item>
             <ion-icon name='contact' item-left></ion-icon>
-            Básico
+            Registro
             <ion-note item-right [hidden]="accountStatus?.basic==true">Incompleto</ion-note>
-            <ion-icon name='time' item-right [hidden]="accountStatus?.basic==true"></ion-icon>
+            <ion-icon name='close' item-right [hidden]="accountStatus?.basic==true"></ion-icon>
             <ion-note item-right [hidden]="accountStatus?.basic==false">Válido</ion-note>
             <ion-icon name='checkmark' item-right [hidden]="accountStatus?.basic==false"></ion-icon>
         </ion-item>
@@ -61,16 +61,16 @@
             <ion-icon name='send' item-left></ion-icon>
             Servicio
             <ion-note item-right [hidden]="accountStatus?.sender==true">Incompleto</ion-note>
-            <ion-icon name='time' item-right [hidden]="accountStatus?.sender==true"></ion-icon>
-            <ion-note item-right [hidden]="accountStatus?.sender==false">Válido</ion-note>
+            <ion-icon name='close' item-right [hidden]="accountStatus?.sender==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.sender==false">Habilitado</ion-note>
             <ion-icon name='checkmark' item-right [hidden]="accountStatus?.sender==false"></ion-icon>
         </ion-item>
         <ion-item>
             <ion-icon name='cube' item-left></ion-icon>
             Operador
-            <ion-note item-right [hidden]="accountStatus?.operator==true">Incompleto</ion-note>
-            <ion-icon name='time' item-right [hidden]="accountStatus?.operator==true"></ion-icon>
-            <ion-note item-right [hidden]="accountStatus?.operator==false">Válido</ion-note>
+            <ion-note item-right [hidden]="accountStatus?.operator==true">Deshabilitado</ion-note>
+            <ion-icon name='remove-circle' item-right [hidden]="accountStatus?.operator==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.operator==false">Habilitado</ion-note>
             <ion-icon name='checkmark' item-right [hidden]="accountStatus?.operator==false"></ion-icon>
         </ion-item>
     </ion-list>
