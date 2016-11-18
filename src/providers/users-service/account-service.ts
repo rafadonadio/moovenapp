@@ -90,6 +90,14 @@ export class AccountService {
 
     }
 
+    updateProfileNames(userId: string, firstname: string, lastName: string):firebase.Promise<any> {
+        let data = {
+            firstName: firstname,
+            lastName: lastName
+        }
+        return this.profileSrv.updateNames(userId, data);
+    }
+
     /**
      *  READ FROM DATABASE
      */

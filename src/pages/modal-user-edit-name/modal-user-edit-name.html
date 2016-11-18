@@ -16,11 +16,18 @@
             <ion-label stacked>Nombre</ion-label>
             <ion-input #input type="text" [formControl]="firstName"></ion-input>
         </ion-item>
+        <div *ngIf="firstName.hasError('required')" class="input-error"
+            >* ingresa tu nombre</div>        
+        <div *ngIf="firstName.hasError('maxlength')" class="input-error"
+            >* máximo 50 caracteres</div>        
         <ion-item margin-bottom>
             <ion-label stacked>Apellido</ion-label>
             <ion-input #input type="text" [formControl]="lastName"></ion-input>
         </ion-item>
-
+        <div *ngIf="lastName.hasError('required')" class="input-error"
+            >* ingresa tu apellido</div>        
+        <div *ngIf="lastName.hasError('maxlength')" class="input-error"
+            >* máximo 50 caracteres</div>   
         <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
         <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>

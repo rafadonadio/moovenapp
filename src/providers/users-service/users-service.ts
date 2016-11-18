@@ -117,6 +117,37 @@ export class UsersService {
         });
     }
 
+    updateUserNames(firstName:string, lastName: string):Promise<any> {
+        let fbuser = this.getUser();
+        let steps = {
+            updateDb: false,
+            updateUser: false
+        };
+        return new Promise((resolve, reject) => {
+            this.accountSrv.updateProfileNames(fbuser.uid, firstName, lastName)
+                .then(() => {
+                    console.log('updateProfileNames > success');
+                    steps.updateDb = true;
+                    let profile = {
+                        displayName: firstName + ' ' + lastName,
+                        photoURL: null
+                    }
+                    return fbuser.updateProfile(profile);
+                })
+                .then(() => {
+                    steps.updateUser = true;
+                    console.log('firebaseUser.updateProfile > success');
+                    this.reloadUser();
+                    resolve(steps);
+                })
+                .catch((error) => {
+                    console.error('users.updateUserNames > error > ', error, steps);
+                    reject(steps);
+                });
+        
+        })
+   }
+
     /**
      *  AUTHENTICATION
      */

@@ -19,8 +19,12 @@ export class SettingsPopoverPage {
             this.profData = params.data.profData;
         }
 
-    close() {
-        this.viewCtrl.dismiss();
+    close(update:boolean = false) {
+        console.info('closing popover');
+        let data = {
+            update: update
+        };
+        this.viewCtrl.dismiss(data);
     }
 
     presentModalEditEmail() {
@@ -29,7 +33,7 @@ export class SettingsPopoverPage {
         let modal = this.modalCtrl.create(ModalUserEditEmailPage, {
             profData: this.profData
         });
-        modal.present();
+        modal.present();    
     }
 
     presentModalEditPhone() {
@@ -40,12 +44,15 @@ export class SettingsPopoverPage {
         modal.present();
     }
 
-    presentModalEditName() {
-        this.close();        
+    presentModalEditName() {      
         let modal = this.modalCtrl.create(ModalUserEditNamePage, {
             profData: this.profData
         });
         modal.present();
+        modal.onDidDismiss(data => {
+            console.info('closing modal edit name > updated ', data.update);
+            this.close(data.update);
+        });           
     }
 
 

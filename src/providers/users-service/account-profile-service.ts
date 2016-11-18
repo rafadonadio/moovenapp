@@ -65,6 +65,19 @@ export class AccountProfileService {
         return this.dbRef.update(updates);
     }
 
+    // update user profile (updates only the included nodes)
+    updateNames(userId: string, data: any): firebase.Promise<any> {
+        var profileData:any = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+        };
+        var updates = {};
+        for(let field in profileData) {
+            updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + field] = profileData[field];
+        }
+        return this.dbRef.update(updates);
+    }
+
     updateStatus(userId:string, profile: UserAccountProfile ): firebase.Promise<any> {
         console.info('accountProfileStatus > update > start');
         console.group('update');

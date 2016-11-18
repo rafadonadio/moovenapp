@@ -1,6 +1,6 @@
 import { UserAccount, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, ToastController, PopoverController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, PopoverController, ViewController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
 
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
@@ -21,7 +21,8 @@ export class SettingsPage implements OnInit{
         public users: UsersService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
-        public popoverCtrl: PopoverController ) {
+        public popoverCtrl: PopoverController,
+        public viewCtrl: ViewController ) {
     }
 
     ngOnInit() {
@@ -43,8 +44,19 @@ export class SettingsPage implements OnInit{
         });
         popover.present({
             ev: myEvent
-        });       
+        }); 
+        let self = this;
+        popover.onDidDismiss(function(data) {
+            // check on popover>dismiss, if account update is required
+            if(data) {
+                console.log('popover closed > update ? ', data);
+                if(data.update==true) {
+                    self.setAccountData();
+                }
+            }
+        });      
     }
+
 
     signOut() {
         // loader effect
