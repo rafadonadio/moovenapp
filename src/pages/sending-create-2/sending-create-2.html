@@ -26,8 +26,7 @@
             <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="pickupAddressFullText"
-                    (click)="showAddressSearchModal()"
-                    readonly></ion-input>
+                    (focus)="showAddressSearchModal()"></ion-input>
             </ion-item> 
             <ion-item *ngIf="sending.pickupAddressSet==true">
                 <ion-label color="warn" stacked>Info adicional de la dirección</ion-label>
