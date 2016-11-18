@@ -68,6 +68,7 @@ export class SettingsPage implements OnInit{
             this.users.getAccount()
                 .then((snapshot) => {
                     //console.log(snapshot.val());
+                    console.info('setAccountData > success');
                     account = snapshot.val();              
                     this.profData = account.profile.data;
                     this.profVrfs = account.profile.verifications;

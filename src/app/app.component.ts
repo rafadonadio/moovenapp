@@ -63,8 +63,8 @@ export class MyApp{
 
         // used for an example of ngFor and navigation
         this.pages = [
-            { title: 'Envíos', component: SendingsPage, icon: 'send', navigationType: 'root' },
-            { title: 'Cargas', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
+            { title: 'Servicios', component: SendingsPage, icon: 'send', navigationType: 'root' },
+            { title: 'Operador', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
             { title: 'Historial', component: HistorialPage, icon: 'time', navigationType: 'push' },
             { title: 'Notificaciones', component: NotificationsPage, icon: 'notifications', navigationType: 'push' },
