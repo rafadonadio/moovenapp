@@ -28,7 +28,7 @@
             >* ingresa tu apellido</div>        
         <div *ngIf="lastName.hasError('maxlength')" class="input-error"
             >* máximo 50 caracteres</div>   
-        <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
+        <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Modificar</button>
         <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

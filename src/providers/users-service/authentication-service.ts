@@ -59,16 +59,17 @@ export class AuthenticationService {
         return fbuser.updateProfile({ displayName: displayName });
     }
 
-    updateFirebaseUserEmail(user: any, newEmail: string): Promise<any> {
-        return user.updateEmail(newEmail);
+    updateFirebaseUserEmail(newEmail: string): firebase.Promise<any>  {
+        let fbuser:firebase.User = this.getFirebaseUser();
+        return fbuser.updateEmail(newEmail);
     }
 
     /**
      *  HELPERS
      */
 
-    reloadFirebaseUser() {
-        var user = this.fbAuthRef.currentUser;
+    reloadFirebaseUser(): firebase.Promise<any> {
+        var user:firebase.User = this.fbAuthRef.currentUser;
         return user.reload();
     }
 

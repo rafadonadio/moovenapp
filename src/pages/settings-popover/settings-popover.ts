@@ -28,20 +28,25 @@ export class SettingsPopoverPage {
     }
 
     presentModalEditEmail() {
-        this.close();
-        // show modal
         let modal = this.modalCtrl.create(ModalUserEditEmailPage, {
             profData: this.profData
         });
-        modal.present();    
+        modal.present(); 
+        modal.onDidDismiss(data => {
+            console.info('closing modal edit name > updated ', data.update);
+            this.close(data.update);
+        });              
     }
 
     presentModalEditPhone() {
-        this.close();
         let modal = this.modalCtrl.create(ModalUserEditPhonePage, {
             profData: this.profData
         });
         modal.present();
+        modal.onDidDismiss(data => {
+            console.info('closing modal edit name > updated ', data.update);
+            this.close(data.update);
+        });           
     }
 
     presentModalEditName() {      

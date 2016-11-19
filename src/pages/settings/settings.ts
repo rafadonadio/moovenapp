@@ -74,21 +74,46 @@ export class SettingsPage implements OnInit{
      */
 
     private setAccountData(){
-        let account: UserAccount;
-        this.fbuser = this.users.getUser();
-        if(this.fbuser){     
-            this.users.getAccount()
-                .then((snapshot) => {
-                    //console.log(snapshot.val());
-                    console.info('setAccountData > success');
-                    account = snapshot.val();              
-                    this.profData = account.profile.data;
-                    this.profVrfs = account.profile.verifications;
-                    this.accountStatus = this.users.accountProfilesStatus(account);
-                })
-                .catch((error) => {
-                    console.log('setAccountData > error ', error);
-                });
+        let steps = {
+            reload: false,
+            account: false
         }
+        let account: UserAccount;
+        console.group('settings.setAccount');
+        // show loader
+        let loader = this.loadingCtrl.create({
+            content: "Actualizando datos ...",
+        });
+        loader.present();
+        // run      
+        this.users.reloadUser()
+            .then(() => {
+                steps.reload = true;
+                this.fbuser = this.users.getUser();
+                console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
+                if(this.fbuser){     
+                    return this.users.getAccount();
+                }
+            })
+            .then((snapshot) => {
+                steps.account = true;
+                console.info('setAccountData > success');
+                account = snapshot.val();              
+                this.profData = account.profile.data;
+                this.profVrfs = account.profile.verifications;
+                this.accountStatus = this.users.accountProfilesStatus(account);     
+                if(this.profVrfs.email.verified===false) {
+                    console.info('settings.setAccount > run email verification');
+                    this.users.runAuthEmailVerification();
+                }  
+                console.groupEnd();
+                loader.dismiss();         
+            })
+            .catch((error) => {
+                console.log('setAccountData > error ', error, steps);
+                console.groupEnd();
+                loader.dismiss();
+            });            
+
     }
 }

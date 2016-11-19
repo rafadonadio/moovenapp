@@ -151,6 +151,7 @@ export class AccountProfileService {
         console.info('initAccountProfileData');
         let data:UserProfileData = {
             email: email,
+            emailOnChange: false,
             firstName: '',
             lastName: '',
             phonePrefix: '',

@@ -57,6 +57,7 @@ export class UserAccountProfile {
 
 export class UserProfileData {
     email: string;
+    emailOnChange: boolean;
     firstName: string;
     lastName: string;
     phonePrefix: string;

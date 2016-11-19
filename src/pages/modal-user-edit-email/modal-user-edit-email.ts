@@ -1,5 +1,6 @@
+import { UserAccountProfile, UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, ViewController, AlertController } from 'ionic-angular';
+import { NavController, ViewController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
@@ -14,25 +15,25 @@ export class ModalUserEditEmailPage implements OnInit {
 
     editForm: FormGroup;
     email: AbstractControl;
-
-    currentUser: any;
+    profData: UserProfileData;
+    changeInProcess: boolean;
 
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         public users: UsersService,
-        public formBuilder: FormBuilder) {
+        public formBuilder: FormBuilder,
+        public params: NavParams) {
+        this.profData = this.params.get('profData');
+        this.changeInProcess = this.profData.emailOnChange;
     }
 
     ngOnInit() {
-        // auth user data
-        this.setCurrentUser();
         // form init
         this.editForm = this.formBuilder.group({
             'email':  ['', Validators.compose([Validators.required, EmailValidator.isValid, Validators.maxLength(100)])],
         });
         this.email = this.editForm.controls['email'];
-        // set focus
         this.email.markAsTouched();
     }
 
@@ -48,8 +49,8 @@ export class ModalUserEditEmailPage implements OnInit {
                         {
                             text: 'Cerrar',
                             role: 'cancel',
-                            handler: () => {
-                                this.dismiss();
+                            handler: data => {
+                                this.dismiss(true);
                             }
                         }
                     ]
@@ -63,17 +64,14 @@ export class ModalUserEditEmailPage implements OnInit {
             });
     }
 
-    dismiss() {
-        this.viewCtrl.dismiss();
+    dismiss(updated:boolean = false) {
+        let data = { update: updated };
+        this.viewCtrl.dismiss(data);
     }
 
     /**
      * PRIVATE
      */
-
-    private setCurrentUser() {
-        this.currentUser = this.users.getUser();
-    }
 
     private showAlert(code) {
         // init
@@ -96,7 +94,7 @@ export class ModalUserEditEmailPage implements OnInit {
 
             case 'auth/requires-recent-login':
                 title = 'Se requiere reingresar';
-                msg = 'Por cuestiones de seguridad se requiere un login reciente, por favor salga, vuelva a ingresar y reintente cambiar la dirección inmediatamente.';
+                msg = 'Por razones de seguridad se requiere un login reciente para modificar la dirección de correo, por favor salga, vuelva a ingresar y reintente cambiar la dirección inmediatamente.';
                 this.presentConfirm(title, msg);
                 break;
 
@@ -113,14 +111,14 @@ export class ModalUserEditEmailPage implements OnInit {
             message: msg,
             buttons: [
                 {
-                    text: 'Cerrar',
+                    text: 'Cancelar',
                     role: 'cancel',
                     handler: () => {
                         this.dismiss();
                     }
                 },
                 {
-                    text: 'Salir',
+                    text: 'Reingresar',
                     handler: () => {
                         this.dismiss();
                         this.users.signOut();

@@ -21,8 +21,8 @@ export class ModalUserEditNamePage implements OnInit{
         public viewCtrl: ViewController,
         public formBuilder: FormBuilder,
         public usersSrv: UsersService,
-        public params: NavParams,
-        public alertCtrl: AlertController) {
+        public alertCtrl: AlertController,
+        public params: NavParams) {
             this.profData = params.data.profData;
     }
 

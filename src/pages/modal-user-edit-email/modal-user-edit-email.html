@@ -11,9 +11,25 @@
     </ion-toolbar>
 </ion-header>
 <ion-content padding class="modal-user-edit-email">
-    <p text-center>Ingresa tu nueva dirección de email y presiona guardar.
-        <br>Un correo será enviado a la nueva dirección de email con un link de validación, clickéalo para confirmar el cambio.
-        <br>Algunas funcionalidades de la App quedarán deshabilitadas hasta que la dirección de email sea validada.</p>
+
+    <ion-card *ngIf="changeInProcess==true">
+        <ion-card-header>
+        <ion-icon name="alert" item-left></ion-icon> ATENCIÓN 
+        </ion-card-header>
+        <ion-card-content>
+        La dirección de email <b>{{ profData.email }}</b> aún no ha sido validada.
+        </ion-card-content>
+    </ion-card>
+    <ion-card>
+        <ion-card-header>
+        <ion-icon name="alert" item-left></ion-icon> AYUDA
+        </ion-card-header>
+        <ion-card-content>
+            <p text-center>Te enviaremos un correo a la nueva dirección de email con un link de validación, clickéalo para confirmar el cambio.
+                <br><br><em style="color:#999">Algunas funcionalidades de la App quedarán deshabilitadas hasta que la nueva dirección de email sea validada.</em></p>
+        </ion-card-content>
+    </ion-card>    
+
     <form [formGroup]="editForm">
         <ion-item margin-bottom>
             <ion-label stacked>NUEVA DIRECCIÓN DE EMAIL</ion-label>
@@ -21,7 +37,7 @@
         </ion-item>
         <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched" class="input-error">* Ingresa un email válido</div>
 
-        <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Guardar</button>
+        <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Modificar</button>
         <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

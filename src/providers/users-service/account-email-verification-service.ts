@@ -24,7 +24,7 @@ export class AccountEmailVerificationService {
     // set email verified false
     // send email verification to current user
     // First save the current request and then send the email
-    create(fbuser: firebase.User): void {
+    create(fbuser: firebase.User, isAnUpdateRequest:boolean = false): void {
         // aux
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         // data to set in account
@@ -44,6 +44,7 @@ export class AccountEmailVerificationService {
         let updates = {};
         // update account email
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'emailOnChange'] = isAnUpdateRequest;
         // update account validation values
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED] = false;
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.ATTEMPTS_IDS +  logKey] = profileVerificationAttempt;
@@ -67,6 +68,7 @@ export class AccountEmailVerificationService {
         let updates = {};
         // set account.profile.data.email
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = fbuser.email;
+        updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'emailOnChange'] = false;
         // set account.profile.verifications values
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED] = fbuser.emailVerified;        
         updates[ACCOUNT_REF + fbuser.uid + ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED_ADDRESS] = fbuser.email;
