@@ -98,6 +98,14 @@ export class AccountService {
         return this.profileSrv.updateNames(userId, data);
     }
 
+    updatePhoneMobile(userId:string, prefix:string, number:string) {
+        let data = {
+            phonePrefix: prefix,
+            phoneMobile: number
+        }
+        return this.profileSrv.updatePhoneMobile(userId, data);
+    }
+
     /**
      *  READ FROM DATABASE
      */

@@ -117,6 +117,11 @@ export class UsersService {
         });
     }
 
+    updatePhoneMobile(prefix:string, number:string): firebase.Promise<any> {
+        let fbuser = this.getUser();        
+        return this.accountSrv.updatePhoneMobile(fbuser.uid, prefix, number);
+    }
+
     updateUserNames(firstName:string, lastName: string):Promise<any> {
         let fbuser = this.getUser();
         let steps = {

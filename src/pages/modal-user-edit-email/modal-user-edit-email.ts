@@ -1,4 +1,4 @@
-import { UserAccountProfile, UserProfileData } from '../../models/user-model';
+import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
