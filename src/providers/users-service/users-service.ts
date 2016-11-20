@@ -1,3 +1,4 @@
+import { AnimationWithStepsAst } from '@angular/compiler/src/animation/animation_ast';
 import { Injectable } from '@angular/core';
 
 import { AuthenticationService } from '../users-service/authentication-service';
@@ -133,11 +134,8 @@ export class UsersService {
                 .then(() => {
                     console.log('updateProfileNames > success');
                     steps.updateDb = true;
-                    let profile = {
-                        displayName: firstName + ' ' + lastName,
-                        photoURL: null
-                    }
-                    return fbuser.updateProfile(profile);
+                    let displayName = firstName + ' ' + lastName;
+                    return this.auth.updateFirebaseUserDisplayName(displayName);
                 })
                 .then(() => {
                     steps.updateUser = true;
@@ -153,9 +151,32 @@ export class UsersService {
         })
     }
 
-    updateAccountImage(downloadURL:string, fullPath:string) {
+    updateAccountImage(downloadURL:string, fullPath:string):Promise<any> {
         let fbuser:firebase.User = this.getUser();
-        this.accountSrv.updateProfileImage(fbuser.uid, downloadURL, fullPath);
+        let steps = {
+            updateDB: false,
+            updateAuth: false
+        }
+        return new Promise((resolve, reject) => {
+            this.accountSrv.updateProfileImage(fbuser.uid, downloadURL, fullPath)
+                .then(() => {
+                    console.log('updateProfileImage > success');
+                    steps.updateDB = true;
+                    return this.auth.updateFirebaseUserPhotoURL(downloadURL);
+                })
+                .then(() => {
+                    console.log('updateFirebaseUserPhotoURL > success');
+                    steps.updateAuth = true;
+                    resolve(true);               
+                })
+                .catch((error:any) => {
+                    if(steps.updateDB==true){
+                        resolve(steps);
+                    }else{
+                        reject(error);
+                    }
+                });
+        })
     }
 
     /**

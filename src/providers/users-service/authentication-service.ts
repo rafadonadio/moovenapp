@@ -55,9 +55,14 @@ export class AuthenticationService {
     }
 
     updateFirebaseUserDisplayName(displayName: string):firebase.Promise<any> {
-        let fbuser:any = this.getFirebaseUser();
-        return fbuser.updateProfile({ displayName: displayName });
+        let fbuser:firebase.User = this.getFirebaseUser();
+        return fbuser.updateProfile({ displayName: displayName, photoURL: fbuser.photoURL });
     }
+
+    updateFirebaseUserPhotoURL(photoURL: string):firebase.Promise<any> {
+        let fbuser:firebase.User = this.getFirebaseUser();
+        return fbuser.updateProfile({ displayName: fbuser.displayName, photoURL: photoURL });
+    }    
 
     updateFirebaseUserEmail(newEmail: string): firebase.Promise<any>  {
         let fbuser:firebase.User = this.getFirebaseUser();

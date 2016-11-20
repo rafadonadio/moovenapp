@@ -3,7 +3,7 @@
         <ion-list no-lines>
             <button ion-item detail-none (click)="goToSettings()">
                 <ion-avatar item-left>
-                    <img src="assets/img/mooven_avatar.png">
+                    <img [src]="user?.photoURL || avatarDefault">
                 </ion-avatar>
                 <h2>{{ user?.displayName }}</h2>
                 <p></p>

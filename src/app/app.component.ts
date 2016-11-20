@@ -35,7 +35,8 @@ export class MyApp{
                 } >;
     loader:any;
     user:firebase.User;
-    userAccount;                
+    userAccount;      
+    avatarDefault:string = 'assets/img/mooven_avatar.png';          
 
     constructor(public platform: Platform,
         public usersService: UsersService,
@@ -265,5 +266,6 @@ export class MyApp{
 
     private setUser(userData:firebase.User) {
         this.user = userData;
+        console.log('user data > ', userData.displayName, userData.photoURL);
     }
 }

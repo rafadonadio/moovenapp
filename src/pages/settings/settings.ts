@@ -101,7 +101,8 @@ export class SettingsPage implements OnInit{
             console.log('updatePicture > updateAccountImage > success', steps);
             let toast = this.toastCtrl.create({
                 message: 'Tu foto de perfil fue actualizada!',
-                duration: 3000
+                duration: 3000,
+                position: 'top'
             });
             toast.present();
             toast.dismiss()
