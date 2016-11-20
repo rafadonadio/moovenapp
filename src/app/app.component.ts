@@ -69,7 +69,8 @@ export class MyApp{
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
             { title: 'Historial', component: HistorialPage, icon: 'time', navigationType: 'push' },
             { title: 'Notificaciones', component: NotificationsPage, icon: 'notifications', navigationType: 'push' },
-            { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' }
+            { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' },
+            { title: 'Ajustes', component: SettingsPage, icon: 'settings', navigationType: 'push' }
         ];
 
         /**

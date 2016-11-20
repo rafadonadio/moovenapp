@@ -8,7 +8,10 @@
             background-color: $bg-color-fourth-level;
 
             ion-list.list-md{
-                margin-top: 30px;
+                margin-top: 0px;
+            }
+            .item.item-avatar{
+                background: #ddd;
             }
             .item .item-inner ion-label h2{
                 font-size: 1.8rem;
