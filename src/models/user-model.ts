@@ -63,6 +63,7 @@ export class UserProfileData {
     phonePrefix: string;
     phoneMobile: string;
     photoURL: string;
+    photoPath: string;
     dateBirth: string;
     legalIdentityNumber: string;
     residenceCountry: string;

@@ -151,13 +151,18 @@ export class UsersService {
                 });
         
         })
-   }
+    }
+
+    updateAccountImage(downloadURL:string, fullPath:string) {
+        let fbuser:firebase.User = this.getUser();
+        this.accountSrv.updateProfileImage(fbuser.uid, downloadURL, fullPath);
+    }
 
     /**
      *  AUTHENTICATION
      */
 
-    // login
+    // login    
     signIn(user: UserCredentials) {
         return this.auth.signInWithEmailAndPassword(user.email, user.password);
     }

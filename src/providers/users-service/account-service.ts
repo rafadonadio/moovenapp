@@ -98,13 +98,21 @@ export class AccountService {
         return this.profileSrv.updateNames(userId, data);
     }
 
-    updatePhoneMobile(userId:string, prefix:string, number:string) {
+    updatePhoneMobile(userId:string, prefix:string, number:string):firebase.Promise<any> {
         let data = {
             phonePrefix: prefix,
             phoneMobile: number
         }
         return this.profileSrv.updatePhoneMobile(userId, data);
     }
+
+    updateProfileImage(userId: string, downloadURL:string, fullPath:string):firebase.Promise<any> {
+        let data = {
+            photoURL: downloadURL,
+            photoPath: fullPath,
+        }
+        return this.profileSrv.updateProfileImage(userId, data);
+    }    
 
     /**
      *  READ FROM DATABASE

@@ -89,7 +89,21 @@ export class AccountProfileService {
             updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + field] = profileData[field];
         }
         return this.dbRef.update(updates);
-    }    
+    }   
+
+    // update user profile (updates only the included nodes)
+    updateProfileImage(userId: string, data: any): firebase.Promise<any> {
+        var profileData:any = {
+            photoURL: data.photoURL,
+            photoPath: data.photoPath,
+        };
+        var updates = {};
+        for(let field in profileData) {
+            updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + field] = profileData[field];
+        }
+        console.log('updateProfileImage > data ', profileData, updates);
+        return this.dbRef.update(updates);
+    }        
 
     updateStatus(userId:string, profile: UserAccountProfile ): firebase.Promise<any> {
         console.info('accountProfileStatus > update > start');
@@ -170,6 +184,7 @@ export class AccountProfileService {
             phonePrefix: '',
             phoneMobile: '',
             photoURL: '',
+            photoPath: '',
             dateBirth: '',
             legalIdentityNumber: '',
             residenceCountry: '',

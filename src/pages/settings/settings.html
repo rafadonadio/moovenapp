@@ -12,13 +12,13 @@
     <ion-refresher (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>    
-    <ion-fab top right>
-        <button ion-fab color="subdark">
-            <ion-icon name="camera"></ion-icon>
-        </button>
-    </ion-fab> 
     <div class="profile">
-        <img src="assets/img/mooven_avatar.png">
+        <ion-fab top right>
+            <button ion-fab
+                (click)="updatePicture()">
+                <ion-icon name=camera color="dark"></ion-icon></button>
+        </ion-fab>
+        <img [src]="profData?.photoURL || profileBgDefault">
     </div>
     <ion-list>
         <ion-item-divider color="subdark">
@@ -93,6 +93,8 @@
     </ion-list>
     <div padding>
         <button ion-button color="dark" block margin-bottom (click)="signOut()">Salir</button>
-        <button ion-button color="dark-gray" outline block>Cerrar cuenta</button>
     </div>
+    <div padding>
+        <button ion-button color="sublight" clear block>Cerrar cuenta</button>
+    </div>    
 </ion-content>

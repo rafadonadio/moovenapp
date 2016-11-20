@@ -1,10 +1,11 @@
 import { UserAccount, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, ToastController, PopoverController, ViewController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
-
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
+import { Camera } from 'ionic-native';
 
+const STRG_USER_FILES = 'userFiles/';
 
 @Component({
     selector: 'page-settings',
@@ -16,13 +17,15 @@ export class SettingsPage implements OnInit{
     profData: UserProfileData;
     profVrfs: UserProfileVerifications;
     accountStatus: any;
+    profileBgDefault: string = 'assets/img/mooven_avatar.png';
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public popoverCtrl: PopoverController,
-        public viewCtrl: ViewController ) {
+        public viewCtrl: ViewController,
+        public alertCtrl: AlertController) {
     }
 
     ngOnInit() {
@@ -58,6 +61,65 @@ export class SettingsPage implements OnInit{
     }
 
 
+    /**
+     * Take picture and save imageData
+     */
+    updatePicture() {
+        console.info('settings > updatePicture');
+        let steps = {
+            get: false,
+            upload: false,
+            update: false
+        }
+        Camera.getPicture({
+            quality: 95,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            allowEdit: true,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: 900,
+            targetHeight: 900,
+            saveToPhotoAlbum: true,
+            correctOrientation: true
+        })
+        .then((imageData) => {
+            console.log('updatePicture > getPicture > success');
+            steps.get = true;
+            let base64Image: string;
+            base64Image = "data:image/jpeg;base64," + imageData;
+            return this.uploadProfileImage(base64Image);
+        })
+        .then((snapshot) => {
+            console.log('updatePicture > uploadProfileImage > success');
+            steps.upload = true;
+            let downloadURL = snapshot.downloadURL;
+            let fullPath = snapshot.ref.fullPath;
+            return this.users.updateAccountImage(downloadURL, fullPath);
+        })        
+        .then((result) => {
+            steps.update = true;
+            console.log('updatePicture > updateAccountImage > success', steps);
+            let toast = this.toastCtrl.create({
+                message: 'Tu foto de perfil fue actualizada!',
+                duration: 3000
+            });
+            toast.present();
+            toast.dismiss()
+                .then(() => {
+                    this.setAccountData();
+                });
+        })
+        .catch((error) => {
+            console.log('updatePicture > error > ' + error, steps);
+            let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'Ocurrió un error, por favor vuelve a intentarlo',
+                buttons: ['Cerrar']
+            });
+            alert.present();
+        });
+    }
+
     signOut() {
         // loader effect
         let loader = this.loadingCtrl.create({
@@ -72,6 +134,32 @@ export class SettingsPage implements OnInit{
     /**
      *  PRIVATE METHODS
      */
+
+    private uploadProfileImage(imageData: string): Promise<any> {
+        console.group('uploadProfileImage');
+        const storageRef = firebase.storage().ref(STRG_USER_FILES);
+        return new Promise((resolve, reject) => {
+            // upload 
+            let uploadTask = storageRef
+                    .child(this.fbuser.uid)
+                    .child('profileImage')
+                    .putString(imageData, firebase.storage.StringFormat.DATA_URL, {contentType: 'image/jpeg'});
+            uploadTask.on('state_changed', function(snapshot) {
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.info('Upload is ' + progress + '% done');
+            }, function (error:any) {
+                // error
+                console.log('failed > ', error.code);
+                reject(error);
+                console.groupEnd();
+            }, function() {
+                // success
+                resolve(uploadTask.snapshot);
+                console.log('uploadProfileImage > success');
+                console.groupEnd();                
+            });
+        });
+    }
 
     private setAccountData(){
         let steps = {
