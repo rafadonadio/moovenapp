@@ -38,8 +38,7 @@ import { AccountVerificationsService } from '../providers/users-service/account-
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
-import { SendingStatusService } from  '../providers/sending-service/sending-status-service';
-import { SendingStageService } from  '../providers/sending-service/sending-stage-service';
+import { SendingStagesService } from  '../providers/sending-service/sending-stages-service';
 import { SendingRequestService } from  '../providers/sending-service/sending-request-service';
 import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
@@ -144,9 +143,8 @@ const myFirebaseAuthConfig = {
     AuthenticationService,
     SendingService,
     SendingDbService,
-    SendingRequestService, 
-    SendingStatusService, 
-    SendingStageService,            
+    SendingRequestService,  
+    SendingStagesService,            
     UsersService,
     GoogleMapsService,
     DateService,

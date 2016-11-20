@@ -1,4 +1,3 @@
-import { AnimationWithStepsAst } from '@angular/compiler/src/animation/animation_ast';
 import { Injectable } from '@angular/core';
 
 import { AuthenticationService } from '../users-service/authentication-service';

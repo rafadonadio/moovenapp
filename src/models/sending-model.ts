@@ -1,4 +1,86 @@
 
+/**
+ * MODEL CONFIGURATIONS
+ */
+
+export const SENDING_CFG = {
+    STAGE: {
+        CREATED: {
+            ID: 'created',
+            STATUS: {
+                _LIST: ['registered', 'paid', 'enabled'],
+                REGISTERED: 'registered',
+                PAID: 'paid',
+                ENABLED: 'enabled'
+            }
+        },
+        LIVE: {
+            ID: 'live',
+            STATUS: {
+                _LIST: ['vacant', 'holdforpickup', 'transit', 'dropped'],
+                VACANT: 'vacant',
+                HOLDFORPICKUP: 'holdforpickup',
+                TRANSIT: 'transit',
+                DROPPED: 'dropped'
+            }
+        },
+        CLOSED: {
+            ID: 'closed',
+            STATUS: {
+                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'vacantexpired'],
+                COMPLETE: 'complete',
+                CANCELEDBYSENDER: 'canceledbysender',
+                CANCELEDBYOPERATOR: 'canceledbyoperator',
+                VACANTEXPIRED: 'vacantexpired'
+            }
+        }
+    },
+}
+
+/**
+ * SENDING DATA 
+ * FIREBASE REFERENCES
+ */
+
+export const SENDING_DB = {
+    ALL: {
+        REF: 'sendings/',
+        _NODE: 'sendings',
+    },
+    HASHID: {
+        REF: 'sendingsHashid/',
+        _NODE: 'sendingsHashid',
+    },
+    BYUSER: {
+        REF: 'userSendings/',
+        _NODE: 'userSendings',
+        _CHILD: {
+            ACTIVE: {
+
+            },
+            CLOSED: {
+
+            }
+        }
+    },    
+    STAGE_CREATED: {
+        REF: '_sendingsCreated/',
+        _NODE: 'sendingsCreated',
+    },    
+    STAGE_LIVE: {
+        REF: '_sendingsLive/',
+        _NODE: 'sendingsLive',
+    },    
+    STAGE_CLOSED: {
+        REF: 'sendingsClosed/',
+        _NODE: 'sendingsClosed',
+    },    
+}
+
+/**
+ *  SENDING MODELS
+ */
+
 export class SendingRequest{
     publicId: string;
     timestamp: number;
@@ -10,9 +92,10 @@ export class SendingRequest{
     routeDistanceTxt: string;
     routeDurationMin: number;
     routeDurationTxt: string;
-    currentStatus:string;
-    status?: SendingCurrentStatuses;   
-    stages?: SendingStages;  
+    _stages?: SendingStages;
+    _currentStage?: string;
+    _currentStatus?: string;
+    _currentStageStatus_?: string;  
     objectShortName: string;
     objectImageSet: boolean;
     objectImageUrlTemp: string;  // deleted once uploaded
@@ -79,37 +162,75 @@ export class SendingRequest{
 }
 
 export class SendingStages {
-    created: StageNode;
-    payment: StageNode;
-    enabled: StageNode;
-    operator: StageNode;
-    pickup: StageNode;
-    drop: StageNode;
-    canceled: StageNode;
-    unconcluded: StageNode
-}
-
-export class StageNode {
-    value:boolean; 
-    timestamp:number; 
-    text:string;
-    data?: {} 
-}
-
-export class SendingCurrentStatuses {
     _current: string;
-    registered: StatusNode;
-    vacant: StatusNode;
-    holdforpickup: StatusNode;
-    transit: StatusNode;
-    success: StatusNode;
-    issue: StatusNode
+    created: StageCreatedNode;
+    live: StageLiveNode;
+    closed: StageClosedNode;
 }
 
-export class StatusNode {
+export class StageCreatedNode {
+    _current: string;
     set: boolean;
-    value:boolean; 
-    timestamp:number; 
-    text:string 
+    status: {
+        registered: {
+            set: boolean,
+            timestamp: boolean,
+        },
+        paid: {
+            set: boolean,
+            timestamp: boolean,
+        }, 
+        enabled: {
+            set: boolean,
+            timestamp: boolean,
+        },                
+    } 
 }
+
+export class StageLiveNode {
+    _current: string;
+    set: boolean;
+    status: {
+        vacant: {
+            set: boolean,
+            timestamp: boolean,
+        },
+        holdforpickup: {
+            set: boolean,
+            timestamp: boolean,
+        },        
+        transit: {
+            set: boolean,
+            timestamp: boolean,
+        },     
+        dropped: {
+            set: boolean,
+            timestamp: boolean,
+        },                    
+    } 
+}
+
+export class StageClosedNode {
+    _current: string;
+    set: boolean;
+    status: {
+        completet: {
+            set: boolean,
+            timestamp: boolean,
+        },
+        canceledbysender: {
+            set: boolean,
+            timestamp: boolean,
+        },        
+        canceledbyoperator: {
+            set: boolean,
+            timestamp: boolean,
+        },     
+        vacantexpired: {
+            set: boolean,
+            timestamp: boolean,
+        },                    
+    } 
+}
+
 

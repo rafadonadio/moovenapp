@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { UsersService } from '../users-service/users-service';
 import { SendingDbService } from '../sending-service/sending-db-service';
 import { SendingRequestService } from '../sending-service/sending-request-service';
-import { SendingStatusService } from '../sending-service/sending-status-service';
-import { SendingStageService } from '../sending-service/sending-stage-service';
+import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SendingRequest } from '../../models/sending-model';
+import { SendingRequest, SENDING_CFG } from '../../models/sending-model';
 
+const CFG = SENDING_CFG;
 
 // storage nodes
 const STRG_USER_FILES = 'userFiles/';
@@ -22,8 +22,7 @@ export class SendingService {
         public hashSrv: HashService,
         public reqSrv: SendingRequestService,
         public dbSrv: SendingDbService,
-        public statusSrv: SendingStatusService,
-        public stageSrv: SendingStageService) {
+        public stagesSrv: SendingStagesService) {
         this.setUser();
     }
 
@@ -32,28 +31,23 @@ export class SendingService {
      * @return {object} [description]
      */
     initRequest() {
-        this.reqSrv.init();
-        return this.reqSrv.request;
+        return this.reqSrv.getInitialized();
     }
 
     create(sending:SendingRequest):Promise<any> {
         console.info('create() > start');
         /* aux */
-        let publicIdHash = this.hashSrv.genId();
         let timestamp = this.dbSrv.getTimestamp();
         let userId = this.user.uid;
-        let newStage = this.stageSrv.STAGE.CREATED; 
-        /* stage and status */
-        sending.stages = this.stageSrv.stages;       
-        sending.status = this.statusSrv.status;   
-        /* process */
-        this.stageSrv.populateStage(newStage, timestamp);
-        this.statusSrv.updateForCurrentStage(newStage, timestamp);
-        /* complete */
-        sending.publicId = publicIdHash;
+        /* populate object */
+        sending.publicId = this.hashSrv.genId();
         sending.timestamp = timestamp;
         sending.userUid = userId;
-        sending.currentStatus = this.statusSrv.getCurrent();
+        /* set stage initial values, and duplicated values (for NoSql reasons) */
+        sending._stages = this.stagesSrv.initialize(CFG.STAGE.CREATED.ID, timestamp);
+        sending._currentStage = this.stagesSrv.getCurrent(sending._stages);
+        sending._currentStatus = this.stagesSrv.getCurrentStatus(sending._stages);
+        sending._currentStage_Status = this.stagesSrv.getCurrentStageStatus(sending._stages);
 
         // get a new db key 
         let newKey = this.dbSrv.newSendingKey();
@@ -116,8 +110,7 @@ export class SendingService {
         newKey:string, 
         userId:string):Promise<any> {  
             console.info('writeNewSending > start');
-            let dbList = this.dbSrv.AUX_LIST.CREATED;
-            let summary:any = this.reqSrv.getSummaryForDbList(sending, dbList);
+            let summary:any = this.reqSrv.getSummaryForDbList(sending);
             return this.dbSrv.newSending(sending, summary, newKey, userId); 
     }
  
@@ -152,15 +145,15 @@ export class SendingService {
      *  STORAGE UPLOAD
      */
 
-    uploadSendingImage(sendingId:string, imageURL: string): Promise<any> {
+    uploadSendingImage(sendingId:string, imageDataURL: string): Promise<any> {
         console.group('uploadSendingImage');
         const storageRef = firebase.storage().ref(STRG_USER_FILES);
         return new Promise((resolve, reject) => {
             // upload 
             let uploadTask = storageRef
                     .child(this.user.uid)
-                    .child(sendingId)
-                    .putString(imageURL, firebase.storage.StringFormat.DATA_URL, {contentType: 'image/jpeg'});
+                    .child(sendingId + '.jpg')
+                    .putString(imageDataURL, firebase.storage.StringFormat.DATA_URL, {contentType: 'image/jpeg'});
             uploadTask.on('state_changed', function(snapshot) {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.info('Upload is ' + progress + '% done');

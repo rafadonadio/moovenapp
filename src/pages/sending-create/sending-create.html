@@ -22,14 +22,14 @@
             <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
             <ion-card>
                 <div>
-                    <img [src]="objectImageUrl.value || cameraDefaultBg" />
+                    <img [src]="objectImageUrlTemp.value || cameraDefaultBg" />
                 </div>
                 <ion-item>
                     <button ion-button clear item-right
                         (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
                 </ion-item>
             </ion-card>
-            <div *ngIf="showErrors && objectImageUrl.value==''" 
+            <div *ngIf="showErrors && objectImageUrlTemp.value==''" 
                 class="input-optional">* incluye una foto (opcional)</div>            
             <ion-list-header>Descripción corta</ion-list-header>
             <ion-item>

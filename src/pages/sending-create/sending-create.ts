@@ -18,7 +18,7 @@ export class SendingCreatePage implements OnInit {
 
     sending: any;
     formOne: FormGroup;
-    objectImageUrl: any;
+    objectImageUrlTemp: any;
     objectShortName: any;
     objectType: any;
     objectNoValueDeclared: any;
@@ -40,13 +40,13 @@ export class SendingCreatePage implements OnInit {
         console.log('f1 > init');
         // init form
         this.formOne = this.formBuilder.group({
-            'objectImageUrl': [''],
+            'objectImageUrlTemp': [''],
             'objectShortName': ['', Validators.compose([Validators.required, Validators.maxLength(75), Validators.minLength(3)])],
             'objectType': ['', Validators.compose([Validators.required])],
             'objectDeclaredValue': ['', Validators.compose([Validators.required, NumberValidator.nonZero])],
             'objectNoValueDeclared': [false],
         });
-        this.objectImageUrl = this.formOne.controls['objectImageUrl'];
+        this.objectImageUrlTemp = this.formOne.controls['objectImageUrlTemp'];
         this.objectShortName = this.formOne.controls['objectShortName'];
         this.objectType = this.formOne.controls['objectType'];
         this.objectNoValueDeclared = this.formOne.controls['objectNoValueDeclared'];
@@ -65,7 +65,7 @@ export class SendingCreatePage implements OnInit {
             console.log('f1 > submit > valid');
             this.showErrors = false;                 
             // if objectType not 'sobre' and photo not added, ask to add photo
-            if (this.objectType!='sobre' && this.objectImageUrl.value === '') {
+            if (this.objectType!='sobre' && this.objectImageUrlTemp.value === '') {
                 console.log('f1 > submit > showPictureAlert');
                 this.showPictureAlert();
             } else {
@@ -134,7 +134,7 @@ export class SendingCreatePage implements OnInit {
             console.log('f1 > takePicture > success');
             let base64Image: string;
             base64Image = "data:image/jpeg;base64," + imageData;
-            this.objectImageUrl.setValue(base64Image);
+            this.objectImageUrlTemp.setValue(base64Image);
         }, (error) => {
             console.log('f1 > takePicture > error > ' + JSON.stringify(error));
         });
@@ -161,7 +161,7 @@ export class SendingCreatePage implements OnInit {
         this.sending.objectNoValueDeclared = this.objectNoValueDeclared.value;
         this.sending.objectDeclaredValue = this.objectDeclaredValue.value;
         this.sending.objectImageSet = this.isObjectImageSet();
-        this.sending.objectImageUrl = this.objectImageUrl.value;
+        this.sending.objectImageUrlTemp = this.objectImageUrlTemp.value;
         console.log('f1 > saveSending > this.sending > ', this.sending);
     }
 
@@ -218,7 +218,7 @@ export class SendingCreatePage implements OnInit {
     }
 
     private isObjectImageSet() {
-        return this.objectImageUrl.value === '' ? false : true;
+        return this.objectImageUrlTemp.value === '' ? false : true;
     }
 
     private populateForm() {
@@ -229,7 +229,7 @@ export class SendingCreatePage implements OnInit {
         this.objectNoValueDeclared.setValue(this.sending.objectNoValueDeclared);
         this.objectDeclaredValue.setValue(this.sending.objectDeclaredValue);
         this.rangeValue = this.sending.objectDeclaredValue;
-        this.objectImageUrl.setValue(this.sending.objectImageUrl);
+        this.objectImageUrlTemp.setValue(this.sending.objectImageUrlTemp);
     }
 
 }

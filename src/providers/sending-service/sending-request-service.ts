@@ -1,83 +1,22 @@
 import { Injectable } from '@angular/core';
-
-import { SendingRequest } from '../../models/sending-model';
+import { SendingRequest, SendingStages } from '../../models/sending-model';
 
 @Injectable()
 export class SendingRequestService {
 
-    public request:SendingRequest;
-
     constructor() {
-        this.init();
     }
 
-    getSummaryForDbList(sending: SendingRequest, dbList:string) {
-        let summary:any = {}
-        // base
-        summary = {
-            publicId: sending.publicId,
-            objectShortName: sending.objectShortName,
-            timestamp: sending.timestamp,
-            currentStatus: sending.currentStatus              
-        };
-        switch(dbList) {         
-            case 'created':
-                summary.pickupAddress = this.getSendingPickupAddressSummary(sending);
-                summary.pickupAddressLatLng = this.getSendingPickupLatLng(sending);                          
-                summary.dropAddress = this.getSendingDropAddressSummary(sending);
-                summary.dropAddressLatLng = this.getSendingDropLatLng(sending);
-                break;
-            case 'user':
-
-                break;
-            case 'live':
-
-                break;
-            case 'expired':
-                
-                break;
-            case 'completed':
-
-                break;
-            case 'unconcluded': 
-
-                break;
-        }
-        return summary;
-    }
-
-    private getSendingPickupAddressSummary(sending:SendingRequest) {
-        return sending.pickupAddressStreetShort 
-                + ' ' 
-                + sending.pickupAddressNumber + ', ' 
-                + sending.pickupAddressCityShort;
-    }
-
-    private getSendingDropAddressSummary(sending:SendingRequest) {
-        return sending.dropAddressStreetShort 
-                + ' ' 
-                + sending.dropAddressNumber + ', ' 
-                + sending.dropAddressCityShort;
-    }    
-
-    private getSendingPickupLatLng(sending:SendingRequest) {
-        return { lat: sending.pickupAddressLat, lng: sending.pickupAddressLng };
-    }
-
-    private getSendingDropLatLng(sending:SendingRequest) {
-        return { lat: sending.dropAddressLat, lng: sending.dropAddressLng };
-    } 
 
     /**
      *  INIT
      */
 
-    init() {
-        let data = {
+    getInitialized():SendingRequest {
+        let data:SendingRequest = {
             publicId: '',
             timestamp: 0,
-            userUid: '',
-            currentStatus: '',         
+            userUid: '',         
             price: 0,   
             priceMinFareApplied: false,               
             routeDistanceMt: 0,
@@ -149,7 +88,7 @@ export class SendingRequestService {
             dropPersonPhone: '',
             dropPersonEmail: '',
         }
-        this.request = data;
+        return data;
     }
 
 }
