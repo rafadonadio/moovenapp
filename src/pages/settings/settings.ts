@@ -142,7 +142,7 @@ export class SettingsPage implements OnInit{
             // upload 
             let uploadTask = storageRef
                     .child(this.fbuser.uid)
-                    .child('profileImage')
+                    .child('profileImage.jpg')
                     .putString(imageData, firebase.storage.StringFormat.DATA_URL, {contentType: 'image/jpeg'});
             uploadTask.on('state_changed', function(snapshot) {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
