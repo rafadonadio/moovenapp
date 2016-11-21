@@ -60,6 +60,13 @@ export const SENDING_DB = {
     ALL: {
         REF: 'sendings/',
         _NODE: 'sendings',
+        _CHILD: {
+            IMAGEURL: '/objectImageDownloadUrl/',
+            IMAGETEMP: '/objectImageUrlTemp/',
+            IMAGENAME: '/objectImageName/',
+            FULLPATH: '/objectImageFullPathRef/',
+            STAGES: '/_stages/'
+        }
     },
     HASHID: {
         REF: 'sendingsHashid/',
@@ -76,12 +83,38 @@ export const SENDING_DB = {
             CLOSED: {
                 REF: '/closed/',
                 _NODE: 'closed'
-            }
+            },
+            CURRENT_STAGE: {
+                REF: '/_currentStage/',
+                _NODE: '_currentStage'
+            },
+            CURRENT_STATUS: {
+                REF: '/_currentStatus/',
+                _NODE: '_currentStatus'
+            },
+            CURRENT_STAGE_STATUS: {
+                REF: '/_currentStage_Status/',
+                _NODE: '_currentStage_Status'
+            }              
         }
     },    
     STAGE_CREATED: {
         REF: '_sendingsCreated/',
         _NODE: 'sendingsCreated',
+        _CHILD: {
+            CURRENT_STAGE: {
+                REF: '/_currentStage/',
+                _NODE: '_currentStage'
+            },
+            CURRENT_STATUS: {
+                REF: '/_currentStatus/',
+                _NODE: '_currentStatus'
+            },
+            CURRENT_STAGE_STATUS: {
+                REF: '/_currentStage_Status/',
+                _NODE: '_currentStage_Status'
+            }  
+        }          
     },    
     STAGE_LIVE: {
         REF: '_sendingsLive/',
@@ -97,7 +130,8 @@ export const SENDING_DB = {
  *  SENDING MODELS
  */
 
-export class SendingRequest{
+export class SendingRequest {
+    sendingId: string;
     publicId: string;
     timestamp: number;
     userUid: string;

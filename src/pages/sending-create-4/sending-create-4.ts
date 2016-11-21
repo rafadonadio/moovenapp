@@ -145,15 +145,23 @@ export class SendingCreate4Page implements OnInit {
      */
 
     private createSending() {
+        console.info('f4 > createSending > start');
+        let newSendingId:string;
         // loader effect
         let loader = this.loadingCtrl.create({
-            content: 'creando ...'
+            content: 'registrando servicio ...'
         });
         loader.present();
         // save to db
         this.sendings.create(this.sending)
+            .then((result) => {
+                console.log('create success > steps ', result);
+                newSendingId = result.sendingId;
+                loader.setContent('procesando pago ...');
+                return this.sendings.processPayment(newSendingId);
+            })
             .then(() => {
-                console.log('f4 > create sending > success');
+                console.log('payment ok');
                 loader.dismiss()
                     .then(() => {
                         this.navCtrl.setRoot(SendingsPage);

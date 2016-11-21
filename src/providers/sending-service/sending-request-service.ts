@@ -34,6 +34,7 @@ export class SendingRequestService {
 
     getInitialized():SendingRequest {
         let data:SendingRequest = {
+            sendingId: '',
             publicId: '',
             timestamp: 0,
             userUid: '',         

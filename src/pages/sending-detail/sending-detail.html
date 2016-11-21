@@ -152,14 +152,14 @@
 
         <ion-list *ngSwitchCase="'shipment'">
             <ion-list-header>Detalles del Envío</ion-list-header>
-            <ion-item-divider *ngIf="sending._stages._current=='live'">Transportista
+            <ion-item-divider *ngIf="sending._stages.live.status.vacant.set==false">Transportista
                 <button ion-button outline item-right icon-left
                     color="primary">
                     <ion-icon name="call"></ion-icon>
                     Llamar
                 </button> 
             </ion-item-divider>
-            <ion-item no-lines *ngIf="sending._stages._current=='live'">
+            <ion-item no-lines *ngIf="sending._stages.live.status.vacant.set==false">
                 <ion-thumbnail item-left>
                     <img src="http://placehold.it/200x200">
                 </ion-thumbnail>
@@ -179,7 +179,7 @@
             <ion-grid>
                 <ion-row>
                     <ion-col width-50>
-                        <img src="{{ sending.objectImageDownloadUrl }}">
+                        <img [src]="sending.objectImageDownloadUrl || 'http://placehold.it/200x200?text=SIN+FOTO'">
                     </ion-col>
                     <ion-col width-50>
                         <ion-item no-lines>

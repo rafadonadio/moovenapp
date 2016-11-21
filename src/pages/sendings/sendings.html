@@ -40,7 +40,7 @@
                     [class.active]="item.data._currentStage_Status=='created_registered'">
                     </ion-icon> 
                 <ion-icon name="send" item-left 
-                    [class.active]="item.data._currentStage_Status=='live_vacant'">
+                    [class.active]="item.data._currentStage_Status=='created_enabled' || item.data._currentStage_Status=='live_vacant'">
                     </ion-icon> 
                 <ion-icon name="home" item-left
                     [class.active]="item.data._currentStage_Status=='live_holdforpickup'">
@@ -49,8 +49,11 @@
                     [class.active]="item.data._currentStage_Status=='live_transit'">
                 </ion-icon>
                 <ion-icon name="checkmark-circle" item-left
-                    [class.active]="item.data._currentStage_Status=='live_dropped'">
-                </ion-icon>            
+                    [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
+                </ion-icon>  
+                <ion-icon name="alert" item-left
+                    [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
+                </ion-icon>                            
                 <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>                   
             </ion-item>                                      
         </ion-card>

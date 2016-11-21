@@ -6,7 +6,7 @@ import { SendingRequestService } from '../sending-service/sending-request-servic
 import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SendingRequest, SENDING_CFG } from '../../models/sending-model';
+import { SENDING_CFG, SendingRequest, SendingStages } from '../../models/sending-model';
 
 const CFG = SENDING_CFG;
 
@@ -16,7 +16,7 @@ const STRG_USER_FILES = 'userFiles/';
 @Injectable()
 export class SendingService {
 
-    user: any;
+    user: firebase.User;
 
     constructor(public users: UsersService,
         public hashSrv: HashService,
@@ -53,32 +53,33 @@ export class SendingService {
         let newKey = this.dbSrv.newSendingKey();
 
         return new Promise((resolve, reject) => {
-            let flag = { created: false, imageSet: false, imageUploaded: false };
+            let steps = { created: false, imageSet: false, imageUploaded: false, sendingId: '' };
             this.writeNewSending(sending, newKey, userId)
                 .then(() => {
                     console.info('writeNewSending > success');
-                    flag.created = true;
+                    steps.created = true;
+                    steps.sendingId = newKey;
                     if(sending.objectImageSet) {
                         // ImageSet: upload and save
-                        flag.imageSet = true;
+                        steps.imageSet = true;
                         this.uploadSendingImage(newKey, sending.objectImageUrlTemp)
                             .then((snapshot) => {
-                                flag.imageUploaded = true;
+                                steps.imageUploaded = true;
                                 this.updateSendingImage(newKey, snapshot.downloadURL, snapshot.ref.name, snapshot.ref.fullPath);
-                                console.log(flag);
-                                resolve(flag);                                
+                                console.log(steps);
+                                resolve(steps);                                
                             });
                     }else{
                         // no image tu upload
-                        console.log(flag);
-                        resolve(flag);
+                        console.log(steps);
+                        resolve(steps);
                     }                    
                 })               
                 .catch((error) => {
-                    if(flag.created) {
+                    if(steps.created) {
                         console.error('Image upload failed > ', error);
                         // do something about it ?
-                        resolve(flag);
+                        resolve(steps);
                     }else{
                         console.error('writeNewSending > error ', error);
                         reject(error);
@@ -86,6 +87,52 @@ export class SendingService {
                 })
         });
 
+    }
+
+    processPayment(sendingId:string):Promise<any> {
+        console.info('processPayment > start');
+        // aux
+        let sending:SendingRequest;
+        let currentStage:string;
+        let currentStatus:string;
+        let stages:SendingStages;
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        
+        // run payment
+        // ... ??? 
+
+        return new Promise((resolve, reject) => {
+            this.dbSrv.getSendingbyIdOnce(sendingId)
+                .then((snapshot) => {
+                    console.log('getSendingbyIdOnce > success');
+                    sending = snapshot.val();
+                    //update STAGE.STATUS > PAID
+                    currentStage = CFG.STAGE.CREATED.ID;
+                    currentStatus = CFG.STAGE.CREATED.STATUS.PAID;
+                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);  
+                    // update STAGE.STATUS > ENABLED
+                    currentStage = CFG.STAGE.CREATED.ID;
+                    currentStatus = CFG.STAGE.CREATED.STATUS.ENABLED;
+                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);  
+                    // update database
+                    return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages);
+                })
+                .then(() => {
+                    // update STAGE > LIVE.VACANT.
+                    currentStage = CFG.STAGE.LIVE.ID;
+                    currentStatus = CFG.STAGE.LIVE.STATUS.VACANT;
+                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp); 
+                    return;
+                })
+                .then(() => {
+                    console.log('updateSendingCreatedStages > success');
+                    resolve(true);
+                })
+                .catch((error) => {
+                    console.log('getSendingbyIdOnce OR updateSendingCreatedStages > error', error);
+                    reject(error);
+                }); 
+        });        
     }
 
     /**
@@ -105,7 +152,7 @@ export class SendingService {
      *  DATABASE WRITE
      */ 
 
-    private writeNewSending(sending:SendingRequest, newKey:string, userId:string):Promise<any> {  
+    private writeNewSending(sending:SendingRequest, newKey:string, userId:string):firebase.Promise<any> {  
             console.info('writeNewSending > start');
             console.log('data > ', sending, newKey, userId);
             let summary:any = this.reqSrv.getSummary(sending, CFG.STAGE.CREATED.ID);

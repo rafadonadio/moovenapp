@@ -13,36 +13,31 @@ export class SendingStagesService {
 
     initialize(currentStage:string, timestamp:number):SendingStages
     {
+        // init
         let stages = this.getInitialized();
-        stages = this.updateStageAndStatus(stages, currentStage, timestamp);
+        stages = this.updateStageTo(stages, currentStage, CFG.STAGE.CREATED.STATUS.REGISTERED, timestamp);
         return stages;
     }
 
+    /**
+     *  STAGE UPDATES
+     */
 
-    updateStageAndStatus(stages: SendingStages, currentStage:string, timestamp: number, currentStatus:string = '') {
-        switch(currentStage) {
-            
-            case CFG.STAGE.CREATED.ID: 
-                    // set current status, if empty created is registered
-                    let status = currentStatus!=='' 
-                                        ? currentStatus 
-                                        : CFG.STAGE.CREATED.STATUS.REGISTERED;
-                    // set values
-                    stages.created.set = true;
-                    stages._current = CFG.STAGE.CREATED.ID;
-                    stages.created._current = status;
-                    stages.created.status[status].set = true;
-                    stages.created.status[status].timestamp = timestamp;
-                break;
-            case CFG.STAGE.LIVE.ID:
-
-                break;
-            case CFG.STAGE.CLOSED.ID:
-
-                break;
-        }
-        return stages;
+    updateStageTo(stages:SendingStages, currentStage:string, currentStatus:string, timestamp:number):SendingStages {
+        // set stage
+        stages._current = currentStage;     
+        stages[currentStage].set = true;
+        // set status
+        stages[currentStage]._current = currentStatus;
+        stages[currentStage].status[currentStatus].set = true;
+        stages[currentStage].status[currentStatus].timestamp = timestamp;      
+        return stages;        
     }
+    
+
+    /**
+     *  GET VALUES FROM STAGES
+     */
 
     getCurrent(stages:SendingStages) {
         return stages._current;
