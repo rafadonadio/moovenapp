@@ -38,7 +38,7 @@ export class SendingDbService {
         // add to sending stage created
         updates[DB.STAGE_CREATED.REF + newKey] = summary;
         // user active sendings reference
-        updates[DB_USERS_SENDINGS + userid + '/' + DB_CHILD_ACTIVE + newKey] = summary;
+        updates[DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF + newKey] = summary;
         // update and return promise
         return this.dbRef.update(updates);
     }
@@ -46,11 +46,11 @@ export class SendingDbService {
     updateSendingImageData(sendingId:string, downloadURL:string, imageName:string, imageFullpathRef:string):Promise<any> {
         console.log('updateSendingImage > init');
         let updates = {};
-        updates[DB_SENDINGS + sendingId + '/objectImageDownloadUrl/'] = downloadURL;
-        updates[DB_SENDINGS + sendingId + '/objectImageName/'] = imageName;
-        updates[DB_SENDINGS + sendingId + '/objectImageFullPathRef/'] = imageFullpathRef;
+        updates[DB.ALL.REF + sendingId + '/objectImageDownloadUrl/'] = downloadURL;
+        updates[DB.ALL.REF + sendingId + '/objectImageName/'] = imageName;
+        updates[DB.ALL.REF + sendingId + '/objectImageFullPathRef/'] = imageFullpathRef;
         // delete value of objectImageUrlTemp because we already uploaded to storage
-        updates[DB_SENDINGS + sendingId + '/objectImageUrlTemp/'] = '';        
+        updates[DB.ALL.REF + sendingId + '/objectImageUrlTemp/'] = '';        
         return this.dbRef.update(updates)  
     }    
 
@@ -60,14 +60,14 @@ export class SendingDbService {
 
     getSendingsLiveByUser(userid:string, getSnapshot:boolean = true) {
         return this.af.database
-                .list(DB_USERS_SENDINGS + userid + '/' + DB_CHILD_ACTIVE, { 
+                .list(DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF, { 
                     preserveSnapshot: getSnapshot,
                 });
     }  
 
     getSendingById(sendingId:string, getSnapshot:boolean = true) {
         return this.af.database
-                .object(DB_SENDINGS + sendingId, {
+                .object(DB.ALL.REF + sendingId, {
                     preserveSnapshot: getSnapshot,
                 });       
     }    

@@ -30,26 +30,26 @@
                 <ion-note item-right>#{{ item.data.publicId }}</ion-note>
             </ion-item>                   
             <ion-item class="content">                 
-                <p><span>Desde</span> {{ item.data.pickupAddress }}</p>
-                <p><span>Hasta</span> {{ item.data.dropAddress }}</p> 
+                <p><span>Desde</span> {{ item.data.pickupAddressStreetShort }} {{ item.data.pickupAddressNumber }}, {{ item.data.pickupAddressCityShort }}</p>
+                <p><span>Hasta</span> {{ item.data.dropAddressStreetShort }} {{ item.data.dropAddressNumber }}, {{ item.data.dropAddressCityShort }}</p> 
                 <p><span><small> {{ item.data.timestamp | ts2datePipe }}</small></span></p> 
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>    
             <ion-item class="footer">             
                 <ion-icon name="time" item-left 
-                    [class.active]="item.data.currentStatus=='registered' || item.data.currentStatus=='enabled'">
+                    [class.active]="item.data._currentStage_Status=='created_registered'">
                     </ion-icon> 
                 <ion-icon name="send" item-left 
-                    [class.active]="item.data.currentStatus=='vacant'">
+                    [class.active]="item.data._currentStage_Status=='live_vacant'">
                     </ion-icon> 
                 <ion-icon name="home" item-left
-                    [class.active]="item.data.currentStatus=='holdforpickup'">
+                    [class.active]="item.data._currentStage_Status=='live_holdforpickup'">
                     </ion-icon>
                 <ion-icon name="pin" item-left
-                    [class.active]="item.data.currentStatus=='intransit'">
+                    [class.active]="item.data._currentStage_Status=='live_transit'">
                 </ion-icon>
                 <ion-icon name="checkmark-circle" item-left
-                    [class.active]="item.data.currentStatus=='completed'">
+                    [class.active]="item.data._currentStage_Status=='live_dropped'">
                 </ion-icon>            
                 <ion-note item-right>{{ getStatusMessage(item.data.currentStatus) }}</ion-note>                   
             </ion-item>                                      

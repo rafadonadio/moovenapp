@@ -12,7 +12,21 @@ export const SENDING_CFG = {
                 REGISTERED: 'registered',
                 PAID: 'paid',
                 ENABLED: 'enabled'
-            }
+            },
+            SUMMARY_FIELDS: [
+                'pickupAddressStreetShort',
+                'pickupAddressNumber',
+                'pickupAddressCityShort',
+                'dropAddressStreetShort',
+                'dropAddressNumber',
+                'dropAddressCityShort',
+                'objectShortName',
+                'timestamp',
+                'publicId',
+                '_currentStage',
+                '_currentStatus',
+                '_currentStage_Status'
+            ]
         },
         LIVE: {
             ID: 'live',
@@ -56,10 +70,12 @@ export const SENDING_DB = {
         _NODE: 'userSendings',
         _CHILD: {
             ACTIVE: {
-
+                REF: '/active/',
+                _NODE: 'active'
             },
             CLOSED: {
-
+                REF: '/closed/',
+                _NODE: 'closed'
             }
         }
     },    
@@ -95,7 +111,7 @@ export class SendingRequest{
     _stages?: SendingStages;
     _currentStage?: string;
     _currentStatus?: string;
-    _currentStageStatus_?: string;  
+    _currentStage_Status?: string;  
     objectShortName: string;
     objectImageSet: boolean;
     objectImageUrlTemp: string;  // deleted once uploaded

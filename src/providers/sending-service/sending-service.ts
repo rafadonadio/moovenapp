@@ -105,12 +105,10 @@ export class SendingService {
      *  DATABASE WRITE
      */ 
 
-    private writeNewSending(
-        sending:SendingRequest, 
-        newKey:string, 
-        userId:string):Promise<any> {  
+    private writeNewSending(sending:SendingRequest, newKey:string, userId:string):Promise<any> {  
             console.info('writeNewSending > start');
-            let summary:any = this.reqSrv.getSummaryForDbList(sending);
+            console.log('data > ', sending, newKey, userId);
+            let summary:any = this.reqSrv.getSummary(sending, CFG.STAGE.CREATED.ID);
             return this.dbSrv.newSending(sending, summary, newKey, userId); 
     }
  
