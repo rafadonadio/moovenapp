@@ -46,22 +46,23 @@ export class SendingsPage implements OnInit{
         }, 2000);
     }
 
-    getStatusMessage(currentStatus) {
+    getStatusMessage(currentStageStatus) {
         let message = '';
-        switch(currentStatus){
-            case 'created':
+        switch(currentStageStatus){
+            case 'created_registered':
                 message = 'Procesando ...';
                 break;
-            case 'vacant':
-                message = 'Aguardando transporte';
+            case 'live_vacant':
+                message = 'Aguardando Operador';
                 break;
-            case 'holdforpickup':
+            case 'live_holdforpickup':
                 message = 'Aguardando retiro';
                 break;
-            case 'intransit':
+            case 'live_transit':
                 message = 'En transito';
                 break;                
-            case 'completed':
+            case 'live_dropped':
+            case 'closed_completed':
                 message = 'Entregado en destino';
                 break;                             
         }

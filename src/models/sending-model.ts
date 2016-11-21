@@ -230,7 +230,7 @@ export class StageClosedNode {
     _current: string;
     set: boolean;
     status: {
-        completet: {
+        completed: {
             set: boolean,
             timestamp: boolean,
         },

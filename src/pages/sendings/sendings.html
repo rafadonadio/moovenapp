@@ -51,7 +51,7 @@
                 <ion-icon name="checkmark-circle" item-left
                     [class.active]="item.data._currentStage_Status=='live_dropped'">
                 </ion-icon>            
-                <ion-note item-right>{{ getStatusMessage(item.data.currentStatus) }}</ion-note>                   
+                <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>                   
             </ion-item>                                      
         </ion-card>
     </div>  

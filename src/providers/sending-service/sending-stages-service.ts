@@ -87,11 +87,11 @@ export class SendingStagesService {
                 set: false,
                 status: {
                     vacant: {
-                        set: false,
+                        set: true,
                         timestamp: false,
                     },
                     holdforpickup: {
-                        set: false,
+                        set: true,
                         timestamp: false,
                     },        
                     transit: {
@@ -108,7 +108,7 @@ export class SendingStagesService {
                 _current: '',
                 set: false,
                 status: {
-                    completet: {
+                    completed: {
                         set: false,
                         timestamp: false,
                     },
