@@ -35,10 +35,12 @@ export const SENDING_CFG = {
         LIVE: {
             ID: 'live',
             STATUS: {
-                _LIST: ['gotoperator', 'pickup', 'intransit', 'dropped'],
+                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped'],
+                WAITOPERATOR: 'waitoperator',
                 GOTOPERATOR: 'gotoperator',
-                PICKUP: 'pickup',
-                INTRANSIT: 'intransit',
+                WAITPICKUP: 'waitpickup',
+                PICKEDUP: 'pickedup',
+                INROUTE: 'inroute',
                 DROPPED: 'dropped'
             },
             SUMMARY_FIELDS: [
@@ -87,7 +89,10 @@ export const SENDING_DB = {
             IMAGETEMP: '/objectImageUrlTemp/',
             IMAGENAME: '/objectImageName/',
             FULLPATH: '/objectImageFullPathRef/',
-            STAGES: '/_stages/'
+            STAGES: '/_stages/',
+            CURRENT_STAGE: '/_currentStage/',
+            CURRENT_STATUS: '/_currentStatus/',
+            CURRENT_STAGE_STATUS: '/_currentStage_Status/'
         }
     },
     HASHID: {
@@ -263,15 +268,23 @@ export class StageLiveNode {
     _current: string;
     set: boolean;
     status: {
-        gotoperator: {
+        waitoperator: {
             set: boolean,
             timestamp: boolean,
         },
-        pickup: {
+        gotoperator: {
             set: boolean,
             timestamp: boolean,
         },        
-        intransit: {
+        waitpickup: {
+            set: boolean,
+            timestamp: boolean,
+        }, 
+        pickedup: {
+            set: boolean,
+            timestamp: boolean,
+        },               
+        inroute: {
             set: boolean,
             timestamp: boolean,
         },     

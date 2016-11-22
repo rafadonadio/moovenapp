@@ -17,13 +17,16 @@ export class SendingRequestService {
             case CFG.STAGE.CREATED.ID:
                 fieldsList = CFG.STAGE.CREATED.SUMMARY_FIELDS;
                 break;
+            case CFG.STAGE.LIVE.ID:
+                fieldsList = CFG.STAGE.LIVE.SUMMARY_FIELDS;
+                break;
         }   
         // iterate fields
         for(let index in fieldsList) {
             let field = fieldsList[index];
             summary[field] = sending[field];
         }
-        console.log('getSummary > done > ', summary);
+        console.log('getSummary for stage '+stage+'> done > ', summary);
         return summary;
     }
 

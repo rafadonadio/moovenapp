@@ -15,7 +15,12 @@ export class SendingStagesService {
     {
         // init
         let stages = this.getInitialized();
-        stages = this.updateStageTo(stages, currentStage, CFG.STAGE.CREATED.STATUS.REGISTERED, timestamp);
+        let currentStatus = CFG.STAGE.CREATED.STATUS.REGISTERED;
+        stages._current = currentStage;     
+        stages[currentStage].set = true;
+        stages[currentStage]._current = currentStatus;
+        stages[currentStage].status[currentStatus].set = true;
+        stages[currentStage].status[currentStatus].timestamp = timestamp;
         return stages;
     }
 
@@ -23,15 +28,20 @@ export class SendingStagesService {
      *  STAGE UPDATES
      */
 
-    updateStageTo(stages:SendingStages, currentStage:string, currentStatus:string, timestamp:number):SendingStages {
-        // set stage
-        stages._current = currentStage;     
-        stages[currentStage].set = true;
-        // set status
-        stages[currentStage]._current = currentStatus;
-        stages[currentStage].status[currentStatus].set = true;
-        stages[currentStage].status[currentStatus].timestamp = timestamp;      
-        return stages;        
+    updateStageTo(stages:SendingStages, currentStage:string, currentStatus:string, timestamp:number):Promise<any> {
+        return new Promise((resolve) => {
+            let newStages:SendingStages;
+            // set stage
+            stages._current = currentStage;     
+            stages[currentStage].set = true;
+            // set status
+            stages[currentStage]._current = currentStatus;
+            stages[currentStage].status[currentStatus].set = true;
+            stages[currentStage].status[currentStatus].timestamp = timestamp;
+            newStages = stages;      
+            console.log('updateStageTo > result > ', newStages);
+            resolve(stages);
+        });      
     }
 
 
@@ -81,15 +91,23 @@ export class SendingStagesService {
                 _current: '',
                 set: false,
                 status: {
-                    gotoperator: {
+                    waitoperator: {
                         set: false,
                         timestamp: false,
                     },
-                    pickup: {
+                    gotoperator: {
                         set: false,
                         timestamp: false,
-                    },        
-                    intransit: {
+                    },                    
+                    waitpickup: {
+                        set: false,
+                        timestamp: false,
+                    },
+                    pickedup: {
+                        set: false,
+                        timestamp: false,
+                    },                            
+                    inroute: {
                         set: false,
                         timestamp: false,
                     },     

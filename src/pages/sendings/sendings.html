@@ -40,13 +40,13 @@
                     [class.active]="item.data._currentStage_Status=='created_registered'">
                     </ion-icon> 
                 <ion-icon name="send" item-left 
-                    [class.active]="item.data._currentStage_Status=='created_enabled' || item.data._currentStage_Status=='live_gotoperator'">
+                    [class.active]="item.data._currentStage_Status=='created_enabled' || item.data._currentStage_Status=='live_waitoperator'">
                     </ion-icon> 
                 <ion-icon name="home" item-left
-                    [class.active]="item.data._currentStage_Status=='live_pickup'">
+                    [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
                     </ion-icon>
                 <ion-icon name="pin" item-left
-                    [class.active]="item.data._currentStage_Status=='live_intransit'">
+                    [class.active]="item.data._currentStage_Status=='live_inroute'">
                 </ion-icon>
                 <ion-icon name="checkmark-circle" item-left
                     [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">

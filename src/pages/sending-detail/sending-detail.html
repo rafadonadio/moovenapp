@@ -76,14 +76,14 @@
 
             <!-- IF -->            
             <ion-item no-lines
-                *ngIf="sending._stages.live.status.pickup.set==false">
+                *ngIf="sending._stages.live.status.pickedup.set==false">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>A retirarse entre {{ sending.pickupTimeFrom }} y {{ sending.pickupTimeTo }}</p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item no-lines
-                *ngIf="sending._stages.live.status.pickup.set==true">
+                *ngIf="sending._stages.live.status.pickedup.set==true">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>Retirado de {{ pickupAddressStreetShort }} {{ pickupAddressNumber }}</p>

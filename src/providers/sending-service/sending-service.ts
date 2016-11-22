@@ -6,7 +6,7 @@ import { SendingRequestService } from '../sending-service/sending-request-servic
 import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SENDING_CFG, SendingRequest, SendingStages } from '../../models/sending-model';
+import { SENDING_CFG, SendingRequest } from '../../models/sending-model';
 
 const CFG = SENDING_CFG;
 
@@ -92,10 +92,17 @@ export class SendingService {
     processPayment(sendingId:string):Promise<any> {
         console.info('processPayment > start');
         // aux
+        let steps = {
+            get: false,
+            payment: false,
+            update1: false,
+            update2: false,
+            updateDb: false,
+            move: false
+        }
         let sending:SendingRequest;
         let currentStage:string;
         let currentStatus:string;
-        let stages:SendingStages;
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         
         // -------------
@@ -105,35 +112,45 @@ export class SendingService {
         return new Promise((resolve, reject) => {
             this.dbSrv.getSendingbyIdOnce(sendingId)
                 .then((snapshot) => {
-                    console.log('getSendingbyIdOnce > success');
+                    console.log('getSendingbyIdOnce > success ', sendingId);
+                    steps.get = true;
                     sending = snapshot.val();
                     //update CREATED to PAID and then to ENABLED
                     currentStage = CFG.STAGE.CREATED.ID;
                     currentStatus = CFG.STAGE.CREATED.STATUS.PAID;
-                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);  
+                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
+                })
+                .then((stages1) => {      
+                    console.log('updateStageTo 1 > success');
+                    steps.update1 = true;
                     currentStage = CFG.STAGE.CREATED.ID;
                     currentStatus = CFG.STAGE.CREATED.STATUS.ENABLED;
-                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);  
+                    return this.stagesSrv.updateStageTo(stages1, currentStage, currentStatus, timestamp);  
+                })
+                .then((stages2) => {    
+                    console.log('updateStageTo 2 > success');
+                    steps.update2 = true;                    
                     // update stages in database
-                    return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages);
+                    return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages2);
                 })
                 .then(() => {
+                    console.log('updateSendingCreatedStage > success');
+                    steps.updateDb = true;
                     // move CREATED to LIVE
-                     
-                    // update STAGE > LIVE.VACANT.
-                    currentStage = CFG.STAGE.LIVE.ID;
-                    currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR;
-                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
-
-                    return;
+                    return this.moveCreatedToLive(sendingId);
                 })
                 .then(() => {
-                    console.log('updateSendingCreatedStages > success');
-                    resolve(true);
+                    console.log('moveCreatedToLive > success');
+                    steps.move = true;
+                    resolve(steps);
                 })
                 .catch((error) => {
                     console.log('getSendingbyIdOnce OR updateSendingCreatedStages > error', error);
-                    reject(error);
+                    if(steps.updateDb == true) {
+                        resolve(steps);
+                    }else{
+                        reject(steps);
+                    }
                 }); 
         });        
     }
@@ -149,7 +166,6 @@ export class SendingService {
     getSending(id:string) {
         return this.getSendingById(id);
     }
-
 
     /**
      *  DATABASE WRITE
@@ -181,10 +197,46 @@ export class SendingService {
      *  MOVE SENDING FROM "CURRENT_STAGE" TO "NEW_STAGE"   
      */    
 
-    private moveSendingCreatedToSendingLive(sendingId) {
-        // 
+    private moveCreatedToLive(sendingId) {
+        console.info('moveCreatedToLive > start');
+        let sending:SendingRequest;
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let currentStage = CFG.STAGE.LIVE.ID;
+        let currentStatus = CFG.STAGE.LIVE.STATUS.WAITOPERATOR;
+        let steps = {
+            getSending: false,
+            updateStage: false,
+            writeDb: false 
+        }
         return new Promise((resolve, reject) => {
+            this.dbSrv.getSendingbyIdOnce(sendingId)
+                .then((snapshot) => {
+                    console.log('getSending > success');
+                    steps.getSending = true;
+                    sending = snapshot.val();
+                    // set stage values
+                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
+                })
+                .then((stages) => {
+                    console.log('updateStageTo > success', currentStage, currentStatus);
+                    steps.updateStage = true;
+                    // set new stages
+                    sending._currentStage = currentStage;
+                    sending._currentStatus = currentStatus;
+                    sending._currentStage_Status = currentStage + '_' + currentStatus;
+                    sending._stages = stages;                    
+                    // set Live values and move                    
+                    let summary = this.reqSrv.getSummary(sending, currentStage);
+                    return this.dbSrv.moveSendingCreatedToLive(this.user.uid, sending, summary);
+                })
+                .then(() => {
+                    console.log('moveSendingCreatedToLive > success');
+                    steps.writeDb = true;
+                    resolve(steps);
+                })
+                .catch((error) => {
 
+                });
         });
     }
 
