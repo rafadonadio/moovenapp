@@ -33,7 +33,7 @@ export class SendingStagesService {
         stages[currentStage].status[currentStatus].timestamp = timestamp;      
         return stages;        
     }
-    
+
 
     /**
      *  GET VALUES FROM STAGES
@@ -81,15 +81,15 @@ export class SendingStagesService {
                 _current: '',
                 set: false,
                 status: {
-                    vacant: {
-                        set: true,
+                    gotoperator: {
+                        set: false,
                         timestamp: false,
                     },
-                    holdforpickup: {
-                        set: true,
+                    pickup: {
+                        set: false,
                         timestamp: false,
                     },        
-                    transit: {
+                    intransit: {
                         set: false,
                         timestamp: false,
                     },     
@@ -115,7 +115,7 @@ export class SendingStagesService {
                         set: false,
                         timestamp: false,
                     },     
-                    vacantexpired: {
+                    gotoperatorexpired: {
                         set: false,
                         timestamp: false,
                     },                    

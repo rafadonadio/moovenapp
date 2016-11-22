@@ -25,27 +25,49 @@ export const SENDING_CFG = {
                 'publicId',
                 '_currentStage',
                 '_currentStatus',
-                '_currentStage_Status'
+                '_currentStage_Status',
+                'pickupAddressLat',
+                'pickupAddressLng',
+                'dropAddressLat',
+                'dropAddressLng'
             ]
         },
         LIVE: {
             ID: 'live',
             STATUS: {
-                _LIST: ['vacant', 'holdforpickup', 'transit', 'dropped'],
-                VACANT: 'vacant',
-                HOLDFORPICKUP: 'holdforpickup',
-                TRANSIT: 'transit',
+                _LIST: ['gotoperator', 'pickup', 'intransit', 'dropped'],
+                GOTOPERATOR: 'gotoperator',
+                PICKUP: 'pickup',
+                INTRANSIT: 'intransit',
                 DROPPED: 'dropped'
-            }
+            },
+            SUMMARY_FIELDS: [
+                'pickupAddressStreetShort',
+                'pickupAddressNumber',
+                'pickupAddressCityShort',
+                'dropAddressStreetShort',
+                'dropAddressNumber',
+                'dropAddressCityShort',
+                'objectShortName',
+                'timestamp',
+                'publicId',
+                '_currentStage',
+                '_currentStatus',
+                '_currentStage_Status',
+                'pickupAddressLat',
+                'pickupAddressLng',
+                'dropAddressLat',
+                'dropAddressLng'
+            ]
         },
         CLOSED: {
             ID: 'closed',
             STATUS: {
-                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'vacantexpired'],
+                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'gotoperatorexpired'],
                 COMPLETE: 'complete',
                 CANCELEDBYSENDER: 'canceledbysender',
                 CANCELEDBYOPERATOR: 'canceledbyoperator',
-                VACANTEXPIRED: 'vacantexpired'
+                GOTOPERATOREXPIRED: 'gotoperatorexpired'
             }
         }
     },
@@ -241,15 +263,15 @@ export class StageLiveNode {
     _current: string;
     set: boolean;
     status: {
-        vacant: {
+        gotoperator: {
             set: boolean,
             timestamp: boolean,
         },
-        holdforpickup: {
+        pickup: {
             set: boolean,
             timestamp: boolean,
         },        
-        transit: {
+        intransit: {
             set: boolean,
             timestamp: boolean,
         },     
@@ -276,7 +298,7 @@ export class StageClosedNode {
             set: boolean,
             timestamp: boolean,
         },     
-        vacantexpired: {
+        gotoperatorexpired: {
             set: boolean,
             timestamp: boolean,
         },                    

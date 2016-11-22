@@ -59,16 +59,16 @@
 
             <!-- IF -->
             <ion-item no-lines
-                *ngIf="sending._stages.live.status.vacant.set==true">
+                *ngIf="sending._stages.live.status.gotoperator.set==false">
                 <ion-icon name="person" item-left></ion-icon>
                 <h3>Operador</h3>
-                <p>Servicio vacante</p>
+                <p>Aguardando confirmación de operador </p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item no-lines
-                *ngIf="sending._stages.live.status.vacant.set==false">
+                *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-icon name="person" item-left></ion-icon>
-                <h3>Operador disponible</h3>
+                <h3>Operador confirmado</h3>
                 <p>Nombre operador</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
@@ -76,14 +76,14 @@
 
             <!-- IF -->            
             <ion-item no-lines
-                *ngIf="sending._stages.live.status.holdforpickup.set==true">
+                *ngIf="sending._stages.live.status.pickup.set==false">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>A retirarse entre {{ sending.pickupTimeFrom }} y {{ sending.pickupTimeTo }}</p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item no-lines
-                *ngIf="sending._stages.live.status.holdforpickup.set==false">
+                *ngIf="sending._stages.live.status.pickup.set==true">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>Retirado de {{ pickupAddressStreetShort }} {{ pickupAddressNumber }}</p>
@@ -152,14 +152,14 @@
 
         <ion-list *ngSwitchCase="'shipment'">
             <ion-list-header>Detalles del Envío</ion-list-header>
-            <ion-item-divider *ngIf="sending._stages.live.status.vacant.set==false">Transportista
+            <ion-item-divider *ngIf="sending._stages.live.status.gotoperator.set==true">Transportista
                 <button ion-button outline item-right icon-left
                     color="primary">
                     <ion-icon name="call"></ion-icon>
                     Llamar
                 </button> 
             </ion-item-divider>
-            <ion-item no-lines *ngIf="sending._stages.live.status.vacant.set==false">
+            <ion-item no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-thumbnail item-left>
                     <img src="http://placehold.it/200x200">
                 </ion-thumbnail>

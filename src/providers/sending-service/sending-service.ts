@@ -98,30 +98,33 @@ export class SendingService {
         let stages:SendingStages;
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         
+        // -------------
         // run payment
-        // ... ??? 
+        // -------------
 
         return new Promise((resolve, reject) => {
             this.dbSrv.getSendingbyIdOnce(sendingId)
                 .then((snapshot) => {
                     console.log('getSendingbyIdOnce > success');
                     sending = snapshot.val();
-                    //update STAGE.STATUS > PAID
+                    //update CREATED to PAID and then to ENABLED
                     currentStage = CFG.STAGE.CREATED.ID;
                     currentStatus = CFG.STAGE.CREATED.STATUS.PAID;
                     stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);  
-                    // update STAGE.STATUS > ENABLED
                     currentStage = CFG.STAGE.CREATED.ID;
                     currentStatus = CFG.STAGE.CREATED.STATUS.ENABLED;
                     stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);  
-                    // update database
+                    // update stages in database
                     return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages);
                 })
                 .then(() => {
+                    // move CREATED to LIVE
+                     
                     // update STAGE > LIVE.VACANT.
                     currentStage = CFG.STAGE.LIVE.ID;
-                    currentStatus = CFG.STAGE.LIVE.STATUS.VACANT;
-                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp); 
+                    currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR;
+                    stages = this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
+
                     return;
                 })
                 .then(() => {
@@ -172,6 +175,17 @@ export class SendingService {
                 .catch((error) => {
                     console.error('updateSendingImage > error > ', error);
                 });        
+    }
+
+    /**
+     *  MOVE SENDING FROM "CURRENT_STAGE" TO "NEW_STAGE"   
+     */    
+
+    private moveSendingCreatedToSendingLive(sendingId) {
+        // 
+        return new Promise((resolve, reject) => {
+
+        });
     }
 
     /**

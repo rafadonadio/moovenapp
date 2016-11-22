@@ -149,7 +149,7 @@ export class SendingCreate4Page implements OnInit {
         let newSendingId:string;
         // loader effect
         let loader = this.loadingCtrl.create({
-            content: 'registrando servicio ...'
+            content: 'registrando servicio ...',
         });
         loader.present();
         // save to db
@@ -161,12 +161,14 @@ export class SendingCreate4Page implements OnInit {
                 return this.sendings.processPayment(newSendingId);
             })
             .then(() => {
-                console.log('payment ok');
-                loader.dismiss()
-                    .then(() => {
-                        this.navCtrl.setRoot(SendingsPage);
-                        this.presentToast();
-                    });
+                console.log('payment ok, wait 3 seconds');
+                setTimeout(() => {
+                    loader.dismiss()
+                        .then(() => {
+                            this.navCtrl.setRoot(SendingsPage);
+                            this.presentToast();
+                        });
+                },3000);
             })
             .catch((error) => {
                 console.log('f4 > create sending > error', error);
