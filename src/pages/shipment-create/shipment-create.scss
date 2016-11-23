@@ -1,9 +1,22 @@
 page-shipment-create {
-  ion-row{
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 5px;
-    margin-bottom: 5px;
-    background: #ededed;
-  }
+
+    ion-list .item h3 span{
+        color: #aaa;
+        min-width: 60px;
+        display: inline-block;
+    }
+    ion-list .item h3{
+        color: color($colors, green);
+        font-size: 1.4rem;
+    }
+    ion-list .item ion-icon{
+        color: color($colors, green);
+    }
+
+    // MAP
+    #maps1 {
+        min-height: 300px;
+        height: 50%;
+        width:100%;
+    }
 }

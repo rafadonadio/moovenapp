@@ -119,6 +119,10 @@ export class SendingDbService {
                 });
     }  
 
+    getSendingsLiveVacantRef():firebase.database.Query {
+        return this.dbRef.child(DB.STAGE_LIVE.REF).orderByChild('_currentStatus').equalTo('waitoperator');
+    }
+
     getSendingById(sendingId:string, getSnapshot:boolean = true) {
         return this.af.database
                 .object(DB.ALL.REF + sendingId, {

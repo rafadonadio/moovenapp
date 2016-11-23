@@ -40,6 +40,7 @@ import { SendingService } from  '../providers/sending-service/sending-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
 import { SendingStagesService } from  '../providers/sending-service/sending-stages-service';
 import { SendingRequestService } from  '../providers/sending-service/sending-request-service';
+import { ShipmentsService } from  '../providers/shipments-service/shipments-service';
 import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
@@ -153,7 +154,8 @@ const myFirebaseAuthConfig = {
     SendingService,
     SendingDbService,
     SendingRequestService,  
-    SendingStagesService,            
+    SendingStagesService,
+    ShipmentsService,            
     UsersService,
     GoogleMapsService,
     DateService,

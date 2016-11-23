@@ -167,6 +167,11 @@ export class SendingService {
         return this.getSendingById(id);
     }
 
+    getLiveVacantRef():firebase.database.Query {
+        return this.getAllLiveVacantRef();
+    }
+
+
     /**
      *  DATABASE WRITE
      */ 
@@ -246,7 +251,11 @@ export class SendingService {
 
     private getMyLiveSendingsRef():any {
         return this.dbSrv.getSendingsLiveByUser(this.user.uid);
-    }  
+    }
+
+    private getAllLiveVacantRef():firebase.database.Query  {
+        return this.dbSrv.getSendingsLiveVacantRef();
+    }      
 
     private getSendingById(sendingId:string) {
         return this.dbSrv.getSendingById(sendingId);

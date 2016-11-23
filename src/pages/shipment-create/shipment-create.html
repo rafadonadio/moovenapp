@@ -1,136 +1,26 @@
 <ion-header>
-    <ion-navbar>
-        <ion-title>Nueva Carga</ion-title>
-    </ion-navbar>
+    <ion-toolbar color="green">
+        <ion-buttons start>
+            <button ion-button (click)="goBack()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>Tomar Servicio</ion-title>
+    </ion-toolbar>
 </ion-header>
 <ion-content class="shipment-create">
-    <div>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d13134.365872335158!2d-58.38880525!3d-34.61449064999999!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sar!4v1470177425680"
-            width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
-    </div>
-    <ion-grid>
-        <ion-row (click)="goToCreate2()">
-            <ion-col width-20>
-                <ion-icon name="cube"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                15 km
-            </ion-col>
-            <ion-col width-25>
-                11-13 hs
-            </ion-col>
-            <ion-col width-25>
-                15-17 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-20>
-                <ion-icon name="mail"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                18 km
-            </ion-col>
-            <ion-col width-25>
-                9-13 hs
-            </ion-col>
-            <ion-col width-25>
-                15-19 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-20>
-                <ion-icon name="cube"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                10 km
-            </ion-col>
-            <ion-col width-25>
-                8-13 hs
-            </ion-col>
-            <ion-col width-25>
-                14-17 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-20>
-                <ion-icon name="cube"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                9 km
-            </ion-col>
-            <ion-col width-25>
-                9-13 hs
-            </ion-col>
-            <ion-col width-25>
-                13-18 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-20>
-                <ion-icon name="qr-scanner"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                25 km
-            </ion-col>
-            <ion-col width-25>
-                7-13 hs
-            </ion-col>
-            <ion-col width-25>
-                12-19 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-20>
-                <ion-icon name="mail"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                35 km
-            </ion-col>
-            <ion-col width-25>
-                11-13 hs
-            </ion-col>
-            <ion-col width-25>
-                15-17 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col width-20>
-                <ion-icon name="qr-scanner"></ion-icon>
-            </ion-col>
-            <ion-col width-20>
-                14 km
-            </ion-col>
-            <ion-col width-25>
-                11-19 hs
-            </ion-col>
-            <ion-col width-25>
-                14-19 hs
-            </ion-col>
-            <ion-col width-10>
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-col>
-        </ion-row>
-
-    </ion-grid>
-    <ion-scroll scrollY="true" scrollX="false">
-
-    </ion-scroll>
+    <div class="map-container">
+        <div id="maps1"></div>
+    </div>   
+    <ion-list [virtualScroll]="vacants">
+        <button ion-item *virtualItem="let vacant">
+            <ion-icon item-left name="send" *ngIf="vacant.data.objectType=='sobre'"></ion-icon>
+            <ion-icon item-left name="cube" *ngIf="vacant.data.objectType=='caja'"></ion-icon>
+            <ion-icon item-left name="qr-scanner" *ngIf="vacant.data.objectType=='irregular'"></ion-icon>
+            <ion-note item-right>{{ vacant.data.publicId }}</ion-note>
+            <h3><span>Precio</span>${{ vacant.data.price }}</h3> 
+            <h3><span>Retirar</span>{{ vacant.data.pickupTimeFrom }} a {{ vacant.data.pickupTimeTo }}</h3>
+            <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom }} a {{ vacant.data.dropTimeTo }}</h3>       
+        </button>
+    </ion-list>
 </ion-content>

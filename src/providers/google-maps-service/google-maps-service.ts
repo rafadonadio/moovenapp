@@ -20,11 +20,11 @@ export class GoogleMapsService {
     // google.maps.MAP //
     /////////////////////
 
-    initMap(latlng, htmlInputElement) {
+    initMap(latlng, htmlInputElement, zoom:number = 10) {
         console.info('gmapService > initMap');
         return new google.maps.Map(htmlInputElement, {
             center: latlng,
-            zoom: 10,
+            zoom: zoom,
             disableDefaultUI: true,
             draggable: false,
             clickableIcons: false,

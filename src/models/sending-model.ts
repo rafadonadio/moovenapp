@@ -59,7 +59,13 @@ export const SENDING_CFG = {
                 'pickupAddressLat',
                 'pickupAddressLng',
                 'dropAddressLat',
-                'dropAddressLng'
+                'dropAddressLng',
+                'pickupTimeFrom',
+                'pickupTimeTo',
+                'dropTimeFrom',
+                'dropTimeTo',
+                'objectType',
+                'price'
             ]
         },
         CLOSED: {

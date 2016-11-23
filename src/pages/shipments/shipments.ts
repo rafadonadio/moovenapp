@@ -18,7 +18,7 @@ export class ShipmentsPage {
     }
 
     goToCreate() {
-        this.navCtrl.push(ShipmentCreatePage);
+        this.navCtrl.setRoot(ShipmentCreatePage);
     }
 
     doRefresh(refresher) {
