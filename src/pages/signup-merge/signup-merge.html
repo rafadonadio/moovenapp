@@ -1,14 +1,16 @@
 <ion-header>
-    <ion-navbar>
+    <ion-navbar color="dark">
         <ion-title>Confirmar cuenta</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content class="signup-merge">
     <div class="profile">
-        <button ion-button fab fab-top fab-right>
-            <ion-icon name="camera"></ion-icon>
-        </button>
-        <img src="http://placehold.it/250x250?text=PROFILE">
+        <ion-fab top right>
+            <button ion-fab color="light"
+                (click)="updatePicture()">
+                <ion-icon name=camera color="dark"></ion-icon></button>
+        </ion-fab>
+        <img [src]="user?.photoURL || profileBgDefault">
     </div>
     <form [formGroup]="signupMergeForm">
         <ion-grid>
@@ -32,7 +34,7 @@
                 <ion-col>
                     <ion-item>
                         <ion-label stacked>EMAIL</ion-label>
-                        <ion-input type="text" value="{{user.email}}" disabled></ion-input>
+                        <ion-input type="text" value="{{user?.email}}" disabled></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
