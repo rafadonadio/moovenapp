@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-navbar color="dark">
+        <ion-title>Ingresa</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="login" padding>
+    <ion-grid>
+        <ion-row>
+            <ion-col width="100">
+                <h6 text-center margin>Ingresa con tu cuenta de</h6>
+            </ion-col>
+        </ion-row>
+        <ion-row center class="signin-buttons">
+            <ion-col width-50>
+                <button ion-button block color="danger">Google</button>
+            </ion-col>
+            <ion-col width-50>
+                <button ion-button block color="facebook">Facebook</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <div style="height:50px;"></div>
+    <hr>
+    <h6 text-center margin class="create-account-title">Inicia sesión con tu correo electrónico</h6>
+    <form [formGroup]="signinForm" (ngSubmit)="submitSigninForm(signinForm.value)">
+
+        <ion-item [class.error]="!email.valid && email.touched">
+            <ion-label floating>Email</ion-label>
+            <ion-input type="text" value="" [formControl]="email"></ion-input>
+        </ion-item>
+        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched" class="input-error">* Ingresa un email válido</div>
+
+        <ion-item [class.error]="!password.valid && password.touched" margin-bottom>
+            <ion-label floating>Contraseña</ion-label>
+            <ion-input type="password" value="" [formControl]="password"></ion-input>
+        </ion-item>
+        <div *ngIf="password.hasError('required') && password.touched" class="input-error">* Ingresa tu contraseña</div>
+
+        <button ion-button type="submit" color="primary" block class="submit" [disabled]="!signinForm.valid">Iniciar Sesión</button>
+    </form>
+    <button ion-button block color="dark-gray" outline margin-top (click)="presentModalPasswordReset()">Recuperar Contraseña</button>
+</ion-content>

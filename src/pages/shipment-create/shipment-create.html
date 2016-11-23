@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-toolbar color="green">
+        <ion-buttons start>
+            <button ion-button (click)="goBack()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>Tomar Servicio</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="shipment-create">
+    <div class="map-container">
+        <div id="maps1"></div>
+    </div>   
+    <ion-list [virtualScroll]="vacants">
+        <button ion-item *virtualItem="let vacant">
+            <ion-icon item-left name="send" *ngIf="vacant.data.objectType=='sobre'"></ion-icon>
+            <ion-icon item-left name="cube" *ngIf="vacant.data.objectType=='caja'"></ion-icon>
+            <ion-icon item-left name="qr-scanner" *ngIf="vacant.data.objectType=='irregular'"></ion-icon>
+            <ion-note item-right>{{ vacant.data.publicId }}</ion-note>
+            <h3><span>Precio</span>${{ vacant.data.price }}</h3> 
+            <h3><span>Retirar</span>{{ vacant.data.pickupTimeFrom }} a {{ vacant.data.pickupTimeTo }}</h3>
+            <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom }} a {{ vacant.data.dropTimeTo }}</h3>       
+        </button>
+    </ion-list>
+</ion-content>

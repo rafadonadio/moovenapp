@@ -62,7 +62,8 @@ ___
     preview en ionic View (Android/iOS)  
     validación UI/UX
 
-#### 09/2016  
+#### 09/2016
+
 **0.1.1**  
 - Implementación Firebase  
     integración librería  
@@ -101,18 +102,68 @@ ___
 - Sendings
     - form step 1
 
+#### 10/2016
+
 **0.3.1** 
 - update ionic beta11 > RC0
-    > ionic start moovenAppDev sidemenu --v2
+    - ref:   https://github.com/driftyco/ionic/blob/master/CHANGELOG.md#steps-to-upgrade-to-rc0
+    - start new project
+        > ionic start moovenAppDev sidemenu --v2
+    - copy project
+        4 copy app/pages > src/pages, copy app/providers > src/providers
+        5 modify templateUrl to relative to .ts
+        6 Import and add each of your pages to the declarations array and the entryComponents array in src/app/app.module.ts
+        7 n/a
+        8 Import and add each of your providers to the providers array in src/app/app.module.ts.
+        9 Remove any use of the providers, pipes and directives arrays in @Component.
+        10 Change any uses of the private TypeScript keyword to public ONLY for component variables that are needed in the associated template.
+        11 Change 'button' to 'button ion-button'  
+        12 Pass colors to the color attribute : 'button primary' changes to 'button color="primary"'
+        13 config
+        14 scss variables > app/variables.scss
+        15 add selectors for scss files
+
+**0.4.0**
+- update ionic RC0 > RC1 
+    // firebase type fix angularfire/node_modules/firebase/firebase.d.ts:286
+    declare namespace firebase.database.ServerValue {
+        var TIMESTAMP: any;
+    }        
+-  form envio
+    - inputs validation
+    - camera
+    - fix rangeTime change (min 2 hr)
+    - go back, go forward
+    - maps autocomplete
+    - maps set center
+    - maps set marker
+    - maps set directions
+    - maps set distance
+
+#### 11/2016
+
+**0.5.0**
+- update ionic RC1 > RC2      
+    - save and set - angularfire
+    - public ID (hashid)
+    - storage photo
+         
+
+
+
     
+# device debug
+    
+    "Attempt to use a destroyed view: detectChanges"
+    "Error: Attempt to use a destroyed view: detectChanges 
+        at e [as constructor] (file:///android_asset/www/build/main.js:5:13512)
+
+    main.js:6 EXCEPTION: Firebase.update failed: 
+        First argument contains undefined in property 
+            'usersSendings.BEmkzTfvzDNefFWbTDDsJ1qBNUF3.active.-KVN54Ed6CM0TrqKcfVw.pickupAddressCity'
 
 
 > to-do´s
-    - #email sending
-        *implementar mailgun
-    - login  
-        recuperar contraseña  
-        confirmar nro de movil  
     - settings  
         estado perfil para envíos  
         estado perfil para cargas  
@@ -129,3 +180,15 @@ ___
     - notificaciones
     - pagos
     - ayuda
+
+    # meetings
+        - agregar fecha a los envíos
+        -cambiar
+            transport > operador
+            envios > servicios
+        - sidemenu > user name
+            dejar icono mapa
+
+
+
+

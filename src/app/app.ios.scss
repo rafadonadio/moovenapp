@@ -1,0 +1,46 @@
+.ios{
+
+    // SideMenu
+    ion-menu{
+
+        ion-content{
+                      
+            background-color: $bg-color-fourth-level;
+
+            ion-list.list-ios{
+                margin-top: 0px;
+            }
+            .item.item-avatar{
+                background: #ddd;
+            }            
+            .item .item-inner ion-label h2{
+                font-size: 1.8rem;
+                font-weight: 500;
+            }
+            .item{
+                background-color: $bg-color-fourth-level;
+                color: $push-form-text-color;
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }    
+            .item.menu-item{
+                padding-left: 23px;
+            }
+            .item.menu-item .item-inner{
+                font-size: 1.8rem;
+                margin-left: 7px;
+            }
+        }
+    }
+    
+    // page navbar title
+    ion-navbar ion-title h4{
+        margin-top: 1.1rem;
+    }
+
+    .toolbar-ios ion-title{
+        padding-right: 30px;
+        padding-left: 30px;
+    }    
+
+}

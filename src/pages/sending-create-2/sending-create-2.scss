@@ -1,0 +1,81 @@
+page-sending-create-2 {
+
+    ion-toolbar.toolbar-md ion-title span,
+    ion-toolbar.toolbar-ios ion-title span{
+        font-weight: 200;
+    }
+    ion-toolbar.toolbar-md ion-title span ion-icon,
+    ion-toolbar.toolbar-ios ion-title span  ion-icon{
+        font-size: 1.4rem;
+    }     
+
+    .input-error{
+        margin-left: 20px;
+        margin-top: 5px;
+        color: red;
+    }
+    .input-optional{
+        margin-left: 20px;
+        margin-top: 5px;
+        color: color($colors, warn);
+    }    
+    button.submit{
+        margin-top: 30px;
+    }
+    ion-list.list-md ion-item-divider,
+    ion-list.list-ios ion-item-divider{
+        color: color($colors, primary);
+        font-size:1.8rem;
+        background: #ededed;
+        font-weight: 500;
+    } 
+    ion-list.list-md ion-item-divider ion-icon,
+    ion-list.list-ios ion-item-divider ion-icon{
+        font-size: 1.5rem;    
+        color: color($colors, primary);
+    }     
+    ion-list.list-md ion-list-header,
+    ion-list.list-ios ion-list-header{
+        background: #fff;
+        color: color($colors, primary);
+        font-weight: 500;
+        font-size:1.6rem;
+        text-transform: none;
+    }  
+    ion-card.card-md ion-item button ion-icon,
+    ion-card.card-ios ion-item button ion-icon{
+        font-size: 3rem;
+    }
+    ion-list.list-md ion-list-header button .button-inner,
+    ion-list.list-ios ion-list-header .button-inner{
+        font-weight: 400;
+        font-size: 1.4rem;
+    }
+
+    /* autocomplete */
+    ion-list.list-md .ac-input,
+    ion-list.list-ios .ac-input{
+        padding-left: 16px;
+    }
+    ion-list.list-md .ac-input .ac-inner,
+    ion-list.list-ios .ac-input .ac-inner{           
+        border-bottom: 1px solid #dedede;
+    }
+    ion-list.list-md .ac-input input#pickupaddress,
+    ion-list.list-ios .ac-input input#pickupaddress{
+        margin: 13px 8px 13px 8px;
+        padding: 0;
+        width: calc(100% - 8px - 8px);
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        font-size: 1.6rem;
+    }
+    
+    // MAP
+    #mapf2 {
+        height: 200px;
+        width:100%
+    }
+
+}

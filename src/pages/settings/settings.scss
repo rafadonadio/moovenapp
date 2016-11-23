@@ -1,0 +1,36 @@
+page-settings {
+
+    div.profile{
+        padding-top: 15px;
+        padding-bottom: 15px;
+        background: #d2d2d2;
+    }
+	div.profile img{
+		margin-right: auto;
+		margin-left: auto;
+		display: block;
+		border-radius: 50%;
+        width:70%;
+	}
+
+    ion-item-divider.item{
+        background: color($colors, subdark);
+        color: #fff;
+    }
+    ion-list.list-md ion-item ion-icon{
+        color: color($colors, sublight);
+    }
+    ion-list.list-md ion-item ion-label p{
+        color: color($colors, sublight);
+    } 
+
+    ion-fab button.fab.fab-md,
+    ion-fab button.fab.fab-ios{
+        background-color: color($colors, dark);
+    }
+    ion-fab button.fab.fab-md ion-icon,
+    ion-fab button.fab.fab-ios ion-icon{
+        color: color($colors, light);
+    }    
+
+}

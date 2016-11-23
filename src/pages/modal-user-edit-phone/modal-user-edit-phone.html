@@ -1,0 +1,56 @@
+<ion-header>
+    <ion-toolbar color="dark">
+        <ion-title>
+            Cambiar número de móvil
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="dismiss()">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="update-phone-number">
+    <form [formGroup]="editForm">
+        <ion-card *ngIf="changeInProcess==true">
+            <ion-card-header>
+            <ion-icon name="alert" item-left></ion-icon> ATENCIÓN 
+            </ion-card-header>
+            <ion-card-content>
+            El número <b>{{ profData.phonePrefix }}{{ profData.phoneMobile }}</b> aún no ha sido validado.
+            </ion-card-content>
+        </ion-card>
+        <ion-card>
+            <ion-card-header>
+            <ion-icon name="alert" item-left></ion-icon> AYUDA
+            </ion-card-header>
+            <ion-card-content>
+                <p text-center>Te enviaremos un SMS con un código de verificación para validar el nuevo número.
+                    <br><br><em style="color:#999">Algunas funcionalidades de la App quedarán deshabilitadas hasta que el número sea validado.</em></p>
+            </ion-card-content>
+        </ion-card>          
+        <div style="margin-left:20px;margin-top:25px;">
+            <p>Nuevo número de móvil<br><small>Ingresa código de área sin el 0 y número sin el 15</small></p>
+        </div>
+        <ion-grid>
+            <ion-row>
+                <ion-col width-25>
+                    <ion-item>
+                        <ion-input #input type="text" [formControl]="phonePrefix" disabled></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col width-75>
+                    <ion-item>
+                        <ion-input #input type="text" [formControl]="phoneMobile"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+    <div class="buttons" padding>
+        <button ion-button color="dark" block margin-bottom margin-top 
+            (click)="submit(editForm.value)" 
+            [disabled]="!editForm.valid">Guardar y verificar</button>
+        <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
+    </div>
+</ion-content>

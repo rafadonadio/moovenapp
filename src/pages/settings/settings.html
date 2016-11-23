@@ -1,0 +1,100 @@
+<ion-header>
+    <ion-navbar color="dark">
+        <ion-title>Ajustes</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="presentPopover($event)">
+                <ion-icon name="more"></ion-icon>
+            </button>
+        </ion-buttons>        
+    </ion-navbar>
+</ion-header>
+<ion-content class="settings">
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>    
+    <div class="profile">
+        <ion-fab top right>
+            <button ion-fab
+                (click)="updatePicture()">
+                <ion-icon name=camera color="dark"></ion-icon></button>
+        </ion-fab>
+        <img [src]="profData?.photoURL || profileBgDefault">
+    </div>
+    <ion-list>
+        <ion-item-divider color="subdark">
+            Datos personales
+        </ion-item-divider>
+        <ion-item>
+            <ion-icon name='person' item-left></ion-icon>
+            <h3>{{ profData?.firstName }} {{ profData?.lastName }}</h3>
+        </ion-item> 
+        <ion-item>
+            <ion-icon name='mail' item-left></ion-icon>
+            <h3>{{ profData?.email }}</h3>
+            <p [hidden]="profVrfs?.email.verified==true">Validar</p>
+            <ion-icon name="alert" item-right color="sublight" [hidden]="profVrfs?.email.verified==true"></ion-icon>
+            <p [hidden]="profVrfs?.email.verified==false">Validado</p>
+            <ion-icon name="checkmark" item-right [hidden]="profVrfs?.email.verified==false"></ion-icon>
+        </ion-item>  
+        <ion-item>
+            <ion-icon name='call' item-left></ion-icon>
+            <h3>{{ profData?.phonePrefix }}{{ profData?.phoneMobile }}</h3>
+            <p [hidden]="profVrfs?.phone.verified==true">Validar</p>
+            <ion-icon name="alert" item-right color="sublight" [hidden]="profVrfs?.phone.verified==true"></ion-icon>
+            <p [hidden]="profVrfs?.phone.verified==false">Validado</p>
+            <ion-icon name="checkmark" item-right [hidden]="profVrfs?.phone.verified==false"></ion-icon>
+        </ion-item>                    
+        <ion-item-divider color="subdark">
+            Perfiles
+        </ion-item-divider>
+        <ion-item>
+            <ion-icon name='contact' item-left></ion-icon>
+            Registro
+            <ion-note item-right [hidden]="accountStatus?.basic==true">Incompleto</ion-note>
+            <ion-icon name='close' item-right [hidden]="accountStatus?.basic==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.basic==false">Completo</ion-note>
+            <ion-icon name='checkmark' item-right [hidden]="accountStatus?.basic==false"></ion-icon>
+        </ion-item>
+        <ion-item>
+            <ion-icon name='send' item-left></ion-icon>
+            Servicio
+            <ion-note item-right [hidden]="accountStatus?.sender==true">Incompleto</ion-note>
+            <ion-icon name='close' item-right [hidden]="accountStatus?.sender==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.sender==false">Completo</ion-note>
+            <ion-icon name='checkmark' item-right [hidden]="accountStatus?.sender==false"></ion-icon>
+        </ion-item>
+        <ion-item>
+            <ion-icon name='cube' item-left></ion-icon>
+            Operador
+            <ion-note item-right [hidden]="accountStatus?.operator==true">Deshabilitado</ion-note>
+            <ion-icon name='remove-circle' item-right [hidden]="accountStatus?.operator==true"></ion-icon>
+            <ion-note item-right [hidden]="accountStatus?.operator==false">Habilitado</ion-note>
+            <ion-icon name='checkmark' item-right [hidden]="accountStatus?.operator==false"></ion-icon>
+        </ion-item>
+    </ion-list>
+    <ion-list>
+        <ion-item-divider color="subdark">
+            Notificaciones
+        </ion-item-divider>
+        <ion-item>
+            <ion-toggle checked="true" color="subdark"></ion-toggle>
+            <ion-label>
+                Push
+            </ion-label>
+            <ion-icon name='notifications' item-left></ion-icon>
+        </ion-item>
+        <ion-item>
+            <ion-toggle checked="true" color="subdark"></ion-toggle>
+            <ion-label>
+                Email
+            </ion-label>
+            <ion-icon name='mail' item-left></ion-icon>
+        </ion-item>
+    </ion-list>
+    <div padding>
+        <button ion-button color="dark" block margin-bottom (click)="signOut()">Salir</button>
+    </div>
+    <div padding>
+        <button ion-button color="sublight" clear block>Cerrar cuenta</button>
+    </div>    
+</ion-content>

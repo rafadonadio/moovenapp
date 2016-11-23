@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar color="primary">
+		<ion-title>{{ modalTitle }}</ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="dismiss()">
+                <ion-icon name="md-close"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-searchbar 
+        [(ngModel)]="autocomplete.query" 
+        [showCancelButton]="true" 
+        (ionInput)="updateSearch()" 
+        (ionCancel)="dismiss()"
+        placeholder="Busca y selecciona ...">
+    </ion-searchbar>  
+    <ion-list>
+        <ion-item *ngFor="let item of autocompleteItems" 
+            (click)="selectItem(item)"
+            ><ion-icon name="pin"></ion-icon> {{ item.description }}
+        </ion-item>
+    </ion-list>      
+</ion-content>
+<ion-footer>
+    <ion-toolbar color="light">
+        <button ion-button color="primary" clear small full
+            (click)="showAlertHelp()">Ayuda</button>
+    </ion-toolbar>
+</ion-footer>

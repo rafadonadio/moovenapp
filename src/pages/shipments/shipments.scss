@@ -1,0 +1,52 @@
+page-shipments {
+
+    /* card list */
+    ion-card ion-item.header ion-label.label-md,
+    ion-card ion-item.header ion-label.label-ios{
+        margin-bottom: 0;
+    }  
+    ion-card ion-item.header.item-md ion-note,
+    ion-card ion-item.header.item-ios ion-note{
+        margin-top: 20px;
+    }    
+    ion-card ion-item ion-label.label-md h2,
+    ion-card ion-item ion-label.label-ios h2{
+        color: color($colors, green);
+        font-size: 2rem;
+        font-weight: 500;
+    }
+    div.item-inner{
+        padding:0px;
+    }
+    ion-card ion-item ion-label.label-md p span,
+    ion-card ion-item ion-label.label-ios p span{
+        display: inline-block;
+        width: 70px;
+        color: #bbb;
+    } 
+    ion-card ion-item ion-label p{
+        padding: 3px 0 3px 0;
+    } 
+    ion-card ion-item.header.item-md ion-icon[item-left],
+    ion-card ion-item.header.item-ios ion-icon[item-left]{
+        font-size:2.9rem; 
+        color: color($colors, green);
+    }
+    ion-card ion-item.content.item-md ion-icon,
+    ion-card ion-item.content.item-ios ion-icon{
+        color: #c5c5c5;
+    }
+    ion-card ion-item.footer{
+        border-top: 1px solid #ededed;
+    }
+    ion-card ion-item.footer ion-icon{
+        color: #ededed;
+        font-size:2.2rem; 
+    }
+    ion-card ion-item.footer ion-icon.active,
+    ion-card ion-item.footer ion-icon[item-right],
+    ion-card ion-item.footer ion-note{
+        color: color($colors, green); 
+    } 
+
+}
