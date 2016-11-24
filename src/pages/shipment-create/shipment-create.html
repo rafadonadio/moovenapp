@@ -5,14 +5,14 @@
                 <ion-icon name="arrow-back"></ion-icon>
             </button>
         </ion-buttons>
-        <ion-title>Tomar Servicio</ion-title>
+        <ion-title>Tomar Servicio</ion-title>        
     </ion-toolbar>
-</ion-header>
-<ion-content class="shipment-create">
     <div class="map-container">
         <div id="maps1"></div>
-    </div>   
-    <ion-list [virtualScroll]="vacants">
+    </div>      
+</ion-header>
+<ion-content class="shipment-create">
+    <ion-list [virtualScroll]="vacants" approxItemHeight="86px">
         <button ion-item *virtualItem="let vacant">
             <ion-icon item-left name="send" *ngIf="vacant.data.objectType=='sobre'"></ion-icon>
             <ion-icon item-left name="cube" *ngIf="vacant.data.objectType=='caja'"></ion-icon>

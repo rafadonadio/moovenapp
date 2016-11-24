@@ -150,45 +150,27 @@ ___
          
 
 
-
-    
-# device debug
-    
-    "Attempt to use a destroyed view: detectChanges"
-    "Error: Attempt to use a destroyed view: detectChanges 
-        at e [as constructor] (file:///android_asset/www/build/main.js:5:13512)
-
-    main.js:6 EXCEPTION: Firebase.update failed: 
-        First argument contains undefined in property 
-            'usersSendings.BEmkzTfvzDNefFWbTDDsJ1qBNUF3.active.-KVN54Ed6CM0TrqKcfVw.pickupAddressCity'
+   
 
 
-> to-do´s
-    - settings  
-        estado perfil para envíos  
-        estado perfil para cargas  
-        conf notificaciones  
-            push  
-            email  
-        cerrar cuenta  
-    - envios  
-        - form nuevo envío  
-        - listado envios  
-    - cargas
-        - listado cargas
-        - form nueva carga
-    - notificaciones
-    - pagos
-    - ayuda
 
-    # meetings
-        - agregar fecha a los envíos
-        -cambiar
-            transport > operador
-            envios > servicios
-        - sidemenu > user name
-            dejar icono mapa
-
-
+Para terminar:
+- ajustes: 
+     - validar número de móvil 
+     - guardar config user
+     - cerrar cuenta
+- servicio: 
+     - agregar fecha al pedido
+     - agregar opción de gestión
+     - en vista item creado, agregar acciones permitidas al user (cancelar)
+     - procesar pago
+- operador: 
+     - en vista tomar servicio, listar vacantes en función de center-map + limite mapa, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.
+     - listar servicios tomados por user
+     - vista item servicio tomado, agregar acciones permitidas al operador (actualizar avance, cancelar)
+     - vista historial y notificaciones
+- pagos
+- push notifications
+- ayuda
 
 

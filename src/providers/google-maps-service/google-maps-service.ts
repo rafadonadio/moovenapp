@@ -20,17 +20,27 @@ export class GoogleMapsService {
     // google.maps.MAP //
     /////////////////////
 
-    initMap(latlng, htmlInputElement, zoom:number = 10) {
+    initMap(latlng, htmlInputElement, options:MapsMapOptions = {}) {
         console.info('gmapService > initMap');
-        return new google.maps.Map(htmlInputElement, {
+        let mapOptions = {
             center: latlng,
-            zoom: zoom,
-            disableDefaultUI: true,
+            zoom: 10,
+            maxZoom: 16,
+            minZoom:11,
             draggable: false,
-            clickableIcons: false,
             zoomControl: true,
-            mapTypeId: google.maps.MapTypeId.ROADMAP            
-        });
+            streetViewControl: false,
+            scrollwheel: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControl: false,
+        };
+        for(let key in mapOptions) {
+            if(key in options) {
+                mapOptions[key] = options[key];
+            }
+        }
+        console.log(mapOptions);
+        return new google.maps.Map(htmlInputElement, mapOptions);
     }
 
     addMapMarker(latlng:any, map:any):any {
@@ -230,3 +240,20 @@ export class GoogleMapsService {
     }    
 
 }    
+
+/**
+ *  CLASSES
+ */
+
+export class MapsMapOptions {
+    zoom?: number;
+    minZoom?: number;
+    maxZoom?: number;
+    draggable?: boolean;
+    clickableIcons?: boolean;
+    zoomControl?: boolean;
+    mapTypeId?: string;
+    mapTypeControl?: boolean;
+    scrollwheel?: boolean;
+    streetViewControl?: boolean;
+}
