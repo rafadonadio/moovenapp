@@ -65,7 +65,9 @@ export const SENDING_CFG = {
                 'dropTimeFrom',
                 'dropTimeTo',
                 'objectType',
-                'price'
+                'objectImageDownloadUrl',
+                'price',
+                'routeDistanceKm'
             ]
         },
         CLOSED: {
@@ -162,6 +164,34 @@ export const SENDING_DB = {
 /**
  *  SENDING MODELS
  */
+
+export class SendingRequestLiveSummary {
+    publicId: string;
+    timestamp: number;
+    price: number;           
+    routeDistanceKm: number;
+    _currentStage?: string;
+    _currentStatus?: string;
+    _currentStage_Status?: string;  
+    objectShortName: string;
+    objectImageDownloadUrl: string;
+    objectType: string;
+    pickupAddressLat: number;
+    pickupAddressLng: number;  
+    pickupAddressStreetShort: string;
+    pickupAddressNumber: string;
+    pickupAddressPostalCode: string;            
+    pickupAddressCityShort: string;
+    pickupTimeFrom: string;
+    pickupTimeTo: string;
+    dropAddressLat: number;
+    dropAddressLng: number;  
+    dropAddressStreetShort: string;
+    dropAddressNumber: string;            
+    dropAddressCityShort: string;
+    dropTimeFrom: string;
+    dropTimeTo: string;          
+}
 
 export class SendingRequest {
     sendingId: string;
