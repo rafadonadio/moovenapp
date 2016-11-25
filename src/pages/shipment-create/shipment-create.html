@@ -14,12 +14,10 @@
 <ion-content class="shipment-create">
     <ion-list [virtualScroll]="vacants" approxItemHeight="123px">
         <ion-item *virtualItem="let vacant" [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
-            <h3><span>Precio</span>${{ vacant.data.price }}</h3>
-            <h3><span>Distancia</span>{{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
+            <h3><span>Precio</span><b>${{ vacant.data.price }}</b> | {{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
             <h3><span>Retirar</span>{{ vacant.data.pickupTimeFrom }} a {{ vacant.data.pickupTimeTo }}</h3>
             <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom }} a {{ vacant.data.dropTimeTo }}</h3>
-            <h3><span>Objeto</span>{{ vacant.data.objectType }}</h3>
-            <button *ngIf="mapMarkers.selected!==vacant.key" ion-button item-right outline color="green" (click)="selectedToggle(vacant)">Ver</button>
+            <button *ngIf="mapMarkers.selected!==vacant.key" ion-button item-right outline color="green" (click)="selectedToggle(vacant)"><ion-icon name="pin"></ion-icon></button>
             <button *ngIf="mapMarkers.selected===vacant.key" ion-button item-right clear color="light" (click)="selectedToggle(vacant)"><ion-icon name="close"></ion-icon></button>
             <button *ngIf="mapMarkers.selected===vacant.key" ion-button item-right color="light">Tomar</button>
         </ion-item>
