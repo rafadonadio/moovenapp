@@ -11,6 +11,10 @@ page-shipment-create {
     ion-list .item ion-icon {
         color: color($colors, green);
     }
+    .item-md .item-button,
+    .item-ios .item-button {
+        padding: 1.3em;
+    }
     // item selected
     .item.selected {
         background: color($colors, green);
