@@ -1,11 +1,8 @@
-import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Component, OnInit } from '@angular/core';
-import { Alert, NavController } from 'ionic-angular';
-import { AlertController } from 'ionic-angular';
-import { ToastController } from 'ionic-angular';
+import { Alert, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
+import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 
 const TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT;
 
@@ -15,28 +12,26 @@ const TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT;
 })
 export class ShipmentCreate2Page implements OnInit {
 
-    timerSubscription:any;
+    timer:any;
     timeout:number;
     timesup:boolean;
     confirmAlert:Alert;
     confirmAlertOpen: boolean;
+    confirmInProcess: boolean;
+    confirmCanceled: boolean;
 
     constructor(public navCtrl: NavController,
         public alertCtrl: AlertController,
-        public toastCtrl: ToastController) {
-
+        public toastCtrl: ToastController,
+        public loadingCtrl: LoadingController) {
     }
 
     ngOnInit() {
-        this.timer();
+        this.initTimer();
         this.initConfirmAlert();
     }
 
-    createShipment() {
-        this.showConfirm();
-    }
-
-    showConfirm() {
+    showConfirmAlert() {
         this.confirmAlert.present();
         this.confirmAlertOpen = true;
     }
@@ -46,18 +41,21 @@ export class ShipmentCreate2Page implements OnInit {
     }
 
     cancel() {
+        this.stopTimer();
+        this.confirmCanceled = true;
         this.navCtrl.setRoot(ShipmentCreatePage);
     }
 
-    private timer() {
+    private initTimer() {
         // init 
         this.timesup = false;
-        let timer = TimerObservable.create(0, 1000);
-        this.timerSubscription = timer.subscribe((t) => {
-            console.log(t);
-            this.timeout = TIMEOUT - t;
-            if(t>=TIMEOUT) {
-                this.timerSubscription.unsubscribe();
+        let counter = 0;
+        this.timer = setInterval(() => {
+            counter++;
+            console.log(counter);
+            this.timeout = TIMEOUT - counter;
+            if(this.timeout<=0) {
+                this.stopTimer();
                 this.timesup = true;
                 if(this.confirmAlertOpen) {
                     this.confirmAlert.dismiss()
@@ -68,8 +66,15 @@ export class ShipmentCreate2Page implements OnInit {
                     this.showTimesupAlert();
                 }
             } 
-        });
+        }, 1000)
+
         this.showTimerToast();
+    }
+
+    private stopTimer() {
+        console.info('timer stopped');
+        clearInterval(this.timer);
+        
     }
 
     private presentTimerToast() {
@@ -105,6 +110,8 @@ export class ShipmentCreate2Page implements OnInit {
     }
 
     private initConfirmAlert():void {
+        this.confirmCanceled = false;
+        this.confirmInProcess = false;
         this.confirmAlertOpen = false;
         this.confirmAlert = this.alertCtrl.create({
             title: 'Confirmar',
@@ -115,14 +122,15 @@ export class ShipmentCreate2Page implements OnInit {
                     role: 'cancel',
                     handler: () => {
                         console.log('Cancel clicked');
+                        this.confirmInProcess = false;
                     }
                 },
                 {
                     text: 'Si, Acepto y Confirmo la toma del servicio',
                     handler: () => {
                         console.log('Confirm clicked');
-                        this.navCtrl.setRoot(ShipmentsPage);
-                        this.presentSuccessToast();
+                        this.confirmAlertOpen = true;
+                        this.confirm();
                     }
                 }
             ]
@@ -142,13 +150,32 @@ export class ShipmentCreate2Page implements OnInit {
                 {
                     text: 'Volver',
                     handler: () => {
-                        this.navCtrl.setRoot(ShipmentsPage);
+                        this.navCtrl.setRoot(ShipmentCreatePage);
                     }
                 }
             ]
         });
-        alert.present();
+        if(this.confirmInProcess==false) {
+            alert.present();
+        }    
     }
 
+    private confirm() {
+        this.stopTimer();
+        this.confirmInProcess = true;
+        let loading = this.loadingCtrl.create({
+            content: 'Confirmando servicio ...'
+        });
+        loading.present();
+        setTimeout(() => {
+            loading.dismiss();
+        }, 3000);
+        // process
+        loading.onDidDismiss(() => {
+            console.log('Dismissed loading');
+            this.navCtrl.setRoot(ShipmentsPage);
+            this.presentSuccessToast();
+        });
+    }
 
 }
