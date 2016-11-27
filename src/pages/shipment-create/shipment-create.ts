@@ -46,7 +46,7 @@ export class ShipmentCreatePage implements OnInit {
         this.getVacants();
     }
 
-    goToCreate2() {
+    goToCreate2(sendingVacantId:string) {
         this.navCtrl.setRoot(ShipmentCreate2Page);
     }
 

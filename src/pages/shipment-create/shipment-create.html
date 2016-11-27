@@ -1,8 +1,8 @@
 <ion-header>
     <ion-toolbar color="green">
-        <ion-buttons start>
+        <ion-buttons end>
             <button ion-button (click)="goBack()">
-                <ion-icon name="arrow-back"></ion-icon>
+                <ion-icon name="close"></ion-icon>
             </button>
         </ion-buttons>
         <ion-title>Servicios disponibles</ion-title>
@@ -19,7 +19,7 @@
             <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom }} a {{ vacant.data.dropTimeTo }}</h3>
             <button *ngIf="mapMarkers.selected!==vacant.key" ion-button item-right outline color="green" (click)="selectedToggle(vacant)"><ion-icon name="pin"></ion-icon></button>
             <button *ngIf="mapMarkers.selected===vacant.key" ion-button item-right clear color="light" (click)="selectedToggle(vacant)"><ion-icon name="close"></ion-icon></button>
-            <button *ngIf="mapMarkers.selected===vacant.key" ion-button item-right color="light">Tomar</button>
+            <button *ngIf="mapMarkers.selected===vacant.key" ion-button item-right color="light" (click)="goToCreate2(vacant.key)">Tomar</button>
         </ion-item>
     </ion-list>
 </ion-content>
