@@ -1,7 +1,8 @@
+import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { Component, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Alert, NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
@@ -14,10 +15,11 @@ const TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT;
 })
 export class ShipmentCreate2Page implements OnInit {
 
-    timeout: number;
-    timesup:boolean;
     timerSubscription:any;
-    confirmAlert:any;
+    timeout:number;
+    timesup:boolean;
+    confirmAlert:Alert;
+    confirmAlertOpen: boolean;
 
     constructor(public navCtrl: NavController,
         public alertCtrl: AlertController,
@@ -26,7 +28,8 @@ export class ShipmentCreate2Page implements OnInit {
     }
 
     ngOnInit() {
-        this.startTimer();
+        this.timer();
+        this.initConfirmAlert();
     }
 
     createShipment() {
@@ -34,40 +37,19 @@ export class ShipmentCreate2Page implements OnInit {
     }
 
     showConfirm() {
-        this.confirmAlert = this.alertCtrl.create({
-            title: 'Confirmar',
-            message: 'El "Aceptar y Confirmar" es un compromiso de realizar el servicio en los tiempos y condiciones detalladas.',
-            buttons: [
-                {
-                    text: 'Cancelar',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('Cancel clicked');
-                    }
-                },
-                {
-                    text: 'Si, Acepto y Confirmo la toma del servicio',
-                    handler: () => {
-                        console.log('Confirm clicked');
-                        this.navCtrl.setRoot(ShipmentsPage);
-                        this.presentToast();
-                    }
-                }
-            ]
-        });
         this.confirmAlert.present();
+        this.confirmAlertOpen = true;
     }
 
-    presentToast() {
-        let toast = this.toastCtrl.create({
-            message: 'Tienes una nueva carga!',
-            duration: 2000,
-            position: 'bottom'
-        });
-        toast.present();
+    showTimerToast() {
+        this.presentTimerToast();
     }
 
-    private startTimer() {
+    cancel() {
+        this.navCtrl.setRoot(ShipmentCreatePage);
+    }
+
+    private timer() {
         // init 
         this.timesup = false;
         let timer = TimerObservable.create(0, 1000);
@@ -77,12 +59,20 @@ export class ShipmentCreate2Page implements OnInit {
             if(t>=TIMEOUT) {
                 this.timerSubscription.unsubscribe();
                 this.timesup = true;
+                if(this.confirmAlertOpen) {
+                    this.confirmAlert.dismiss()
+                        .then(() => {
+                            this.showTimesupAlert();
+                        })
+                }else{
+                    this.showTimesupAlert();
+                }
             } 
         });
-        this.presentTimerToast();
+        this.showTimerToast();
     }
 
-    presentTimerToast() {
+    private presentTimerToast() {
         let secs = this.timeout ? this.timeout : TIMEOUT;
         let message;
         if(secs > 0 && this.timesup==false) {
@@ -104,5 +94,61 @@ export class ShipmentCreate2Page implements OnInit {
 
         toast.present();
     }    
+
+    private presentSuccessToast() {
+        let toast = this.toastCtrl.create({
+            message: 'Tienes una nueva carga!',
+            duration: 2000,
+            position: 'bottom'
+        });
+        toast.present();
+    }
+
+    private initConfirmAlert():void {
+        this.confirmAlertOpen = false;
+        this.confirmAlert = this.alertCtrl.create({
+            title: 'Confirmar',
+            message: 'El "Aceptar y Confirmar" es un compromiso de realizar el servicio en los tiempos y condiciones detalladas.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: 'Si, Acepto y Confirmo la toma del servicio',
+                    handler: () => {
+                        console.log('Confirm clicked');
+                        this.navCtrl.setRoot(ShipmentsPage);
+                        this.presentSuccessToast();
+                    }
+                }
+            ]
+        });
+        let self = this;
+        this.confirmAlert.onDidDismiss(function() {
+            console.log('confirmAlert Dismissed');
+            self.confirmAlertOpen = false;
+        })
+    }
+
+    private showTimesupAlert():void {
+        let alert = this.alertCtrl.create({
+            title: 'Tiempo concluido',
+            message: 'El tiempo disponible para confirmar ha concluido, puedes volver al listado de servicios disponibles y volver a seleccionar',
+            buttons: [
+                {
+                    text: 'Volver',
+                    handler: () => {
+                        this.navCtrl.setRoot(ShipmentsPage);
+                    }
+                }
+            ]
+        });
+        alert.present();
+    }
+
 
 }

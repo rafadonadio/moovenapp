@@ -1,11 +1,11 @@
 <ion-header>
     <ion-navbar color="green">
         <ion-buttons left>
-            <button ion-button><ion-icon name="close"></ion-icon></button>
+            <button ion-button (click)="cancel()"><ion-icon name="close"></ion-icon></button>
         </ion-buttons>
         <ion-title>Confirmar</ion-title>
         <ion-buttons end>
-            <button ion-button icon-right outline (click)="presentTimerToast()">
+            <button ion-button icon-right outline (click)="showTimerToast()">
                 {{ timeout }} <ion-icon name="timer"></ion-icon>
             </button>
         </ion-buttons>
@@ -62,6 +62,6 @@
     </ion-list>
     <div margin>
         <button ion-button block color="green" (click)="createShipment()">Tomar Servicio</button>
-        <button ion-button outline color="dark" margin-top block>Cancelar</button>
+        <button ion-button outline color="dark" margin-top block (click)="cancel()">Cancelar</button>
     </div>
 </ion-content>
