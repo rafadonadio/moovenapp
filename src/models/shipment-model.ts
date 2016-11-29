@@ -4,5 +4,5 @@
  */
 
 export const SHIPMENT_CFG = {
-    CONFIRM_TIMEOUT: 10
+    CONFIRM_TIMEOUT: 20
 }

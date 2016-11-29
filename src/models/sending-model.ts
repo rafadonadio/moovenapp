@@ -154,6 +154,11 @@ export const SENDING_DB = {
     STAGE_LIVE: {
         REF: '_sendingsLive/',
         _NODE: 'sendingsLive',
+        _LOCK: {
+                REF: '/_locked/',   
+                TIMESTAMP: 'timestamp',
+                BY_USERID: 'userid'
+        }
     },    
     STAGE_CLOSED: {
         REF: 'sendingsClosed/',

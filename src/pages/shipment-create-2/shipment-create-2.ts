@@ -1,6 +1,7 @@
+import { SendingService } from '../../providers/sending-service/sending-service';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
-import { Alert, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import { Alert, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 
@@ -12,18 +13,26 @@ const TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT;
 })
 export class ShipmentCreate2Page implements OnInit {
 
+    // sending data
+    sendingId:string = '';
+    sendingVacant:any;
+    // aux
     timer:any;
     timeout:number;
     timesup:boolean;
     confirmAlert:Alert;
     confirmAlertOpen: boolean;
-    confirmInProcess: boolean;
     confirmCanceled: boolean;
 
     constructor(public navCtrl: NavController,
+        public navParams: NavParams,
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
-        public loadingCtrl: LoadingController) {
+        public loadingCtrl: LoadingController,
+        public sendingSrv: SendingService) {
+            this.sendingId = navParams.get('sendingId');
+            this.sendingVacant = navParams.get('sending');
+            console.log('sendingId > ', this.sendingId, this.sendingVacant);
     }
 
     ngOnInit() {
@@ -43,10 +52,103 @@ export class ShipmentCreate2Page implements OnInit {
     cancel() {
         this.stopTimer();
         this.confirmCanceled = true;
-        this.navCtrl.setRoot(ShipmentCreatePage);
+        let loading = this.loadingCtrl.create({
+            content: 'cancelando ...'
+        });
+        loading.present();
+        // just unlock, if it fails we'll try again in other place
+        this.unlockSending();
+        setTimeout(() => {
+            loading.dismiss()
+                .then(() => {
+                    this.navCtrl.setRoot(ShipmentCreatePage);
+                })
+        },3000);
     }
 
+    private presentSuccessToast() {
+        let toast = this.toastCtrl.create({
+            message: 'Tienes una nueva carga!',
+            duration: 2000,
+            position: 'bottom'
+        });
+        toast.present();
+    }
+
+    private initConfirmAlert():void {
+        this.confirmCanceled = false;
+        this.confirmAlertOpen = false;
+        this.confirmAlert = this.alertCtrl.create({
+            title: 'Confirmar',
+            message: 'El "Aceptar y Confirmar" es un compromiso de realizar el servicio en los tiempos y condiciones detalladas.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: 'Si, Acepto y Confirmo la toma del servicio',
+                    handler: () => {
+                        console.log('Confirm clicked');
+                        this.confirmAlertOpen = true;
+                        this.confirm();
+                    }
+                }
+            ]
+        });
+        let self = this;
+        this.confirmAlert.onDidDismiss(function() {
+            console.log('confirmAlert Dismissed');
+            self.confirmAlertOpen = false;
+        })
+    }
+
+    private showAlertAndDie(title:string, message:string):void {
+        let alert = this.alertCtrl.create({
+            title: title,
+            message: message,
+            buttons: [
+                {
+                    text: 'Volver',
+                    handler: () => {
+                        this.navCtrl.setRoot(ShipmentCreatePage);
+                    }
+                }
+            ]
+        });
+        alert.present();
+    }    
+
+    private confirm() {
+        this.stopTimer();
+        let loading = this.loadingCtrl.create({
+            content: 'Confirmando servicio ...'
+        });
+        loading.present();
+        setTimeout(() => {
+            loading.dismiss();
+        }, 3000);
+        // process
+        loading.onDidDismiss(() => {
+            console.log('Dismissed loading');
+            this.navCtrl.setRoot(ShipmentsPage);
+            this.presentSuccessToast();
+        });
+    }
+
+    private unlockSending():firebase.Promise<any> {
+        return this.sendingSrv.unlockVacant(this.sendingId);
+    }
+
+    /**
+     *  TIMER
+     */
+
     private initTimer() {
+        console.info('initTimer');
         // init 
         this.timesup = false;
         let counter = 0;
@@ -66,8 +168,7 @@ export class ShipmentCreate2Page implements OnInit {
                     this.showTimesupAlert();
                 }
             } 
-        }, 1000)
-
+        }, 1000);
         this.showTimerToast();
     }
 
@@ -98,84 +199,12 @@ export class ShipmentCreate2Page implements OnInit {
         });
 
         toast.present();
-    }    
-
-    private presentSuccessToast() {
-        let toast = this.toastCtrl.create({
-            message: 'Tienes una nueva carga!',
-            duration: 2000,
-            position: 'bottom'
-        });
-        toast.present();
-    }
-
-    private initConfirmAlert():void {
-        this.confirmCanceled = false;
-        this.confirmInProcess = false;
-        this.confirmAlertOpen = false;
-        this.confirmAlert = this.alertCtrl.create({
-            title: 'Confirmar',
-            message: 'El "Aceptar y Confirmar" es un compromiso de realizar el servicio en los tiempos y condiciones detalladas.',
-            buttons: [
-                {
-                    text: 'Cancelar',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('Cancel clicked');
-                        this.confirmInProcess = false;
-                    }
-                },
-                {
-                    text: 'Si, Acepto y Confirmo la toma del servicio',
-                    handler: () => {
-                        console.log('Confirm clicked');
-                        this.confirmAlertOpen = true;
-                        this.confirm();
-                    }
-                }
-            ]
-        });
-        let self = this;
-        this.confirmAlert.onDidDismiss(function() {
-            console.log('confirmAlert Dismissed');
-            self.confirmAlertOpen = false;
-        })
-    }
+    }  
 
     private showTimesupAlert():void {
-        let alert = this.alertCtrl.create({
-            title: 'Tiempo concluido',
-            message: 'El tiempo disponible para confirmar ha concluido, puedes volver al listado de servicios disponibles y volver a seleccionar',
-            buttons: [
-                {
-                    text: 'Volver',
-                    handler: () => {
-                        this.navCtrl.setRoot(ShipmentCreatePage);
-                    }
-                }
-            ]
-        });
-        if(this.confirmInProcess==false) {
-            alert.present();
-        }    
+        this.unlockSending();
+        let title = 'Tiempo concluido';
+        let message = 'El tiempo disponible para confirmar ha concluido, puedes volver al listado de servicios disponibles y volver a seleccionar'; 
+        this.showAlertAndDie(title, message);
     }
-
-    private confirm() {
-        this.stopTimer();
-        this.confirmInProcess = true;
-        let loading = this.loadingCtrl.create({
-            content: 'Confirmando servicio ...'
-        });
-        loading.present();
-        setTimeout(() => {
-            loading.dismiss();
-        }, 3000);
-        // process
-        loading.onDidDismiss(() => {
-            console.log('Dismissed loading');
-            this.navCtrl.setRoot(ShipmentsPage);
-            this.presentSuccessToast();
-        });
-    }
-
 }

@@ -1,6 +1,6 @@
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
 import { ShipmentCreate2Page } from '../shipment-create-2/shipment-create-2';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
@@ -35,7 +35,9 @@ export class ShipmentCreatePage implements OnInit {
         public dateSrv: DateService,
         public users: UsersService,
         public shipSrv:ShipmentsService,
-        public sendingSrv:SendingService) {
+        public sendingSrv:SendingService,
+        public alertCtrl: AlertController,
+        public loaderCtrl: LoadingController) {
 
     }
 
@@ -46,8 +48,42 @@ export class ShipmentCreatePage implements OnInit {
         this.getVacants();
     }
 
-    goToCreate2(sendingVacantId:string) {
-        this.navCtrl.setRoot(ShipmentCreate2Page);
+    select(sendingVacantId:string, sendingVacantData:any) {
+        // init loader
+        let loader = this.loaderCtrl.create({
+            content: 'verificando disponibilidad ...'
+        });
+        loader.present();
+        // process attempt
+        this.sendingSrv.attemptToLockVacant(sendingVacantId)
+            .then((result) => {
+                console.log('attempt result > ', result);
+                if(result.didLock===true) {
+                    loader.dismiss()
+                        .then(() => {
+                            this.goToConfirm(sendingVacantId, sendingVacantData);
+                        });
+                }else if(result.didLock===false) {
+                    let timeLeft = Math.round(result.lockTimeLeft);
+                    let title = 'No disponible';
+                    let message = `El servicio esta siendo visualizado por otro operador en este preciso momento. 
+                                    Si el otro operador no lo confirma podras volver a intentarlo en ${timeLeft} segundos`;
+                    loader.dismiss()
+                        .then(() => {
+                            this.showAlertAndCancel(title, message);
+                        });                    
+                }
+            })
+            .catch((result)=> {
+                console.log('attempt error > ', result);
+                let title = 'Error';
+                let message = 'Ocurrió un error al intentar seleccionar el servicio, por favor vuelve a intentarlo';
+                loader.dismiss()
+                    .then(() => {
+                        this.showAlertAndCancel(title, message);
+                    });
+            });      
+
     }
 
     goBack() {
@@ -108,6 +144,13 @@ export class ShipmentCreatePage implements OnInit {
             }
             this.addMapMarker(latlng, data.key);
         })
+    }
+
+    private goToConfirm(sendingId:string, sendingData:any) {
+        this.navCtrl.setRoot(ShipmentCreate2Page, {
+            sendingId: sendingId,
+            sending: sendingData
+        });        
     }
 
     /**
@@ -171,6 +214,19 @@ export class ShipmentCreatePage implements OnInit {
         // init map
         this.map = this.gmapsService.initMap(latlng, divMap, options);
     }
+
+    /**
+     *  HELPERS
+     */
+
+    private showAlertAndCancel(title:string, message:string):void {
+        let alert = this.alertCtrl.create({
+            title: title,
+            message: message,
+            buttons: ['Cerrar']
+        });
+        alert.present();
+    }  
 
 }
 

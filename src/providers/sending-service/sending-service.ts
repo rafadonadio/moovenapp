@@ -171,6 +171,13 @@ export class SendingService {
         return this.getAllLiveVacantRef();
     }
 
+    attemptToLockVacant(sendingId:string):Promise<any> {
+        return this.attemptToLockLiveVacantSending(sendingId);
+    }
+
+    unlockVacant(sendingId:string): firebase.Promise<any> {
+        return this.dbSrv.unlockSendingLiveVacant(sendingId);
+    }
 
     /**
      *  DATABASE WRITE
@@ -243,6 +250,12 @@ export class SendingService {
 
                 });
         });
+    }
+
+    // attempt to lock sending before confirm sending to shipper
+    private attemptToLockLiveVacantSending(sendingId:string):Promise<any> {
+        let userId = this.user.uid;
+        return this.dbSrv.attemptToLockSendingLiveVacant(sendingId, userId);
     }
 
     /**

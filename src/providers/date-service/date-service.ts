@@ -41,4 +41,8 @@ export class DateService {
         return moment();
     }
 
+    getUnixTimestamp():any {
+        return moment().valueOf();
+    }    
+
 }

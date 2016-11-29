@@ -1,3 +1,5 @@
+import { SHIPMENT_CFG } from '../../models/shipment-model';
+import { DateService } from '../date-service/date-service';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 
@@ -12,7 +14,8 @@ export class SendingDbService {
     db: any = firebase.database();
     dbRef: firebase.database.Reference = firebase.database().ref();
 
-    constructor(public af:AngularFire) {
+    constructor(public af:AngularFire,
+        public dateSrv:DateService) {
     }
 
     /**
@@ -107,6 +110,65 @@ export class SendingDbService {
         return this.dbRef.update(updates);               
     }
 
+    attemptToLockSendingLiveVacant(sendingId:string, userId:string):Promise<any> {
+        console.info('attemptToLockSendingLiveVacant > init');
+        let result = {
+            didLock: false,
+            hadError: false,
+            lockTimeLeft: 0,
+            snapshot: {},
+            error: {}            
+        };
+        let lockNode = {
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            userId: userId
+        };
+        let ref = this.dbRef.child(DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._LOCK.REF);
+        let self = this;
+        return new Promise((resolve, reject)=> {
+            ref.transaction(function(currentData:any) {
+                console.log('currentData', currentData);
+                if(currentData === null) {
+                    return lockNode;
+                }else{
+                    console.log('lockNode already exists, has expired?');                    
+                    let lockTimestamp = currentData.timestamp;
+                    let nowTimestamp = self.dateSrv.getUnixTimestamp();
+                    let diff = (nowTimestamp - lockTimestamp) / 1000;
+                    if(diff > SHIPMENT_CFG.CONFIRM_TIMEOUT) {
+                        console.log('it has expired, update');
+                        return lockNode;
+                    }else{
+                        console.log('did not expired, diff ', diff);
+                        result.lockTimeLeft = SHIPMENT_CFG.CONFIRM_TIMEOUT - diff;
+                        return;
+                    }
+                }
+            }, function(error, committed, snapshot) {
+                result.snapshot = snapshot.val();                
+                if(error) {
+                    console.error('transaction failed > ', error);
+                    result.hadError = true;
+                    result.error = error;
+                    reject(result);
+                } else if (!committed) {
+                    console.log('transaction aborted, lockNode exists');
+                    result.didLock = false;
+                } else {
+                    console.log('transaction success');
+                    result.didLock = true;
+                }
+                console.log('lockNode data > ', snapshot.val());
+                resolve(result);                
+            });
+        });
+    }
+
+    unlockSendingLiveVacant(sendingId:string):firebase.Promise<any> {
+        let updates = {};
+        updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._LOCK.REF] = null;
+        return this.dbRef.update(updates); 
+    }
 
     /**
      *  READ
@@ -128,9 +190,14 @@ export class SendingDbService {
                 .object(DB.ALL.REF + sendingId, {
                     preserveSnapshot: getSnapshot,
                 });       
-    }    
+    }
+
     getSendingbyIdOnce(sendingId:string) {
         return this.dbRef.child(DB.ALL.REF + sendingId).once('value');
+    }
+
+    getSendingLiveVacantByIdOnce(sendingId:string) {
+        return this.dbRef.child(DB.STAGE_LIVE + sendingId).once('value');
     }
 
 }
