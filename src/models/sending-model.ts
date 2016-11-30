@@ -100,7 +100,8 @@ export const SENDING_DB = {
             STAGES: '/_stages/',
             CURRENT_STAGE: '/_currentStage/',
             CURRENT_STATUS: '/_currentStatus/',
-            CURRENT_STAGE_STATUS: '/_currentStage_Status/'
+            CURRENT_STAGE_STATUS: '/_currentStage_Status/',
+            OPERATOR: '/_operator/'
         }
     },
     HASHID: {
@@ -130,7 +131,11 @@ export const SENDING_DB = {
             CURRENT_STAGE_STATUS: {
                 REF: '/_currentStage_Status/',
                 _NODE: '_currentStage_Status'
-            }              
+            },
+            OPERATOR: {
+                REF: '/_operator/',
+                _NODE: '_operator'
+            },             
         }
     },    
     STAGE_CREATED: {
@@ -158,7 +163,25 @@ export const SENDING_DB = {
                 REF: '/_locked/',   
                 TIMESTAMP: 'timestamp',
                 BY_USERID: 'userid'
-        }
+        },
+        _CHILD: {
+            CURRENT_STAGE: {
+                REF: '/_currentStage/',
+                _NODE: '_currentStage'
+            },
+            CURRENT_STATUS: {
+                REF: '/_currentStatus/',
+                _NODE: '_currentStatus'
+            },
+            CURRENT_STAGE_STATUS: {
+                REF: '/_currentStage_Status/',
+                _NODE: '_currentStage_Status'
+            },
+            OPERATOR: {
+                REF: '/_operator/',
+                _NODE: '_operator'
+            },
+        }         
     },    
     STAGE_CLOSED: {
         REF: 'sendingsClosed/',
@@ -214,6 +237,7 @@ export class SendingRequest {
     _currentStage?: string;
     _currentStatus?: string;
     _currentStage_Status?: string;  
+    _operator?: SendingOperator;
     objectShortName: string;
     objectImageSet: boolean;
     objectImageUrlTemp: string;  // deleted once uploaded
@@ -359,4 +383,11 @@ export class StageClosedNode {
     } 
 }
 
+export class SendingOperator {
+    userId:string;
+    displayName:string;
+    photoURL:string;
+    phone:string;
+    email:string;
+}
 

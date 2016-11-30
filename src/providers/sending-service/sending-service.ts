@@ -1,3 +1,5 @@
+import { UserProfileData } from '../../models/user-model';
+import { ShipmentsService } from '../shipments-service/shipments-service';
 import { Injectable } from '@angular/core';
 
 import { UsersService } from '../users-service/users-service';
@@ -6,7 +8,7 @@ import { SendingRequestService } from '../sending-service/sending-request-servic
 import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SENDING_CFG, SendingRequest } from '../../models/sending-model';
+import { SENDING_CFG, SendingOperator, SendingRequest } from '../../models/sending-model';
 
 const CFG = SENDING_CFG;
 
@@ -22,7 +24,8 @@ export class SendingService {
         public hashSrv: HashService,
         public reqSrv: SendingRequestService,
         public dbSrv: SendingDbService,
-        public stagesSrv: SendingStagesService) {
+        public stagesSrv: SendingStagesService,
+        public shipmentSrv:ShipmentsService) {
         this.setUser();
     }
 
@@ -99,7 +102,7 @@ export class SendingService {
             update2: false,
             updateDb: false,
             move: false
-        }
+        };
         let sending:SendingRequest;
         let currentStage:string;
         let currentStatus:string;
@@ -107,6 +110,7 @@ export class SendingService {
         
         // -------------
         // run payment
+        // ????
         // -------------
 
         return new Promise((resolve, reject) => {
@@ -167,6 +171,10 @@ export class SendingService {
         return this.getSendingById(id);
     }
 
+    /**
+     *  SendingLiveVacants
+     */
+
     getLiveVacantRef():firebase.database.Query {
         return this.getAllLiveVacantRef();
     }
@@ -178,6 +186,88 @@ export class SendingService {
     unlockVacant(sendingId:string): firebase.Promise<any> {
         return this.dbSrv.unlockSendingLiveVacant(sendingId);
     }
+
+    // sending is locked, and is within timeframe available to confirm
+    // this is not being checked again
+    confirmVacant(sendingId:string):Promise<any> {
+        console.info('confirmVacant > start');
+        let steps = {
+            get: false,
+            getOperator: false,
+            updateStage1: false,
+            updateStage2: false,
+            updateDb: false,
+            createShipment: false
+        };
+        let sending:SendingRequest;
+        let currentStage:string;
+        let currentStatus:string;
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let sendingOperator: SendingOperator;        
+        return new Promise((resolve, reject) => {
+            this.dbSrv.getSendingbyIdOnce(sendingId)
+                .then((snapshot) => {
+                    console.log('getSendingbyIdOnce > success ', sendingId);
+                    steps.get = true;
+                    sending = snapshot.val();
+                    return this.getUserDataAsOperator();
+                })
+                .then((operator) => {
+                    console.log('get operator data > success', operator);
+                    steps.getOperator = true;
+                    sendingOperator = operator;
+                    //update LIVE to GOTOPERATOR
+                    currentStage = CFG.STAGE.LIVE.ID;
+                    currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR; // Got Operator
+                    // update stage values
+                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
+                })
+                .then((stages1) => {      
+                    console.log('updateStageTo 1 > success');
+                    steps.updateStage1 = true;
+                    //update LIVE to WAITPICKUP
+                    currentStage = CFG.STAGE.LIVE.ID;
+                    currentStatus = CFG.STAGE.LIVE.STATUS.WAITPICKUP;
+                    return this.stagesSrv.updateStageTo(stages1, currentStage, currentStatus, timestamp);  
+                })              
+                .then((stages2) => {    
+                    console.log('updateStageTo 2 > success');
+                    steps.updateStage2 = true;     
+                    // update stages in sending param
+                    sending._stages = stages2;    
+                    sending._currentStage = stages2._current;
+                    sending._currentStatus = stages2.created._current;
+                    sending._currentStage_Status = currentStage + '_' + currentStatus;                                
+                    // update SendingLive Stage and set Operator
+                    return this.dbSrv.updateSendingLiveStage(this.user.uid, sendingId, stages2, sendingOperator);
+                })
+                .then(() => {
+                    console.log('updateSendingLiveStage > success');
+                    steps.updateDb = true;
+                    // create the shipment for reference
+                    return this.shipmentSrv.create(sending);
+                })                
+                .then(() => {
+                    console.log('shipment create > success');
+                    steps.createShipment = true;
+                    // all good
+                    resolve(steps);
+                }) 
+                .catch((error) => {
+                    console.log('getSendingbyIdOnce OR updateSendingLiveStage > error', error);
+                    if(steps.createShipment == true) {
+                        resolve(steps);
+                    }else{
+                        reject(steps);
+                    }
+                });                               
+        });
+
+
+
+    }
+
+
 
     /**
      *  DATABASE WRITE
@@ -311,6 +401,27 @@ export class SendingService {
 
     private setUser(){
         this.user = this.users.getUser();
+    }
+
+    private getUserDataAsOperator():Promise<any> {
+        let operator:any = {};
+        let profileData:UserProfileData;
+        return new Promise((resolve, reject) => {
+            this.users.getAccountProfileData()
+                .then((snapshot) => {
+                    profileData = snapshot.val();
+                    // populate
+                    operator.userId = this.user.uid;
+                    operator.displayName = this.user.displayName;
+                    operator.email = profileData.email;
+                    operator.phone = profileData.phonePrefix+profileData.phoneMobile;
+                    operator.photoURL = profileData.photoURL;
+                    resolve(operator);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
     }
 
 }

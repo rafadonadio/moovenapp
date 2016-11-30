@@ -56,7 +56,7 @@ export class ShipmentCreate2Page implements OnInit {
             content: 'cancelando ...'
         });
         loading.present();
-        // just unlock, if it fails we'll try again in other place
+        // just try to unlock, if it fails we'll try again in other place
         this.unlockSending();
         setTimeout(() => {
             loading.dismiss()
@@ -129,14 +129,27 @@ export class ShipmentCreate2Page implements OnInit {
         });
         loading.present();
         setTimeout(() => {
-            loading.dismiss();
+            
         }, 3000);
         // process
-        loading.onDidDismiss(() => {
-            console.log('Dismissed loading');
-            this.navCtrl.setRoot(ShipmentsPage);
-            this.presentSuccessToast();
-        });
+        this.sendingSrv.confirmVacant(this.sendingId)
+            .then((steps) => {
+                console.log('confirm() success > ', steps);
+                // done
+                loading.dismiss()
+                    .then(() => {
+                        this.navCtrl.setRoot(ShipmentsPage);
+                        this.presentSuccessToast();                        
+                    });
+            })
+            .catch((steps) => {
+                loading.dismiss()
+                    .then(() => {
+                        let title = 'Error';
+                        let message = 'Ocurrió un error, por favor vuelve a intentarlo';                         
+                        this.showAlertAndDie(title, message);
+                    });
+            });
     }
 
     private unlockSending():firebase.Promise<any> {
@@ -159,13 +172,14 @@ export class ShipmentCreate2Page implements OnInit {
             if(this.timeout<=0) {
                 this.stopTimer();
                 this.timesup = true;
+                // Is Confirm Alert Open ?? close it first
                 if(this.confirmAlertOpen) {
                     this.confirmAlert.dismiss()
                         .then(() => {
-                            this.showTimesupAlert();
+                            this.unlockAndShowTimesupAlert();
                         })
                 }else{
-                    this.showTimesupAlert();
+                    this.unlockAndShowTimesupAlert();
                 }
             } 
         }, 1000);
@@ -201,7 +215,7 @@ export class ShipmentCreate2Page implements OnInit {
         toast.present();
     }  
 
-    private showTimesupAlert():void {
+    private unlockAndShowTimesupAlert():void {
         this.unlockSending();
         let title = 'Tiempo concluido';
         let message = 'El tiempo disponible para confirmar ha concluido, puedes volver al listado de servicios disponibles y volver a seleccionar'; 

@@ -11,31 +11,31 @@
 <ion-content>
     <ion-refresher (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>    
+    </ion-refresher>
     <!-- floating bottom right button -->
     <ion-fab bottom right>
         <button ion-fab color="green" (click)="goToCreate()">
             <ion-icon name="add"></ion-icon>
         </button>
-    </ion-fab>     
-    <div>  
+    </ion-fab>
+    <div>
         <ion-card (click)="goToDetail()">
-            <ion-item class="header">  
-                <h2>BGA-568</h2>        
-                <ion-note item-right>Descripción corta carga</ion-note>                            
-            </ion-item>                   
-            <ion-item class="content">               
+            <ion-item class="header">
+                <h2>BGA-568</h2>
+                <ion-note item-right>Descripción corta carga</ion-note>
+            </ion-item>
+            <ion-item class="content">
                 <p><span>Retiro</span> Gorriti 1234, CABA</p>
-                <p><span>Horario</span> 15:00 a 17:00</p> 
-                <p><span>Contacto</span> Juan Sanchez</p>            
+                <p><span>Horario</span> 15:00 a 17:00</p>
                 <ion-icon name="arrow-forward" item-right></ion-icon>
-            </ion-item>  
-            <ion-item class="footer">             
-                <ion-icon name="home" item-left class="active"></ion-icon> 
+            </ion-item>
+            <ion-item class="footer">
+                <ion-icon name="home" item-left class="active"></ion-icon>
                 <ion-icon name="pin" item-left></ion-icon>
-                <ion-icon name="checkmark-circle" item-left></ion-icon>            
-                <ion-note item-right>Retirar paquete</ion-note>  
-            </ion-item>                                      
-        </ion-card>                              
+                <ion-icon name="checkmark-circle" item-left></ion-icon>
+                <ion-icon name="alert" item-left></ion-icon>
+                <ion-note item-right>Retirar paquete</ion-note>
+            </ion-item>
+        </ion-card>
     </div>
 </ion-content>

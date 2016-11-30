@@ -3,9 +3,10 @@ import { DateService } from '../date-service/date-service';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 
-import { SENDING_DB, SendingRequest, SendingStages } from '../../models/sending-model';
+import { SENDING_DB, SendingOperator, SendingRequest, SendingStages } from '../../models/sending-model';
 
 const DB = SENDING_DB;
+const VACANT_LOCK_TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT + SHIPMENT_CFG.WAIT_AFTER_UNLOCK; // ADDED SECONDS TO AVOID COLISSIONS
 
 @Injectable()
 export class SendingDbService {
@@ -121,7 +122,7 @@ export class SendingDbService {
         };
         let lockNode = {
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            userId: userId
+            userId: userId,
         };
         let ref = this.dbRef.child(DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._LOCK.REF);
         let self = this;
@@ -135,12 +136,12 @@ export class SendingDbService {
                     let lockTimestamp = currentData.timestamp;
                     let nowTimestamp = self.dateSrv.getUnixTimestamp();
                     let diff = (nowTimestamp - lockTimestamp) / 1000;
-                    if(diff > SHIPMENT_CFG.CONFIRM_TIMEOUT) {
+                    if(diff > VACANT_LOCK_TIMEOUT) {
                         console.log('it has expired, update');
                         return lockNode;
                     }else{
                         console.log('did not expired, diff ', diff);
-                        result.lockTimeLeft = SHIPMENT_CFG.CONFIRM_TIMEOUT - diff;
+                        result.lockTimeLeft = VACANT_LOCK_TIMEOUT - diff;
                         return;
                     }
                 }
@@ -168,6 +169,34 @@ export class SendingDbService {
         let updates = {};
         updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._LOCK.REF] = null;
         return this.dbRef.update(updates); 
+    }
+
+    updateSendingLiveStage(userId:string, sendingId:string, stages:SendingStages, operator?:SendingOperator):firebase.Promise<any> {
+        console.log('update sending stages > init > params > ', userId, sendingId, stages);
+        // set auxiliar value
+        let currentStage = stages._current;
+        let currentStatus = stages.created._current;
+        let currentStage_Status = currentStage + '_' + currentStatus; 
+        // prepare updates
+        let updates = {};
+        // update ALL
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.STAGES] = stages;
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE] = currentStage;
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STATUS] = currentStatus;
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE_STATUS] = currentStage_Status;
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.OPERATOR] = operator;
+        // update BYUSER
+        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE.REF] = currentStage;
+        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STATUS.REF] = currentStatus;
+        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
+        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.OPERATOR.REF] = operator;                         
+        // update LIVE
+        updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STAGE.REF] = currentStage;
+        updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STATUS.REF] = currentStatus;
+        updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status; 
+        updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.OPERATOR.REF] = operator; 
+        //console.log('updateSendingCreatedStages > updates > ', updates);               
+        return this.dbRef.update(updates);         
     }
 
     /**
