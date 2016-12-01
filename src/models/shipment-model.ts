@@ -43,6 +43,16 @@ export const SHIPMENT_DB = {
     BYUSER: {
         REF: 'operatorShipments/',
         _NODE: 'operatorShipments',
+        _CHILD: {
+            ACTIVE: {
+                REF: '/active/',
+                _NODE: 'active'
+            },
+            CLOSED: {
+                REF: '/closed/',
+                _NODE: 'closed'
+            },
+        }
     },
 }
 
@@ -58,7 +68,7 @@ export class ShipmentRequest {
     sendingId: string;
     sendingPublicId: string;
     summary: ShipmentRequestSummary;
-    _final_status: string;
+    _active: string;
     _currentStage_Status: string;
 }
 

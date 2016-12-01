@@ -57,6 +57,7 @@ export class SendingsPage implements OnInit{
                 message = 'Aguardar Operador';
                 break;
             case 'live_gotoperator':
+            case 'live_waitpickup':
                 message = 'Aguardar Retiro';
                 break;
             case 'live_pickedup':                

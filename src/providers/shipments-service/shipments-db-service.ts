@@ -32,11 +32,21 @@ export class ShipmentsDbService {
         updates[DB.ALL.REF + newKey] = shipment;        
         // sending publicId hash reference 
         updates[DB.HASHID.REF + shipment.publicId] = newKey;
-        // operator shipment reference
-        updates[DB.BYUSER.REF + userid] = shipment;
+        // operator new active shipment reference
+        updates[DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF + newKey] = shipment;
         // update and return promise
         return this.dbRef.update(updates);
     }
 
+    /**
+     *  READ
+     */
+
+    getShipmentsActiveByUser(userid:string, getSnapshot:boolean = true) {
+        return this.af.database
+                .list(DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF, { 
+                    preserveSnapshot: getSnapshot,
+                });
+    } 
 
 }

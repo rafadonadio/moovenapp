@@ -200,8 +200,6 @@ export class SendingService {
             createShipment: false
         };
         let sending:SendingRequest;
-        let currentStage:string;
-        let currentStatus:string;
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         let sendingOperator: SendingOperator;        
         return new Promise((resolve, reject) => {
@@ -217,8 +215,8 @@ export class SendingService {
                     steps.getOperator = true;
                     sendingOperator = operator;
                     //update LIVE to GOTOPERATOR
-                    currentStage = CFG.STAGE.LIVE.ID;
-                    currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR; // Got Operator
+                    let currentStage = CFG.STAGE.LIVE.ID;
+                    let currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR; // Got Operator
                     // update stage values
                     return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
                 })
@@ -226,8 +224,8 @@ export class SendingService {
                     console.log('updateStageTo 1 > success');
                     steps.updateStage1 = true;
                     //update LIVE to WAITPICKUP
-                    currentStage = CFG.STAGE.LIVE.ID;
-                    currentStatus = CFG.STAGE.LIVE.STATUS.WAITPICKUP;
+                    let currentStage = CFG.STAGE.LIVE.ID;
+                    let currentStatus = CFG.STAGE.LIVE.STATUS.WAITPICKUP;
                     return this.stagesSrv.updateStageTo(stages1, currentStage, currentStatus, timestamp);  
                 })              
                 .then((stages2) => {    
@@ -237,7 +235,7 @@ export class SendingService {
                     sending._stages = stages2;    
                     sending._currentStage = stages2._current;
                     sending._currentStatus = stages2.created._current;
-                    sending._currentStage_Status = currentStage + '_' + currentStatus;                                
+                    sending._currentStage_Status = stages2._current + '_' + stages2.created._current;                                
                     // update SendingLive Stage and set Operator
                     return this.dbSrv.updateSendingLiveStage(this.user.uid, sendingId, stages2, sendingOperator);
                 })

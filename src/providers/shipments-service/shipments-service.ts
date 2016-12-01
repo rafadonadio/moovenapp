@@ -16,7 +16,7 @@ export class ShipmentsService {
         this.setUser();
     }
 
-    create(sending:SendingRequest):Promise<any> {
+    create(sending:SendingRequest):Promise<any> {2
         console.info('create() > start');
         // get a new db key 
         let newKey = this.dbSrv.newSendingKey();
@@ -30,7 +30,7 @@ export class ShipmentsService {
         shipment.sendingPublicId = sending.publicId;
         shipment.summary = this.getSummary(sending);
         shipment._currentStage_Status = sending._currentStage_Status;
-        shipment._final_status = '';
+        shipment._active = true;
 
         return new Promise((resolve, reject) => {
             this.dbSrv.newShipment(shipment, newKey, this.user.uid)
@@ -45,6 +45,22 @@ export class ShipmentsService {
         })
 
 
+    }
+
+    /**
+     * Get REF of All sendings from current user
+     * @return firebase snapshots
+     */
+    getAllMyActiveRef() {
+        return this.getMyLiveShipmentsRef();
+    }
+
+    /**
+     *  DATABASE READ
+     */
+
+    private getMyLiveShipmentsRef():any {
+        return this.dbSrv.getShipmentsActiveByUser(this.user.uid);
     }
 
     /**

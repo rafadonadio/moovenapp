@@ -18,23 +18,32 @@
             <ion-icon name="add"></ion-icon>
         </button>
     </ion-fab>
-    <div>
-        <ion-card (click)="goToDetail()">
+    <ion-list *ngIf="shipmentsEmpty==true">
+        <button ion-item detail-none (click)="goToCreate()">
+            <h2 color="green" text-center>No hay servicios activos</h2>
+        </button>
+    </ion-list>
+    <div [virtualScroll]="shipments" approxItemHeight="500px">
+        <ion-card *virtualItem="let item" (click)="goToDetail(item.data)">
             <ion-item class="header">
-                <h2>BGA-568</h2>
-                <ion-note item-right>Descripción corta carga</ion-note>
+                <h2>#{{ item.data.publicId }}</h2>
+                <ion-note item-right>{{ item.data.summary.objectShortName }}</ion-note>
             </ion-item>
             <ion-item class="content">
-                <p><span>Retiro</span> Gorriti 1234, CABA</p>
-                <p><span>Horario</span> 15:00 a 17:00</p>
+                <p><span>Retiro</span> {{ item.data.summary.pickupAddressStreetShort }} {{ item.data.summary.pickupAddressNumber }}, {{ item.data.summary.pickupAddressCityShort }}</p>
+                <p><span>Horario</span> {{ item.data.summary.pickupTimeFrom }} a {{ item.data.summary.pickupTimeTo }} </p>
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>
             <ion-item class="footer">
-                <ion-icon name="home" item-left class="active"></ion-icon>
-                <ion-icon name="pin" item-left></ion-icon>
-                <ion-icon name="checkmark-circle" item-left></ion-icon>
-                <ion-icon name="alert" item-left></ion-icon>
-                <ion-note item-right>Retirar paquete</ion-note>
+                <ion-icon name="home" item-left [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
+                </ion-icon>
+                <ion-icon name="pin" item-left [class.active]="item.data._currentStage_Status=='live_inroute'">
+                </ion-icon>
+                <ion-icon name="checkmark-circle" item-left [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
+                </ion-icon>
+                <ion-icon name="alert" item-left [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
+                </ion-icon>
+                <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>
             </ion-item>
         </ion-card>
     </div>

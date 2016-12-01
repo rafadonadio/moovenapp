@@ -67,7 +67,8 @@ export const SENDING_CFG = {
                 'objectType',
                 'objectImageDownloadUrl',
                 'price',
-                'routeDistanceKm'
+                'routeDistanceKm',
+                'objectDeclaredValue'
             ]
         },
         CLOSED: {
