@@ -132,7 +132,7 @@ export class ShipmentCreate2Page implements OnInit {
             
         }, 3000);
         // process
-        this.sendingSrv.confirmVacant(this.sendingId)
+        this.sendingSrv.takeVacant(this.sendingId)
             .then((steps) => {
                 console.log('confirm() success > ', steps);
                 // done

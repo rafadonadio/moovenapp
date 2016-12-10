@@ -189,7 +189,7 @@ export class SendingService {
 
     // sending is locked, and is within timeframe available to confirm
     // this is not being checked again
-    confirmVacant(sendingId:string):Promise<any> {
+    takeVacant(sendingId:string):Promise<any> {
         console.info('confirmVacant > start');
         let steps = {
             get: false,
@@ -214,7 +214,7 @@ export class SendingService {
                     console.log('get operator data > success', operator);
                     steps.getOperator = true;
                     sendingOperator = operator;
-                    //update LIVE to GOTOPERATOR
+                    // update LIVE to GOTOPERATOR
                     let currentStage = CFG.STAGE.LIVE.ID;
                     let currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR; // Got Operator
                     // update stage values
@@ -226,16 +226,19 @@ export class SendingService {
                     //update LIVE to WAITPICKUP
                     let currentStage = CFG.STAGE.LIVE.ID;
                     let currentStatus = CFG.STAGE.LIVE.STATUS.WAITPICKUP;
+                    // update stage values
                     return this.stagesSrv.updateStageTo(stages1, currentStage, currentStatus, timestamp);  
                 })              
                 .then((stages2) => {    
                     console.log('updateStageTo 2 > success');
                     steps.updateStage2 = true;     
                     // update stages in sending param
+                    let currentStage = stages2._current;
+                    let currentStatus = stages2[currentStage]._current;
                     sending._stages = stages2;    
-                    sending._currentStage = stages2._current;
-                    sending._currentStatus = stages2.created._current;
-                    sending._currentStage_Status = stages2._current + '_' + stages2.created._current;                                
+                    sending._currentStage = currentStage;
+                    sending._currentStatus = currentStatus;
+                    sending._currentStage_Status = `${currentStage}_${currentStatus}`;                                
                     // update SendingLive Stage and set Operator
                     return this.dbSrv.updateSendingLiveStage(this.user.uid, sendingId, stages2, sendingOperator);
                 })

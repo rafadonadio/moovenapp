@@ -175,11 +175,11 @@ export class SendingDbService {
         console.log('update sending stages > init > params > ', userId, sendingId, stages);
         // set auxiliar value
         let currentStage = stages._current;
-        let currentStatus = stages.created._current;
-        let currentStage_Status = currentStage + '_' + currentStatus; 
+        let currentStatus = stages[currentStage]._current;
+        let currentStage_Status = `${currentStage}_${currentStatus}`; 
         // prepare updates
         let updates = {};
-        // update ALL
+        // update ALL (sendings)
         updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.STAGES] = stages;
         updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE] = currentStage;
         updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STATUS] = currentStatus;
@@ -195,7 +195,7 @@ export class SendingDbService {
         updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STATUS.REF] = currentStatus;
         updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status; 
         updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.OPERATOR.REF] = operator; 
-        //console.log('updateSendingCreatedStages > updates > ', updates);               
+        console.log('updateSendingCreatedStages > updates > ', updates);               
         return this.dbRef.update(updates);         
     }
 

@@ -16,8 +16,8 @@ export class ShipmentsService {
         this.setUser();
     }
 
-    create(sending:SendingRequest):Promise<any> {2
-        console.info('create() > start');
+    create(sending:SendingRequest):Promise<any> {
+        console.info('shipment create() > param', sending);
         // get a new db key 
         let newKey = this.dbSrv.newSendingKey();
         /* populate */
