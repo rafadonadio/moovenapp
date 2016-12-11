@@ -47,6 +47,14 @@ export class UserAccount {
         acceptedVersionTag: string,
         history: Array<{ versionId:string, timestamp:number}>
     };
+    settings: UserAccountSettings;
+}
+
+export class UserAccountSettings {
+    notifications: {
+        localPush: boolean;
+        email: boolean;
+    }   
 }
 
 export class UserAccountProfile {
@@ -211,6 +219,14 @@ export const USER_DB_REF = {
             ACCEPTED_VERSION_TAG: '/ToS/acceptedVersionTag',
             HISTORY: '/ToS/history/',
         },
+        SETTINGS: {
+            _NODE: '/settings',
+            NOTIFICATIONS: {
+                _NODE: '/settings/notifications',
+                LOCALPUSH: '/settings/notifications/localPush',
+                EMAIL: '/settings/notifications/email',
+            }
+        }
     }
 }
 

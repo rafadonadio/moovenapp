@@ -1,4 +1,4 @@
-import { UserAccount, UserProfileData, UserProfileVerifications } from '../../models/user-model';
+import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
@@ -16,8 +16,10 @@ export class SettingsPage implements OnInit{
     fbuser: firebase.User;
     profData: UserProfileData;
     profVrfs: UserProfileVerifications;
+    accountSettings: UserAccountSettings;
     accountStatus: any;
     profileBgDefault: string = 'assets/img/mooven_avatar.png';
+    accountSettingsDisabled:boolean;
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -29,6 +31,7 @@ export class SettingsPage implements OnInit{
     }
 
     ngOnInit() {
+        this.accountSettingsDisabled = true;
         this.setAccountData();
     }
 
@@ -188,8 +191,18 @@ export class SettingsPage implements OnInit{
                 steps.account = true;
                 console.info('setAccountData > success');
                 account = snapshot.val();              
+                // profile data
                 this.profData = account.profile.data;
+                // profile verifications
                 this.profVrfs = account.profile.verifications;
+                // account settings
+                if(this.users.accountSettingsExist(account)){
+                    this.accountSettings = account.settings;
+                    this.accountSettingsDisabled = false;
+                }else{
+                    this.checkAccountSettings(account);
+                }
+                // account status
                 this.accountStatus = this.users.accountProfilesStatus(account);     
                 if(this.profVrfs.email.verified===false) {
                     console.info('settings.setAccount > run email verification');
@@ -204,5 +217,16 @@ export class SettingsPage implements OnInit{
                 loader.dismiss();
             });            
 
+    }
+
+    private checkAccountSettings(account: UserAccount) {
+        console.info('check user settings');
+        this.users.checkSettingsConsistencyOrInit(account)
+            .then(() => {
+                this.setAccountData();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 }

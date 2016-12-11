@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { AuthenticationService } from '../users-service/authentication-service';
 import { AccountService } from '../users-service/account-service';
+import { AccountSettingsService } from '../users-service/account-settings-service';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
 import { UserCredentials, UserAccount } from '../../models/user-model';
@@ -12,7 +13,8 @@ export class UsersService {
 
     constructor(public auth: AuthenticationService,
         public accountSrv: AccountService,
-        public emailVerification: AccountEmailVerificationService) {
+        public emailVerification: AccountEmailVerificationService,
+        public settingsSrv: AccountSettingsService) {
     }
 
     /**
@@ -221,6 +223,8 @@ export class UsersService {
         return this.accountSrv.getRef_profileVerificationEmail(user.uid);
     }
 
+
+
     /**
      *  ACCOUNT - READ DATA
      */
@@ -290,6 +294,34 @@ export class UsersService {
                     reject(steps);
                 });
         });
+    }
+
+    // SETTINGS
+
+    accountSettingsExist(account: UserAccount) {
+        return account.hasOwnProperty("settings");
+    }
+
+    checkSettingsConsistencyOrInit(account: UserAccount) {
+        let fbuser = this.getUser();
+        let settingsExist = account.hasOwnProperty("settings");
+        console.log('check > ', settingsExist);
+        return new Promise((resolve, reject) => {
+            if(settingsExist) {
+                this.settingsSrv.checkConsistency(account.settings);
+
+            }else{
+                this.settingsSrv.setInitValuesInDB(fbuser.uid)
+                    .then(() => {
+                        console.log('setInitValuesInDB > success');
+                        resolve(true);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            }   
+        });
+
     }
 
 }

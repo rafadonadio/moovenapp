@@ -203,6 +203,12 @@ export class AccountService {
                 acceptedVersionId: 0,
                 acceptedVersionTag: '',
                 history: [],
+            },
+            settings: {
+                notifications: {
+                    localPush: true,
+                    email: false
+                }
             }            
         }
         console.log('accountSrv.initData > ', account);
