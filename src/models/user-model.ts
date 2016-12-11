@@ -21,6 +21,14 @@ export const USER_CFG = {
                 SENDER: ['email', 'phone'],
                 OPERATOR: ['email', 'phone', 'residenceAddress', 'legalIdentityNumber'],      
             }
+        },
+        SETTINGS: {
+            DEFAULT_VALUES: {
+                NOTIFICATIONS: {
+                    LOCAL_PUSH: true,
+                    EMAIL: false,
+                }
+            }
         }
     }
 }

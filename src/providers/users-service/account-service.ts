@@ -1,3 +1,4 @@
+import { AccountSettingsService } from './account-settings-service';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 import { AccountProfileService } from '../users-service/account-profile-service';
@@ -24,7 +25,8 @@ export class AccountService {
 
     constructor(public af:AngularFire,
         public profileSrv:AccountProfileService,
-        public verificSrv:AccountVerificationsService) {
+        public verificSrv:AccountVerificationsService,
+        public settingsSrv:AccountSettingsService) {
     }
 
     /**
@@ -204,12 +206,7 @@ export class AccountService {
                 acceptedVersionTag: '',
                 history: [],
             },
-            settings: {
-                notifications: {
-                    localPush: true,
-                    email: false
-                }
-            }            
+            settings: this.settingsSrv.init()
         }
         console.log('accountSrv.initData > ', account);
         return account;

@@ -298,18 +298,32 @@ export class UsersService {
 
     // SETTINGS
 
-    accountSettingsExist(account: UserAccount) {
-        return account.hasOwnProperty("settings");
+    checkAccountSettingsConsistency(account: UserAccount):boolean {         
+        if(this.settingsSrv.settingsExistInAccount(account)) {
+            return this.settingsSrv.checkConsistency(account.settings);
+        }else{
+            return false;
+        }
     }
 
-    checkSettingsConsistencyOrInit(account: UserAccount) {
+    initAccountSettingsMissingParams(account: UserAccount) {
         let fbuser = this.getUser();
-        let settingsExist = account.hasOwnProperty("settings");
-        console.log('check > ', settingsExist);
         return new Promise((resolve, reject) => {
-            if(settingsExist) {
-                this.settingsSrv.checkConsistency(account.settings);
-
+            // check settings exist
+            if(this.settingsSrv.settingsExistInAccount(account)) {
+                // check consistency, complete or resolve ok
+                if(this.settingsSrv.checkConsistency(account.settings)) {
+                    resolve(true);
+                }else{
+                    this.settingsSrv.completeMissingValuesInDB(fbuser.uid, account.settings)
+                        .then(() => {
+                            console.log('completeMissingValuesInDB > success');
+                            resolve(true);
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                }
             }else{
                 this.settingsSrv.setInitValuesInDB(fbuser.uid)
                     .then(() => {

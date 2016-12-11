@@ -16,10 +16,14 @@ export class SettingsPage implements OnInit{
     fbuser: firebase.User;
     profData: UserProfileData;
     profVrfs: UserProfileVerifications;
-    accountSettings: UserAccountSettings;
     accountStatus: any;
     profileBgDefault: string = 'assets/img/mooven_avatar.png';
+    accountSettings: UserAccountSettings;
     accountSettingsDisabled:boolean;
+    notificationSettings = {
+        localPush: false,
+        email: false
+    }
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -196,12 +200,7 @@ export class SettingsPage implements OnInit{
                 // profile verifications
                 this.profVrfs = account.profile.verifications;
                 // account settings
-                if(this.users.accountSettingsExist(account)){
-                    this.accountSettings = account.settings;
-                    this.accountSettingsDisabled = false;
-                }else{
-                    this.checkAccountSettings(account);
-                }
+                this.checkAccountSettings(account);
                 // account status
                 this.accountStatus = this.users.accountProfilesStatus(account);     
                 if(this.profVrfs.email.verified===false) {
@@ -219,14 +218,28 @@ export class SettingsPage implements OnInit{
 
     }
 
-    private checkAccountSettings(account: UserAccount) {
+    private checkAccountSettings(account: UserAccount):void {
         console.info('check user settings');
-        this.users.checkSettingsConsistencyOrInit(account)
-            .then(() => {
-                this.setAccountData();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        if(this.users.checkAccountSettingsConsistency(account)) {
+            console.log('checkAccountSettingsConsistency > true');
+            this.enableAccountSetting(account.settings);
+        }else{
+            this.users.initAccountSettingsMissingParams(account)
+                .then(() => {
+                    this.setAccountData();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });            
+        }
+    }
+
+    private enableAccountSetting(settings:any) {
+        // set
+        this.accountSettings = settings;
+        // copy
+        this.notificationSettings = this.accountSettings.notifications;
+        // enable
+        this.accountSettingsDisabled = false;
     }
 }
