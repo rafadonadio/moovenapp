@@ -77,9 +77,9 @@ export class MyApp{
          *  FIREBASE AUTH OBSERVER
          */
         af.auth.subscribe( user => {
-            console.info('MyApp > authStateChanged');
+            console.info('__authStateChanged');
             if (user) {
-                console.log('> user signedIn > user.uid: ', user.uid);
+                console.log('signedIn > user.uid: ', user.uid);
                 this.setUser(user.auth);
                 // verify user account, status, active, etc
                 this.runUserAccountVerification();
@@ -101,8 +101,7 @@ export class MyApp{
      *  3- check profile.basic is complete 
      */
     private runUserAccountVerification() {
-        console.info('[0] user account verification start');
-        console.group('account verification');
+        console.groupCollapsed('__[0]__AccountVerification');
         // show loader
         this.presentLoader('Verificando credenciales ...');
         // get account data
@@ -113,7 +112,7 @@ export class MyApp{
                 if(snapshot.val() === null) {
                     account = null;
                     this.userAccount = false;
-                    console.error('[1] getUserAccount: NULL, SignOut');
+                    console.error('__[1]__getUserAccount: NULL, SignOut');
                     this.presentAlertAndAction('Cuenta inválida',
                         'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
                         'signout'
@@ -122,11 +121,11 @@ export class MyApp{
                 }else{
                     account = snapshot.val();
                     this.userAccount = account;
-                    console.log('[1] getUserAccount: ', account);
+                    console.log('__[1]__getUserAccount: ', account);
                     this.loader.dismiss()
                         .then(() => {
                             // is user active?
-                            console.info('[2] isAccountActive');
+                            console.info('__[2]__isAccountActive');
                             if(this.usersService.accountIsActive(account)===false) {
                                 // account is inactive, show error and signout
                                 console.log('UserAccount active==FALSE, SignOut');
@@ -142,7 +141,7 @@ export class MyApp{
                         })
                         .then(() => {
                             // is basic profile complete ? 
-                            console.info('[3] accountProfileIsComplete');
+                            console.info('__[3]__accountProfileIsComplete');
                             if(this.usersService.accountProfileFieldsIsComplete(account, PROFILE_BASIC)===false) {
                                 console.warn('profileIsComplete==FALSE, goTo MergePage');
                                 this.nav.setRoot(SignupMergePage);
@@ -157,7 +156,7 @@ export class MyApp{
                 }                         
             })
             .catch((error) => {
-                console.log('verifyUserAccount > failed', error);
+                console.error('verifyUserAccount > failed', error);
                 console.groupEnd();
             });     
     }
@@ -177,8 +176,7 @@ export class MyApp{
         if(this.userAccount === false) {
             console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
         }else{
-            console.info('app > auditAccountEmailIsVerified > start');
-            console.group('auditAccountEmailIsVerified');
+            console.group('__auditAccountEmailIsVerified');
             let ref = this.usersService.getRef_AccountEmailVerification();
             ref.once('value', function(snapshot) {
                 console.log('profile.verification.email.verified == ', snapshot.val());
@@ -267,6 +265,6 @@ export class MyApp{
 
     private setUser(userData:firebase.User) {
         this.user = userData;
-        console.log('user data > ', userData.displayName, userData.photoURL);
+        //console.log('user data > ', userData.displayName, userData.photoURL);
     }
 }

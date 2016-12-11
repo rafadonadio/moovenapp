@@ -31,7 +31,7 @@ export class DateService {
 
     // transform a timestamp to date
     transformTimestampToHuman(timestamp:string):string {
-        console.info('dateService > transformTimestampToHuman > timestamp > ', timestamp);
+        console.info('transformTimestampToHuman');
         let day = moment(timestamp);
         let human = day.format('DD/MM/YYYY HH:mm');
         return human;
