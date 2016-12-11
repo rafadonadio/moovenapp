@@ -67,6 +67,16 @@ export class SettingsPage implements OnInit{
         });      
     }
 
+    /**
+     *  SETTINGS
+     */
+
+    updateNotificationSettings(e) {
+        this.users.updateAccountSettingsNotifications(this.notificationSettings)
+            .then(() => {
+                console.log('updateAccountSettingsNotifications > success');
+            })
+    }
 
     /**
      * Take picture and save imageData

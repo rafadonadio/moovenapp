@@ -65,9 +65,16 @@ export class AccountSettingsService {
         return settings;
     }
 
-    private updateInDb(userId: string, settings: UserAccountSettings) {
+    updateNotificationsInDB(userId:string, notifications: any):firebase.Promise<any> {
+        let updates = {};
+        updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.SETTINGS.NOTIFICATIONS._NODE] = notifications;
+        return this.dbRef.update(updates);
+    }
+
+    private updateInDb(userId: string, settings: UserAccountSettings):firebase.Promise<any> {
         let updates = {};
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.SETTINGS._NODE] = settings;
         return this.dbRef.update(updates);        
     }
+
 }

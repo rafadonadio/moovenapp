@@ -335,7 +335,11 @@ export class UsersService {
                     });
             }   
         });
+    }
 
+    updateAccountSettingsNotifications(notifications:any):firebase.Promise<any> {
+        let fbuser = this.getUser();
+        return this.settingsSrv.updateNotificationsInDB(fbuser.uid, notifications);
     }
 
 }

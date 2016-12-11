@@ -76,14 +76,14 @@
             Avisos
         </ion-item-divider>
         <ion-item>
-            <ion-toggle [(ngModel)]="notificationSettings.localPush" [disabled]="accountSettingsDisabled" color="subdark"></ion-toggle>
+            <ion-toggle [(ngModel)]="notificationSettings.localPush" [disabled]="accountSettingsDisabled" (ionChange)="updateNotificationSettings($event)" color="subdark"></ion-toggle>
             <ion-label>
                 Via notificaciones locales
             </ion-label>
             <ion-icon name='notifications' item-left></ion-icon>
         </ion-item>
         <ion-item>
-            <ion-toggle [(ngModel)]="notificationSettings.email" [disabled]="accountSettingsDisabled" color="subdark"></ion-toggle>
+            <ion-toggle [(ngModel)]="notificationSettings.email" [disabled]="accountSettingsDisabled" (ionChange)="updateNotificationSettings($event)" color="subdark"></ion-toggle>
             <ion-label>
                 Via email
             </ion-label>
