@@ -102,9 +102,9 @@
 
             <ion-item-divider dark>Notificaciones</ion-item-divider>
             <ion-item *ngFor="let notif of notifications" text-wrap>
-                <ion-icon name="{{ notif.icon }}" item-left></ion-icon>
-                <h2>{{ notif.title }}</h2>
-                <p>{{ notif.msg }}</p>
+                <ion-icon name="{{ notif.data.icon }}" item-left></ion-icon>
+                <h2>{{ notif.data.title }}</h2>
+                <p>{{ notif.data.msg }}</p>
             </ion-item>
         </ion-list>
 
@@ -155,10 +155,18 @@
             <ion-list-header>Detalles del Retiro</ion-list-header>
             <ion-item-group>
                 <ion-item-divider>Dirección
-                    <button ion-button outline item-right icon-left color="primary">
+                    <a *ngIf="_isiOS" button ion-button outline item-right icon-left color="primary" href="comgooglemaps://?q={{ sending.pickupAddressLat }},{{ sending.pickupAddressLng }}" target="_system">
                         <ion-icon name="pin"></ion-icon>
                         Mapa
-                    </button>
+                    </a>
+                    <a *ngIf="_isAndroid" button ion-button outline item-right icon-left color="primary" href="geo:?q={{ sending.pickupAddressLat }},{{ sending.pickupAddressLng }}" target="_system">
+                        <ion-icon name="pin"></ion-icon>
+                        Mapa
+                    </a>
+                    <a *ngIf="_isCore" button ion-button outline item-right icon-left color="primary" href="http://maps.google.com/?q={{ sending.pickupAddressLat }},{{ sending.pickupAddressLng }}" target="_blank">
+                        <ion-icon name="pin"></ion-icon>
+                        Mapa
+                    </a>
                 </ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="home" item-left></ion-icon>
@@ -173,10 +181,11 @@
                 </ion-item>
             </ion-item-group>
             <ion-item-divider>Persona que entrega
-                <button ion-button outline item-right icon-left color="primary">
-                <ion-icon name="call"></ion-icon>
-                Llamar
-            </button></ion-item-divider>
+                <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending.pickupPersonPhone }}" target="_system">
+                    <ion-icon name="call"></ion-icon>
+                    Llamar
+                </a>
+            </ion-item-divider>
             <button ion-item no-lines>
                 <ion-icon name="person" item-left></ion-icon>
                 <h2>{{ sending.pickupPersonName }}</h2>
@@ -195,10 +204,19 @@
             <ion-list-header>Detalles de la Entrega</ion-list-header>
             <ion-item-group>
                 <ion-item-divider>Dirección
-                    <button ion-button outline item-right icon-left color="primary">
+                    <a *ngIf="_isiOS" button ion-button outline item-right icon-left color="primary" href="comgooglemaps://?q={{ sending.dropAddressLat }},{{ sending.dropAddressLng }}" target="_system">
                         <ion-icon name="pin"></ion-icon>
                         Mapa
-                    </button></ion-item-divider>
+                    </a>
+                    <a *ngIf="_isAndroid" button ion-button outline item-right icon-left color="primary" href="geo:?q={{ sending.dropAddressLat }},{{ sending.dropAddressLng }}" target="_system">
+                        <ion-icon name="pin"></ion-icon>
+                        Mapa
+                    </a>
+                    <a *ngIf="_isCore" button ion-button outline item-right icon-left color="primary" href="http://maps.google.com/?q={{ sending.dropAddressLat }},{{ sending.dropAddressLng }}" target="_blank">
+                        <ion-icon name="pin"></ion-icon>
+                        Mapa
+                    </a>
+                </ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="pin" item-left></ion-icon>
                     <h3>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h3>
@@ -211,10 +229,11 @@
                     <h3>{{ sending.dropTimeFrom }}:{{ sending.dropTimeTo }}</h3>
                 </ion-item>
                 <ion-item-divider>Persona que recibe
-                    <button ion-button outline item-right icon-left color="primary">
+                    <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending.dropPersonPhone }}" target="_system">
                         <ion-icon name="call"></ion-icon>
                         Llamar
-                    </button></ion-item-divider>
+                    </a>
+                </ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="person" item-left></ion-icon>
                     <h3>{{ sending.dropPersonName }}</h3>

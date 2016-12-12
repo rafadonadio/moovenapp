@@ -7,6 +7,7 @@ import {
 } from '../../models/sending-model';
 import { AngularFire } from 'angularfire2';
 import { Injectable } from '@angular/core';
+import { LocalNotifications } from 'ionic-native';
 
 const CFG = NOTIFICATIONS_CFG;
 const DB = SENDING_DB;
@@ -43,19 +44,25 @@ export class SendingNotificationsService {
         return this.dbRef.child(DB.ALL.REF + sendingId + DB.ALL._CHILD.NOTIFICATIONS).push().key;
     }
 
-    logToDB(sendingId:string, sending:SendingRequest):firebase.Promise<any> {
+    logToDB(sendingId:string, contentLog:any):firebase.Promise<any> {
         // key for new item in array
         let newKey = this.newKey(sendingId);
-        // get log content
-        let userContentLog = this.setlogContent(sending);
         // set paths
         let updates = {};
-        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.NOTIFICATIONS + newKey] = userContentLog;
-        updates[DB.NOTIFICATIONS_ALL.REF + newKey] = userContentLog;
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.NOTIFICATIONS + newKey] = contentLog;
+        updates[DB.NOTIFICATIONS_ALL.REF + newKey] = contentLog;
         return this.dbRef.update(updates);
     }
 
-    private setlogContent(sending:SendingRequest):any {
+    sendLocalNotification(sendingId:string, contentLog:any) {
+        LocalNotifications.schedule({
+            title: contentLog.title,
+            text: contentLog.msg,
+            at: new Date(new Date().getTime() + 5 * 1000),
+        });
+    }
+
+    setlogContent(sending:SendingRequest):any {
         // LANGUAGE SELECTOR
         const LANG = 'es';
         // aux

@@ -1,4 +1,3 @@
-import { SendingsPage } from '../../pages/sendings/sendings';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { UserAccountSettings, UserProfileData } from '../../models/user-model';
 import { ShipmentsService } from '../shipments-service/shipments-service';
@@ -417,11 +416,14 @@ export class SendingService {
         console.info('__runNotifications > start');
         // is currentStageStatus set to log?
         if(this.notificationsSrv.logCurrentStageStatus(sending._currentStage_Status)) {
-            this.notificationsSrv.logToDB(sendingId, sending)
+            // get log content
+            let contentLog = this.notificationsSrv.setlogContent(sending);            
+            // log to DB
+            this.notificationsSrv.logToDB(sendingId, contentLog)
                 .then(() => {
                     console.log('logToDB > success')
                     // notify  
-                    this.sendNotifications(sendingId, sending);
+                    this.sendNotifications(sendingId, contentLog);
                 })  
                 .catch((error) => {
                     console.error('notifications error', error);
@@ -432,8 +434,8 @@ export class SendingService {
     }
 
     // send notifications to user, based on setttings
-    sendNotifications(sendingId:string, sending:SendingRequest):void {
-        
+    sendNotifications(sendingId:string, contentLog:any):void {
+        this.notificationsSrv.sendLocalNotification(sendingId, contentLog);
     }
 
     /**
