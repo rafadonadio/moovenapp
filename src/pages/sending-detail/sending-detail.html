@@ -41,32 +41,28 @@
             </ion-item>
 
             <!-- IF -->
-            <ion-item no-lines
-                *ngIf="sending._stages.created.status.paid.set==false">
+            <ion-item no-lines *ngIf="sending._stages.created.status.paid.set==false">
                 <ion-icon name="card" item-left></ion-icon>
                 <h3>Pago</h3>
                 <p>Se debitará ${{ sending.price }} de tu cuenta</p>
                 <ion-icon name="time" item-right></ion-icon>
-            </ion-item>    
-            <ion-item no-lines
-                *ngIf="sending._stages.created.status.paid.set==true">
+            </ion-item>
+            <ion-item no-lines *ngIf="sending._stages.created.status.paid.set==true">
                 <ion-icon name="card" item-left></ion-icon>
                 <h3>Pago</h3>
                 <p>Se ha debitado ${{ sending.price }} de tu cuenta</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
-            </ion-item>   
+            </ion-item>
             <!-- ENDIF -->
 
             <!-- IF -->
-            <ion-item no-lines
-                *ngIf="sending._stages.live.status.gotoperator.set==false">
+            <ion-item no-lines *ngIf="sending._stages.live.status.gotoperator.set==false">
                 <ion-icon name="person" item-left></ion-icon>
                 <h3>Operador</h3>
                 <p>Aguardando confirmación de operador </p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
-            <ion-item no-lines
-                *ngIf="sending._stages.live.status.gotoperator.set==true">
+            <ion-item no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-icon name="person" item-left></ion-icon>
                 <h3>Operador confirmado</h3>
                 <p>Nombre operador</p>
@@ -74,90 +70,51 @@
             </ion-item>
             <!-- ENDIF -->
 
-            <!-- IF -->            
-            <ion-item no-lines
-                *ngIf="sending._stages.live.status.pickedup.set==false">
+            <!-- IF -->
+            <ion-item no-lines *ngIf="sending._stages.live.status.pickedup.set==false">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>A retirarse entre {{ sending.pickupTimeFrom }} y {{ sending.pickupTimeTo }}</p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
-            <ion-item no-lines
-                *ngIf="sending._stages.live.status.pickedup.set==true">
+            <ion-item no-lines *ngIf="sending._stages.live.status.pickedup.set==true">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>Retirado de {{ pickupAddressStreetShort }} {{ pickupAddressNumber }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
-            </ion-item>            
+            </ion-item>
             <!-- ENDIF -->
 
-            <!-- IF -->            
-            <ion-item
-                *ngIf="sending._stages.live.status.dropped.set==false">
+            <!-- IF -->
+            <ion-item *ngIf="sending._stages.live.status.dropped.set==false">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entrega</h3>
                 <p>A entregarse entre {{ sending.dropTimeFrom }} y {{ sending.dropTimeTo }}</p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
-            <ion-item
-                *ngIf="sending._stages.live.status.dropped.set==true">
+            <ion-item *ngIf="sending._stages.live.status.dropped.set==true">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entrega</h3>
-                <p>Entregado en {{ dropAddressStreetShort }} {{ dropAddressNumber }}</p>
+                <p>Entregado en {{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
 
             <ion-item-divider dark>Notificaciones</ion-item-divider>
-            <ion-item>
-                <ion-icon name="send" item-left></ion-icon>
-                <h2>Solicitud de envío aceptada</h2>
-                <p>01/08/2016 09:45</p>
-            </ion-item>
-            <ion-item>
-                <ion-icon name="card" item-left></ion-icon>
-                <h2>Pago aceptado</h2>
-                <p>Se debitaron $79.00 de tu cuenta.</p>
-            </ion-item>
-            <ion-item>
-                <ion-icon name="person" item-left></ion-icon>
-                <h2>Transportista confirmado</h2>
-                <p>01/08/2016 09:50</p>
-            </ion-item>
-            <ion-item>
-                <ion-icon name="lock" item-left></ion-icon>
-                <h2>Codigo de seguridad > Retiro</h2>
-                <p>El transportista debe informar:
-                    <p>
-                        <p>875462</p>
-            </ion-item>
-            <ion-item>
-                <ion-icon name="lock" item-left></ion-icon>
-                <h2>Codigo de seguridad > Entrega</h2>
-                <p>Informar al transportista en la entrega:
-                    <p>
-                        <p>445682</p>
-            </ion-item>
-            <ion-item>
-                <ion-icon name="checkmark" item-left></ion-icon>
-                <h2>Paquete retirado</h2>
-                <p>01/08/2016 11:45</p>
-            </ion-item>
-            <ion-item>
-                <ion-icon name="checkmark" item-left></ion-icon>
-                <h2>Paquete entregado</h2>
-                <p>01/08/2016 16:35</p>
+            <ion-item *ngFor="let notif of notifications" text-wrap>
+                <ion-icon name="{{ notif.icon }}" item-left></ion-icon>
+                <h2>{{ notif.title }}</h2>
+                <p>{{ notif.msg }}</p>
             </ion-item>
         </ion-list>
 
         <ion-list *ngSwitchCase="'shipment'">
             <ion-list-header>Detalles del Envío</ion-list-header>
             <ion-item-divider *ngIf="sending._stages.live.status.gotoperator.set==true">Transportista
-                <button ion-button outline item-right icon-left
-                    color="primary">
+                <button ion-button outline item-right icon-left color="primary">
                     <ion-icon name="call"></ion-icon>
                     Llamar
-                </button> 
+                </button>
             </ion-item-divider>
             <ion-item no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-thumbnail item-left>
@@ -191,15 +148,14 @@
                         </ion-item>
                     </ion-col>
                 </ion-row>
-            </ion-grid>            
+            </ion-grid>
         </ion-list>
 
         <ion-list *ngSwitchCase="'pickup'">
             <ion-list-header>Detalles del Retiro</ion-list-header>
             <ion-item-group>
                 <ion-item-divider>Dirección
-                    <button ion-button outline item-right icon-left
-                        color="primary">
+                    <button ion-button outline item-right icon-left color="primary">
                         <ion-icon name="pin"></ion-icon>
                         Mapa
                     </button>
@@ -217,8 +173,7 @@
                 </ion-item>
             </ion-item-group>
             <ion-item-divider>Persona que entrega
-            <button ion-button outline item-right icon-left
-                color="primary">
+                <button ion-button outline item-right icon-left color="primary">
                 <ion-icon name="call"></ion-icon>
                 Llamar
             </button></ion-item-divider>
@@ -240,8 +195,7 @@
             <ion-list-header>Detalles de la Entrega</ion-list-header>
             <ion-item-group>
                 <ion-item-divider>Dirección
-                    <button ion-button outline item-right icon-left
-                        color="primary">
+                    <button ion-button outline item-right icon-left color="primary">
                         <ion-icon name="pin"></ion-icon>
                         Mapa
                     </button></ion-item-divider>
@@ -253,12 +207,11 @@
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
-                    <p>Banda horaria para hacer la entrega.</p>                    
+                    <p>Banda horaria para hacer la entrega.</p>
                     <h3>{{ sending.dropTimeFrom }}:{{ sending.dropTimeTo }}</h3>
                 </ion-item>
                 <ion-item-divider>Persona que recibe
-                    <button ion-button outline item-right icon-left
-                        color="primary">
+                    <button ion-button outline item-right icon-left color="primary">
                         <ion-icon name="call"></ion-icon>
                         Llamar
                     </button></ion-item-divider>

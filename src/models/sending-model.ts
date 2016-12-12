@@ -91,7 +91,7 @@ export const NOTIFICATIONS_CFG = {
                 'es': 'Servicio registrado',
             },
             MSG: {
-                'es': '#{PUBLICID}, el {DATE}',
+                'es': 'Registrado con ID #{PUBLICID}, el {DATE}',
             },
             ICON: 'checkmark'
         },
@@ -111,7 +111,7 @@ export const NOTIFICATIONS_CFG = {
                 'es': 'Servicio habilitado',
             },
             MSG: {
-                'es': 'habilitado para ser tomado por un operador',
+                'es': 'Servicio habilitado para ser tomado por un operador',
             },
             ICON: 'send'
         },
@@ -131,7 +131,7 @@ export const NOTIFICATIONS_CFG = {
                 'es': 'Operador confirmado',
             },
             MSG: {
-                'es': '{OPERATOR_NAME}, confirmado el {DATE}',
+                'es': 'El operador {OPERATOR_NAME}, fue confirmado el {DATE}',
             },
             ICON: 'person'
         },
