@@ -217,6 +217,11 @@ export class UsersService {
         return this.accountSrv.getProfileVerificationByUid(user.uid);
     }
 
+    getAccountSettings(): firebase.Promise<any> {
+        let user = this.getUser();
+        return this.accountSrv.getSettingsByUid(user.uid);
+    }
+
     // get reference for profile verification email
     getRef_AccountEmailVerification():firebase.database.Reference {
         let user = this.getUser();
@@ -341,5 +346,7 @@ export class UsersService {
         let fbuser = this.getUser();
         return this.settingsSrv.updateNotificationsInDB(fbuser.uid, notifications);
     }
+
+
 
 }

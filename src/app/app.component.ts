@@ -101,7 +101,7 @@ export class MyApp{
      *  3- check profile.basic is complete 
      */
     private runUserAccountVerification() {
-        console.groupCollapsed('__[0]__AccountVerification');
+        console.info('__[0]__AccountVerification');
         // show loader
         this.presentLoader('Verificando credenciales ...');
         // get account data
@@ -117,11 +117,12 @@ export class MyApp{
                         'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
                         'signout'
                         );           
-                    console.groupEnd();             
+                                 
                 }else{
                     account = snapshot.val();
                     this.userAccount = account;
-                    console.log('__[1]__getUserAccount: ', account);
+                    console.log('__[1]__getUserAccount');
+                    //console.log('userAccount > ', account);
                     this.loader.dismiss()
                         .then(() => {
                             // is user active?
@@ -133,7 +134,7 @@ export class MyApp{
                                     'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
                                     'signout'
                                     );
-                                console.groupEnd();        
+                                        
                             }else{
                                 console.log('UserAccount active==TRUE');
                             }
@@ -151,13 +152,13 @@ export class MyApp{
                                 // all good, audit if account email is verified
                                 this.auditAccountEmailIsVerified();                                
                             }                   
-                            console.groupEnd();     
+                                 
                         });    
                 }                         
             })
             .catch((error) => {
                 console.error('verifyUserAccount > failed', error);
-                console.groupEnd();
+                
             });     
     }
 
@@ -185,11 +186,11 @@ export class MyApp{
                     self.usersService.runAuthEmailVerification()
                         .then((result) => {
                             console.log('checkAuthEmailIsVerified > ', result);
-                            console.groupEnd();
+                            
                         })
                         .catch((error) => {
                             console.log('checkAuthEmailIsVerified > error > ', error);
-                            console.groupEnd();
+                            
                         });
                 }
             });

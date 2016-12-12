@@ -75,15 +75,15 @@ export class SendingStagesService {
                 status: {
                     registered: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },
                     paid: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     }, 
                     enabled: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },                
                 }              
             },
@@ -93,27 +93,27 @@ export class SendingStagesService {
                 status: {
                     waitoperator: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },
                     gotoperator: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },                    
                     waitpickup: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },
                     pickedup: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },                            
                     inroute: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },     
                     dropped: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },                    
                 } 
             },
@@ -123,19 +123,19 @@ export class SendingStagesService {
                 status: {
                     completed: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },
                     canceledbysender: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },        
                     canceledbyoperator: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },     
                     gotoperatorexpired: {
                         set: false,
-                        timestamp: false,
+                        timestamp: 0,
                     },                    
                 } 
             }

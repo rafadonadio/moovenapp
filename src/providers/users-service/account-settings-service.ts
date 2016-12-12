@@ -14,6 +14,13 @@ export class AccountSettingsService {
     constructor(public af: AngularFire) {
     }
 
+    getByUid(userid:string): firebase.Promise<any> {
+        let child = ACCOUNT_REF + userid + ACCOUNT_REF_CHILDS.SETTINGS._NODE;
+        return this.dbRef   
+                .child(child)
+                .once('value');
+    }
+
     settingsExistInAccount(account:UserAccount) {
         return account.hasOwnProperty("settings");
     }

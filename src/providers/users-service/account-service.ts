@@ -135,6 +135,10 @@ export class AccountService {
     getProfileVerificationByUid(userId: string): firebase.Promise<any> {
         return this.profileSrv.getVerificationsByUid(userId);
     }    
+    // get account.settings from firebase database
+    getSettingsByUid(userId:string): firebase.Promise<any> {
+        return this.settingsSrv.getByUid(userId);
+    }
 
 
     /**

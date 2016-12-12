@@ -1,4 +1,6 @@
-import { UserProfileData } from '../../models/user-model';
+import { SendingsPage } from '../../pages/sendings/sendings';
+import { SendingNotificationsService } from './sending-notifications-service';
+import { UserAccountSettings, UserProfileData } from '../../models/user-model';
 import { ShipmentsService } from '../shipments-service/shipments-service';
 import { Injectable } from '@angular/core';
 
@@ -8,7 +10,7 @@ import { SendingRequestService } from '../sending-service/sending-request-servic
 import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
 
-import { SENDING_CFG, SendingOperator, SendingRequest } from '../../models/sending-model';
+import { SENDING_CFG, SendingOperator, SendingRequest, SendingStages } from '../../models/sending-model';
 
 const CFG = SENDING_CFG;
 
@@ -19,13 +21,15 @@ const STRG_USER_FILES = 'userFiles/';
 export class SendingService {
 
     user: firebase.User;
+    userSettings: UserAccountSettings;
 
     constructor(public users: UsersService,
         public hashSrv: HashService,
         public reqSrv: SendingRequestService,
         public dbSrv: SendingDbService,
         public stagesSrv: SendingStagesService,
-        public shipmentSrv:ShipmentsService) {
+        public shipmentSrv:ShipmentsService,
+        public notificationsSrv:SendingNotificationsService) {
         this.setUser();
     }
 
@@ -62,6 +66,9 @@ export class SendingService {
                     console.info('writeNewSending > success');
                     steps.created = true;
                     steps.sendingId = newKey;
+                    // set new notification
+                    this.logNotifications(newKey, sending);
+                    // save image
                     if(sending.objectImageSet) {
                         // ImageSet: upload and save
                         steps.imageSet = true;
@@ -127,13 +134,20 @@ export class SendingService {
                 .then((stages1) => {      
                     console.log('updateStageTo 1 > success');
                     steps.update1 = true;
+                    sending = this.updateLocalSendingStages(sending, stages1);
+                    // set new notification
+                    this.logNotifications(sendingId, sending);
+                    // next
                     currentStage = CFG.STAGE.CREATED.ID;
                     currentStatus = CFG.STAGE.CREATED.STATUS.ENABLED;
                     return this.stagesSrv.updateStageTo(stages1, currentStage, currentStatus, timestamp);  
                 })
                 .then((stages2) => {    
                     console.log('updateStageTo 2 > success');
-                    steps.update2 = true;                    
+                    steps.update2 = true;      
+                    sending = this.updateLocalSendingStages(sending, stages2);  
+                    // set new notification
+                    this.logNotifications(sendingId, sending);                                
                     // update stages in database
                     return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages2);
                 })
@@ -276,7 +290,7 @@ export class SendingService {
 
     private writeNewSending(sending:SendingRequest, newKey:string, userId:string):firebase.Promise<any> {  
             console.info('writeNewSending > start');
-            console.log('data > ', sending, newKey, userId);
+            //console.log('data > ', sending, newKey, userId);
             let summary:any = this.reqSrv.getSummary(sending, CFG.STAGE.CREATED.ID);
             return this.dbSrv.newSending(sending, summary, newKey, userId); 
     }
@@ -395,13 +409,45 @@ export class SendingService {
         });
     }
 
+    /**
+     *  NOTIFICATIONS
+     */
+
+    logNotifications(sendingId:string, sending:SendingRequest):void {
+        console.info('__runNotifications > start');
+        // is currentStageStatus set to log?
+        if(this.notificationsSrv.logCurrentStageStatus(sending._currentStage_Status)) {
+            this.notificationsSrv.logToDB(sendingId, sending)
+                .then(() => {
+                    console.log('logToDB > success')
+                    // notify  
+                    this.sendNotifications(sendingId, sending);
+                })  
+                .catch((error) => {
+                    console.error('notifications error', error);
+                });
+        }else{
+            console.info('runNotifications > nothing to log');
+        }
+    }
+
+    // send notifications to user, based on setttings
+    sendNotifications(sendingId:string, sending:SendingRequest):void {
+        
+    }
 
     /**
      *  HELPERS
      */
 
     private setUser(){
+        // set user data
         this.user = this.users.getUser();
+        // set user settings
+        this.users.getAccountSettings()
+            .then((snapshot) => {
+                this.userSettings = snapshot.val();
+            }); 
     }
 
     private getUserDataAsOperator():Promise<any> {
@@ -423,6 +469,14 @@ export class SendingService {
                     reject(error);
                 });
         });
+    }
+
+    private updateLocalSendingStages(sending:SendingRequest, stages:SendingStages):SendingRequest {
+        sending._currentStage = stages._current;
+        sending._currentStatus = stages[stages._current]._current;
+        sending._currentStage_Status = `${sending._currentStage}_${sending._currentStatus}`;
+        sending._stages = stages;
+        return sending;
     }
 
 }
