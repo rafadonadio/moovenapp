@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 import { USER_DB_REF } from '../../models/user-model';
 import { LogUserEmailVerificationAttempts, LOG_DB_REF } from '../../models/log-model';
+import firebase from 'firebase';
 
 // firebase references
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;

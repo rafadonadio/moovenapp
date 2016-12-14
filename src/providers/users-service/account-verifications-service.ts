@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-
+import firebase from 'firebase';
 //import { USER_DB_REF } from '../../models/user-model';
 
 //const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
