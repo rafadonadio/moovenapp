@@ -8,8 +8,8 @@ import { SendingDbService } from '../sending-service/sending-db-service';
 import { SendingRequestService } from '../sending-service/sending-request-service';
 import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
+
 import { SENDING_CFG, SendingOperator, SendingRequest, SendingStages } from '../../models/sending-model';
-import firebase from 'firebase';
 
 const CFG = SENDING_CFG;
 

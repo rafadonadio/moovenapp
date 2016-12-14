@@ -1,7 +1,7 @@
 import { SHIPMENT_DB, ShipmentRequest } from '../../models/shipment-model';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-import firebase from 'firebase';
+
 const DB = SHIPMENT_DB;
 
 @Injectable()

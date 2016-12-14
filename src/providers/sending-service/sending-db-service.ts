@@ -2,7 +2,7 @@ import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { DateService } from '../date-service/date-service';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
-import firebase from 'firebase';
+
 import { SENDING_DB, SendingOperator, SendingRequest, SendingStages } from '../../models/sending-model';
 
 const DB = SENDING_DB;

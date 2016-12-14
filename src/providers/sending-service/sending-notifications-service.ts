@@ -8,7 +8,6 @@ import {
 import { AngularFire } from 'angularfire2';
 import { Injectable } from '@angular/core';
 import { LocalNotifications } from 'ionic-native';
-import firebase from 'firebase';
 
 const CFG = NOTIFICATIONS_CFG;
 const DB = SENDING_DB;

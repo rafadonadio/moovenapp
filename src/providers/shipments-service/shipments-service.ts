@@ -4,7 +4,6 @@ import { UsersService } from '../users-service/users-service';
 import { ShipmentsDbService } from './shipments-db-service';
 import { SHIPMENT_CFG }  from '../../models/shipment-model';
 import { Injectable } from '@angular/core';
-import firebase from 'firebase';
 
 @Injectable()
 export class ShipmentsService {
