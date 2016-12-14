@@ -15,9 +15,7 @@ export class AccountVerificationsService {
     constructor(public af:AngularFire) {
     }
 
-    test() {
-        
-    }
+
 
 
 }
