@@ -133,6 +133,7 @@ export class SendingService {
                 .then((stages1) => {      
                     console.log('updateStageTo 1 > success');
                     steps.update1 = true;
+                    // update local variable, used by notification log
                     sending = this.updateLocalSendingStages(sending, stages1);
                     // set new notification
                     this.logNotifications(sendingId, sending);
@@ -144,6 +145,7 @@ export class SendingService {
                 .then((stages2) => {    
                     console.log('updateStageTo 2 > success');
                     steps.update2 = true;      
+                    // update local variable, used by notification log
                     sending = this.updateLocalSendingStages(sending, stages2);  
                     // set new notification
                     this.logNotifications(sendingId, sending);                                
@@ -236,6 +238,10 @@ export class SendingService {
                 .then((stages1) => {      
                     console.log('updateStageTo 1 > success');
                     steps.updateStage1 = true;
+                    // update local variable, used by notification log
+                    sending = this.updateLocalSendingStages(sending, stages1);
+                    // set new notification
+                    this.logNotifications(sendingId, sending);
                     //update LIVE to WAITPICKUP
                     let currentStage = CFG.STAGE.LIVE.ID;
                     let currentStatus = CFG.STAGE.LIVE.STATUS.WAITPICKUP;
@@ -245,13 +251,17 @@ export class SendingService {
                 .then((stages2) => {    
                     console.log('updateStageTo 2 > success');
                     steps.updateStage2 = true;     
-                    // update stages in sending param
-                    let currentStage = stages2._current;
-                    let currentStatus = stages2[currentStage]._current;
-                    sending._stages = stages2;    
-                    sending._currentStage = currentStage;
-                    sending._currentStatus = currentStatus;
-                    sending._currentStage_Status = `${currentStage}_${currentStatus}`;                                
+                    // update local variable, used by notification log
+                    sending = this.updateLocalSendingStages(sending, stages2);
+                    // set new notification
+                    this.logNotifications(sendingId, sending);                    
+                    // // update stages in sending param
+                    // let currentStage = stages2._current;
+                    // let currentStatus = stages2[currentStage]._current;
+                    // sending._stages = stages2;    
+                    // sending._currentStage = currentStage;
+                    // sending._currentStatus = currentStatus;
+                    // sending._currentStage_Status = `${currentStage}_${currentStatus}`;                                
                     // update SendingLive Stage and set Operator
                     return this.dbSrv.updateSendingLiveStage(this.user.uid, sendingId, stages2, sendingOperator);
                 })
@@ -336,11 +346,15 @@ export class SendingService {
                 .then((stages) => {
                     console.log('updateStageTo > success', currentStage, currentStatus);
                     steps.updateStage = true;
-                    // set new stages
-                    sending._currentStage = currentStage;
-                    sending._currentStatus = currentStatus;
-                    sending._currentStage_Status = currentStage + '_' + currentStatus;
-                    sending._stages = stages;                    
+                    // update local variable, used by notification log
+                    sending = this.updateLocalSendingStages(sending, stages);
+                    // set new notification
+                    this.logNotifications(sendingId, sending);                       
+                    // // set new stages
+                    // sending._currentStage = currentStage;
+                    // sending._currentStatus = currentStatus;
+                    // sending._currentStage_Status = currentStage + '_' + currentStatus;
+                    // sending._stages = stages;                    
                     // set Live values and move                    
                     let summary = this.reqSrv.getSummary(sending, currentStage);
                     return this.dbSrv.moveSendingCreatedToLive(this.user.uid, sending, summary);
@@ -414,7 +428,7 @@ export class SendingService {
 
     logNotifications(sendingId:string, sending:SendingRequest):void {
         console.info('__runNotifications > start');
-        // is currentStageStatus set to log?
+        // currentStageStatus has to be logged? (check if config is set)
         if(this.notificationsSrv.logCurrentStageStatus(sending._currentStage_Status)) {
             // get log content
             let contentLog = this.notificationsSrv.setlogContent(sending);            

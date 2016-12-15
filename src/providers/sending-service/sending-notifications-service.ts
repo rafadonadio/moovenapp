@@ -24,6 +24,7 @@ export class SendingNotificationsService {
         public dateSrv: DateService) {
     }
 
+    // check if currentStage_Status exist in CFG object with notification settings
     logCurrentStageStatus(currentStageStatus:string) {
         return CFG.hasOwnProperty(currentStageStatus);
     }
@@ -96,10 +97,11 @@ export class SendingNotificationsService {
                 // no vars to replace
                 break;
             case 'live_waitoperator':
-                
+                // no vars to replace
                 break;             
             case 'live_gotoperator':
-                
+                content.msg = content.msg.replace('{OPERATOR}', sending._operator.displayName);
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;    
             case 'live_waitpickup':
                 
