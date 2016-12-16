@@ -123,7 +123,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Aguardando ser tomado por Operador',
             },
-            ICON: 'card'
+            ICON: 'time'
         },
         'live_gotoperator': {
             NOTIFY: true,
@@ -143,7 +143,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'El operador debe informar: {CODE}',
             },
-            ICON: 'lock'
+            ICON: 'time'
         },
         'live_pickedup': {
             NOTIFY: true,
@@ -163,7 +163,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Informar al operador: {CODE}',
             },
-            ICON: 'lock'
+            ICON: 'time'
         },
         'live_dropped': {
             NOTIFY: true,
@@ -213,7 +213,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'El servicio no fue tomado y expiró el {DATE}',
             },
-            ICON: 'time'
+            ICON: 'close'
         },
     };
 
