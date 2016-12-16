@@ -49,6 +49,9 @@ export class SendingService {
         sending.publicId = this.hashSrv.genId();
         sending.timestamp = timestamp;
         sending.userUid = userId;
+        // security codes
+        sending.pickupSecurityCode = this.hashSrv.genSecurityCode();
+        sending.dropSecurityCode = this.hashSrv.genSecurityCode();
         /* set stage initial values, and duplicated values (for NoSql reasons) */
         sending._stages = this.stagesSrv.initialize(CFG.STAGE.CREATED.ID, timestamp);
         sending._currentStage = this.stagesSrv.getCurrent(sending._stages);

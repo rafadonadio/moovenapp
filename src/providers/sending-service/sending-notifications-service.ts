@@ -104,28 +104,28 @@ export class SendingNotificationsService {
                 content.msg = content.msg.replace('{DATE}', humanDate);
                 break;    
             case 'live_waitpickup':
-                
+                content.msg = content.msg.replace('{CODE}', sending.pickupSecurityCode);
                 break;           
             case 'live_pickedup':
-                
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;         
             case 'live_inroute':
-                
+                content.msg = content.msg.replace('{CODE}', sending.dropSecurityCode);
                 break;            
             case 'live_dropped':
-                
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;        
             case 'closed_complete':
-                
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;           
             case 'closed_canceledbysender':
-                
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;                  
             case 'closed_canceledbyoperator':
-                
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;                     
             case 'closed_gotoperatorexpired':
-                
+                content.msg = content.msg.replace('{DATE}', humanDate);
                 break;                                                                                                                                                                                          
         }
         return content;        

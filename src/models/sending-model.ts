@@ -176,7 +176,14 @@ export const NOTIFICATIONS_CFG = {
             ICON: 'checkmark'
         },
         'closed_complete': {
-            NOTIFY: true,
+            NOTIFY: false,
+            TITLE: {
+                'es': 'Servicio completado',
+            },
+            MSG: {
+                'es': 'El servicio ha sido completado el {DATE}',
+            },
+            ICON: 'checkmark'
         },
         'closed_canceledbysender': {
             NOTIFY: true,
@@ -418,6 +425,7 @@ export class SendingRequest {
     pickupPersonName: string;
     pickupPersonPhone: string;
     pickupPersonEmail: string;
+    pickupSecurityCode: string;
     dropAddressSet: boolean;
     dropAddressIsComplete: boolean;
     dropAddressUserForcedValidation: boolean;
@@ -444,7 +452,8 @@ export class SendingRequest {
     dropTimeTo: string;
     dropPersonName: string;
     dropPersonPhone: string;
-    dropPersonEmail: string;          
+    dropPersonEmail: string;   
+    dropSecurityCode: string;       
 }
 
 export class SendingNotifications {
