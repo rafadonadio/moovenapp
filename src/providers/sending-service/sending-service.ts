@@ -232,6 +232,7 @@ export class SendingService {
                     console.log('get operator data > success', operator);
                     steps.getOperator = true;
                     sendingOperator = operator;
+                    sending._operator = operator;
                     // update LIVE to GOTOPERATOR
                     let currentStage = CFG.STAGE.LIVE.ID;
                     let currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR; // Got Operator
@@ -257,14 +258,7 @@ export class SendingService {
                     // update local variable, used by notification log
                     sending = this.updateLocalSendingStages(sending, stages2);
                     // set new notification
-                    this.logNotifications(sendingId, sending);                    
-                    // // update stages in sending param
-                    // let currentStage = stages2._current;
-                    // let currentStatus = stages2[currentStage]._current;
-                    // sending._stages = stages2;    
-                    // sending._currentStage = currentStage;
-                    // sending._currentStatus = currentStatus;
-                    // sending._currentStage_Status = `${currentStage}_${currentStatus}`;                                
+                    this.logNotifications(sendingId, sending);                                                 
                     // update SendingLive Stage and set Operator
                     return this.dbSrv.updateSendingLiveStage(this.user.uid, sendingId, stages2, sendingOperator);
                 })
@@ -352,12 +346,7 @@ export class SendingService {
                     // update local variable, used by notification log
                     sending = this.updateLocalSendingStages(sending, stages);
                     // set new notification
-                    this.logNotifications(sendingId, sending);                       
-                    // // set new stages
-                    // sending._currentStage = currentStage;
-                    // sending._currentStatus = currentStatus;
-                    // sending._currentStage_Status = currentStage + '_' + currentStatus;
-                    // sending._stages = stages;                    
+                    this.logNotifications(sendingId, sending);                                         
                     // set Live values and move                    
                     let summary = this.reqSrv.getSummary(sending, currentStage);
                     return this.dbSrv.moveSendingCreatedToLive(this.user.uid, sending, summary);

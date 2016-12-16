@@ -65,7 +65,7 @@
             <ion-item text-wrap no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-icon name="person" item-left></ion-icon>
                 <h3>Operador confirmado</h3>
-                <p>Nombre operador</p>
+                <p>{{ sending?._operator.displayName }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
@@ -118,11 +118,11 @@
             </ion-item-divider>
             <ion-item no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-thumbnail item-left>
-                    <img src="http://placehold.it/200x200">
+                    <img [src]="sending?._operator.displayName || 'http://placehold.it/200x200'">
                 </ion-thumbnail>
-                <p>Datos del transportista:</p>
-                <h3><span>Nombre</span> Niki Lauda</h3>
-                <h3><span>Teléfono</span> +5491109871234</h3>
+                <p>Datos del Operador:</p>
+                <h3><span>Nombre</span>{{ sending?._operator.displayName }}</h3>
+                <h3><span>Teléfono</span>{{ sending?._operator.phone }}</h3>
             </ion-item>
             <ion-item-group>
                 <ion-item-divider>Precio</ion-item-divider>

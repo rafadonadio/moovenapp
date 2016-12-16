@@ -100,7 +100,7 @@ export class SendingNotificationsService {
                 // no vars to replace
                 break;             
             case 'live_gotoperator':
-                content.msg = content.msg.replace('{OPERATOR}', sending._operator.displayName);
+                content.msg = content.msg.replace('{OPERATOR_NAME}', sending._operator.displayName);
                 content.msg = content.msg.replace('{DATE}', humanDate);
                 break;    
             case 'live_waitpickup':
