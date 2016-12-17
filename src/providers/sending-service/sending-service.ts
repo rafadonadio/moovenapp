@@ -283,11 +283,21 @@ export class SendingService {
                     }
                 });                               
         });
-
-
-
     }
 
+    updateStatusOnStageLive(sendingId:string, newStatus:string):Promise<any> {
+
+        return new Promise((resolve, reject) => {
+            
+        });
+    }
+
+    moveLiveToClosed(sendingId:string, newStatus:string):Promise<any> {
+
+        return new Promise((resolve, reject) => {
+            
+        });
+    }
 
 
     /**
@@ -367,6 +377,15 @@ export class SendingService {
         let userId = this.user.uid;
         return this.dbSrv.attemptToLockSendingLiveVacant(sendingId, userId);
     }
+
+    // **********
+
+    /**
+     *  UPDATE STATUS IN STAGE.LIVE
+     */
+
+
+
 
     /**
      *  DATABASE READ

@@ -1,7 +1,10 @@
+import { SendingService } from '../../providers/sending-service/sending-service';
+import { SENDING_CFG, SendingRequest } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ActionSheetController, AlertController } from 'ionic-angular';
 
+const CFG = SENDING_CFG;
 const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 
 @Component({
@@ -11,14 +14,15 @@ const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 export class ShipmentDetailPage implements OnInit{
 
     shipmenttab: string = "notifications";
-    sending:any;
+    sending:SendingRequest;
     shipment:any;
     notifications:Array<any>;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public actionShCtrl: ActionSheetController,
-        public alertCtrl: AlertController) {
+        public alertCtrl: AlertController,
+        public sendingSrv: SendingService) {
     }
 
     ngOnInit() {
@@ -104,7 +108,7 @@ export class ShipmentDetailPage implements OnInit{
                     {
                         text: 'Confirmo',
                         handler: () => {
-                        console.log('Buy clicked');
+                            this.runNotifyAction(action);
                         }
                     }
                 ]
@@ -114,6 +118,27 @@ export class ShipmentDetailPage implements OnInit{
             console.error('AlertController action param invalid');
         }
 
+    }
+
+    private runNotifyAction(action:string):void {
+        let newStatus:string;
+        let runMethod:string;
+        switch(action) {
+            case 'pickupDone':
+                newStatus = CFG.STAGE.LIVE.STATUS.PICKEDUP;        
+                break;
+            case 'dropDone':
+                newStatus = CFG.STAGE.LIVE.STATUS.DROPPED;
+                break;
+            case 'cancel':
+                newStatus = CFG.STAGE.CLOSED.STATUS.CANCELEDBYOPERATOR;
+                break;                
+        }       
+        if(action=='pickupDone' || action=='dropDone') {
+            this.sendingSrv.updateStatusOnStageLive(this.sending.sendingId, newStatus);
+        }else if(action=='cancel') {
+            this.sendingSrv.moveLiveToClosed(this.sending.sendingId, newStatus);
+        } 
     }
 
 }
