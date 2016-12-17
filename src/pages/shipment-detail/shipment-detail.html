@@ -75,25 +75,10 @@
 
             <ion-item-divider>Notificaciones</ion-item-divider>
             <ion-list>
-                <ion-item>
-                    <ion-icon name="person" item-left></ion-icon>
-                    <h2>Carga aceptada</h2>
-                    <p>01/08/2016 09:50</p>
-                </ion-item>
-                <ion-item>
-                    <ion-icon name="lock" item-left></ion-icon>
-                    <h2>Codigo de Seguridad</h2>
-                    <p>Para validar la entrega: 445682</p>
-                </ion-item>
-                <ion-item>
-                    <ion-icon name="checkmark" item-left></ion-icon>
-                    <h2>Paquete retirado</h2>
-                    <p>01/08/2016 11:45</p>
-                </ion-item>
-                <ion-item>
-                    <ion-icon name="checkmark" item-left></ion-icon>
-                    <h2>Paquete entregado</h2>
-                    <p>01/08/2016 16:35</p>
+                <ion-item *ngFor="let notif of notifications" text-wrap>
+                    <ion-icon name="{{ notif.data.icon }}" item-left></ion-icon>
+                    <h2>{{ notif.data.title }}</h2>
+                    <p>{{ notif.data.msg }}</p>
                 </ion-item>
             </ion-list>
         </ion-list>

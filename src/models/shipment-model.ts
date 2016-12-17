@@ -23,7 +23,22 @@ export const SHIPMENT_CFG = {
         'dropAddressCityShort',
         'dropTimeFrom',
         'dropTimeTo', 
-    ]
+    ],
+    NOTIFICATIONS_TO_SHOW: {
+        'created_registered': false,
+        'created_paid': false,
+        'created_enabled': false,
+        'live_waitoperator': false,
+        'live_gotoperator':true,
+        'live_waitpickup': false,
+        'live_pickedup':true,
+        'live_inroute':true,
+        'live_dropped':true,
+        'closed_complete':true,
+        'closed_canceledbysender':true,
+        'closed_canceledbyoperator':true,
+        'closed_gotoperatorexpired':true
+    }
 }
 
 /**
