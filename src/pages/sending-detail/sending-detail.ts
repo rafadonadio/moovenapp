@@ -1,6 +1,6 @@
 import { SendingRequest } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, Platform } from 'ionic-angular';
+import { NavController, NavParams, Platform, AlertController, ActionSheetController } from 'ionic-angular';
 
 @Component({
     selector: 'page-sending-detail',
@@ -18,7 +18,9 @@ export class SendingDetailPage implements OnInit {
 
     constructor(public platform: Platform,
         public navCtrl: NavController,
-        public navParams: NavParams) {
+        public navParams: NavParams,
+        public alertCtrl: AlertController,
+        public actionShCtrl: ActionSheetController) {
         this._platform = platform;
         this._isAndroid = platform.is('android');
         this._isiOS = platform.is('ios');
@@ -44,4 +46,61 @@ export class SendingDetailPage implements OnInit {
         }
         //console.log(this.notifications);
     }
+
+    openActionSh() {
+        let actionSh = this.actionShCtrl.create({
+            title: 'Notificaciones ',
+            buttons: [
+                {
+                    text: 'Cancelar servicio',
+                    icon: 'close',
+                    handler: () => {
+                        this.showAlertNotifyAction('cancel');
+                    }
+                }
+            ]
+        });
+        actionSh.present();
+    }
+
+    private showAlertNotifyAction(action:string) {
+        let content = {
+            set: false,
+            title: '',
+            message: '',
+        }
+        switch(action) {
+            case 'cancel':
+                    content.set = true;
+                    content.title = 'Cancelar Servicio';
+                    content.message = 'Confirmo que cancelo el servicio, dejando el mismo inconcluso.';                
+                break;                
+        }
+        if(content.set) {
+            let alert = this.alertCtrl.create({
+                title: content.title,
+                message: content.message,
+                buttons: [
+                    {
+                        text: 'Cancelar',
+                        role: 'cancel',
+                        handler: () => {
+                        console.log('Cancel clicked');
+                        }
+                    },
+                    {
+                        text: 'Confirmo',
+                        handler: () => {
+                        console.log('Buy clicked');
+                        }
+                    }
+                ]
+            });
+            alert.present();
+        }else{
+            console.error('AlertController action param invalid');
+        }
+
+    }
+
 }
