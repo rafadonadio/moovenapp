@@ -48,7 +48,9 @@
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retirar</h3>
                 <p>Retirar entre {{ sending.pickupTimeFrom }} y {{ sending.pickupTimeTo }}</p>
-                <ion-icon name="time" item-right></ion-icon>
+                <button ion-button small item-right color="green" (click)="showAlertNotifyAction('pickupDone')">
+                    Notificar
+                </button>
             </ion-item>
             <ion-item no-lines *ngIf="sending._stages.live.status.pickedup.set==true">
                 <ion-icon name="home" item-left></ion-icon>
@@ -63,7 +65,11 @@
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entregar</h3>
                 <p>Entregar entre {{ sending.dropTimeFrom }} y {{ sending.dropTimeTo }}</p>
-                <ion-icon name="time" item-right></ion-icon>
+                <button ion-button small item-right color="green" 
+                    (click)="showAlertNotifyAction('dropDone')" 
+                    [disabled]="sending._stages.live.status.pickedup.set==false">
+                    Notificar
+                </button>
             </ion-item>
             <ion-item *ngIf="sending._stages.live.status.dropped.set==true">
                 <ion-icon name="pin" item-left></ion-icon>

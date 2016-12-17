@@ -1,6 +1,6 @@
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ActionSheetController } from 'ionic-angular';
+import { NavController, NavParams, ActionSheetController, AlertController } from 'ionic-angular';
 
 const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 
@@ -17,7 +17,8 @@ export class ShipmentDetailPage implements OnInit{
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
-        public actionShCtrl: ActionSheetController) {
+        public actionShCtrl: ActionSheetController,
+        public alertCtrl: AlertController) {
     }
 
     ngOnInit() {
@@ -32,27 +33,13 @@ export class ShipmentDetailPage implements OnInit{
 
     openActionSh() {
         let actionSh = this.actionShCtrl.create({
-            title: 'Confirmar Avances',
+            title: 'Notificar ',
             buttons: [
                 {
-                    text: 'Retirado',
-                    icon: 'home',
+                    text: 'Interrumpir servicio',
+                    icon: 'close',
                     handler: () => {
-                        console.log('informar retiro');
-                    }
-                },
-                {
-                    text: 'Entregado',
-                    icon: 'pin',
-                    handler: () => {
-                        console.log('informar entrega');
-                    }
-                },
-                {
-                    text: 'Otro',
-                    icon: 'sad',
-                    handler: () => {
-                        console.log('otro');
+                        this.showAlertNotifyAction('cancel');
                     }
                 }
             ]
@@ -77,6 +64,56 @@ export class ShipmentDetailPage implements OnInit{
             }
         }
         //console.log(this.notifications);
+    }
+
+    private showAlertNotifyAction(action:string) {
+        let content = {
+            set: false,
+            title: '',
+            message: '',
+        }
+        switch(action) {
+            case 'pickupDone':
+                    content.set = true;
+                    content.title = 'Retirado';
+                    content.message = 'Confirmo que he retirado el servicio';        
+                break;
+            case 'dropDone':
+                    content.set = true;
+                    content.title = 'Entregado';
+                    content.message = 'Confirmo que he entregado el servicio';                
+                break;
+            case 'cancel':
+                    content.set = true;
+                    content.title = 'Servicio interrumpido';
+                    content.message = 'Confirmo que interrumpo la continuidad del servicio, dejando el mismo inconcluso.';                
+                break;                
+        }
+        if(content.set) {
+            let alert = this.alertCtrl.create({
+                title: content.title,
+                message: content.message,
+                buttons: [
+                    {
+                        text: 'Cancelar',
+                        role: 'cancel',
+                        handler: () => {
+                        console.log('Cancel clicked');
+                        }
+                    },
+                    {
+                        text: 'Confirmo',
+                        handler: () => {
+                        console.log('Buy clicked');
+                        }
+                    }
+                ]
+            });
+            alert.present();
+        }else{
+            console.error('AlertController action param invalid');
+        }
+
     }
 
 }

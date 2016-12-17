@@ -23,7 +23,7 @@
             <h2 color="green" text-center>No hay servicios activos</h2>
         </button>
     </ion-list>
-    <div [virtualScroll]="shipments" approxItemHeight="500px">
+    <ion-list [virtualScroll]="shipments" approxItemHeight="500px">
         <ion-card *virtualItem="let item" (click)="goToDetail(item.data)">
             <ion-item class="header">
                 <h2>#{{ item.data.publicId }}</h2>
@@ -46,5 +46,5 @@
                 <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>
             </ion-item>
         </ion-card>
-    </div>
+    </ion-list>
 </ion-content>
