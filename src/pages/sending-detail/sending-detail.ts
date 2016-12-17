@@ -42,6 +42,6 @@ export class SendingDetailPage implements OnInit {
             };
             this.notifications.push(item);
         }
-        console.log(this.notifications);
+        //console.log(this.notifications);
     }
 }
