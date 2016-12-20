@@ -122,7 +122,6 @@ export class ShipmentDetailPage implements OnInit{
 
     private runNotifyAction(action:string):void {
         let newStatus:string;
-        let runMethod:string;
         switch(action) {
             case 'pickupDone':
                 newStatus = CFG.STAGE.LIVE.STATUS.PICKEDUP;        
