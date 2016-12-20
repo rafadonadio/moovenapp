@@ -120,23 +120,19 @@ export class ShipmentDetailPage implements OnInit{
 
     }
 
-    private runNotifyAction(action:string):void {
-        let newStatus:string;
-        switch(action) {
-            case 'pickupDone':
-                newStatus = CFG.STAGE.LIVE.STATUS.PICKEDUP;        
-                break;
-            case 'dropDone':
-                newStatus = CFG.STAGE.LIVE.STATUS.DROPPED;
-                break;
-            case 'cancel':
-                newStatus = CFG.STAGE.CLOSED.STATUS.CANCELEDBYOPERATOR;
-                break;                
-        }       
-        if(action=='pickupDone' || action=='dropDone') {
-            this.sendingSrv.updateStatusOnStageLive(this.sending.sendingId, newStatus);
+    private runNotifyAction(action:string):void {      
+        if(action=='pickupDone') {
+            this.sendingSrv.updateLiveStatusToPickedup(this.shipment.shipmentId, this.sending.sendingId)
+                .then((result) => {
+                    console.log('runNotifyAction > success', result);
+                })
+                .catch((error) => {
+                    console.error('runNotifyAction > failed', error);
+                });
+        }else if(action=='dropDone') {
+            //this.sendingSrv.updateLiveStatusToDropped(this.shipment.shipmentId, this.sending.sendingId);    
         }else if(action=='cancel') {
-            this.sendingSrv.moveLiveToClosed(this.sending.sendingId, newStatus);
+            //this.sendingSrv.updateLiveStatusToCanceled(this.shipment.shipmentId, this.sending.sendingId);    
         } 
     }
 

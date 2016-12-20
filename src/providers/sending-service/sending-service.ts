@@ -260,7 +260,7 @@ export class SendingService {
                     // set new notification
                     this.logNotifications(sendingId, sending);                                                 
                     // update SendingLive Stage and set Operator
-                    return this.dbSrv.updateSendingLiveStage(this.user.uid, sendingId, stages2, sendingOperator);
+                    return this.dbSrv.setSendingLiveOperatorAndUpdateStage(this.user.uid, sendingId, stages2, sendingOperator);
                 })
                 .then(() => {
                     console.log('updateSendingLiveStage > success');
@@ -285,20 +285,82 @@ export class SendingService {
         });
     }
 
-    updateStatusOnStageLive(sendingId:string, newStatus:string):Promise<any> {
+    /**
+     *  UPDATE STATUS IN STAGE.LIVE
+     */
+
+    updateLiveStatusToPickedup(shipmentId:string, sendingId:string):Promise<any> {
+        console.info('updateStatusOnStageLive > init');
+        let steps = {
+            get: false,
+            update1: false,
+            update2: false,
+            updateDb: false
+        };
+        let sending:SendingRequest;
+        let currentStage:string;
+        let currentStatus:string;
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let operatorUserId:string;
+        return new Promise((resolve, reject) => {
+            this.dbSrv.getSendingbyIdOnce(sendingId)
+                .then((snapshot) => {
+                    console.log('getSendingbyIdOnce > success');
+                    steps.get = true;
+                    sending = snapshot.val();
+                    operatorUserId = sending._operator.userId;
+                    //update LIVE STAGE to new Status
+                    currentStage = CFG.STAGE.LIVE.ID;
+                    currentStatus = CFG.STAGE.LIVE.STATUS.PICKEDUP;
+                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);                    
+                })
+                .then((stages1) => {
+                    console.log('updateStageTo > success');
+                    steps.update1 = true;
+                    // update local variable, used by notification log
+                    sending = this.updateLocalSendingStages(sending, stages1);
+                    // set new notification
+                    this.logNotifications(sendingId, sending);                    
+                    //update LIVE STAGE to new Status
+                    currentStage = CFG.STAGE.LIVE.ID;
+                    currentStatus = CFG.STAGE.LIVE.STATUS.INROUTE;
+                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp); 
+                })
+                .then((stages2) => {
+                    console.log('updateStageTo > success');
+                    steps.update2 = true;
+                    // update local variable, used by notification log
+                    sending = this.updateLocalSendingStages(sending, stages2);
+                    // set new notification
+                    this.logNotifications(sendingId, sending);
+                    // update stages in database
+                    return this.dbSrv.updateShipmentAndSendingLiveStage(this.user.uid, sendingId, stages2, shipmentId, operatorUserId);
+                })
+                .then(() => {
+                    console.log('updateShipmentAndSendingLiveStage > success');
+                    steps.updateDb = true;
+                    resolve(steps);
+                })
+                .catch((error) => {
+                    console.log('updateShipmentAndSendingLiveStage > error', error);
+                    reject(steps);
+                });
+        });
+    }
+
+    updateLiveStatusToDropped(shipmentId:string, sendingId:string):Promise<any> {
 
         return new Promise((resolve, reject) => {
             
         });
     }
 
-    moveLiveToClosed(sendingId:string, newStatus:string):Promise<any> {
+    updateLiveStatusToCanceled(shipmentId:string, sendingId:string):Promise<any> {
 
         return new Promise((resolve, reject) => {
             
         });
     }
-
 
     /**
      *  DATABASE WRITE
@@ -379,11 +441,6 @@ export class SendingService {
     }
 
     // **********
-
-    /**
-     *  UPDATE STATUS IN STAGE.LIVE
-     */
-
 
 
 

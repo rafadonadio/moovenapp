@@ -50,6 +50,12 @@ export const SHIPMENT_DB = {
     ALL: {
         REF: 'shipments/',
         _NODE: 'shipments',
+        _CHILD: {
+            CURRENT_STAGE_STATUS: {
+                REF: '/_currentStage_Status/',
+                _NODE: '_currentStage_Status'
+            }
+        }
     },
     HASHID: {
         REF: 'shipmentsHashid/',
@@ -67,6 +73,10 @@ export const SHIPMENT_DB = {
                 REF: '/closed/',
                 _NODE: 'closed'
             },
+            CURRENT_STAGE_STATUS: {
+                REF: '/_currentStage_Status/',
+                _NODE: '_currentStage_Status'
+            }
         }
     },
 }
