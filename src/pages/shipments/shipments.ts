@@ -1,3 +1,4 @@
+import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component, OnInit } from '@angular/core';
@@ -16,7 +17,8 @@ export class ShipmentsPage implements OnInit{
 
     constructor(private navCtrl: NavController,
         public shipmentsSrv:ShipmentsService,
-        public sendingsSrv:SendingService) {
+        public sendingsSrv:SendingService,
+        public userSrv:UsersService) {
 
     }
 
@@ -29,10 +31,15 @@ export class ShipmentsPage implements OnInit{
         let service = this.sendingsSrv.getSending(data.sendingId);
         service.subscribe(snapshot => {
             console.log('getSending > success');
-            this.navCtrl.push(ShipmentDetailPage, { 
-                sending: snapshot.val(),
-                shipment: data 
-            });
+            let sending = snapshot.val();
+            this.userSrv.getAccountProfileDataByUid(sending.userUid)
+                .then((snapshot) => {
+                    this.navCtrl.push(ShipmentDetailPage, { 
+                        sender: snapshot.val(),
+                        sending: sending,
+                        shipment: data 
+                    });
+                })
         });         
     }
 

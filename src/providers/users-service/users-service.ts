@@ -229,6 +229,12 @@ export class UsersService {
         return this.accountSrv.getRef_profileVerificationEmail(user.uid);
     }
 
+    // GET OTHER USERS DATA
+
+    // get user account data
+    getAccountProfileDataByUid(uid:string): firebase.Promise<any> {
+        return this.accountSrv.getProfileDataByUid(uid);
+    }    
 
 
     /**

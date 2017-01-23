@@ -16,6 +16,7 @@ export class ShipmentDetailPage implements OnInit{
     shipmenttab: string = "notifications";
     sending:SendingRequest;
     shipment:any;
+    sender:any;
     notifications:Array<any>;
 
     constructor(public navCtrl: NavController,
@@ -28,6 +29,7 @@ export class ShipmentDetailPage implements OnInit{
     ngOnInit() {
         this.sending = this.navParams.get('sending');
         this.shipment = this.navParams.get('shipment');
+        this.sender = this.navParams.get('sender');
         this.filterAndConvertNotificationsToArray();  
     }
 

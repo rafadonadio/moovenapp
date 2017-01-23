@@ -118,7 +118,7 @@
             </ion-item-divider>
             <ion-item no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
                 <ion-thumbnail item-left>
-                    <img [src]="sending?._operator.displayName || 'http://placehold.it/200x200'">
+                    <img [src]="sending?._operator.photoURL || 'http://placehold.it/200x200'">
                 </ion-thumbnail>
                 <p>Datos del Operador:</p>
                 <h3><span>Nombre</span>{{ sending?._operator.displayName }}</h3>
