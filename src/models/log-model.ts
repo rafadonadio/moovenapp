@@ -1,6 +1,6 @@
 
 export class LogUserEmailVerificationAttempts {
-    timestamp: number;
+    timestamp: any;
     email: string;
     userId: string;
 }

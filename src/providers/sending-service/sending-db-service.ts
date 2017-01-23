@@ -5,6 +5,8 @@ import { AngularFire } from 'angularfire2';
 
 import { SENDING_DB, SendingOperator, SendingRequest, SendingStages } from '../../models/sending-model';
 
+import firebase from 'firebase';
+
 const DB = SENDING_DB;
 const DB2 = SHIPMENT_DB;
 const VACANT_LOCK_TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT + SHIPMENT_CFG.WAIT_AFTER_UNLOCK; // ADDED SECONDS TO AVOID COLISSIONS

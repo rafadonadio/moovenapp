@@ -13,6 +13,8 @@ import {
 } from '../../models/user-model';
 import { TOS_CFG } from '../../models/tos-model';
 
+import firebase from 'firebase';
+
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
 const PROFILES_LIST = USER_CFG.ACCOUNT.PROFILE.LIST;

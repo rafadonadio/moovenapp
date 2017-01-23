@@ -12,6 +12,7 @@ import { LocalNotifications } from 'ionic-native';
 const CFG = NOTIFICATIONS_CFG;
 const DB = SENDING_DB;
 
+import firebase from 'firebase';
 
 @Injectable()
 export class SendingNotificationsService {

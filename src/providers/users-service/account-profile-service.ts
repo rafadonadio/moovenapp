@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 import { USER_CFG, USER_DB_REF, UserAccountProfile, UserProfileData, UserProfileStatus, UserProfileVerifications } from '../../models/user-model';
 
+import firebase from 'firebase';
+
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
 const ACCOUNT_CFG = USER_CFG.ACCOUNT;

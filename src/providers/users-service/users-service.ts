@@ -7,6 +7,7 @@ import { AccountEmailVerificationService } from '../users-service/account-email-
 
 import { UserCredentials, UserAccount } from '../../models/user-model';
 
+import firebase from 'firebase';
 
 @Injectable()
 export class UsersService {

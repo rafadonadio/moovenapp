@@ -11,6 +11,8 @@ import { HashService } from '../hash-service/hash-service';
 
 import { SENDING_CFG, SendingOperator, SendingRequest, SendingStages } from '../../models/sending-model';
 
+import firebase from 'firebase';
+
 const CFG = SENDING_CFG;
 
 // storage nodes
@@ -115,7 +117,7 @@ export class SendingService {
         let sending:SendingRequest;
         let currentStage:string;
         let currentStatus:string;
-        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let timestamp:Object = firebase.database.ServerValue.TIMESTAMP;
         
         // -------------
         // run payment

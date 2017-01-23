@@ -11,7 +11,7 @@ export class SendingStagesService {
 
     }
 
-    initialize(currentStage:string, timestamp:number):SendingStages
+    initialize(currentStage:string, timestamp:any):SendingStages
     {
         // init
         let stages = this.getInitialized();
@@ -28,7 +28,7 @@ export class SendingStagesService {
      *  STAGE UPDATES
      */
 
-    updateStageTo(stages:SendingStages, currentStage:string, currentStatus:string, timestamp:number):Promise<any> {
+    updateStageTo(stages:SendingStages, currentStage:string, currentStatus:string, timestamp:any):Promise<any> {
         return new Promise((resolve) => {
             let newStages:SendingStages;
             // set stage
