@@ -80,7 +80,7 @@
             <ion-item text-wrap no-lines *ngIf="sending._stages.live.status.pickedup.set==true">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
-                <p>Retirado de {{ pickupAddressStreetShort }} {{ pickupAddressNumber }}</p>
+                <p>Retirado de {{ sending.pickupAddressStreetShort }} {{ sending.pickupAddressNumber }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
