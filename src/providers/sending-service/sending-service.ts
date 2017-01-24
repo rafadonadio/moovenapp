@@ -60,123 +60,13 @@ export class SendingService {
 
     // pay sending
     pay(sendingId:string):Promise<any> {    
-        return this.stageCreatedSrv.pay(sendingId, this.user.uid);
-
-        // console.info('processPayment > start');
-        // // aux
-        // let steps = {
-        //     get: false,
-        //     payment: false,
-        //     update: false,
-        //     updateDb: false
-        // };
-        // let sending:SendingRequest;           
-        // return new Promise((resolve, reject) => {
-        //     this.dbSrv.getSendingbyIdOnce(sendingId)
-        //         .then((snapshot) => {
-        //             console.log('getSendingbyIdOnce > success ', sendingId);
-        //             steps.get = true;
-        //             sending = snapshot.val();
-        //             // proccess payment
-        //             return this.paySrv.checkout();
-        //         })
-        //         .then((result) => {
-        //             console.log('proccesPayment > success ', result);
-        //             if(result.completed == true){
-        //                 steps.payment = true;
-        //             }else{
-        //                 steps.payment = false;
-        //                 resolve(steps);
-        //             }
-        //             //update CREATED to PAID 
-        //             let timestamp:any = firebase.database.ServerValue.TIMESTAMP; 
-        //             let currentStage = CFG.STAGE.CREATED.ID;
-        //             let currentStatus = CFG.STAGE.CREATED.STATUS.PAID;
-        //             return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
-        //         })
-        //         .then((stages) => {      
-        //             console.log('updateStage > success');
-        //             steps.update = true;
-        //             // update local variable, used by notification log
-        //             sending = this.updateLocalSendingStages(sending, stages);
-        //             // set new notification
-        //             this.logNotifications(sendingId, sending);                             
-        //             // update stages in database
-        //             return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages);
-        //         })
-        //         .then(() => {
-        //             console.log('updateSendingCreatedStage > success');
-        //             steps.updateDb = true;
-        //             resolve(steps);
-        //         })
-        //         .catch((error) => {
-        //             console.log('Pay > error', error);
-        //             if(steps.updateDb == true) {
-        //                 resolve(steps);
-        //             }else{
-        //                 reject(steps);
-        //             }
-        //         }); 
-        // });        
+        return this.stageCreatedSrv.pay(sendingId, this.user.uid);       
     }
 
     enable(sendingId:string) {
         return this.stageCreatedSrv.enable(sendingId, this.user.uid);
-
-        // console.info('processPayment > start');
-        // // aux
-        // let steps = {
-        //     get: false,
-        //     update: false,
-        //     updateDb: false,
-        //     move: false
-        // };
-        // let sending:SendingRequest;
-        // let currentStage:string;
-        // let currentStatus:string;
-        // let timestamp:any = firebase.database.ServerValue.TIMESTAMP;     
-        // return new Promise((resolve, reject) => {
-        //     this.dbSrv.getSendingbyIdOnce(sendingId)
-        //         .then((snapshot) => {
-        //             console.log('getSendingbyIdOnce > success ', sendingId);
-        //             steps.get = true;
-        //             sending = snapshot.val();
-        //             //update PAID to ENABLED
-        //            currentStage = CFG.STAGE.CREATED.ID;
-        //             currentStatus = CFG.STAGE.CREATED.STATUS.ENABLED;
-        //             return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
-        //         })
-        //         .then((stages) => {    
-        //             console.log('updateStage > success');
-        //             steps.update = true;      
-        //             // update local variable, used by notification log
-        //             sending = this.updateLocalSendingStages(sending, stages);  
-        //             // set new notification
-        //             this.logNotifications(sendingId, sending);                                
-        //             // update stages in database
-        //             return this.dbSrv.updateSendingCreatedStage(this.user.uid, sendingId, stages);
-        //         })
-        //         .then(() => {
-        //             console.log('updateSendingCreatedStage > success');
-        //             steps.updateDb = true;
-        //             // move CREATED to LIVE
-        //             return this.moveCreatedToLive(sendingId);
-        //         })
-        //         .then(() => {
-        //             console.log('moveCreatedToLive > success');
-        //             steps.move = true;
-        //             resolve(steps);
-        //         })
-        //         .catch((error) => {
-        //             console.log('getSendingbyIdOnce OR updateSendingCreatedStages > error', error);
-        //             if(steps.updateDb == true) {
-        //                 resolve(steps);
-        //             }else{
-        //                 reject(steps);
-        //             }
-        //         }); 
-        // });        
     }
+
 
     /**
      * Get REF of All sendings from current user
@@ -409,53 +299,6 @@ export class SendingService {
             
         });
     }
-
-
-    // /**
-    //  *  MOVE SENDING FROM "CURRENT_STAGE" TO "NEW_STAGE"   
-    //  */    
-
-    // private moveCreatedToLive(sendingId) {
-    //     console.info('moveCreatedToLive > start');
-    //     let sending:SendingRequest;
-    //     let timestamp = firebase.database.ServerValue.TIMESTAMP;
-    //     let currentStage = CFG.STAGE.LIVE.ID;
-    //     let currentStatus = CFG.STAGE.LIVE.STATUS.WAITOPERATOR;
-    //     let steps = {
-    //         getSending: false,
-    //         updateStage: false,
-    //         writeDb: false 
-    //     }
-    //     return new Promise((resolve, reject) => {
-    //         this.dbSrv.getSendingbyIdOnce(sendingId)
-    //             .then((snapshot) => {
-    //                 console.log('getSending > success');
-    //                 steps.getSending = true;
-    //                 sending = snapshot.val();
-    //                 // set stage values
-    //                 return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
-    //             })
-    //             .then((stages) => {
-    //                 console.log('updateStageTo > success', currentStage, currentStatus);
-    //                 steps.updateStage = true;
-    //                 // update local variable, used by notification log
-    //                 sending = this.updateLocalSendingStages(sending, stages);
-    //                 // set new notification
-    //                 this.logNotifications(sendingId, sending);                                         
-    //                 // set Live values and move                    
-    //                 let summary = this.reqSrv.getSummary(sending, currentStage);
-    //                 return this.dbSrv.moveSendingCreatedToLive(this.user.uid, sending, summary);
-    //             })
-    //             .then(() => {
-    //                 console.log('moveSendingCreatedToLive > success');
-    //                 steps.writeDb = true;
-    //                 resolve(steps);
-    //             })
-    //             .catch((error) => {
-
-    //             });
-    //     });
-    // }
 
     private moveLiveToClosed(sendingId:string, newStatus:string) {
         console.info('moveLiveToComplete > start');
