@@ -38,6 +38,9 @@ import { AccountSettingsService } from '../providers/users-service/account-setti
 import { AccountVerificationsService } from '../providers/users-service/account-verifications-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
+import { SendingStageCreatedService } from  '../providers/sending-service/sending-stage-created-service';
+import { SendingStageLiveService } from  '../providers/sending-service/sending-stage-live-service';
+import { SendingStageClosedService } from  '../providers/sending-service/sending-stage-closed-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
 import { SendingStagesService } from  '../providers/sending-service/sending-stages-service';
 import { SendingNotificationsService } from  '../providers/sending-service/sending-notifications-service';
@@ -157,6 +160,9 @@ const myFirebaseAuthConfig = {
     AccountVerificationsService,
     AuthenticationService,
     SendingService,
+    SendingStageCreatedService,
+    SendingStageLiveService,
+    SendingStageClosedService,
     SendingDbService,
     SendingNotificationsService,
     SendingRequestService,  

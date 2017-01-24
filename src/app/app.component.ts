@@ -177,7 +177,7 @@ export class MyApp{
         if(this.userAccount === false) {
             console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
         }else{
-            console.group('__auditAccountEmailIsVerified');
+            console.info('__auditAccountEmailIsVerified');
             let ref = this.usersService.getRef_AccountEmailVerification();
             ref.once('value', function(snapshot) {
                 console.log('profile.verification.email.verified == ', snapshot.val());
@@ -185,12 +185,10 @@ export class MyApp{
                 if(isVerified === false) {                 
                     self.usersService.runAuthEmailVerification()
                         .then((result) => {
-                            console.log('checkAuthEmailIsVerified > ', result);
-                            
+                            console.log('checkAuthEmailIsVerified > ', result);                           
                         })
                         .catch((error) => {
-                            console.log('checkAuthEmailIsVerified > error > ', error);
-                            
+                            console.log('checkAuthEmailIsVerified > error > ', error);                            
                         });
                 }
             });
