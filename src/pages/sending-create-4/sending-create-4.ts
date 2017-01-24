@@ -205,7 +205,7 @@ export class SendingCreate4Page implements OnInit {
         });
         loader.present();
         // save to db
-        this.sendings.create(this.sending)
+        this.sendings.register(this.sending)
             .then((result) => {
                 console.log('create success > steps ', result);
                 this.sendingId = result.sendingId;

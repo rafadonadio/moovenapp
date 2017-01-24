@@ -54,7 +54,7 @@ export class SendingService {
     }
 
     // create sending
-    create(sending:SendingRequest):Promise<any> {
+    register(sending:SendingRequest):Promise<any> {
         return this.stageCreatedSrv.register(sending, this.user.uid);
     }
 
