@@ -23,28 +23,30 @@
             <h2 color="green" text-center>No hay servicios activos</h2>
         </button>
     </ion-list>
-    <ion-list [virtualScroll]="shipments" approxItemHeight="500px">
-        <ion-card *virtualItem="let item" (click)="goToDetail(item.data)">
-            <ion-item class="header">
-                <h2>#{{ item.data.publicId }}</h2>
-                <ion-note item-right>{{ item.data.summary.objectShortName }}</ion-note>
-            </ion-item>
-            <ion-item class="content">
-                <p><span>Retiro</span> {{ item.data.summary.pickupAddressStreetShort }} {{ item.data.summary.pickupAddressNumber }}, {{ item.data.summary.pickupAddressCityShort }}</p>
-                <p><span>Horario</span> {{ item.data.summary.pickupTimeFrom }} a {{ item.data.summary.pickupTimeTo }} </p>
-                <ion-icon name="arrow-forward" item-right></ion-icon>
-            </ion-item>
-            <ion-item class="footer">
-                <ion-icon name="home" item-left [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
-                </ion-icon>
-                <ion-icon name="pin" item-left [class.active]="item.data._currentStage_Status=='live_inroute'">
-                </ion-icon>
-                <ion-icon name="checkmark-circle" item-left [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
-                </ion-icon>
-                <ion-icon name="alert" item-left [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
-                </ion-icon>
-                <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>
-            </ion-item>
-        </ion-card>
+    <ion-list *ngFor="let item of shipments">
+
+            <ion-card (click)="goToDetail(item.data)">
+                <ion-item class="header">
+                    <h2>#{{ item.data.publicId }}</h2>
+                    <ion-note item-right>{{ item.data.summary.objectShortName }}</ion-note>
+                </ion-item>
+                <ion-item class="content">
+                    <p><span>Retiro</span> {{ item.data.summary.pickupAddressStreetShort }} {{ item.data.summary.pickupAddressNumber }}, {{ item.data.summary.pickupAddressCityShort }}</p>
+                    <p><span>Horario</span> {{ item.data.summary.pickupTimeFrom }} a {{ item.data.summary.pickupTimeTo }} </p>
+                    <ion-icon name="arrow-forward" item-right></ion-icon>
+                </ion-item>
+                <ion-item class="footer">
+                    <ion-icon name="home" item-left [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
+                    </ion-icon>
+                    <ion-icon name="pin" item-left [class.active]="item.data._currentStage_Status=='live_inroute'">
+                    </ion-icon>
+                    <ion-icon name="checkmark-circle" item-left [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
+                    </ion-icon>
+                    <ion-icon name="alert" item-left [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
+                    </ion-icon>
+                    <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>
+                </ion-item>
+            </ion-card>
+
     </ion-list>
 </ion-content>
