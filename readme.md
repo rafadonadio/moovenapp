@@ -148,13 +148,22 @@ ___
     - public ID (hashid)
     - storage photo
          
+#############
+# DOING NOW
+#############
+
+    - sendings > item en created_registered > habilitar boton de pago
+    - sendings > item en created_paid > habilitar boton de enable (en admin):
+    - sendings > item > live_inroute > set completed
+    - sendings > item > live > set canceled
+
+    - payment gateway > mercadopago
 
 
-   
+#############
+# TO_DO
+#############
 
-
-
-Para terminar:
 - ajustes: 
      - validar número de móvil 
      - guardar config user --OK

@@ -30,7 +30,7 @@ export class SendingStageCreatedService {
 
     }
 
-    create(sending:SendingRequest, userId:string):Promise<any> {
+    register(sending:SendingRequest, userId:string):Promise<any> {
         console.info('create() > start');
         /* aux */
         let timestamp = this.dbSrv.getTimestamp();
@@ -52,9 +52,9 @@ export class SendingStageCreatedService {
 
         return new Promise((resolve, reject) => {
             let steps = { created: false, imageSet: false, imageUploaded: false, sendingId: '' };
-            this.writeNewSending(sending, newKey, userId)
+            this.createSending(sending, newKey, userId)
                 .then(() => {
-                    console.info('writeNewSending > success');
+                    console.info('createSending > success');
                     steps.created = true;
                     steps.sendingId = newKey;
                     // set new notification
@@ -82,7 +82,7 @@ export class SendingStageCreatedService {
                         // do something about it ?
                         resolve(steps);
                     }else{
-                        console.error('writeNewSending > error ', error);
+                        console.error('createSending > error ', error);
                         reject(error);
                     }
                 });
@@ -150,7 +150,7 @@ export class SendingStageCreatedService {
     }    
 
     // enable sending
-    enable(sendingId:string, userId:string) {
+    enable(sendingId:string, userId:string):Promise<any> {
         console.info('enable > start');
         // aux
         let steps = {
@@ -258,8 +258,8 @@ export class SendingStageCreatedService {
      *  DATABASE WRITE
      */ 
 
-    private writeNewSending(sending:SendingRequest, newKey:string, userId:string):firebase.Promise<any> {  
-            console.info('writeNewSending > start');
+    private createSending(sending:SendingRequest, newKey:string, userId:string):firebase.Promise<any> {  
+            console.info('createSending > start');
             //console.log('data > ', sending, newKey, userId);
             let summary:any = this.reqSrv.getSummary(sending, CFG.STAGE.CREATED.ID);
             return this.dbSrv.newSending(sending, summary, newKey, userId); 

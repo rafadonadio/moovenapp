@@ -55,7 +55,7 @@ export class SendingService {
 
     // create sending
     create(sending:SendingRequest):Promise<any> {
-        return this.stageCreatedSrv.create(sending, this.user.uid);
+        return this.stageCreatedSrv.register(sending, this.user.uid);
     }
 
     // pay sending
@@ -63,7 +63,7 @@ export class SendingService {
         return this.stageCreatedSrv.pay(sendingId, this.user.uid);       
     }
 
-    enable(sendingId:string) {
+    enable(sendingId:string):Promise<any>  {
         return this.stageCreatedSrv.enable(sendingId, this.user.uid);
     }
 
