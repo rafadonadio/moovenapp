@@ -157,20 +157,22 @@ ___
 Para terminar:
 - ajustes: 
      - validar número de móvil 
-     - guardar config user
+     - guardar config user --OK
      - cerrar cuenta
 - servicio: 
-     - agregar fecha al pedido
+     - agregar fecha al pedido 
      - agregar opción de gestión
-     - en vista item creado, agregar acciones permitidas al user (cancelar)
+     - en vista item creado, agregar acciones permitidas al user (cancelar) --OK
      - procesar pago
 - operador: 
      - en vista tomar servicio, listar vacantes en función de center-map + limite mapa, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.
-     - listar servicios tomados por user
-     - vista item servicio tomado, agregar acciones permitidas al operador (actualizar avance, cancelar)
+     - listar servicios tomados por user --OK
+     - vista item servicio tomado, agregar acciones permitidas al operador (actualizar avance, cancelar) 
      - vista historial y notificaciones
 - pagos
 - push notifications
 - ayuda
+- login, social auth: facebook
+
 
 
