@@ -26,6 +26,10 @@ export class SendingCreate4Page implements OnInit {
         value:0,
         minFareApplied: false,
     };
+    // when created
+    sendingId:string;    
+    sendingCreated:boolean = false;
+    sendingPayed:boolean = false;    
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -54,10 +58,10 @@ export class SendingCreate4Page implements OnInit {
         this.goBackToStep(step);
     }
 
-    submit() {
+    runCreate() {
         let alert = this.alertCtrl.create({
-            title: 'Confirmar envío',
-            message: 'Se debitarán $' + this.sending.price + ' de tu cuenta y tu envío será confirmado',
+            title: 'Nuevo Servicio',
+            message: 'Confirmo que los datos ingresados estan correctos y deseo crear un nuevo servicio',
             buttons: [
                 {
                     text: 'Cancelar',
@@ -67,7 +71,7 @@ export class SendingCreate4Page implements OnInit {
                     }
                 },
                 {
-                    text: 'Confirmar y Pagar',
+                    text: 'Confirmar',
                     handler: () => {
                         console.log('f4 > submit > confirm > process');
                         this.createSending();
@@ -78,7 +82,31 @@ export class SendingCreate4Page implements OnInit {
         alert.present();
     }
 
-    cancel() {
+    runPayment() {
+        let alert = this.alertCtrl.create({
+            title: 'Pago',
+            message: 'Proceder con el el pago de $' + this.sending.price + ' para confirmar el servicio.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > submit > confirm > canceled');
+                    }
+                },
+                {
+                    text: 'Pagar',
+                    handler: () => {
+                        console.log('f4 > submit > confirm > process');
+                        this.paySending();
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
+    cancelSending() {
         let alert = this.alertCtrl.create({
             title: '¿Cancelar Envío?',
             message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
@@ -102,6 +130,31 @@ export class SendingCreate4Page implements OnInit {
         });
         alert.present();
     }
+
+    goToSendings() {
+        let alert = this.alertCtrl.create({
+            title: 'Volver al listado?',
+            message: 'El servicio esta creado y puedes finalizar el pago luego, hasta una hora antes de la hora de retiro.',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > cancel form > no, continue');
+
+                    }
+                },
+                {
+                    text: 'Si, volver',
+                    handler: () => {
+                        console.log('f4 > cancel form > yes, cancel');
+                        this.navCtrl.setRoot(SendingsPage);
+                    }
+                }
+            ]
+        });
+        alert.present();
+    }    
 
     /**
      *  NAVIGATION
@@ -146,7 +199,6 @@ export class SendingCreate4Page implements OnInit {
 
     private createSending() {
         console.info('f4 > createSending > start');
-        let newSendingId:string;
         // loader effect
         let loader = this.loadingCtrl.create({
             content: 'registrando servicio ...',
@@ -156,19 +208,12 @@ export class SendingCreate4Page implements OnInit {
         this.sendings.create(this.sending)
             .then((result) => {
                 console.log('create success > steps ', result);
-                newSendingId = result.sendingId;
-                loader.setContent('procesando pago ...');
-                return this.sendings.processPayment(newSendingId);
-            })
-            .then(() => {
-                console.log('payment ok, wait 3 seconds');
-                setTimeout(() => {
-                    loader.dismiss()
-                        .then(() => {
-                            this.navCtrl.setRoot(SendingsPage);
-                            this.presentToast();
-                        });
-                },3000);
+                this.sendingId = result.sendingId;
+                this.sendingCreated= true;
+                loader.dismiss()
+                    .then(() => {
+                        this.runPayment();
+                    });
             })
             .catch((error) => {
                 console.log('f4 > create sending > error', error);
@@ -186,6 +231,42 @@ export class SendingCreate4Page implements OnInit {
                         alertError.present();
                     });
             });
+    }
+
+    private paySending() {
+        console.info('f4 > paySending > start');
+        // loader effect
+        let loader = this.loadingCtrl.create({
+            content: 'procesando pago ...',
+        });
+        loader.present();
+        // pay
+        this.sendings.pay(this.sendingId)
+            .then((result) => {
+                console.log('payment ok', result);
+                this.sendingPayed = true;
+                loader.dismiss()
+                    .then(() => {
+                        this.navCtrl.setRoot(SendingsPage);
+                        this.presentToast();
+                    });
+            })
+            .catch((error) => {
+                console.log('f4 > payment sending > error', error);
+                loader.dismiss()
+                    .then(() => {
+                        let alertError = this.alertCtrl.create({
+                            title: 'Error con el pago',
+                            subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente.',
+                            buttons: [{
+                                text: 'Cerrar',
+                                role: 'cancel'
+                            }]
+                        });
+                        // show
+                        alertError.present();
+                    });
+            });        
     }
 
     private getRoute() {

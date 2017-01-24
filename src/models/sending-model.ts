@@ -10,8 +10,8 @@ export const SENDING_CFG = {
             STATUS: {
                 _LIST: ['registered', 'paid', 'enabled'],
                 REGISTERED: 'registered',
-                PAID: 'paid',
-                ENABLED: 'enabled'
+                PAID: 'paid', // paid done, not yet confirmed
+                ENABLED: 'enabled', // payment confirmed 
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
