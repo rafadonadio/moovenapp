@@ -52,6 +52,9 @@ export class SendingsPage implements OnInit{
             case 'created_registered':
                 message = 'Procesando ...';
                 break;
+            case 'created_paid':
+                message = 'Verificando pago';
+                break;                
             case 'created_enabled':
             case 'live_waitoperator':
                 message = 'Aguardar Operador';

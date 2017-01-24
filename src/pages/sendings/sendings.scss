@@ -49,5 +49,7 @@ page-sendings {
     ion-card ion-item.footer ion-note{
         color: color($colors, primary); 
     }    
-
+    ion-card ion-item.footer.item-md > .item-inner{
+        margin-left: 10px;
+    }
 }
