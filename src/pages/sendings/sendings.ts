@@ -1,3 +1,4 @@
+import { LoadingController } from 'ionic-angular/components/loading/loading';
 import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
@@ -9,12 +10,13 @@ import { SendingService } from '../../providers/sending-service/sending-service'
     selector: 'page-sendings',
     templateUrl: 'sendings.html',
 })
-export class SendingsPage implements OnInit{
+export class SendingsPage implements OnInit {
 
     sendings: any;
     sendingsEmpty = true;
 
     constructor(public navCtrl: NavController,
+        public loadingCtrl: LoadingController,
         public sendingsService: SendingService) {
     }
 
@@ -22,13 +24,20 @@ export class SendingsPage implements OnInit{
         this.getAllActive();
     }
 
-    goToDetail(key:string) {
+    goToDetail(key: string) {
         console.log('go to detail > ', key);
+        // loader
+        let loader = this.loadingCtrl.create({
+            content: "Cargando ...",
+        });
+        loader.present();        
+        // get
         let service = this.sendingsService.getSending(key);
         service.subscribe(snapshot => {
             console.log('getSending > success');
+            loader.dismiss();
             this.navCtrl.push(SendingDetailPage, { sending: snapshot.val() });
-        });         
+        });
     }
 
     createSending() {
@@ -48,13 +57,13 @@ export class SendingsPage implements OnInit{
 
     getStatusMessage(currentStageStatus) {
         let message = '';
-        switch(currentStageStatus){
+        switch (currentStageStatus) {
             case 'created_registered':
-                message = 'Procesando ...';
+                message = 'PAGAR';
                 break;
             case 'created_paid':
                 message = 'Verificando pago';
-                break;                
+                break;
             case 'created_enabled':
             case 'live_waitoperator':
                 message = 'Aguardar Operador';
@@ -63,14 +72,14 @@ export class SendingsPage implements OnInit{
             case 'live_waitpickup':
                 message = 'Aguardar Retiro';
                 break;
-            case 'live_pickedup':                
+            case 'live_pickedup':
             case 'live_inroute':
                 message = 'En transito';
-                break;                
+                break;
             case 'live_dropped':
             case 'closed_completed':
                 message = 'Entregado';
-                break;                             
+                break;
         }
         return message;
     }
@@ -83,21 +92,21 @@ export class SendingsPage implements OnInit{
         let listRef = this.sendingsService.getAllMyActiveRef();
         listRef
             .subscribe(snapshots => {
-                console.log('sendings > getAllActive > subscribe > init');                
+                console.log('sendings > getAllActive > subscribe > init');
                 this.sendings = [];
-                if(snapshots) {
+                if (snapshots) {
                     snapshots.forEach(snapshot => {
                         let key = snapshot.key;
                         let item = {
                             key: key,
                             data: snapshot.val(),
                         };
-                        this.sendings.push(item); 
+                        this.sendings.push(item);
                     });
                 }
-                if(this.sendings.length > 0) {
+                if (this.sendings.length > 0) {
                     this.sendingsEmpty = false;
-                }else{
+                } else {
                     this.sendingsEmpty = true;
                 }
             });

@@ -18,11 +18,17 @@ Ionic APP
 ### PROVIDERS / SERVICES
 
     - SENDING SERVICE
-        
+
+    - GATEWAY PAYMENTS
+        MERCADOPAGO
+                    
 
 
 
 ### VALIDATORS
+
+
+
 
 
 

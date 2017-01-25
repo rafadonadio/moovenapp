@@ -53,6 +53,7 @@ import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
+import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
@@ -175,7 +176,8 @@ const myFirebaseAuthConfig = {
     UsersService,
     GoogleMapsService,
     DateService,
-    HashService
+    HashService,
+    MercadopagoService
   ],
 })
 export class AppModule {}

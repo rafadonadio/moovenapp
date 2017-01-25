@@ -45,12 +45,15 @@
                 <ion-icon name="card" item-left></ion-icon>
                 <h3>Pago</h3>
                 <p>Se debitará ${{ sending.price }} de tu cuenta</p>
-                <ion-icon name="time" item-right></ion-icon>
+                <button ion-button item-right color="danger">Pagar</button>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending._stages.created.status.paid.set==true">
                 <ion-icon name="card" item-left></ion-icon>
                 <h3>Pago</h3>
-                <p>Se ha debitado ${{ sending.price }} de tu cuenta</p>
+                <p>Se debitó ${{ sending.price }} de tu cuenta</p>
+                <p *ngIf="sending._stages.created.status.enabled.set==false">
+                    <em>** En proceso de aprobación</em>
+                </p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
@@ -59,7 +62,7 @@
             <ion-item text-wrap no-lines *ngIf="sending._stages.live.status.gotoperator.set==false">
                 <ion-icon name="person" item-left></ion-icon>
                 <h3>Operador</h3>
-                <p>Aguardando confirmación de operador </p>
+                <p>Aguardando Operador </p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending._stages.live.status.gotoperator.set==true">
