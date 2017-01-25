@@ -50,7 +50,7 @@
                 </ion-icon>
                 <ion-icon name="alert" item-left [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
                 </ion-icon>
-                <ion-note item-right>{{ getStatusMessage(item.data._currentStage_Status) }}</ion-note>
+                <ion-note item-right color="{{ getStatusMessage(item.data._currentStage_Status).color }}">{{ getStatusMessage(item.data._currentStage_Status).message }}</ion-note>
             </ion-item>
         </ion-card>
     </ion-list>

@@ -56,32 +56,36 @@ export class SendingsPage implements OnInit {
     }
 
     getStatusMessage(currentStageStatus) {
-        let message = '';
+        let data = {
+            message: '',
+            color: 'primary'
+        };
         switch (currentStageStatus) {
             case 'created_registered':
-                message = 'PAGAR';
+                data.message = 'PAGAR';
+                data.color = 'danger';
                 break;
             case 'created_paid':
-                message = 'Verificando pago';
+                data.message = 'Verificando pago';
                 break;
             case 'created_enabled':
             case 'live_waitoperator':
-                message = 'Aguardar Operador';
+                data.message = 'Aguardar Operador';
                 break;
             case 'live_gotoperator':
             case 'live_waitpickup':
-                message = 'Aguardar Retiro';
+                data.message = 'Aguardar Retiro';
                 break;
             case 'live_pickedup':
             case 'live_inroute':
-                message = 'En transito';
+                data.message = 'En transito';
                 break;
             case 'live_dropped':
             case 'closed_completed':
-                message = 'Entregado';
+                data.message = 'Entregado';
                 break;
         }
-        return message;
+        return data;
     }
 
     /**

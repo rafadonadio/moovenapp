@@ -46,10 +46,10 @@ page-sendings {
     }
     ion-card ion-item.footer ion-icon.active,
     ion-card ion-item.footer ion-icon[item-right],
-    ion-card ion-item.footer ion-note{
-        color: color($colors, primary); 
-    }    
+    // ion-card ion-item.footer ion-note{
+    //     color: color($colors, primary); 
+    // }    
     ion-card ion-item.footer.item-md > .item-inner{
-        margin-left: 10px;
+        margin-left: 5px;
     }
 }
