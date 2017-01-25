@@ -4,6 +4,8 @@
   "homepage": "http://moovenapp.com/",
   "private": true,
   "scripts": {
+    "build": "ionic-app-scripts build",
+    "clean": "ionic-app-scripts clean",      
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve"
   },
@@ -23,8 +25,8 @@
     "angularfire2": "^2.0.0-beta.7",
     "firebase": "^3.6.6",
     "hashids": "^1.1.1",
-    "ionic-angular": "2.0.0-rc.5",
-    "ionic-native": "2.2.11",
+    "ionic-angular": "2.0.0-rc.6",
+    "ionic-native": "2.4.1",
     "ionicons": "3.0.0",
     "moment": "^2.15.2",
     "rxjs": "5.0.0-beta.12",
