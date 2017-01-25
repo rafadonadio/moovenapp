@@ -56,14 +56,16 @@ export class SendingsPage implements OnInit {
     }
 
     getStatusMessage(currentStageStatus) {
-        let data = {
+        let data:any = {
             message: '',
-            color: 'primary'
+            color: 'primary',
+            mode: 'note'
         };
         switch (currentStageStatus) {
             case 'created_registered':
                 data.message = 'PAGAR';
                 data.color = 'danger';
+                data.mode = 'button';
                 break;
             case 'created_paid':
                 data.message = 'Verificando pago';
