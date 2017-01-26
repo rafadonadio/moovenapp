@@ -24,12 +24,12 @@
         </button>
     </ion-list>
     <ion-list *ngFor="let item of sendings">
-        <ion-card (click)="goToDetail(item.key)">
+        <ion-card>
             <ion-item class="header">
                 <h2>{{ item.data.objectShortName | capitalizePipe }}</h2>
                 <ion-note item-right>#{{ item.data.publicId }}</ion-note>
             </ion-item>
-            <ion-item class="content">
+            <ion-item class="content" (click)="goToDetail(item.key)">
                 <p><span>Desde</span> {{ item.data.pickupAddressStreetShort }} {{ item.data.pickupAddressNumber }}, {{ item.data.pickupAddressCityShort }}</p>
                 <p><span>Hasta</span> {{ item.data.dropAddressStreetShort }} {{ item.data.dropAddressNumber }}, {{ item.data.dropAddressCityShort }}</p>
                 <p><span><small> {{ item.data.timestamp | ts2datePipe }}</small></span></p>
@@ -57,6 +57,7 @@
                 <button ion-button
                     *ngIf="getStatusMessage(item.data._currentStage_Status).mode=='button'"
                     item-right color="{{ getStatusMessage(item.data._currentStage_Status).color }}"
+                    (click)="goToCheckout(item.key)"
                     >{{ getStatusMessage(item.data._currentStage_Status).message }}</button>                    
             </ion-item>
         </ion-card>

@@ -1,0 +1,105 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons start>
+            <button ion-button (click)="goToSendings()">
+                <ion-icon name="close"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>Pagar Servicio</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-list>
+        <ion-item-divider>#{{ sending.publicId }}</ion-item-divider>          
+        <div class="map-container">
+            <div id="mapf4"></div>
+        </div>        
+        <ion-list-header>Envío</ion-list-header>
+        <ion-item no-lines>
+            <ion-icon name="pin" item-left></ion-icon>
+            <p>Distancia *<br><small>* aproximada en vehículo</small><p>
+            <h2>{{ sending.routeDistanceTxt }}</h2>
+            <div margin></div>
+            <p>Duración *<br><small>* estimada a modo de referencia</small><p>
+            <h2>{{ sending.routeDurationTxt }}</h2>            
+        </ion-item>
+        <ion-list-header>Objeto</ion-list-header>
+         <ion-item no-lines>
+            <img [src]="sending.objectImageDownloadUrl || 'http://placehold.it/400x300?text=SIN+FOTO'">
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="cube" item-left
+                *ngIf="sending.objectType=='caja'"></ion-icon>
+            <ion-icon name="mail" item-left
+                *ngIf="sending.objectType=='sobre'"></ion-icon>
+            <ion-icon name="qr-scanner" item-left
+                *ngIf="sending.objectType=='irregular'"></ion-icon>                                
+            <p>Descripción corta</p>
+            <h2>{{ sending.objectShortName }}</h2>
+            <div margin></div>
+            <p>Tipo de objeto</p>
+            <h2>{{ sending.objectType }}</h2>
+            <div margin></div>
+            <p>Valor declarado</p>
+            <h2 *ngIf="sending.objectDeclaredValue > 0">${{ sending.objectDeclaredValue }}</h2>
+            <h2 *ngIf="sending.objectDeclaredValue == 0">sin valor</h2>
+        </ion-item>
+        <ion-list-header>Retiro</ion-list-header>
+        <ion-item no-lines>
+            <ion-icon name="home" item-left></ion-icon>
+            <p>Dirección</p>
+            <h2>{{ sending.pickupAddressStreetShort }} {{ sending.pickupAddressNumber }}</h2>
+            <h2 *ngIf="sending.pickupAddressCityAreaLong!=''">{{ sending.pickupAddressCityAreaLong }}</h2>  
+            <h3 *ngIf="sending.pickupAddressLine2!=''">{{ sending.pickupAddressLine2 }}</h3>          
+            <h2><span *ngIf="sending.pickupAddressPostalCode!=''">({{ sending.pickupAddressPostalCode }})</span> {{ sending.pickupAddressCityLong }}</h2>
+            <h2>{{ sending.pickupAddressStateLong }}</h2>            
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="time" item-left></ion-icon>
+            <p>Banda horaria de retiro</p>
+            <h2>{{ sending.pickupTimeFrom }} a {{ sending.pickupTimeTo }}</h2>
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="person" item-left></ion-icon>
+            <p>Persona que entrega</p>
+            <h2>{{ sending.pickupPersonName }}</h2>
+            <h2>{{ sending.pickupPersonPhone }}</h2>
+            <h2>{{ sending.pickupPersonEmail }}</h2>
+        </ion-item>
+        <ion-list-header>Entrega</ion-list-header>
+        <ion-item no-lines>
+            <ion-icon name="pin" item-left></ion-icon>
+            <p>Dirección</p>
+            <h2>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h2>
+            <h2 *ngIf="sending.dropAddressCityAreaLong!=''">{{ sending.dropAddressCityAreaLong }}</h2>  
+            <h3 *ngIf="sending.dropAddressLine2!=''">{{ sending.dropAddressLine2 }}</h3>          
+            <h2><span *ngIf="sending.dropAddressPostalCode!=''">({{ sending.dropAddressPostalCode }})</span> {{ sending.dropAddressCityLong }}</h2>
+            <h2>{{ sending.dropAddressStateLong }}</h2> 
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="time" item-left></ion-icon>
+            <p>Banda horaria de retiro</p>
+            <h2>{{ sending.dropTimeFrom }} a {{ sending.dropTimeTo }}</h2>
+        </ion-item>
+        <ion-item no-lines>
+            <ion-icon name="person" item-left></ion-icon>
+            <p>Persona que recibe</p>
+            <h2>{{ sending.dropPersonName }}</h2>
+            <h2>{{ sending.dropPersonPhone }}</h2>
+            <h2>{{ sending.dropPersonEmail }}</h2>
+        </ion-item>
+        <ion-list-header>Precio</ion-list-header>
+        <ion-item no-lines>
+            <ion-icon name="card" item-left></ion-icon>
+            <p>Costo del envío</p>
+            <h2>$ {{ sending.price }}</h2>
+            <p *ngIf="sending.priceMinFareApplied">* tarifa mínima aplicada</p>
+        </ion-item>
+    </ion-list>
+    <div margin>
+        <button ion-button block color="primary" 
+            (click)="runPayment()">Pagar Servicio</button>            
+        <button ion-button block color="primary" outline margin-top 
+            (click)="goToSendings()">Volver a Servicios</button>     
+    </div>
+</ion-content>

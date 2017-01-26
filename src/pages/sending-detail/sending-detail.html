@@ -45,7 +45,7 @@
                 <ion-icon name="card" item-left></ion-icon>
                 <h3>Pago</h3>
                 <p>Se debitará ${{ sending.price }} de tu cuenta</p>
-                <button ion-button item-right color="danger">Pagar</button>
+                <button ion-button item-right color="danger" (click)="goToCheckout()">Pagar</button>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending._stages.created.status.paid.set==true">
                 <ion-icon name="card" item-left></ion-icon>

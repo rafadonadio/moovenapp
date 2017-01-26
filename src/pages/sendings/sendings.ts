@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
+import { SendingDetailCheckoutPage } from '../sending-detail-checkout/sending-detail-checkout';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
 
@@ -39,6 +40,22 @@ export class SendingsPage implements OnInit {
             this.navCtrl.push(SendingDetailPage, { sending: snapshot.val() });
         });
     }
+
+    goToCheckout(key: string) {
+        console.log('go to checkout > ', key);
+        // loader
+        let loader = this.loadingCtrl.create({
+            content: "Cargando ...",
+        });
+        loader.present();        
+        // get
+        let service = this.sendingsService.getSending(key);
+        service.subscribe(snapshot => {
+            console.log('getSending > success');
+            loader.dismiss();
+            this.navCtrl.push(SendingDetailCheckoutPage, { sending: snapshot.val() });
+        });
+    }    
 
     createSending() {
         this.navCtrl.setRoot(SendingCreatePage);

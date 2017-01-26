@@ -18,6 +18,7 @@ import { SendingCreate2Page } from '../pages/sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../pages/sending-create-3/sending-create-3';
 import { SendingCreate4Page } from '../pages/sending-create-4/sending-create-4';
 import { SendingDetailPage } from '../pages/sending-detail/sending-detail';
+import { SendingDetailCheckoutPage } from '../pages/sending-detail-checkout/sending-detail-checkout';
 import { SendingsPage } from '../pages/sendings/sendings';
 import { SettingsPage } from '../pages/settings/settings';
 import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover';
@@ -101,6 +102,7 @@ const myFirebaseAuthConfig = {
     SendingCreate3Page,
     SendingCreate4Page,
     SendingDetailPage,
+    SendingDetailCheckoutPage,
     SendingsPage,
     SettingsPage,
     SettingsPopoverPage,
@@ -147,6 +149,7 @@ const myFirebaseAuthConfig = {
     ShipmentCreatePage,
     ShipmentCreate2Page,
     ShipmentDetailPage,
+    SendingDetailCheckoutPage,
     ShipmentsPage,
     SignupPage,
     SignupMergePage,
