@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
-import { SendingDetailCheckoutPage } from '../sending-detail-checkout/sending-detail-checkout';
+import { CheckoutPage } from '../checkout/checkout';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
 
@@ -53,7 +53,7 @@ export class SendingsPage implements OnInit {
         service.subscribe(snapshot => {
             console.log('getSending > success');
             loader.dismiss();
-            this.navCtrl.push(SendingDetailCheckoutPage, { sending: snapshot.val() });
+            this.navCtrl.push(CheckoutPage, { sending: snapshot.val() });
         });
     }    
 

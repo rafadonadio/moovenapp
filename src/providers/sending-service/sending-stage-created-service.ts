@@ -1,4 +1,3 @@
-import { SendingPaymentService } from './sending-payment-service';
 import { Injectable } from '@angular/core';
 import {
     SENDING_CFG,
@@ -25,8 +24,7 @@ export class SendingStageCreatedService {
         public dbSrv: SendingDbService,
         public stagesSrv: SendingStagesService,
         public reqSrv: SendingRequestService,
-        public notificationsSrv:SendingNotificationsService,
-        public paySrv: SendingPaymentService) {
+        public notificationsSrv:SendingNotificationsService) {
 
     }
 
@@ -90,12 +88,11 @@ export class SendingStageCreatedService {
     }
 
     // pay sending
-    pay(sendingId:string, userId:string):Promise<any> {    
-        console.info('processPayment > start');
+    paid(sendingId:string, userId:string):Promise<any> {    
+        console.info('set sending paid > start');
         // aux
         let steps = {
             get: false,
-            payment: false,
             update: false,
             updateDb: false
         };
@@ -106,18 +103,7 @@ export class SendingStageCreatedService {
                     console.log('getSendingbyIdOnce > success ', sendingId);
                     steps.get = true;
                     sending = snapshot.val();
-                    // proccess payment
-                    return this.paySrv.checkout();
-                })
-                .then((result) => {
-                    console.log('proccesPayment > success ', result);
-                    if(result.completed == true){
-                        steps.payment = true;
-                    }else{
-                        steps.payment = false;
-                        resolve(steps);
-                    }
-                    //update CREATED to PAID 
+                    //update REGISTERED to PAID 
                     let timestamp:any = firebase.database.ServerValue.TIMESTAMP; 
                     let currentStage = CFG.STAGE.CREATED.ID;
                     let currentStatus = CFG.STAGE.CREATED.STATUS.PAID;

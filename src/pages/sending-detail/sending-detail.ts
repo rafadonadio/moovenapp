@@ -2,7 +2,7 @@ import { SendingRequest } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, Platform, AlertController, ActionSheetController } from 'ionic-angular';
 
-import { SendingDetailCheckoutPage } from '../sending-detail-checkout/sending-detail-checkout';
+import { CheckoutPage } from '../checkout/checkout';
 
 @Component({
     selector: 'page-sending-detail',
@@ -51,7 +51,7 @@ export class SendingDetailPage implements OnInit {
 
     goToCheckout() {
         console.log('go to checkout > ');
-        this.navCtrl.push(SendingDetailCheckoutPage, { sending: this.sending });
+        this.navCtrl.push(CheckoutPage, { sending: this.sending });
     }
 
     openActionSh() {

@@ -1,3 +1,4 @@
+import { StreamingMedia } from 'ionic-native/dist/esm';
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
@@ -76,7 +77,8 @@ export class MyApp{
         /**
          *  FIREBASE AUTH OBSERVER
          */
-        af.auth.subscribe( user => {
+        // fix to avoid Exception on promise false - 
+        const stream = af.auth.subscribe( user => {
             console.info('__authStateChanged');
             if (user) {
                 console.log('signedIn > user.uid: ', user.uid);
@@ -85,13 +87,14 @@ export class MyApp{
                 this.runUserAccountVerification();
                 // go
                 this.nav.setRoot(SendingsPage);
+                stream.unsubscribe();
             } else {
                 // If there's no user logged in send him to the StartPage
                 console.log('authStateChanged > no user signed in', user);
                 this.nav.setRoot(StartPage);
+                stream.unsubscribe();
             }
         });        
-
     }
 
     /**

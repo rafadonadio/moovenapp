@@ -1,0 +1,28 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons start>
+            <button ion-button (click)="goToSendings()">
+                <ion-icon name="close"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>Pagar</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-item-divider>Servicio #{{ sending.publicId }}</ion-item-divider>
+    <ion-list padding>
+        <ion-item>
+            <ion-label color="primary" stacked>Número de la tarjeta</ion-label>
+            <ion-input type="text" placeholder="Número de tarjeta"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label color="primary" stacked>Código de seguridad</ion-label>
+            <ion-input type="password" placeholder="Pin de seguridad"></ion-input>
+        </ion-item>        
+
+    </ion-list>
+    <div margin>
+        <button ion-button block color="primary" (click)="runPayment()">Pagar</button>
+        <button ion-button block color="primary" outline margin-top (click)="goToSendings()">Volver a Servicios</button>
+    </div>
+</ion-content>

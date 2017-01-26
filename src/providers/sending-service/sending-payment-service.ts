@@ -1,3 +1,4 @@
+import { MercadopagoService } from '../payment-gateways/mercadopago-service';
 import { Injectable } from '@angular/core';
 import {
     SENDING_CFG,
@@ -15,20 +16,29 @@ const CFG = SENDING_CFG;
 export class SendingPaymentService {
 
     constructor(public dbSrv: SendingDbService,
-        public stagesSrv: SendingStagesService) {}
+        public stagesSrv: SendingStagesService,
+        public mpagoSrv: MercadopagoService) {}
 
     // run payment
     checkout() {
         console.info('checkout > start');
         // aux
-        let steps = {
-            payment: false,
-            insertDb: false
-        };
+        let payment = {
+            id:'',
+            transaction: '',
+            status: '',
+            completed: false
+        }
         return new Promise((resolve, reject) => {
-            this.processPayment()
+            this.mpagoSrv.createPayment()
                 .then((result) => {
-                    resolve(result);
+                    //
+                    console.log('processPayment > ', result);
+                    payment.id = '55555555555';
+                    payment.transaction = '666666666666';
+                    payment.status = 'pending';
+                    payment.completed = false;
+                    resolve(payment);
                 })
                 .catch((error) => {
                     console.log('processPayment', error);
@@ -37,27 +47,5 @@ export class SendingPaymentService {
         });         
     }
 
-    // run payment
-    private processPayment() {
-        let payment = {
-            id:'',
-            transaction: '',
-            status: '',
-            completed: false
-        }
-        return new Promise((resolve, reject) => {
-
-            // ******* simulate ********
-            setTimeout(() => {
-                console.log('payment ok!, continue');
-                payment.id = '5484585824';
-                payment.transaction = 'oiu6n43uin6y34c3h5f32fh6';
-                payment.status = 'pending';
-                payment.completed = true;
-                resolve(payment);
-            },3000);             
-
-        });
-    }
-
 }
+

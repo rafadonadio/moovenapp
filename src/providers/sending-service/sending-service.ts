@@ -58,9 +58,13 @@ export class SendingService {
         return this.stageCreatedSrv.register(sending, this.user.uid);
     }
 
-    // pay sending
-    pay(sendingId:string):Promise<any> {    
-        return this.stageCreatedSrv.pay(sendingId, this.user.uid);       
+    checkout():Promise<any> {
+        return this.paySrv.checkout();
+    }
+
+    // set as paid
+    paid(sendingId:string):Promise<any> {    
+        return this.stageCreatedSrv.paid(sendingId, this.user.uid);       
     }
 
     enable(sendingId:string):Promise<any>  {

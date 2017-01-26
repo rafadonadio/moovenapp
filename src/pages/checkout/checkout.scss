@@ -1,5 +1,4 @@
-page-sending-detail-checkout {
-
+page-checkout {
     ion-toolbar.toolbar-md ion-title span,
     ion-toolbar.toolbar-ios ion-title span{
         font-weight: 200;
@@ -47,8 +46,4 @@ page-sending-detail-checkout {
         color: color($colors, primary);
     }     
 
-    #mapf4 {
-        height: 250px;
-        width: 100%;
-    }
 }

@@ -241,7 +241,7 @@ export class SendingCreate4Page implements OnInit {
         });
         loader.present();
         // pay
-        this.sendings.pay(this.sendingId)
+        this.sendings.checkout()
             .then((result) => {
                 console.log('payment ok', result);
                 this.sendingPayed = true;
