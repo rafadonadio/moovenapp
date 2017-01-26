@@ -180,7 +180,7 @@ export class MyApp{
         if(this.userAccount === false) {
             console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
         }else{
-            console.info('__auditAccountEmailIsVerified');
+            console.info('__auditAccountEmailIsVerified > (this.userAccount)', this.userAccount);
             let ref = this.usersService.getRef_AccountEmailVerification();
             ref.once('value', function(snapshot) {
                 console.log('profile.verification.email.verified == ', snapshot.val());
