@@ -27,3 +27,16 @@ export class PaymentResult {
     status:string;
     completed:boolean;
 }
+
+export class paymentMethod {
+    id:string;
+    payment_type_id:string;    
+    name:string;
+    thumbnail:string;
+    secure_thumbnail:string;
+    additional_info_needed:Array<any>;
+    max_allowed_amount:number;
+    min_allowed_amount:number;
+    financial_institutions:Array<any>;    
+    status:string;
+}

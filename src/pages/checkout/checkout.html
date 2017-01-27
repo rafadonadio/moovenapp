@@ -9,18 +9,43 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-item-divider>Servicio #{{ sending.publicId }}</ion-item-divider>
+    <ion-item>
+        <h2>Servicio: #{{ sending.publicId }} | {{ sending.objectShortName }}</h2>
+        <p>Retiro: {{ sending.pickupTimeFrom }} a {{ sending.pickupTimeTo }}</p>
+    </ion-item>        
     <ion-list padding>
-        <ion-item>
+        <ion-item no-lines>
             <ion-label color="primary" stacked>Número de la tarjeta</ion-label>
-            <ion-input type="text" placeholder="Número de tarjeta"></ion-input>
+            <ion-input type="text" data-checkout="cardNumber" 
+                placeholder="Número de tarjeta"
+                [(ngModel)]="cardNumber"
+                (keyup)="numberInserted($event)"></ion-input>
         </ion-item>
-        <ion-item>
+        <ion-item no-lines>
             <ion-label color="primary" stacked>Código de seguridad</ion-label>
-            <ion-input type="password" placeholder="Pin de seguridad"></ion-input>
-        </ion-item>        
-
+            <ion-input type="password" data-checkout="securityCode" placeholder="Pin de seguridad"></ion-input>
+        </ion-item> 
+        <ion-item no-lines>
+            <ion-label color="primary" stacked>Mes de vencimiento</ion-label>
+            <ion-input type="text" data-checkout="cardExpirationMonth" placeholder="Mes de vencimiento en formato MM"></ion-input>
+        </ion-item> 
+        <ion-item no-lines>
+            <ion-label color="primary" stacked>Año de vencimiento</ion-label>
+            <ion-input type="text" data-checkout="cardExpirationYear" placeholder="Año en formato YYYY"></ion-input>
+        </ion-item> 
+        <ion-item no-lines>
+            <ion-label color="primary" stacked>Nombre del titular</ion-label>
+            <ion-input type="text" data-checkout="cardholderName" placeholder="Nombre del titular"></ion-input>
+        </ion-item> 
+        <ion-item no-lines>
+            <ion-label color="primary" stacked>DNI</ion-label>
+            <ion-input type="text" data-checkout="docNumber" placeholder="DNI sin puntos"></ion-input>
+        </ion-item> 
+        <input type="hidden" data-checkout="docType" value="DNI">
     </ion-list>
+    <ion-item>
+        <h2>Importe a pagar: <b>${{ sending.price }}</b></h2>
+    </ion-item>
     <div margin>
         <button ion-button block color="primary" (click)="runPayment()">Pagar</button>
         <button ion-button block color="primary" outline margin-top (click)="goToSendings()">Volver a Servicios</button>

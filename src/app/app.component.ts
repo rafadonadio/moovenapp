@@ -177,7 +177,7 @@ export class MyApp{
      */
     auditAccountEmailIsVerified(): void {
         let self = this;
-        if(this.userAccount === false) {
+        if(this.userAccount.hasOwnProperty('profile')===false) {
             console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
         }else{
             console.info('__auditAccountEmailIsVerified > (this.userAccount)', this.userAccount);

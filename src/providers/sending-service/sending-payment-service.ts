@@ -47,5 +47,9 @@ export class SendingPaymentService {
         });         
     }
 
+    guessPaymentTypeMP(input:string) {
+        return this.mpagoSrv.guessPaymentMethod(input);
+    }
+
 }
 

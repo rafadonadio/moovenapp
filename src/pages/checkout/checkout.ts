@@ -15,6 +15,7 @@ import { SendingsPage } from '../sendings/sendings';
 export class CheckoutPage implements OnInit {
 
     sending: any;
+    cardNumber:'';
 
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
@@ -28,6 +29,19 @@ export class CheckoutPage implements OnInit {
         this.sending = this.navParams.get('sending'); 
     }
 
+    numberInserted(event:any) {
+        //this.cardNumber += event.key;
+        console.log('numberInserted > ', this.cardNumber);
+        if(this.cardNumber.length > 5) {
+            this.paySrv.guessPaymentTypeMP(this.cardNumber)
+                .then((result) => {
+                    console.log('guess > ok ', result);
+                })
+                .catch((error) => {
+                    console.log('guess > error ', error);
+                });
+        }
+    }
 
     private paySending() {
         console.info('paySending > start');
@@ -67,21 +81,21 @@ export class CheckoutPage implements OnInit {
 
     goToSendings() {
         let alert = this.alertCtrl.create({
-            title: 'Volver al listado?',
-            message: 'El servicio esta creado y puedes finalizar el pago luego, hasta una hora antes de la hora de retiro.',
+            title: 'Pago incompleto',
+            message: 'El servicio queda habilitado al confirmarse el pago. Puedes finalizar el pago hasta una hora antes del horario establecido para el retiro.',
             buttons: [
                 {
-                    text: 'No',
+                    text: 'Pagar',
                     role: 'cancel',
                     handler: () => {
-                        console.log('f4 > cancel form > no, continue');
+                        console.log('checkout > cancel exit');
 
                     }
                 },
                 {
-                    text: 'Si, volver',
+                    text: 'Volver al listado',
                     handler: () => {
-                        console.log('f4 > cancel form > yes, cancel');
+                        console.log('checkout, exit');
                         this.navCtrl.setRoot(SendingsPage);
                     }
                 }
