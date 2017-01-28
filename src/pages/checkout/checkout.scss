@@ -3,7 +3,11 @@ page-checkout {
     ion-toolbar.toolbar-ios ion-title span{
         font-weight: 200;
     }
-
+    .error{
+        margin-left: 20px;
+        margin-top: 5px;
+        color: red;
+    }
     button.submit{
         margin-top: 30px;
     }

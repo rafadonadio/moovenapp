@@ -3,6 +3,8 @@ import { ToastController } from 'ionic-angular/components/toast/toast';
 import { LoadingController } from 'ionic-angular/components/loading/loading';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NumberValidator } from '../../validators/number.validator';
 
 import { SendingPaymentService } from '../../providers/sending-service/sending-payment-service';
 
@@ -14,36 +16,49 @@ import { SendingsPage } from '../sendings/sendings';
 })
 export class CheckoutPage implements OnInit {
 
+    chForm:FormGroup;
     sending: any;
-    cardNumber:'';
 
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
         public paySrv: SendingPaymentService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
-        public alertCtrl: AlertController) {}
+        public alertCtrl: AlertController,
+        private fb: FormBuilder) {}
 
     ngOnInit() {
         // get sending data
         this.sending = this.navParams.get('sending'); 
+        // form
+        this.chForm = this.fb.group({
+            'cardNumber': ['', [Validators.required, Validators.maxLength(16), NumberValidator.isNumber]],
+            'securityCode': ['', [Validators.required, Validators.maxLength(4), NumberValidator.isNumber]],
+            'cardExpirationMonth': ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2), NumberValidator.isNumber]],
+            'cardExpirationYear': ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4), NumberValidator.isNumber]],            
+            'cardHolderName': ['', [Validators.required]],            
+            'docNumber': ['', [Validators.required, NumberValidator.isNumber]],
+            'docType': ['', [Validators.required]],            
+        });
     }
 
     numberInserted(event:any) {
         //this.cardNumber += event.key;
-        console.log('numberInserted > ', this.cardNumber);
-        if(this.cardNumber.length > 5) {
-            this.paySrv.guessPaymentTypeMP(this.cardNumber)
+        console.log('numberInserted > ', this.chForm.value.cardNumber);
+        if(this.chForm.controls['cardNumber'].valid && this.chForm.value.cardNumber.length > 5) {
+            this.paySrv.guessPaymentTypeMP(this.chForm.value.cardNumber)
                 .then((result) => {
                     console.log('guess > ok ', result);
                 })
                 .catch((error) => {
                     console.log('guess > error ', error);
                 });
+        }else{
+            console.log('numberInserted > !if');
         }
     }
 
-    private paySending() {
+    private runCheckout() {
         console.info('paySending > start');
         // loader effect
         let loader = this.loadingCtrl.create({
@@ -85,7 +100,7 @@ export class CheckoutPage implements OnInit {
             message: 'El servicio queda habilitado al confirmarse el pago. Puedes finalizar el pago hasta una hora antes del horario establecido para el retiro.',
             buttons: [
                 {
-                    text: 'Pagar',
+                    text: 'Continuar con el Pago',
                     role: 'cancel',
                     handler: () => {
                         console.log('checkout > cancel exit');
