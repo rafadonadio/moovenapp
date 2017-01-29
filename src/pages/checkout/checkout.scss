@@ -7,6 +7,7 @@ page-checkout {
         margin-left: 20px;
         margin-top: 5px;
         color: red;
+        margin-left: 104px;
     }
     button.submit{
         margin-top: 30px;
@@ -49,5 +50,11 @@ page-checkout {
     ion-list.list-ios ion-item ion-label h2{
         color: color($colors, primary);
     }     
-
+    div.input-item-left{
+        display: inline-block;
+        text-align: center;
+        vertical-align: center;
+        width:80px;
+        height:100%;
+    }
 }

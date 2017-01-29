@@ -29,14 +29,23 @@ export class PaymentResult {
 }
 
 export class paymentMethod {
+    // attributes from API
+    // https://www.mercadopago.com.ar/developers/en/api-docs/custom-checkout/payment-methods/
     id:string;
-    payment_type_id:string;    
     name:string;
-    thumbnail:string;
-    secure_thumbnail:string;
-    additional_info_needed:Array<any>;
-    max_allowed_amount:number;
-    min_allowed_amount:number;
-    financial_institutions:Array<any>;    
+    payment_type_id:string;    
     status:string;
+    secure_thumbnail:string;  
+    thumbnail:string;
+    deferred_capture:string;
+    //settings:any; // object, if needed will set
+    additional_info_needed:Array<any>;
+    min_allowed_amount:number;
+    max_allowed_amount:number;
+    accreditation_time:number;    
+    financial_institutions:Array<any>;    
+    // custom
+    _response_status:number;
+    _error:string;
+    _message:string;
 }

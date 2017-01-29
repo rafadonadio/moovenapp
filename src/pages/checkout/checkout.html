@@ -20,30 +20,38 @@
         <ion-list-header>Pagar con Tarjeta de Crédito</ion-list-header>        
 
         <ion-item no-lines>
+            <div class="input-item-left" item-left>
+                <img [src]="cardThumbnail">
+            </div>            
             <ion-label color="primary" stacked>Número de la tarjeta</ion-label>
-            <ion-input type="text" data-checkout="cardNumber" 
+            <ion-input type="text" data-checkout="cardNumber"
                 placeholder="Número de tarjeta"
                 formControlName="cardNumber"
                 (keyup)="numberInserted($event)"></ion-input>
         </ion-item>
         <div class="error"
-            *ngIf="chForm.get('cardNumber').hasError('required') && chForm.get('cardNumber').touched"
+            *ngIf="chForm.get('cardNumber').hasError('required') && (chForm.get('cardNumber').touched || showRequired)"
             >Ingresa el nro de la tarjeta</div>
         <div class="error"
             *ngIf="chForm.get('cardNumber').hasError('maxlength')"
             >Máximo 16 dígitos</div>    
         <div class="error"
             *ngIf="chForm.get('cardNumber').hasError('isNumber') && !chForm.get('cardNumber').hasError('required')"
-            >Solo números, sin espacios</div>                        
+            >Solo números, sin espacios</div>  
+        <div class="error"
+            *ngIf="invalidCardNumber"
+            >Número de tarjeta inválido para pagos</div>                                    
 
         <ion-item no-lines>
+            <div class="input-item-left" item-left>
+            </div>             
             <ion-label color="primary" stacked>Código de seguridad</ion-label>
             <ion-input type="password" data-checkout="securityCode" 
                 formControlName="securityCode"
                 placeholder="Pin de seguridad"></ion-input>
         </ion-item> 
         <div class="error"
-            *ngIf="chForm.get('securityCode').hasError('required') && chForm.get('securityCode').touched"
+            *ngIf="chForm.get('securityCode').hasError('required') && (chForm.get('securityCode').touched || showRequired)"
             >Ingresa el código de seguridad</div>
         <div class="error"
             *ngIf="chForm.get('securityCode').hasError('maxlength')"
@@ -53,13 +61,15 @@
             >Solo números</div>    
 
         <ion-item no-lines>
+            <div class="input-item-left" item-left>
+            </div>                         
             <ion-label color="primary" stacked>Mes de vencimiento</ion-label>
             <ion-input type="text" data-checkout="cardExpirationMonth" 
                 formControlName="cardExpirationMonth"
-                placeholder="Mes de vencimiento en formato MM"></ion-input>
+                placeholder="Mes en formato MM"></ion-input>
         </ion-item> 
         <div class="error"
-            *ngIf="chForm.get('cardExpirationMonth').hasError('required') && chForm.get('cardExpirationMonth').touched"
+            *ngIf="chForm.get('cardExpirationMonth').hasError('required') && (chForm.get('cardExpirationMonth').touched || showRequired)"
             >Ingresa el mes de vencimiento en formato MM</div>
         <div class="error"
             *ngIf="chForm.get('cardExpirationMonth').hasError('maxlength') || chForm.get('cardExpirationMonth').hasError('minlength') && chForm.get('cardExpirationMonth').touched"
@@ -69,13 +79,15 @@
             >Solo números</div>  
 
         <ion-item no-lines>
+            <div class="input-item-left" item-left>
+            </div>                         
             <ion-label color="primary" stacked>Año de vencimiento</ion-label>
             <ion-input type="text" data-checkout="cardExpirationYear" 
                 formControlName="cardExpirationYear"
                 placeholder="Año en formato YYYY"></ion-input>
         </ion-item> 
         <div class="error"
-            *ngIf="chForm.get('cardExpirationYear').hasError('required') && chForm.get('cardExpirationYear').touched"
+            *ngIf="chForm.get('cardExpirationYear').hasError('required') && (chForm.get('cardExpirationYear').touched || showRequired)"
             >Ingresa el año de vencimiento en formato YYYY</div>
         <div class="error"
             *ngIf="chForm.get('cardExpirationYear').hasError('maxlength') || chForm.get('cardExpirationYear').hasError('minlength') && chForm.get('cardExpirationYear').touched"
@@ -85,23 +97,27 @@
             >Solo números</div> 
 
         <ion-item no-lines>
+            <div class="input-item-left" item-left>
+            </div>                         
             <ion-label color="primary" stacked>Nombre titular de la tarjeta</ion-label>
             <ion-input type="text" data-checkout="cardHolderName" 
                 formControlName="cardHolderName"
                 placeholder="Nombre del titular"></ion-input>
         </ion-item> 
         <div class="error"
-            *ngIf="chForm.get('cardHolderName').hasError('required') && chForm.get('cardHolderName').touched"
+            *ngIf="chForm.get('cardHolderName').hasError('required') && (chForm.get('cardHolderName').touched || showRequired)"
             >Ingresa el nombre del titular de la tarjeta</div>        
 
         <ion-item no-lines margin-bottom>
+            <div class="input-item-left" item-left>
+            </div>                         
             <ion-label color="primary" stacked>DNI</ion-label>
             <ion-input type="text" data-checkout="docNumber" 
                 formControlName="docNumber"
                 placeholder="DNI sin puntos"></ion-input>
         </ion-item> 
         <div class="error"
-            *ngIf="chForm.get('docNumber').hasError('required') && chForm.get('docNumber').touched"
+            *ngIf="chForm.get('docNumber').hasError('required') && (chForm.get('docNumber').touched || showRequired)"
             >Ingresa el dni</div>
         <div class="error"
             *ngIf="chForm.get('docNumber').hasError('isNumber') && !chForm.get('docNumber').hasError('required')"
@@ -110,8 +126,8 @@
         <input type="hidden" 
             data-checkout="docType" 
             formControlName="docType"
-            value="DNI">
-        <ion-list-header text-center>Importe a pagar: <b>${{ sending.price }}</b></ion-list-header>  
+            [(ngModel)]="docType">
+        <ion-list-header text-center margin-top>Importe a pagar: <b>${{ sending.price }}</b></ion-list-header>  
     </ion-list>
     <div margin>
         <button ion-button type="submit" block color="primary">Pagar</button>

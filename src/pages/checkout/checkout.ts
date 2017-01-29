@@ -10,6 +10,8 @@ import { SendingPaymentService } from '../../providers/sending-service/sending-p
 
 import { SendingsPage } from '../sendings/sendings';
 
+const CC_IMG = 'assets/img/credit-card-sm.png';
+
 @Component({
     selector: 'page-checkout',
     templateUrl: 'checkout.html'
@@ -18,6 +20,10 @@ export class CheckoutPage implements OnInit {
 
     chForm:FormGroup;
     sending: any;
+    docType:string = "DNI";
+    invalidCardNumber:boolean = false;
+    cardThumbnail:string;
+    showRequired:boolean;
 
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
@@ -40,18 +46,27 @@ export class CheckoutPage implements OnInit {
             'docNumber': ['', [Validators.required, NumberValidator.isNumber]],
             'docType': ['', [Validators.required]],            
         });
+        this.setGenericCreditCardImage();
+        this.showRequired=false;
     }
 
     numberInserted(event:any) {
-        //this.cardNumber += event.key;
+        // reset invalid flag
+        this.invalidCardNumber = false;
+        this.setGenericCreditCardImage();
         console.log('numberInserted > ', this.chForm.value.cardNumber);
         if(this.chForm.controls['cardNumber'].valid && this.chForm.value.cardNumber.length > 5) {
             this.paySrv.guessPaymentTypeMP(this.chForm.value.cardNumber)
-                .then((result) => {
+                .then((result:any) => {
                     console.log('guess > ok ', result);
+                    if(result._response_status==200){
+                        this.cardThumbnail = result.thumbnail;
+                    }else{
+                        this.invalidCardNumber=true;
+                    }
                 })
                 .catch((error) => {
-                    console.log('guess > error ', error);
+                    console.error('guess > error ', error);
                 });
         }else{
             console.log('numberInserted > !if');
@@ -59,39 +74,45 @@ export class CheckoutPage implements OnInit {
     }
 
     private runCheckout() {
-        console.info('paySending > start');
+        console.info('runCheckout > start', this.chForm.value);
+        if(!this.chForm.valid) {
+            console.info('form invalid');
+            this.showRequired=true;
+        }else{
+            console.info('form valid');
+        }
         // loader effect
-        let loader = this.loadingCtrl.create({
-            content: 'procesando pago ...',
-        });
-        loader.present();
-        // pay
-        this.paySrv.checkout()
-            .then((result) => {
-                console.log('payment ok', result);
-                loader.dismiss()
-                    .then(() => {
-                        //this.sendingPayed = true;
-                        //this.navCtrl.setRoot(SendingsPage);
-                        this.presentToast();
-                    });
-            })
-            .catch((error) => {
-                console.log('f4 > payment sending > error', error);
-                loader.dismiss()
-                    .then(() => {
-                        let alertError = this.alertCtrl.create({
-                            title: 'Error con el pago',
-                            subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente.',
-                            buttons: [{
-                                text: 'Cerrar',
-                                role: 'cancel'
-                            }]
-                        });
-                        // show
-                        alertError.present();
-                    });
-            });        
+        // let loader = this.loadingCtrl.create({
+        //     content: 'procesando pago ...',
+        // });
+        // loader.present();
+        // // pay
+        // this.paySrv.checkout()
+        //     .then((result) => {
+        //         console.log('payment ok', result);
+        //         loader.dismiss()
+        //             .then(() => {
+        //                 //this.sendingPayed = true;
+        //                 //this.navCtrl.setRoot(SendingsPage);
+        //                 this.presentToast();
+        //             });
+        //     })
+        //     .catch((error) => {
+        //         console.log('f4 > payment sending > error', error);
+        //         loader.dismiss()
+        //             .then(() => {
+        //                 let alertError = this.alertCtrl.create({
+        //                     title: 'Error con el pago',
+        //                     subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente.',
+        //                     buttons: [{
+        //                         text: 'Cerrar',
+        //                         role: 'cancel'
+        //                     }]
+        //                 });
+        //                 // show
+        //                 alertError.present();
+        //             });
+        //     });        
     }
 
     goToSendings() {
@@ -131,6 +152,10 @@ export class CheckoutPage implements OnInit {
         });
 
         toast.present();
+    }
+
+    private setGenericCreditCardImage() {
+        this.cardThumbnail = CC_IMG;
     }
 
 }

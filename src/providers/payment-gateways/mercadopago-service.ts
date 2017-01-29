@@ -34,8 +34,9 @@ export class MercadopagoService {
         Mercadopago.getPaymentMethod({
                 "bin": input
             }, function (status, response){
-                if (status == 200) {
-                    result = self.getPaymentMethodResponse(response);
+                console.log('guessPaymentMethod > status ', status);
+                if(status==200 || status==400) {
+                    result = self.getPaymentMethodResponse(status, response);
                     resolve(result);
                 }else{
                     reject(status);
@@ -71,24 +72,42 @@ export class MercadopagoService {
         Mercadopago.setPublishableKey(CFG.PUBLIC_KEY.SANDBOX.PUBLIC_KEY);
     }
 
-    private getPaymentMethodResponse(response:any) {
+    private getPaymentMethodResponse(status:number, response:any) {
         let result:paymentMethod = {
             id:'',
-            payment_type_id:'',    
             name:'',
+            payment_type_id:'',    
+            status:'',
+            secure_thumbnail:'',            
             thumbnail:'',
-            secure_thumbnail:'',
+            deferred_capture:'',
             additional_info_needed:[],
+            min_allowed_amount:0,            
             max_allowed_amount:0,
-            min_allowed_amount:0,
+            accreditation_time:0,
             financial_institutions:[],    
-            status:'',            
+            _response_status: 0,
+            _error:'',     
+            _message:''       
         }        
-        for(let index in result) {
-            if(response[0][index]!=='undefined') {
-                result[index] = response[0][index];
-            }
+        switch(status) {
+            case 200:
+                for(let index in result) {
+                    if(response[0][index]!=='undefined') {
+                        result[index] = response[0][index];
+                    }
+                }
+                break;
+            case 400:
+                for(let index in result) {
+                    if(response[index]!=='undefined') {
+                        result[index] = response[index];
+                    }
+                }
+                break;                
         }
+        // set status
+        result._response_status = status;
         return result;
     }
 
