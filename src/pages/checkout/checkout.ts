@@ -1,3 +1,5 @@
+import { CardTokenData } from '../../providers/payment-gateways/mercadopago-model';
+import { DateService } from '../../providers/date-service/date-service';
 import { AlertController } from 'ionic-angular/components/alert/alert';
 import { ToastController } from 'ionic-angular/components/toast/toast';
 import { LoadingController } from 'ionic-angular/components/loading/loading';
@@ -24,6 +26,22 @@ export class CheckoutPage implements OnInit {
     invalidCardNumber:boolean = false;
     cardThumbnail:string;
     showRequired:boolean;
+    cardExpiration:string;
+
+    // MercadoPago tokenData
+    tokenData:CardTokenData;
+    
+    // aux
+    dates = {
+        current: {
+            timestamp: 0,
+            standard: '', // YYYY-MM-DD
+        },
+        currentplus20: {
+            timestamp: 0,
+            standard: '', // YYYY-MM-DD
+        }
+    };
 
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
@@ -31,17 +49,19 @@ export class CheckoutPage implements OnInit {
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public alertCtrl: AlertController,
-        private fb: FormBuilder) {}
+        private fb: FormBuilder,
+        private dateSrv: DateService) {}
 
     ngOnInit() {
+        this.setCurrentDates();
+        this.setDefaultDates();
         // get sending data
         this.sending = this.navParams.get('sending'); 
         // form
         this.chForm = this.fb.group({
             'cardNumber': ['', [Validators.required, Validators.maxLength(16), NumberValidator.isNumber]],
-            'securityCode': ['', [Validators.required, Validators.maxLength(4), NumberValidator.isNumber]],
-            'cardExpirationMonth': ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2), NumberValidator.isNumber]],
-            'cardExpirationYear': ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4), NumberValidator.isNumber]],            
+            'securityCode': ['', [Validators.required, Validators.maxLength(4), NumberValidator.isNumber]],           
+            'cardExpiration': ['', [Validators.required]],   
             'cardHolderName': ['', [Validators.required]],            
             'docNumber': ['', [Validators.required, NumberValidator.isNumber]],
             'docType': ['', [Validators.required]],            
@@ -74,12 +94,14 @@ export class CheckoutPage implements OnInit {
     }
 
     private runCheckout() {
-        console.info('runCheckout > start', this.chForm.value);
+        console.info('runCheckout > start', this.chForm.value); 
         if(!this.chForm.valid) {
             console.info('form invalid');
             this.showRequired=true;
         }else{
             console.info('form valid');
+            this.setTokenData(this.chForm.value);  
+            console.log(this.tokenData);          
         }
         // loader effect
         // let loader = this.loadingCtrl.create({
@@ -154,8 +176,44 @@ export class CheckoutPage implements OnInit {
         toast.present();
     }
 
+    /**
+     *  CHECKOUT PREPARATION
+     */
+
+    private setTokenData(form:any) {
+        this.tokenData = {
+            cardNumber: form.cardNumber,
+            securityCode: form.securityCode,
+            cardExpirationMonth: this.dateSrv.getMonthStr(form.cardExpiration),
+            cardExpirationYear: this.dateSrv.getYearStr(form.cardExpiration),
+            cardholderName: form.cardHolderName, // card< h OR H >olderName ???
+            docType: form.docType,
+            docNumber: form.docNumber            
+        }
+    }
+
+    /**
+     *  IMAGES
+     */
+
     private setGenericCreditCardImage() {
         this.cardThumbnail = CC_IMG;
     }
 
+    /**
+     *  DATES
+     */
+
+    private setCurrentDates():void {
+        let timestamp = this.dateSrv.getUnixTimestamp();
+        this.dates.current.timestamp = timestamp;
+        this.dates.current.standard = this.dateSrv.readISO8601FromTimestamp(timestamp);
+        this.dates.currentplus20.timestamp = this.dateSrv.addTsYears(timestamp, 20);     
+        this.dates.currentplus20.standard = this.dateSrv.readISO8601FromTimestamp(this.dates.currentplus20.timestamp);               
+        console.log('setCurrentDates', this.dates);
+    }
+
+    private setDefaultDates():void {
+        this.cardExpiration = this.dates.current.standard;
+    }
 }

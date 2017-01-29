@@ -63,38 +63,15 @@
         <ion-item no-lines>
             <div class="input-item-left" item-left>
             </div>                         
-            <ion-label color="primary" stacked>Mes de vencimiento</ion-label>
-            <ion-input type="text" data-checkout="cardExpirationMonth" 
-                formControlName="cardExpirationMonth"
-                placeholder="Mes en formato MM"></ion-input>
+            <ion-label color="primary" stacked>Vencimiento</ion-label>            
+            <ion-datetime cancelText="Cancelar" doneText="Listo" 
+                displayFormat="MM YYYY"
+                pickerFormat="MM YYYY"
+                [min]="dates.current.standard"
+                [max]="dates.currentplus20.standard"
+                formControlName="cardExpiration"
+                [(ngModel)]="cardExpiration"></ion-datetime>
         </ion-item> 
-        <div class="error"
-            *ngIf="chForm.get('cardExpirationMonth').hasError('required') && (chForm.get('cardExpirationMonth').touched || showRequired)"
-            >Ingresa el mes de vencimiento en formato MM</div>
-        <div class="error"
-            *ngIf="chForm.get('cardExpirationMonth').hasError('maxlength') || chForm.get('cardExpirationMonth').hasError('minlength') && chForm.get('cardExpirationMonth').touched"
-            >Debe ser de 2 dígitos</div>    
-        <div class="error"
-            *ngIf="chForm.get('cardExpirationMonth').hasError('isNumber') && !chForm.get('cardExpirationMonth').hasError('required')"
-            >Solo números</div>  
-
-        <ion-item no-lines>
-            <div class="input-item-left" item-left>
-            </div>                         
-            <ion-label color="primary" stacked>Año de vencimiento</ion-label>
-            <ion-input type="text" data-checkout="cardExpirationYear" 
-                formControlName="cardExpirationYear"
-                placeholder="Año en formato YYYY"></ion-input>
-        </ion-item> 
-        <div class="error"
-            *ngIf="chForm.get('cardExpirationYear').hasError('required') && (chForm.get('cardExpirationYear').touched || showRequired)"
-            >Ingresa el año de vencimiento en formato YYYY</div>
-        <div class="error"
-            *ngIf="chForm.get('cardExpirationYear').hasError('maxlength') || chForm.get('cardExpirationYear').hasError('minlength') && chForm.get('cardExpirationYear').touched"
-            >Debe ser de 4 dígitos</div>    
-        <div class="error"
-            *ngIf="chForm.get('cardExpirationYear').hasError('isNumber') && !chForm.get('cardExpirationYear').hasError('required')"
-            >Solo números</div> 
 
         <ion-item no-lines>
             <div class="input-item-left" item-left>

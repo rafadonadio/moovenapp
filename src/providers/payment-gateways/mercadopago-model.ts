@@ -49,3 +49,13 @@ export class paymentMethod {
     _error:string;
     _message:string;
 }
+
+export class CardTokenData {
+    cardNumber:string;
+    securityCode:string;
+    cardExpirationMonth:string;
+    cardExpirationYear:string;
+    cardholderName:string;
+    docType:string;
+    docNumber:string;  
+}
