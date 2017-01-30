@@ -7,6 +7,8 @@ import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password';
 
+import firebase from 'firebase';
+
 @Component({
     selector: 'page-login',
     templateUrl: 'login.html'
@@ -59,7 +61,7 @@ export class LoginPage {
             // signin
             this.users.signIn(userData)
                 .then((user) => {
-                    console.log('sign in ok > ', user.displayName);
+                    console.log('sign in ok > ', user);
                     loader.dismiss();
                 })
                 .catch((error) => {

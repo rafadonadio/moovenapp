@@ -16,6 +16,8 @@ import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
 import { USER_CFG } from '../models/user-model';
 
+import firebase from 'firebase';
+
 declare var window: any;
 
 const PROFILE_BASIC = USER_CFG.ACCOUNT.PROFILE.LIST.BASIC;
@@ -78,8 +80,8 @@ export class MyApp{
          *  FIREBASE AUTH OBSERVER
          */
         // fix to avoid Exception on promise false - 
-        const stream = af.auth.subscribe( user => {
-            console.info('__authStateChanged');
+        af.auth.subscribe( user => {
+            console.info('__authStateChanged', user);
             if (user) {
                 console.log('signedIn > user.uid: ', user.uid);
                 this.setUser(user.auth);
@@ -87,12 +89,10 @@ export class MyApp{
                 this.runUserAccountVerification();
                 // go
                 this.nav.setRoot(SendingsPage);
-                stream.unsubscribe();
             } else {
                 // If there's no user logged in send him to the StartPage
                 console.log('authStateChanged > no user signed in', user);
                 this.nav.setRoot(StartPage);
-                stream.unsubscribe();
             }
         });        
     }

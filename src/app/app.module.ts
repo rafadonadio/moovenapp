@@ -67,6 +67,7 @@ const cloudSettings: CloudSettings = {
   }
 };
 
+import firebase from 'firebase';
 // AngularFire
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
 // AF2 Settings
