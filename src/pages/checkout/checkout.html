@@ -63,7 +63,7 @@
         <ion-item no-lines>
             <div class="input-item-left" item-left>
             </div>                         
-            <ion-label color="primary" stacked>Vencimiento</ion-label>            
+            <ion-label color="primary" stacked>Vencimiento de la tarjeta</ion-label>            
             <ion-datetime cancelText="Cancelar" doneText="Listo" 
                 displayFormat="MM YYYY"
                 pickerFormat="MM YYYY"
@@ -104,6 +104,11 @@
             data-checkout="docType" 
             formControlName="docType"
             [(ngModel)]="docType">
+        <input type="hidden" 
+            data-checkout="paymentMethodId" 
+            formControlName="paymentMethodId"
+            [(ngModel)]="paymentMethodId">   
+                     
         <ion-list-header text-center margin-top>Importe a pagar: <b>${{ sending.price }}</b></ion-list-header>  
     </ion-list>
     <div margin>

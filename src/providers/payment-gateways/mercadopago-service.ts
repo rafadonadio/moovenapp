@@ -1,4 +1,4 @@
-import { MERCADOPAGO_REF, paymentMethod } from '../payment-gateways/mercadopago-model';
+import { CardTokenData, MERCADOPAGO_REF, paymentMethod } from '../payment-gateways/mercadopago-model';
 import { Injectable } from '@angular/core';
 
 declare var Mercadopago:any;
@@ -44,6 +44,25 @@ export class MercadopagoService {
             });
         });
     }
+
+    // create card token for payment
+    // https://www.mercadopago.com.ar/developers/en/api-docs/custom-checkout/card-tokens/
+    createCardToken(form:CardTokenData):Promise<any> {
+        let self = this;
+        let result:any;
+        return new Promise((resolve, reject) => {
+            Mercadopago.createToken(form, function(status, response) {
+                console.log('createCardToken > status ', status, response);
+                if(status==200 || status==201 || status==400) {
+                    let result = self.getCardTokenResponse(status, response);
+                    resolve(result);
+                }else{
+                    reject(status);
+                }                
+            });
+        });          
+    }
+
 
     // get "formas de pago"
     getInstallment():Promise<any> {
@@ -111,4 +130,34 @@ export class MercadopagoService {
         return result;
     }
 
+
+    private getCardTokenResponse(status:number, response:any) {
+        let result:any = {
+            id:'',
+            public_key:'',
+            cause: [],
+            error:'',     
+            message:'',
+            _response_status: 0
+        }        
+        switch(status) {
+            case 200:
+            case 201:
+                for(let index in result) {
+                    if(response[index]!=='undefined') {
+                        result[index] = response[index];
+                    }
+                }
+                break;
+            // all errors
+            default:
+                result.cause = response.cause;
+                result.error = response.error;
+                result.message = response.message;
+                break;                
+        }
+        // set status
+        result._response_status = status;
+        return result;
+    }
 }

@@ -58,4 +58,5 @@ export class CardTokenData {
     cardholderName:string;
     docType:string;
     docNumber:string;  
+    paymentMethodId:string;
 }

@@ -20,14 +20,19 @@ const CC_IMG = 'assets/img/credit-card-sm.png';
 })
 export class CheckoutPage implements OnInit {
 
-    chForm:FormGroup;
     sending: any;
+    // form
+    chForm:FormGroup;
+    // inputs
     docType:string = "DNI";
-    invalidCardNumber:boolean = false;
-    cardThumbnail:string;
-    showRequired:boolean;
+    paymentMethodId:string = '';
     cardExpiration:string;
-
+    // flags
+    invalidCardNumber:boolean = false;
+    showRequired:boolean;
+    // helpers
+    cardThumbnail:string;
+    paymentGuess:any;
     // MercadoPago tokenData
     tokenData:CardTokenData;
     
@@ -64,7 +69,8 @@ export class CheckoutPage implements OnInit {
             'cardExpiration': ['', [Validators.required]],   
             'cardHolderName': ['', [Validators.required]],            
             'docNumber': ['', [Validators.required, NumberValidator.isNumber]],
-            'docType': ['', [Validators.required]],            
+            'docType': ['', [Validators.required]],   
+            'paymentMethodId': ['', [Validators.required]],                        
         });
         this.setGenericCreditCardImage();
         this.showRequired=false;
@@ -80,7 +86,7 @@ export class CheckoutPage implements OnInit {
                 .then((result:any) => {
                     console.log('guess > ok ', result);
                     if(result._response_status==200){
-                        this.cardThumbnail = result.thumbnail;
+                        this.setPaymentGuess(result);
                     }else{
                         this.invalidCardNumber=true;
                     }
@@ -94,7 +100,8 @@ export class CheckoutPage implements OnInit {
     }
 
     private runCheckout() {
-        console.info('runCheckout > start', this.chForm.value); 
+        console.info('runCheckout > start'); 
+        // VERIFY BEFORE GO
         if(!this.chForm.valid) {
             console.info('form invalid');
             this.showRequired=true;
@@ -103,38 +110,68 @@ export class CheckoutPage implements OnInit {
             this.setTokenData(this.chForm.value);  
             console.log(this.tokenData);          
         }
-        // loader effect
-        // let loader = this.loadingCtrl.create({
-        //     content: 'procesando pago ...',
-        // });
-        // loader.present();
-        // // pay
-        // this.paySrv.checkout()
-        //     .then((result) => {
-        //         console.log('payment ok', result);
-        //         loader.dismiss()
-        //             .then(() => {
-        //                 //this.sendingPayed = true;
-        //                 //this.navCtrl.setRoot(SendingsPage);
-        //                 this.presentToast();
-        //             });
-        //     })
-        //     .catch((error) => {
-        //         console.log('f4 > payment sending > error', error);
-        //         loader.dismiss()
-        //             .then(() => {
-        //                 let alertError = this.alertCtrl.create({
-        //                     title: 'Error con el pago',
-        //                     subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente.',
-        //                     buttons: [{
-        //                         text: 'Cerrar',
-        //                         role: 'cancel'
-        //                     }]
-        //                 });
-        //                 // show
-        //                 alertError.present();
-        //             });
-        //     });        
+        // init
+        let steps = {
+            cardToken: false,
+            payment: false,
+            updateDb: false
+        }
+
+        // OK, SHOW LOADER ...
+        let loader = this.loadingCtrl.create({
+            content: 'Procesando pago ...',
+        });
+        loader.present();
+
+        // get MercadoPago Card Token
+        this.paySrv.createCardTokenMP(this.tokenData)
+            .then((result) => {
+                loader.dismiss()
+                    .then(() => {
+                        console.log('createCardTokenMP > ', result);
+                        if(result._response_status!=200 && result._response_status!=201){
+                            let alertError = this.alertCtrl.create({
+                                title: 'Datos inválidos',
+                                subTitle: 'Por favor revisa y corrige los datos ingresados. Luego vuelve a intentar.',
+                                buttons: [{
+                                    text: 'Cerrar',
+                                    role: 'cancel'
+                                }]
+                            });
+                            // show
+                            alertError.present();
+                        }else{
+                            // card token OK
+                            steps.cardToken = true;
+                            let token = result.id;
+
+                    return true; // do the payment, return promise 
+                        }
+
+
+                        this.presentToast();
+                    });
+            })
+            .then((result) => {
+                steps.payment = true;
+                // update DB
+            })
+            .catch((error) => {
+                console.log('runCheckout > steps > ', error);
+                loader.dismiss()
+                    .then(() => {
+                        let alertError = this.alertCtrl.create({
+                            title: 'Error con el pago',
+                            subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente.',
+                            buttons: [{
+                                text: 'Cerrar',
+                                role: 'cancel'
+                            }]
+                        });
+                        // show
+                        alertError.present();
+                    });
+            });        
     }
 
     goToSendings() {
@@ -180,6 +217,14 @@ export class CheckoutPage implements OnInit {
      *  CHECKOUT PREPARATION
      */
 
+    private setPaymentGuess(result) {
+        this.paymentGuess = result;
+        this.paymentMethodId = result.id;
+        // set credit card image
+        this.cardThumbnail = result.thumbnail;
+    }
+
+    // Set token data to send to get Card Token
     private setTokenData(form:any) {
         this.tokenData = {
             cardNumber: form.cardNumber,
@@ -188,7 +233,8 @@ export class CheckoutPage implements OnInit {
             cardExpirationYear: this.dateSrv.getYearStr(form.cardExpiration),
             cardholderName: form.cardHolderName, // card< h OR H >olderName ???
             docType: form.docType,
-            docNumber: form.docNumber            
+            docNumber: form.docNumber,
+            paymentMethodId: form.paymentMethodId            
         }
     }
 
