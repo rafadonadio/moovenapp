@@ -8,6 +8,8 @@ import { ModalTosPage } from '../modal-tos/modal-tos';
 
 import { Camera } from 'ionic-native';
 
+import firebase from 'firebase';
+
 const STRG_USER_FILES = 'userFiles/';
 
 @Component({

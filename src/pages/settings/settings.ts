@@ -5,6 +5,8 @@ import { UsersService } from '../../providers/users-service/users-service';
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
 import { Camera } from 'ionic-native';
 
+import firebase from 'firebase';
+
 const STRG_USER_FILES = 'userFiles/';
 
 @Component({
