@@ -13,6 +13,11 @@ export const MERCADOPAGO_REF = {
             PUBLIC_KEY: 'APP_USR-46e41c5f-8466-4d53-9539-8300227d8a33',
             ACCESS_TOKEN: 'APP_USR-8475038305735553-012509-7721ed50a0ffd618e593d148cb075fc6__LB_LD__-17982543'
         },
+    },
+    BACKEND_SERVER: {
+        URIS: {
+            PAYMENT: '',
+        },
     }
 }
 
@@ -59,4 +64,21 @@ export class CardTokenData {
     docType:string;
     docNumber:string;  
     paymentMethodId:string;
+}
+
+export class PrepaymentData {
+    transactionAmount:number;
+    cardToken:string;
+    description:string;
+    paymentMethodId:string;
+    payerEmail:string;
+}
+
+export class PaymentData {
+    transactionAmount:number;
+    token:string;
+    description:string;
+    installments:number;
+    paymentMethodId:string;
+    payer:{email:string};
 }

@@ -1,3 +1,4 @@
+import { PrepaymentData } from '../payment-gateways/mercadopago-model';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { UserAccountSettings, UserProfileData } from '../../models/user-model';
@@ -58,8 +59,9 @@ export class SendingService {
         return this.stageCreatedSrv.register(sending, this.user.uid);
     }
 
-    checkout():Promise<any> {
-        return this.paySrv.checkout();
+    // THIS IS WRONG !!!
+    checkout(prepaymentData:PrepaymentData):Promise<any> {
+        return this.paySrv.checkoutMP(prepaymentData);
     }
 
     // set as paid

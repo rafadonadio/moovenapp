@@ -27,7 +27,7 @@
             <ion-input type="text" data-checkout="cardNumber"
                 placeholder="Número de tarjeta"
                 formControlName="cardNumber"
-                (keyup)="numberInserted($event)"></ion-input>
+                (keyup)="guessPaymentMethod($event)"></ion-input>
         </ion-item>
         <div class="error"
             *ngIf="chForm.get('cardNumber').hasError('required') && (chForm.get('cardNumber').touched || showRequired)"

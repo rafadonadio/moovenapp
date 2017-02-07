@@ -1,4 +1,5 @@
-import { CardTokenData } from '../payment-gateways/mercadopago-model';
+import { Observable } from 'rxjs';
+import { CardTokenData, PaymentData, PrepaymentData } from '../payment-gateways/mercadopago-model';
 import { MercadopagoService } from '../payment-gateways/mercadopago-service';
 import { Injectable } from '@angular/core';
 import {
@@ -20,32 +21,9 @@ export class SendingPaymentService {
         public stagesSrv: SendingStagesService,
         public mpagoSrv: MercadopagoService) {}
 
-    // run payment
-    checkout() {
-        console.info('checkout > start');
-        // aux
-        let payment = {
-            id:'',
-            transaction: '',
-            status: '',
-            completed: false
-        }
-        return new Promise((resolve, reject) => {
-            this.mpagoSrv.createPayment()
-                .then((result) => {
-                    //
-                    console.log('processPayment > ', result);
-                    payment.id = '55555555555';
-                    payment.transaction = '666666666666';
-                    payment.status = 'pending';
-                    payment.completed = false;
-                    resolve(payment);
-                })
-                .catch((error) => {
-                    console.log('processPayment', error);
-                    reject(error);
-                }); 
-        });         
+    // DO PAYMENT
+    checkoutMP(prepaymentData:PrepaymentData):Observable<any> {
+        return this.mpagoSrv.checkout(prepaymentData);        
     }
 
     guessPaymentTypeMP(input:string): Promise<any> {
@@ -55,7 +33,6 @@ export class SendingPaymentService {
     createCardTokenMP(form:CardTokenData): Promise<any> {
         return this.mpagoSrv.createCardToken(form);    
     }
-    
 
 }
 

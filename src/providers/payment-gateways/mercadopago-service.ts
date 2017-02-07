@@ -1,5 +1,13 @@
-import { CardTokenData, MERCADOPAGO_REF, paymentMethod } from '../payment-gateways/mercadopago-model';
+import {
+    CardTokenData,
+    MERCADOPAGO_REF,
+    PaymentData,
+    paymentMethod,
+    PrepaymentData
+} from '../payment-gateways/mercadopago-model';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Http, Headers, Response } from '@angular/http';
 
 declare var Mercadopago:any;
 
@@ -10,21 +18,13 @@ export class MercadopagoService {
 
     mpago:any;
 
-    constructor() {
+    constructor(private http:Http) {
         this.init();
     }
 
-    createPayment() {
-        return new Promise((resolve, reject) => {
-            this.getInstallment()
-                .then((result) => {
-                    console.log(result);
-                    resolve(result);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        });
+    checkout(prepaymentData:PrepaymentData):Observable<any> {
+        let paymentData = this.generatePaymentData(prepaymentData);
+            return this.runServerPayment(paymentData);
     }
 
     guessPaymentMethod(input:string) {
@@ -63,32 +63,40 @@ export class MercadopagoService {
         });          
     }
 
-
-    // get "formas de pago"
-    getInstallment():Promise<any> {
-        console.log('MP > getInstallment ..');
-        // Hi MP
-        return new Promise((resolve, reject) => {
-            Mercadopago.getInstallments({
-                "payment_method_id":"visa",
-                "amount": 100
-                }, function (status, response){
-                    if (status == 200) {
-                        resolve(response);
-                    }else{
-                        reject(status);
-                    }
-            });
-        });
-    }
-
-
     /**
      *  HELPERS
      */
 
     private init():void {
         Mercadopago.setPublishableKey(CFG.PUBLIC_KEY.SANDBOX.PUBLIC_KEY);
+    }
+
+    // send payament data to our server
+    // expect response with transaction result
+    private runServerPayment(data:PaymentData):Observable<any> {
+        // set header
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let tokendata = '';
+        return this.http.post('', tokendata, {headers:headers})
+                    .map((response: Response) => {
+                        return true;
+                    })
+                    .catch(this.handleHttpError);
+    }
+
+    private generatePaymentData(preData:PrepaymentData) {
+        let data:PaymentData = {
+            transactionAmount:0,
+            token: preData.cardToken,
+            description:'',
+            installments: 1, // will use 1 by default
+            paymentMethodId: '',
+            payer: {
+                email: '',
+            }
+        }
+        return data;
     }
 
     private getPaymentMethodResponse(status:number, response:any) {
@@ -160,4 +168,22 @@ export class MercadopagoService {
         result._response_status = status;
         return result;
     }
+
+    private handleHttpError (error: Response | any) {
+        // In a real world app, we might use a remote logging infrastructure
+        let err = {
+            msg:'',
+            status: 0,
+            body:''
+        };
+        if (error instanceof Response) {
+            err.body = error.text();
+            err.status = error.status
+            err.msg = `Error ${err.status}: ${error.statusText || ''}. ${err.body}`;
+        } else {
+            err.msg = error.message ? error.message : error.toString();
+        }
+        return Observable.throw(err);
+    }
+
 }

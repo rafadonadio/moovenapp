@@ -1,4 +1,6 @@
-import { CardTokenData } from '../../providers/payment-gateways/mercadopago-model';
+import { UsersService } from '../../providers/users-service/users-service';
+import { SendingRequest } from '../../models/sending-model';
+import { CardTokenData, PrepaymentData } from '../../providers/payment-gateways/mercadopago-model';
 import { DateService } from '../../providers/date-service/date-service';
 import { AlertController } from 'ionic-angular/components/alert/alert';
 import { ToastController } from 'ionic-angular/components/toast/toast';
@@ -20,7 +22,8 @@ const CC_IMG = 'assets/img/credit-card-sm.png';
 })
 export class CheckoutPage implements OnInit {
 
-    sending: any;
+    fbuser:firebase.User;
+    sending: SendingRequest;
     // form
     chForm:FormGroup;
     // inputs
@@ -55,9 +58,11 @@ export class CheckoutPage implements OnInit {
         public toastCtrl: ToastController,
         public alertCtrl: AlertController,
         private fb: FormBuilder,
-        private dateSrv: DateService) {}
+        private dateSrv: DateService,
+        private userSrv: UsersService) {}
 
     ngOnInit() {
+        this.fbuser = this.userSrv.getUser();
         this.setCurrentDates();
         this.setDefaultDates();
         // get sending data
@@ -76,7 +81,7 @@ export class CheckoutPage implements OnInit {
         this.showRequired=false;
     }
 
-    numberInserted(event:any) {
+    guessPaymentMethod(event:any) {
         // reset invalid flag
         this.invalidCardNumber = false;
         this.setGenericCreditCardImage();
@@ -99,62 +104,80 @@ export class CheckoutPage implements OnInit {
         }
     }
 
+    /**
+     *  Method: runCheckout() > PAYMENT PROCESS STEPS
+     *  1. VERIFY: if form is valid, proceed or prompt error
+     *  2. TOKEN-DATA: generate Token Data (with form data) to request Card Token
+     *  3. CARD-TOKEN: create card token with MP API
+     *  4. PREPAYMENT-DATA: generate Pre-Payment data, with token id from step 3
+     *  5. PAY: do payment > send payment request to backend server (with MP SDK deployed)
+     *  6. UPDATE-DB: update firebase DB with results
+     *  7. PROMPT: show message with results to user
+     */
     private runCheckout() {
         console.info('runCheckout > start'); 
-        // VERIFY BEFORE GO
+        // 1. VERIFY
         if(!this.chForm.valid) {
             console.info('form invalid');
             this.showRequired=true;
         }else{
             console.info('form valid');
+            // 2. TOKEN-DATA
             this.setTokenData(this.chForm.value);  
             console.log(this.tokenData);          
         }
-        // init
+        // Init steps
         let steps = {
-            cardToken: false,
-            payment: false,
+            genCardToken: false,
+            genPaymentData: false,
+            doPayment: false,
             updateDb: false
         }
-
-        // OK, SHOW LOADER ...
+        // show loader
         let loader = this.loadingCtrl.create({
             content: 'Procesando pago ...',
         });
-        loader.present();
-
-        // get MercadoPago Card Token
+        loader.present();      
+        // 3. CARD-TOKEN
         this.paySrv.createCardTokenMP(this.tokenData)
-            .then((result) => {
+            .then((cardTokenResult) => {
+                // hide loader
                 loader.dismiss()
                     .then(() => {
-                        console.log('createCardTokenMP > ', result);
-                        if(result._response_status!=200 && result._response_status!=201){
-                            let alertError = this.alertCtrl.create({
-                                title: 'Datos inválidos',
-                                subTitle: 'Por favor revisa y corrige los datos ingresados. Luego vuelve a intentar.',
-                                buttons: [{
-                                    text: 'Cerrar',
-                                    role: 'cancel'
-                                }]
-                            });
-                            // show
-                            alertError.present();
+                        console.log('createCardTokenMP > ', cardTokenResult);
+                        if(cardTokenResult._response_status!=200 
+                            && cardTokenResult._response_status!=201){
+                            // error, show
+                            this.showCardTokenErrors();
                         }else{
-                            // card token OK
-                            steps.cardToken = true;
-                            let token = result.id;
+                            // good, continue
+                            steps.genCardToken = true;
+                            // 4. PAYMENT-DATA
+                            let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
+                            // 5: PAY
+                            this.paySrv.checkoutMP(prepaymentData)
+                                .subscribe(
+                                    result => {
+                                        if (result === true) {
+                                            // successful                        
+                                                        
+                                        } else {
+                                            // failed
 
-                    return true; // do the payment, return promise 
+                                        }                      
+                                    },
+                                    error => {
+                                        console.log('login > error');
+                                    }
+                                );                            
                         }
-
-
                         this.presentToast();
                     });
             })
             .then((result) => {
-                steps.payment = true;
-                // update DB
+                steps.doPayment = true;
+                // 6. UPDATE DB
+                
             })
             .catch((error) => {
                 console.log('runCheckout > steps > ', error);
@@ -214,6 +237,36 @@ export class CheckoutPage implements OnInit {
     }
 
     /**
+     *  PAYMENT STEPS HELPERS
+     */
+
+     private showCardTokenErrors(){
+        let alertError = this.alertCtrl.create({
+            title: 'Datos inválidos',
+            subTitle: 'Por favor revisa y corrige los datos ingresados. Luego vuelve a intentar.',
+            buttons: [{
+                text: 'Cerrar',
+                role: 'cancel'
+            }]
+        });
+        alertError.present();
+     }
+
+
+     private getPrepaymentData(cardTokenId) {
+         // send all collected data
+         let prepaymentData:PrepaymentData = {
+             transactionAmount: this.sending.price,
+             cardToken: cardTokenId,
+             description: 'Servicio Mooven #' + this.sending.publicId,
+             paymentMethodId: this.chForm.controls['paymentMethodId'].value,
+             payerEmail: this.fbuser.email
+         }
+         return prepaymentData;
+     }
+
+
+    /**
      *  CHECKOUT PREPARATION
      */
 
@@ -239,7 +292,7 @@ export class CheckoutPage implements OnInit {
     }
 
     /**
-     *  IMAGES
+     *  IMAGES 
      */
 
     private setGenericCreditCardImage() {
