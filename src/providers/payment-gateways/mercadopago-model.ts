@@ -15,8 +15,8 @@ export const MERCADOPAGO_REF = {
         },
     },
     BACKEND_SERVER: {
-        URIS: {
-            PAYMENT: '',
+        URL: {
+            PAYMENT: 'http://be.moovenapp.dev/api/v1/gateway/mp/payments',
         },
     }
 }
@@ -80,5 +80,5 @@ export class PaymentData {
     description:string;
     installments:number;
     paymentMethodId:string;
-    payer:{email:string};
+    payerEmail:string;
 }

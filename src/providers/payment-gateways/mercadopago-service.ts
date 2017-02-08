@@ -82,25 +82,32 @@ export class MercadopagoService {
         // set header
         let headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        let tokendata = '';
-        return this.http.post('', tokendata, {headers:headers})
+        let tokendata = 'transactionAmount='+data.transactionAmount
+                        +'&token='+data.token
+                        +'&description='+data.description
+                        +'&installments='+data.installments
+                        +'&paymentMethodId='+data.paymentMethodId
+                        +'&payerEmail='+data.payerEmail;
+        return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
                     .map((response: Response) => {
+                        let data = this.extractData(response);
+                        console.log('payment response > ', data);
                         return true;
                     })
                     .catch(this.handleHttpError);
     }
 
     private generatePaymentData(preData:PrepaymentData) {
+        console.log('preData > ', preData);
         let data:PaymentData = {
-            transactionAmount:0,
+            transactionAmount:preData.transactionAmount,
             token: preData.cardToken,
-            description:'',
-            installments: 1, // will use 1 by default
-            paymentMethodId: '',
-            payer: {
-                email: '',
-            }
+            description:preData.description,
+            installments: 1, // will use 1 by default (?)
+            paymentMethodId: preData.paymentMethodId,
+            payerEmail: preData.payerEmail,
         }
+        console.log('paymentData > ', data);
         return data;
     }
 
@@ -174,6 +181,10 @@ export class MercadopagoService {
         return result;
     }
 
+    /**
+     *  HELPERS
+     */ 
+
     private handleHttpError (error: Response | any) {
         // In a real world app, we might use a remote logging infrastructure
         let err = {
@@ -189,6 +200,11 @@ export class MercadopagoService {
             err.msg = error.message ? error.message : error.toString();
         }
         return Observable.throw(err);
+    }
+
+    private extractData(res: Response) {
+        let body = res.json();
+        return body || { };
     }
 
 }

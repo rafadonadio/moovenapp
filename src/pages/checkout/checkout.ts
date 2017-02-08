@@ -160,13 +160,7 @@ export class CheckoutPage implements OnInit {
                             this.paySrv.checkoutMP(prepaymentData)
                                 .subscribe(
                                     result => {
-                                        if (result === true) {
-                                            // successful                        
-                                                        
-                                        } else {
-                                            // failed
-
-                                        }                      
+                                        // do something                    
                                     },
                                     error => {
                                         console.log('login > error');
