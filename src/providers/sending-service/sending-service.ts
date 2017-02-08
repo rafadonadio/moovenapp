@@ -59,11 +59,6 @@ export class SendingService {
         return this.stageCreatedSrv.register(sending, this.user.uid);
     }
 
-    // THIS IS WRONG !!!
-    checkout(prepaymentData:PrepaymentData):Promise<any> {
-        return this.paySrv.checkoutMP(prepaymentData);
-    }
-
     // set as paid
     paid(sendingId:string):Promise<any> {    
         return this.stageCreatedSrv.paid(sendingId, this.user.uid);       

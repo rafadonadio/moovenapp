@@ -21,7 +21,11 @@ export class SendingPaymentService {
         public stagesSrv: SendingStagesService,
         public mpagoSrv: MercadopagoService) {}
 
-    // DO PAYMENT
+
+    /**
+     *  MERCADOPAGO API
+     */
+
     checkoutMP(prepaymentData:PrepaymentData):Observable<any> {
         return this.mpagoSrv.checkout(prepaymentData);        
     }

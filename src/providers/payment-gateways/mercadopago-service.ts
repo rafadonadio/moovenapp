@@ -22,11 +22,16 @@ export class MercadopagoService {
         this.init();
     }
 
+    // generate payment with the corresponding amount 
+    // from backend servers (PHP SDK)
+    // https://www.mercadopago.com.ar/developers/en/api-docs/custom-checkout/create-payments/
     checkout(prepaymentData:PrepaymentData):Observable<any> {
         let paymentData = this.generatePaymentData(prepaymentData);
             return this.runServerPayment(paymentData);
     }
 
+    // Retrieves information about available payment methods
+    //https://www.mercadopago.com.ar/developers/en/api-docs/custom-checkout/payment-methods/
     guessPaymentMethod(input:string) {
         let self = this;
         let result:paymentMethod;

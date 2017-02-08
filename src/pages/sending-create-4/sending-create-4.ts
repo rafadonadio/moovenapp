@@ -1,3 +1,4 @@
+import { CheckoutPage } from '../checkout/checkout';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
@@ -36,7 +37,7 @@ export class SendingCreate4Page implements OnInit {
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public sendings: SendingService,
+        public sendingSrv: SendingService,
         public gmapsSrv: GoogleMapsService) {
     }
 
@@ -97,8 +98,8 @@ export class SendingCreate4Page implements OnInit {
                 {
                     text: 'Pagar',
                     handler: () => {
-                        console.log('f4 > submit > confirm > process');
-                        this.paySending();
+                        console.log('f4 > goTo Checkout');
+                        this.navCtrl.push(CheckoutPage, { sending: this.sending });
                     }
                 }
             ]
@@ -205,7 +206,7 @@ export class SendingCreate4Page implements OnInit {
         });
         loader.present();
         // save to db
-        this.sendings.register(this.sending)
+        this.sendingSrv.register(this.sending)
             .then((result) => {
                 console.log('create success > steps ', result);
                 this.sendingId = result.sendingId;
@@ -231,42 +232,6 @@ export class SendingCreate4Page implements OnInit {
                         alertError.present();
                     });
             });
-    }
-
-    private paySending() {
-        console.info('f4 > paySending > start');
-        // loader effect
-        let loader = this.loadingCtrl.create({
-            content: 'procesando pago ...',
-        });
-        loader.present();
-        // pay
-        this.sendings.checkout()
-            .then((result) => {
-                console.log('payment ok', result);
-                this.sendingPayed = true;
-                loader.dismiss()
-                    .then(() => {
-                        this.navCtrl.setRoot(SendingsPage);
-                        this.presentToast();
-                    });
-            })
-            .catch((error) => {
-                console.log('f4 > payment sending > error', error);
-                loader.dismiss()
-                    .then(() => {
-                        let alertError = this.alertCtrl.create({
-                            title: 'Error con el pago',
-                            subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente.',
-                            buttons: [{
-                                text: 'Cerrar',
-                                role: 'cancel'
-                            }]
-                        });
-                        // show
-                        alertError.present();
-                    });
-            });        
     }
 
     private getRoute() {

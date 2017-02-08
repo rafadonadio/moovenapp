@@ -41,10 +41,12 @@ export class CheckoutPage implements OnInit {
     
     // aux
     dates = {
+        // current datetime
         current: {
             timestamp: 0,
             standard: '', // YYYY-MM-DD
         },
+        // current datetime plus 20 years 
         currentplus20: {
             timestamp: 0,
             standard: '', // YYYY-MM-DD
