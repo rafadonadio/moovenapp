@@ -102,7 +102,7 @@ export class CheckoutPage implements OnInit {
                     console.error('guess > error ', error);
                 });
         }else{
-            console.log('numberInserted > !if');
+            console.log('numberInserted: cardNumber invalid OR length<=5');
         }
     }
 
@@ -122,12 +122,15 @@ export class CheckoutPage implements OnInit {
         if(!this.chForm.valid) {
             console.info('form invalid');
             this.showRequired=true;
-        }else{
-            console.info('form valid');
-            // 2. TOKEN-DATA
-            this.setTokenData(this.chForm.value);  
-            console.log(this.tokenData);          
+            return null;
+            //////
+            // DIE
+            //////
         }
+        // 2. TOKEN-DATA
+        console.info('form valid');
+        this.setTokenData(this.chForm.value);  
+        console.log(this.tokenData);          
         // Init steps
         let steps = {
             genCardToken: false,
@@ -147,10 +150,12 @@ export class CheckoutPage implements OnInit {
                 loader.dismiss()
                     .then(() => {
                         console.log('createCardTokenMP > ', cardTokenResult);
-                        if(cardTokenResult._response_status!=200 
-                            && cardTokenResult._response_status!=201){
+                        let statusCode = cardTokenResult._response_status;
+                        if(statusCode!=200 && statusCode!=201){
+                            let cause = cardTokenResult.cause;
+                            let errorMsg:any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
                             // error, show
-                            this.showCardTokenErrors();
+                            this.showCardTokenErrors(errorMsg.msg);
                         }else{
                             // good, continue
                             steps.genCardToken = true;
@@ -236,10 +241,14 @@ export class CheckoutPage implements OnInit {
      *  PAYMENT STEPS HELPERS
      */
 
-     private showCardTokenErrors(){
+     private showCardTokenErrors(errorMsg:string) {
+        let msg = 'Los datos ingresados no son válidos, por favor revisalos y vuelve a intentar.';
+        if(errorMsg!=='') {
+            msg+= ' (Posibles errores: ' + errorMsg + ')';
+        }
         let alertError = this.alertCtrl.create({
             title: 'Datos inválidos',
-            subTitle: 'Por favor revisa y corrige los datos ingresados. Luego vuelve a intentar.',
+            subTitle: msg,
             buttons: [{
                 text: 'Cerrar',
                 role: 'cancel'

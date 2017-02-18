@@ -38,5 +38,9 @@ export class SendingPaymentService {
         return this.mpagoSrv.createCardToken(form);    
     }
 
+    getCardTokenErrorMsgMP(statusCode:number, cause:Array<any>):any {
+        return this.mpagoSrv.getCardTokenErrorMsg(statusCode, cause);
+    }
+
 }
 

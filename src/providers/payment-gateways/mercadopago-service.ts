@@ -22,7 +22,7 @@ export class MercadopagoService {
         this.init();
     }
 
-    // generate payment with the corresponding amount 
+    // generate payment with the corresponding data
     // from backend servers (PHP SDK)
     // https://www.mercadopago.com.ar/developers/en/api-docs/custom-checkout/create-payments/
     checkout(prepaymentData:PrepaymentData):Observable<any> {
@@ -57,7 +57,7 @@ export class MercadopagoService {
         let result:any;
         return new Promise((resolve, reject) => {
             Mercadopago.createToken(form, function(status, response) {
-                console.log('createCardToken > status ', status, response);
+                //console.log('createCardToken > status ', status, response);
                 if(status==200 || status==201 || status==400) {
                     let result = self.getCardTokenResponse(status, response);
                     resolve(result);
@@ -67,6 +67,13 @@ export class MercadopagoService {
             });
         });          
     }
+
+    // get error message text for card token error, given by API
+    // https://www.mercadopago.com.ar/developers/es/api-docs/custom-checkout/card-tokens/
+    getCardTokenErrorMsg(statusCode:number, cause:Array<any>):string {
+        return this.getCardTokenApiErrorsMsgByStatuscode(statusCode, cause);
+    }
+
 
     /**
      *  HELPERS
@@ -181,10 +188,6 @@ export class MercadopagoService {
         return result;
     }
 
-    /**
-     *  HELPERS
-     */ 
-
     private handleHttpError (error: Response | any) {
         // In a real world app, we might use a remote logging infrastructure
         let err = {
@@ -205,6 +208,57 @@ export class MercadopagoService {
     private extractData(res: Response) {
         let body = res.json();
         return body || { };
+    }
+
+    /**
+     *  API ERROR CODES
+     */
+
+    private getCardTokenApiErrorsMsgByStatuscode(statusCode:number, cause:Array<any>):any {       
+        let result = {
+            errorCodes: [],
+            msg: '',
+        };
+        let msg:string;
+        let errorCodes: Array<any> = [];
+        for(let index in cause) {
+            let code = cause[index].code;
+            result.errorCodes.push(code);
+            result.msg+= this.getMessageForCardTokenErrorCode(code) + '. ';
+        }
+        //console.log('getCardTokenApiErrorsMsgByStatuscode > result', result);
+        return result;
+    }
+
+    private getMessageForCardTokenErrorCode(errorcode:string):string {
+        let msg:string = '';
+        switch(errorcode) {
+            case '301':
+                msg = 'Fecha expiración inválida';
+                break;
+            case '316':
+                msg = 'Nombre del Titular de tarjeta inválido';
+                break;                
+            case '324':
+                msg = 'Número de DNI inválido';
+                break;  
+            case 'E202':
+                msg = 'Número de tarjeta inválido';
+                break;
+            case 'E203':
+                msg = 'Código de seguridad inválido';
+                break;            
+            case 'E301':
+                msg = 'Cantidad de caracteres del Número de Tarjeta inválido';
+                break;                
+            case 'E302':
+                msg = 'Cantidad de caracteres del Código de Seguridad inválido';
+                break;
+            case 'E305':
+                msg = 'Cantidad de caracteres del DNI inválido';
+                break;                
+        }
+        return msg;
     }
 
 }
