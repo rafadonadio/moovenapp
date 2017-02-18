@@ -69,9 +69,8 @@ export class MercadopagoService {
     }
 
     // get error message text for card token error, given by API
-    // https://www.mercadopago.com.ar/developers/es/api-docs/custom-checkout/card-tokens/
     getCardTokenErrorMsg(statusCode:number, cause:Array<any>):string {
-        return this.getCardTokenApiErrorsMsgByStatuscode(statusCode, cause);
+        return this.groupCardTokenApiErrorsMsgByStatuscode(statusCode, cause);
     }
 
 
@@ -97,9 +96,8 @@ export class MercadopagoService {
                         +'&payerEmail='+data.payerEmail;
         return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
                     .map((response: Response) => {
+                        console.log('runServerPayment > response', response);
                         let data = this.extractData(response);
-                        console.log('payment response > ', data);
-                        return true;
                     })
                     .catch(this.handleHttpError);
     }
@@ -214,7 +212,8 @@ export class MercadopagoService {
      *  API ERROR CODES
      */
 
-    private getCardTokenApiErrorsMsgByStatuscode(statusCode:number, cause:Array<any>):any {       
+    // group error messages given by CardToken API
+    private groupCardTokenApiErrorsMsgByStatuscode(statusCode:number, cause:Array<any>):any {       
         let result = {
             errorCodes: [],
             msg: '',
@@ -226,10 +225,12 @@ export class MercadopagoService {
             result.errorCodes.push(code);
             result.msg+= this.getMessageForCardTokenErrorCode(code) + '. ';
         }
-        //console.log('getCardTokenApiErrorsMsgByStatuscode > result', result);
+        //console.log('groupCardTokenApiErrorsMsgByStatuscode > result', result);
         return result;
     }
 
+    // set error message given error code bt CardToken API   
+    // https://www.mercadopago.com.ar/developers/es/api-docs/custom-checkout/card-tokens/
     private getMessageForCardTokenErrorCode(errorcode:string):string {
         let msg:string = '';
         switch(errorcode) {

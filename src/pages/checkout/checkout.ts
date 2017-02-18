@@ -146,39 +146,32 @@ export class CheckoutPage implements OnInit {
         // 3. CARD-TOKEN
         this.paySrv.createCardTokenMP(this.tokenData)
             .then((cardTokenResult) => {
-                // hide loader
-                loader.dismiss()
-                    .then(() => {
-                        console.log('createCardTokenMP > ', cardTokenResult);
-                        let statusCode = cardTokenResult._response_status;
-                        if(statusCode!=200 && statusCode!=201){
-                            let cause = cardTokenResult.cause;
-                            let errorMsg:any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
-                            // error, show
-                            this.showCardTokenErrors(errorMsg.msg);
-                        }else{
-                            // good, continue
-                            steps.genCardToken = true;
-                            // 4. PAYMENT-DATA
-                            let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
-                            // 5: PAY
-                            this.paySrv.checkoutMP(prepaymentData)
-                                .subscribe(
-                                    result => {
-                                        // do something                    
-                                    },
-                                    error => {
-                                        console.log('login > error');
-                                    }
-                                );                            
-                        }
-                        this.presentToast();
-                    });
-            })
-            .then((result) => {
-                steps.doPayment = true;
-                // 6. UPDATE DB
-                
+                console.log('createCardTokenMP > ', cardTokenResult);
+                let statusCode = cardTokenResult._response_status;
+                if(statusCode!=200 && statusCode!=201){
+                    let cause = cardTokenResult.cause;
+                    let errorMsg:any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
+                    // error, show
+                    this.showCardTokenErrors(errorMsg.msg);
+                }else{
+                    // good, continue
+                    steps.genCardToken = true;
+                    // 4. PAYMENT-DATA
+                    let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
+                    // 5: PAY
+                    this.paySrv.checkoutMP(prepaymentData)
+                        .subscribe(
+                            result => {
+                                // payment succesfull
+                                console.log('checkoutMP, result');
+                                this.processCheckoutResult(loader, true, result);
+                            },
+                            error => {
+                                console.log('checkoutMP > error', error);
+                                this.processCheckoutResult(loader, false, error);
+                            }
+                        );                            
+                }
             })
             .catch((error) => {
                 console.log('runCheckout > steps > ', error);
@@ -240,6 +233,29 @@ export class CheckoutPage implements OnInit {
     /**
      *  PAYMENT STEPS HELPERS
      */
+
+     private processCheckoutResult(loader, result, data) {
+        if(result){
+            // 6. UPDATE DB
+            // ..                
+            // hide loader
+            loader.dismiss()
+                .then(() => {
+                    this.presentToast();
+                });
+        }else{
+            loader.dismiss()
+                .then(() => {
+                    let alertError = this.alertCtrl.create({
+                        title: 'Pago no procesado',
+                        subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente mas tarde.',
+                        buttons: [{ text: 'Cerrar', role: 'cancel' }]
+                    });
+                    // show
+                    alertError.present();         
+                });           
+        }
+     }
 
      private showCardTokenErrors(errorMsg:string) {
         let msg = 'Los datos ingresados no son válidos, por favor revisalos y vuelve a intentar.';
