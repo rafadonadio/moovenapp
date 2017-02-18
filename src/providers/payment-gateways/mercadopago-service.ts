@@ -98,6 +98,7 @@ export class MercadopagoService {
                     .map((response: Response) => {
                         console.log('runServerPayment > response', response);
                         let data = this.extractData(response);
+                        return data;
                     })
                     .catch(this.handleHttpError);
     }
