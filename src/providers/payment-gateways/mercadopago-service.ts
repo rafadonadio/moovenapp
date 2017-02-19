@@ -96,9 +96,27 @@ export class MercadopagoService {
                         +'&payerEmail='+data.payerEmail;
         return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
                     .map((response: Response) => {
-                        console.log('runServerPayment > response', response);
-                        let data = this.extractData(response);
-                        return data;
+                        console.log('runServerPayment > response', response);                       
+                        let result = { 
+                            success: false,
+                            statusCode: 0,
+                            statusText: null, 
+                            paymentData: null, 
+                            errorData: null , 
+                            data: null
+                        };
+                        result.data = this.extractData(response);
+                        if(response && response.status == 200){
+                            if(result.data._payment && result.data._payment.status == 201){
+                                result.success = true;
+                                result.paymentData = result.data._payment;                                
+                                result.statusCode = result.data._payment.status;
+                                result.statusText = result.data._payment.response.status;                                
+                            }else{
+
+                            }
+                        }
+                        return result;
                     })
                     .catch(this.handleHttpError);
     }
@@ -251,14 +269,16 @@ export class MercadopagoService {
                 msg = 'Código de seguridad inválido';
                 break;            
             case 'E301':
-                msg = 'Cantidad de caracteres del Número de Tarjeta inválido';
+                msg = 'Error en el Número de Tarjeta';
                 break;                
             case 'E302':
-                msg = 'Cantidad de caracteres del Código de Seguridad inválido';
+                msg = 'Revisa el código de seguridad';
                 break;
             case 'E305':
                 msg = 'Cantidad de caracteres del DNI inválido';
-                break;                
+                break;    
+            default:
+                msg = `No hay ayuda disponible (${errorcode})`;            
         }
         return msg;
     }

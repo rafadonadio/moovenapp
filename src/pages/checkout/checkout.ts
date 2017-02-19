@@ -130,19 +130,16 @@ export class CheckoutPage implements OnInit {
         // 2. TOKEN-DATA
         console.info('form valid');
         this.setTokenData(this.chForm.value);  
-        console.log(this.tokenData);          
+        console.log('tokenData >', this.tokenData);          
         // Init steps
         let steps = {
             genCardToken: false,
             genPaymentData: false,
             doPayment: false,
             updateDb: false
-        }
-        // show loader
-        let loader = this.loadingCtrl.create({
-            content: 'Procesando pago ...',
-        });
-        loader.present();      
+        }  
+        // init loader
+        let loader = this.loadingCtrl.create({content: 'Procesando pago ...'});        
         // 3. CARD-TOKEN
         this.paySrv.createCardTokenMP(this.tokenData)
             .then((cardTokenResult) => {
@@ -156,22 +153,38 @@ export class CheckoutPage implements OnInit {
                 }else{
                     // good, continue
                     steps.genCardToken = true;
-                    // 4. PAYMENT-DATA
+                    // show loader
+                    loader.present();                           
+                    // 4. PAYMENT-DATA               
                     let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
                     // 5: PAY
                     this.paySrv.checkoutMP(prepaymentData)
                         .subscribe(
                             result => {
                                 // payment succesfull
-                                console.log('checkoutMP, result');
-                                this.processCheckoutResult(loader, true, result);
+                                console.log('checkoutMP, result', result);
+                                loader.dismiss()
+                                    .then(() => {
+                                        this.processCheckoutResult(result);
+                                    });                                
                             },
                             error => {
                                 console.log('checkoutMP > error', error);
-                                this.processCheckoutResult(loader, false, error);
+                                loader.dismiss()
+                                    .then(() => {
+                                        let alertError = this.alertCtrl.create({
+                                            title: 'Ocurrió un Error',
+                                            subTitle: `Lo sentimos, el pago no puede procesarse en este momento, por favor intenta nuevamente mas tarde. (statuscode: ${error.status})`,
+                                            buttons: [{ text: 'Cerrar', role: 'cancel' }]
+                                        });
+                                        // show
+                                        alertError.present();         
+                                    }); 
                             }
                         );                            
                 }
+                this.tokenData = null;
+                cardTokenResult = null;
             })
             .catch((error) => {
                 console.log('runCheckout > steps > ', error);
@@ -234,27 +247,11 @@ export class CheckoutPage implements OnInit {
      *  PAYMENT STEPS HELPERS
      */
 
-     private processCheckoutResult(loader, result, data) {
-        if(result){
-            // 6. UPDATE DB
-            // ..                
-            // hide loader
-            loader.dismiss()
-                .then(() => {
-                    this.presentToast();
-                });
-        }else{
-            loader.dismiss()
-                .then(() => {
-                    let alertError = this.alertCtrl.create({
-                        title: 'Pago no procesado',
-                        subTitle: 'Ocurrió un error al procesar el pago, por favor intenta nuevamente mas tarde.',
-                        buttons: [{ text: 'Cerrar', role: 'cancel' }]
-                    });
-                    // show
-                    alertError.present();         
-                });           
-        }
+     private processCheckoutResult(result) {
+        // 6. UPDATE DB
+        // ..                
+        // show toast
+        this.presentToast();
      }
 
      private showCardTokenErrors(errorMsg:string) {
