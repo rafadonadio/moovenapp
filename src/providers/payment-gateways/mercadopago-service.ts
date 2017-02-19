@@ -136,8 +136,8 @@ export class MercadopagoService {
             responseSuccess: null,
             responseCode: 0,
             statusCode: 0,
-            statusText: null,
-            statusDetail: null, 
+            paymentStatusCode: null,
+            paymentStatusDetail: null, 
             paymentData: null, 
             errorData: null , 
             data: null,
@@ -156,13 +156,15 @@ export class MercadopagoService {
                  && result.data._payment.status == 201) {
                  result.paymentData = result.data._payment.response;                         
                  result.statusCode = result.data._payment.status;
-                 result.statusText = result.data._payment.response.status; 
-                 result.statusDetail = result.data._payment.response.status_detail;                                
+                 result.paymentStatusCode = result.data._payment.response.status; 
+                 result.paymentStatusDetail = result.data._payment.response.status_detail;                                
                  result.paymentCompleted = true;  
-                 result.paymentSuccess = result.statusText!=='rejected' ? true : false;                 
+                 result.paymentSuccess = result.paymentStatusCode!=='rejected' ? true : false;                 
             }else if(result.data._paymentError && result.data._paymentError.code == 400){
                  result.errorData = result.data._paymentError;
                  result.statusCode = result.data._paymentError.code;                          
+                 result.paymentStatusCode = result.data._paymentError.parsed.code; 
+                 result.paymentStatusDetail = result.data._paymentError.parsed.detail; 
                  result.paymentCompleted = false;
             }
         // not 200, get code if exist and set error     
