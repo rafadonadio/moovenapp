@@ -248,20 +248,28 @@ export class CheckoutPage implements OnInit {
      */
 
      private processCheckoutResult(result) {
+       // reset?
+       this.clearSessionMP(); 
         // 6. UPDATE DB
         // ..                
         // show toast
         this.presentToast();
      }
 
-     private showCardTokenErrors(errorMsg:string) {
-        let msg = 'Los datos ingresados no son válidos, por favor revisalos y vuelve a intentar.';
-        if(errorMsg!=='') {
-            msg+= ' (Posibles errores: ' + errorMsg + ')';
+     private clearSessionMP() {
+        console.log('clearSessionMP > ');
+        let clear = this.paySrv.clearSessionMP();
+        console.log('clearSessionMP',clear);
+     }
+
+     private showCardTokenErrors(message:string) {
+        let msgTxt = 'Los datos ingresados no son válidos, por favor revisalos y vuelve a intentar.';
+        if(message!=='') {
+            msgTxt+= ' (Posibles errores: ' + message + ')';
         }
         let alertError = this.alertCtrl.create({
             title: 'Datos inválidos',
-            subTitle: msg,
+            subTitle: msgTxt,
             buttons: [{
                 text: 'Cerrar',
                 role: 'cancel'

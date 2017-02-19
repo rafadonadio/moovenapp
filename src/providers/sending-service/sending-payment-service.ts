@@ -42,5 +42,9 @@ export class SendingPaymentService {
         return this.mpagoSrv.getCardTokenErrorMsg(statusCode, cause);
     }
 
+    clearSessionMP() {
+        return this.mpagoSrv.clearSession();
+    }
+
 }
 

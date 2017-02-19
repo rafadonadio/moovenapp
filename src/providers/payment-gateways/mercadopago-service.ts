@@ -56,6 +56,7 @@ export class MercadopagoService {
         let self = this;
         let result:any;
         return new Promise((resolve, reject) => {
+            console.log('MP>>', Mercadopago);
             Mercadopago.createToken(form, function(status, response) {
                 //console.log('createCardToken > status ', status, response);
                 if(status==200 || status==201 || status==400) {
@@ -73,6 +74,10 @@ export class MercadopagoService {
         return this.groupCardTokenApiErrorsMsgByStatuscode(statusCode, cause);
     }
 
+    clearSession() {
+        return Mercadopago.clearSession();
+    }
+
 
     /**
      *  HELPERS
@@ -82,44 +87,10 @@ export class MercadopagoService {
         Mercadopago.setPublishableKey(CFG.PUBLIC_KEY.SANDBOX.PUBLIC_KEY);
     }
 
-    // send payament data to our server
-    // expect response with transaction result
-    private runServerPayment(data:PaymentData):Observable<any> {
-        // set header
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        let tokendata = 'transactionAmount='+data.transactionAmount
-                        +'&token='+data.token
-                        +'&description='+data.description
-                        +'&installments='+data.installments
-                        +'&paymentMethodId='+data.paymentMethodId
-                        +'&payerEmail='+data.payerEmail;
-        return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
-                    .map((response: Response) => {
-                        console.log('runServerPayment > response', response);                       
-                        let result = { 
-                            success: false,
-                            statusCode: 0,
-                            statusText: null, 
-                            paymentData: null, 
-                            errorData: null , 
-                            data: null
-                        };
-                        result.data = this.extractData(response);
-                        if(response && response.status == 200){
-                            if(result.data._payment && result.data._payment.status == 201){
-                                result.success = true;
-                                result.paymentData = result.data._payment;                                
-                                result.statusCode = result.data._payment.status;
-                                result.statusText = result.data._payment.response.status;                                
-                            }else{
 
-                            }
-                        }
-                        return result;
-                    })
-                    .catch(this.handleHttpError);
-    }
+    /**
+     *   CREATE PAYMENT
+     */
 
     private generatePaymentData(preData:PrepaymentData) {
         console.log('preData > ', preData);
@@ -133,6 +104,73 @@ export class MercadopagoService {
         }
         console.log('paymentData > ', data);
         return data;
+    }
+
+    // send payament data to our server
+    // expect response with transaction result
+    private runServerPayment(data:PaymentData):Observable<any> {
+        // set header
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let tokendata = //'transactionAmount='+data.transactionAmount
+                        'transactionAmount=300000'
+                        +'&token='+data.token
+                        +'&description='+data.description
+                        +'&installments='+data.installments
+                        +'&paymentMethodId='+data.paymentMethodId
+                        +'&payerEmail='+data.payerEmail;
+        return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
+                    .map((response: Response) => {
+                        console.log('runServerPayment > response', response);                       
+                        return this.getServerPaymentResponse(response);
+                    })
+                    .catch(this.handleHttpError);
+    }
+
+    /**
+     *  PROCESS RESPONSES
+     */
+
+    private getServerPaymentResponse(response:any) {
+        let result = { 
+            responseSuccess: null,
+            responseCode: 0,
+            statusCode: 0,
+            statusText: null,
+            statusDetail: null, 
+            paymentData: null, 
+            errorData: null , 
+            data: null,
+            paymentCompleted: null,
+            paymentSuccess: null,            
+        };
+        // get all data
+        result.data = this.extractData(response);
+        // get http response code
+        result.responseCode = response.status;
+        // verify http response code is 200
+        if(response && response.hasOwnProperty('status') && response.status == 200){
+            result.responseSuccess = true;
+            if(result.data._payment 
+                 && result.data._payment.hasOwnProperty('status') 
+                 && result.data._payment.status == 201) {
+                 result.paymentData = result.data._payment.response;                         
+                 result.statusCode = result.data._payment.status;
+                 result.statusText = result.data._payment.response.status; 
+                 result.statusDetail = result.data._payment.response.status_detail;                                
+                 result.paymentCompleted = true;  
+                 result.paymentSuccess = result.statusText!=='rejected' ? true : false;                 
+            }else if(result.data._paymentError && result.data._paymentError.code == 400){
+                 result.errorData = result.data._paymentError;
+                 result.statusCode = result.data._paymentError.code;                          
+                 result.paymentCompleted = false;
+            }
+        // not 200, get code if exist and set error     
+        }else if(response){
+            result.responseSuccess = false;
+            result.responseCode = response.hasOwnProperty('status') ? response.status : 0;
+        }
+        return result;
     }
 
     private getPaymentMethodResponse(status:number, response:any) {
@@ -174,7 +212,6 @@ export class MercadopagoService {
         return result;
     }
 
-
     private getCardTokenResponse(status:number, response:any) {
         let result:any = {
             id:'',
@@ -204,6 +241,11 @@ export class MercadopagoService {
         result._response_status = status;
         return result;
     }
+
+
+    /**
+     *  RESPONSES HELPERS
+     */
 
     private handleHttpError (error: Response | any) {
         // In a real world app, we might use a remote logging infrastructure
