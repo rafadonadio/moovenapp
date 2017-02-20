@@ -22,23 +22,23 @@ const CC_IMG = 'assets/img/credit-card-sm.png';
 })
 export class CheckoutPage implements OnInit {
 
-    fbuser:firebase.User;
+    fbuser: firebase.User;
     sending: SendingRequest;
     // form
-    chForm:FormGroup;
+    chForm: FormGroup;
     // inputs
-    docType:string = "DNI";
-    paymentMethodId:string = '';
-    cardExpiration:string;
+    docType: string = "DNI";
+    paymentMethodId: string = '';
+    cardExpiration: string;
     // flags
-    invalidCardNumber:boolean = false;
-    showRequired:boolean;
+    invalidCardNumber: boolean = false;
+    showRequired: boolean;
     // helpers
-    cardThumbnail:string;
-    paymentGuess:any;
+    cardThumbnail: string;
+    paymentGuess: any;
     // MercadoPago tokenData
-    tokenData:CardTokenData;
-    
+    tokenData: CardTokenData;
+
     // aux
     dates = {
         // current datetime
@@ -53,7 +53,7 @@ export class CheckoutPage implements OnInit {
         }
     };
 
-    constructor(public navCtrl: NavController, 
+    constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public paySrv: SendingPaymentService,
         public loadingCtrl: LoadingController,
@@ -61,47 +61,47 @@ export class CheckoutPage implements OnInit {
         public alertCtrl: AlertController,
         private fb: FormBuilder,
         private dateSrv: DateService,
-        private userSrv: UsersService) {}
+        private userSrv: UsersService) { }
 
     ngOnInit() {
         this.fbuser = this.userSrv.getUser();
         this.setCurrentDates();
         this.setDefaultDates();
         // get sending data
-        this.sending = this.navParams.get('sending'); 
+        this.sending = this.navParams.get('sending');
         // form
         this.chForm = this.fb.group({
             'cardNumber': ['', [Validators.required, Validators.maxLength(16), NumberValidator.isNumber]],
-            'securityCode': ['', [Validators.required, Validators.maxLength(4), NumberValidator.isNumber]],           
-            'cardExpiration': ['', [Validators.required]],   
-            'cardHolderName': ['', [Validators.required]],            
+            'securityCode': ['', [Validators.required, Validators.maxLength(4), NumberValidator.isNumber]],
+            'cardExpiration': ['', [Validators.required]],
+            'cardHolderName': ['', [Validators.required]],
             'docNumber': ['', [Validators.required, NumberValidator.isNumber]],
-            'docType': ['', [Validators.required]],   
-            'paymentMethodId': ['', [Validators.required]],                        
+            'docType': ['', [Validators.required]],
+            'paymentMethodId': ['', [Validators.required]],
         });
         this.setGenericCreditCardImage();
-        this.showRequired=false;
+        this.showRequired = false;
     }
 
-    guessPaymentMethod(event:any) {
+    guessPaymentMethod(event: any) {
         // reset invalid flag
         this.invalidCardNumber = false;
         this.setGenericCreditCardImage();
         console.log('numberInserted > ', this.chForm.value.cardNumber);
-        if(this.chForm.controls['cardNumber'].valid && this.chForm.value.cardNumber.length > 5) {
+        if (this.chForm.controls['cardNumber'].valid && this.chForm.value.cardNumber.length > 5) {
             this.paySrv.guessPaymentTypeMP(this.chForm.value.cardNumber)
-                .then((result:any) => {
+                .then((result: any) => {
                     console.log('guess > ok ', result);
-                    if(result._response_status==200){
+                    if (result._response_status == 200) {
                         this.setPaymentGuess(result);
-                    }else{
-                        this.invalidCardNumber=true;
+                    } else {
+                        this.invalidCardNumber = true;
                     }
                 })
                 .catch((error) => {
                     console.error('guess > error ', error);
                 });
-        }else{
+        } else {
             console.log('numberInserted: cardNumber invalid OR length<=5');
         }
     }
@@ -117,71 +117,73 @@ export class CheckoutPage implements OnInit {
      *  7. PROMPT: show message with results to user
      */
     private runCheckout() {
-        console.info('runCheckout > start'); 
+        console.info('runCheckout > start');
         // 1. VERIFY
-        if(!this.chForm.valid) {
+        if (!this.chForm.valid) {
             console.info('form invalid');
-            this.showRequired=true;
+            this.showRequired = true;
             return null;
-            //////
-            // DIE
-            //////
+            ///// DIE /////
         }
         // 2. TOKEN-DATA
         console.info('form valid');
-        this.setTokenData(this.chForm.value);  
-        console.log('tokenData >', this.tokenData);          
+        this.setTokenData(this.chForm.value);
+        console.log('tokenData >', this.tokenData);
         // Init steps
         let steps = {
             genCardToken: false,
             genPaymentData: false,
             doPayment: false,
             updateDb: false
-        }  
+        }
         // init loader
-        let loader = this.loadingCtrl.create({content: 'Procesando pago ...'});        
+        let loader = this.loadingCtrl.create({ content: 'Procesando pago ...' });
         // 3. CARD-TOKEN
         this.paySrv.createCardTokenMP(this.tokenData)
             .then((cardTokenResult) => {
                 console.log('createCardTokenMP > ', cardTokenResult);
                 let statusCode = cardTokenResult._response_status;
-                if(statusCode!=200 && statusCode!=201){
+                if (statusCode != 200 && statusCode != 201) {
                     let cause = cardTokenResult.cause;
-                    let errorMsg:any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
+                    let errorMsg: any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
                     // error, show
                     this.showCardTokenErrors(errorMsg.msg);
-                }else{
+                } else {
                     // good, continue
                     steps.genCardToken = true;
                     // show loader
-                    loader.present();                           
+                    loader.present();
                     // 4. PAYMENT-DATA               
                     let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
-                    // 5: PAY
+                    // 5: CREATE PAYMENT
                     this.paySrv.checkoutMP(prepaymentData)
                         .subscribe(
-                            result => {
-                                // payment succesfull
-                                console.log('checkoutMP, result', result);
-                                loader.dismiss()
-                                    .then(() => {
-                                        this.processCheckoutResult(result);
-                                    });                                
-                            },
-                            error => {
-                                console.log('checkoutMP > error', error);
-                                loader.dismiss()
-                                    .then(() => {
-                                        let alertError = this.alertCtrl.create({
-                                            title: 'Ocurrió un Error',
-                                            subTitle: `Lo sentimos, el pago no puede procesarse en este momento, por favor intenta nuevamente mas tarde. (statuscode: ${error.status})`,
-                                            buttons: [{ text: 'Cerrar', role: 'cancel' }]
-                                        });
-                                        // show
-                                        alertError.present();         
-                                    }); 
-                            }
-                        );                            
+                        result => {
+                            // response success
+                            console.log('checkoutMP, response success', result);
+                            this.clearSessionMP();
+                            loader.dismiss()
+                                .then(() => {
+                                    this.showAlertForCheckoutResult(result);
+                                    // 6. UPDATE DB
+                                    // ..                
+                                });
+                        },
+                        error => {
+                            console.log('checkoutMP > response error', error);
+                            this.clearSessionMP();
+                            loader.dismiss()
+                                .then(() => {
+                                    let alertError = this.alertCtrl.create({
+                                        title: 'Ocurrió un Error',
+                                        subTitle: `Lo sentimos, el pago no puede procesarse en este momento, por favor intenta nuevamente mas tarde. (statuscode: ${error.status})`,
+                                        buttons: [{ text: 'Cerrar', role: 'cancel' }]
+                                    });
+                                    // show
+                                    alertError.present();
+                                });
+                        }
+                        );
                 }
                 this.tokenData = null;
                 cardTokenResult = null;
@@ -201,7 +203,7 @@ export class CheckoutPage implements OnInit {
                         // show
                         alertError.present();
                     });
-            });        
+            });
     }
 
     goToSendings() {
@@ -227,45 +229,68 @@ export class CheckoutPage implements OnInit {
             ]
         });
         alert.present();
-    } 
+    }
 
-    private presentToast() {
-        let toast = this.toastCtrl.create({
-            message: 'El pago fue procesado correctamente',
-            duration: 3000,
-            position: 'bottom'
+
+    private showCheckoutAlert(title:string, msg:string) {
+        let alertError = this.alertCtrl.create({
+            title: title,
+            subTitle: msg,
+            buttons: [{text:'Cerrar', role:'cancel'}]
         });
-
-        toast.onDidDismiss(() => {
-            console.log('f4 > toast > dismissed');
-        });
-
-        toast.present();
+        alertError.present();        
     }
 
     /**
      *  PAYMENT STEPS HELPERS
      */
 
-     private processCheckoutResult(result) {
-       // reset?
-       this.clearSessionMP(); 
-        // 6. UPDATE DB
-        // ..                
-        // show toast
-        this.presentToast();
-     }
+    private showAlertForCheckoutResult(result) {
+        if(!result.responseSuccess) {
+            // no response, show error and die
+            this.showCheckoutAlert(
+                    'Ocurrió un Error', 
+                    `El pago no pudo procesarse, por favor intentalo de nuevo. (${result.responseCode})`);
+            return null;
+            ///// DIE /////
+        }
+        if(!result.paymentCompleted) {
+            // payment not completed, show error msg/code and die
+            this.showCheckoutAlert(
+                    'Pago incompleto', 
+                    result.paymentMessage);
+            return null;
+            ///// DIE /////
+        }
+        if(result.paymentCompleted && !result.paymentSuccess) {
+            // payment completed  and rejected, show error and die
+            this.showCheckoutAlert(
+                    'Pago rechazado', 
+                    result.paymentMessage);
+            return null;
+            ///// DIE /////            
+        }
+        if(result.paymentCompleted && result.paymentSuccess) {
+            // payment succesfull, show if acredited or pending
+            this.showCheckoutAlert(
+                    'Pago completado', 
+                    result.paymentMessage);
+            return null;
+            ///// DIE /////             
+        }
+    }
 
-     private clearSessionMP() {
-        console.log('clearSessionMP > ');
-        let clear = this.paySrv.clearSessionMP();
-        console.log('clearSessionMP',clear);
-     }
+    // reset session, because if you need to repeat a new payment
+    // card token does not get created again. WTF??
+    private clearSessionMP() {
+        console.info('clearSessionMP()');
+        this.paySrv.clearSessionMP();
+    }
 
-     private showCardTokenErrors(message:string) {
+    private showCardTokenErrors(message: string) {
         let msgTxt = 'Los datos ingresados no son válidos, por favor revisalos y vuelve a intentar.';
-        if(message!=='') {
-            msgTxt+= ' (Posibles errores: ' + message + ')';
+        if (message !== '') {
+            msgTxt += ' (Posibles errores: ' + message + ')';
         }
         let alertError = this.alertCtrl.create({
             title: 'Datos inválidos',
@@ -276,20 +301,19 @@ export class CheckoutPage implements OnInit {
             }]
         });
         alertError.present();
-     }
+    }
 
-
-     private getPrepaymentData(cardTokenId) {
-         // send all collected data
-         let prepaymentData:PrepaymentData = {
-             transactionAmount: this.sending.price,
-             cardToken: cardTokenId,
-             description: 'Servicio Mooven #' + this.sending.publicId,
-             paymentMethodId: this.chForm.controls['paymentMethodId'].value,
-             payerEmail: this.fbuser.email
-         }
-         return prepaymentData;
-     }
+    private getPrepaymentData(cardTokenId) {
+        // send all collected data
+        let prepaymentData: PrepaymentData = {
+            transactionAmount: this.sending.price,
+            cardToken: cardTokenId,
+            description: 'Servicio Mooven #' + this.sending.publicId,
+            paymentMethodId: this.chForm.controls['paymentMethodId'].value,
+            payerEmail: this.fbuser.email
+        }
+        return prepaymentData;
+    }
 
 
     /**
@@ -304,7 +328,7 @@ export class CheckoutPage implements OnInit {
     }
 
     // Set token data to send to get Card Token
-    private setTokenData(form:any) {
+    private setTokenData(form: any) {
         this.tokenData = {
             cardNumber: form.cardNumber,
             securityCode: form.securityCode,
@@ -313,7 +337,7 @@ export class CheckoutPage implements OnInit {
             cardholderName: form.cardHolderName, // card< h OR H >olderName ???
             docType: form.docType,
             docNumber: form.docNumber,
-            paymentMethodId: form.paymentMethodId            
+            paymentMethodId: form.paymentMethodId
         }
     }
 
@@ -329,16 +353,16 @@ export class CheckoutPage implements OnInit {
      *  DATES
      */
 
-    private setCurrentDates():void {
+    private setCurrentDates(): void {
         let timestamp = this.dateSrv.getUnixTimestamp();
         this.dates.current.timestamp = timestamp;
         this.dates.current.standard = this.dateSrv.readISO8601FromTimestamp(timestamp);
-        this.dates.currentplus20.timestamp = this.dateSrv.addTsYears(timestamp, 20);     
-        this.dates.currentplus20.standard = this.dateSrv.readISO8601FromTimestamp(this.dates.currentplus20.timestamp);               
+        this.dates.currentplus20.timestamp = this.dateSrv.addTsYears(timestamp, 20);
+        this.dates.currentplus20.standard = this.dateSrv.readISO8601FromTimestamp(this.dates.currentplus20.timestamp);
         console.log('setCurrentDates', this.dates);
     }
 
-    private setDefaultDates():void {
+    private setDefaultDates(): void {
         this.cardExpiration = this.dates.current.standard;
     }
 }
