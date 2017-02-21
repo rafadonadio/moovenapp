@@ -164,9 +164,10 @@ export class CheckoutPage implements OnInit {
                             this.clearSessionMP();
                             loader.dismiss()
                                 .then(() => {
-                                    this.showAlertForCheckoutResult(result);
                                     // 6. UPDATE DB
-                                    // ..                
+                                    this.saveCheckoutResult(result);
+                                    // 7. PROMPT
+                                    this.showAlertForCheckoutResult(result);
                                 });
                         },
                         error => {
@@ -245,6 +246,10 @@ export class CheckoutPage implements OnInit {
      *  PAYMENT STEPS HELPERS
      */
 
+    private saveCheckoutResult(response:any) {
+        this.paySrv.saveCheckoutToDB(response);
+    }
+
     private showAlertForCheckoutResult(result) {
         if(!result.responseSuccess) {
             // no response, show error and die
@@ -310,7 +315,8 @@ export class CheckoutPage implements OnInit {
             cardToken: cardTokenId,
             description: 'Servicio Mooven #' + this.sending.publicId,
             paymentMethodId: this.chForm.controls['paymentMethodId'].value,
-            payerEmail: this.fbuser.email
+            payerEmail: this.fbuser.email,
+            externalReference: this.sending.publicId
         }
         return prepaymentData;
     }

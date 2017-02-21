@@ -46,5 +46,13 @@ export class SendingPaymentService {
         return this.mpagoSrv.clearSession();
     }
 
+    /**
+     *  DB METHODS
+     */
+
+     saveCheckoutToDB(response:any) {   
+        
+     }
+
 }
 

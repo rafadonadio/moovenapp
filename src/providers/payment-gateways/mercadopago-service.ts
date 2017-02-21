@@ -101,6 +101,7 @@ export class MercadopagoService {
             installments: 1, // will use 1 by default (?)
             paymentMethodId: preData.paymentMethodId,
             payerEmail: preData.payerEmail,
+            externalReference: preData.externalReference
         }
         console.log('paymentData > ', data);
         return data;
@@ -117,7 +118,8 @@ export class MercadopagoService {
                         +'&description='+data.description
                         +'&installments='+data.installments
                         +'&paymentMethodId='+data.paymentMethodId
-                        +'&payerEmail='+data.payerEmail;
+                        +'&payerEmail='+data.payerEmail
+                        +'&externalReference='+data.externalReference;
         return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
                     .map((response: Response) => {
                         console.log('runServerPayment > response', response);                       

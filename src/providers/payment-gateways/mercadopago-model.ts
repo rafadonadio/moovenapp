@@ -72,6 +72,7 @@ export class PrepaymentData {
     description:string;
     paymentMethodId:string;
     payerEmail:string;
+    externalReference:string;
 }
 
 export class PaymentData {
@@ -81,4 +82,5 @@ export class PaymentData {
     installments:number;
     paymentMethodId:string;
     payerEmail:string;
+    externalReference:string;
 }
