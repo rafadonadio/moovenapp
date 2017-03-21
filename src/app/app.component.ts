@@ -1,4 +1,3 @@
-import { StreamingMedia } from 'ionic-native/dist/esm';
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
