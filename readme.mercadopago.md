@@ -55,17 +55,23 @@ SECUENCIA DEL PAGO
             mostrar errores si hubiese en frontend
         backend:
             verificar campos enviados en backend, devolver error si hubiese
-            preparar payment datacon valores enviados por frontend
+            preparar payment data con valores enviados por frontend
             llamar a mp->post(/payment) y esperar respuesta
-            procesar respuesta:
+            
+            <-------------------------------------------------------------->
+            <--- hasta aca todo ok, prueba de flujo completo de pago OK --->
+            <-------------------------------------------------------------->
+
+            procesar respuestas:
                 a. pago completado (respuesta en $payment)
                 b. pago incompleto (respuesta en exception)
                     (## FALTA DOCUMENTACION)
+                        Resuelto:
                         - capturar errores con MercadoPagoException
                         - parsear $e->message para obtener codigo de error y detail
                 c. armar respuesta para frontend
                     http response 200, si el server responde correctamente
-                    json 
+                    datos en json:
                         _payment: dato de pago completado (objeto completo devuleto por la API)
                         _paymentError: dato de codigo de error, detail y raw message
         frontend:
@@ -118,7 +124,14 @@ SECUENCIA DEL PAGO
                               en este caso, la solucion ideal sería que en el server registremos todas las transacciones y que previo a hacer un pago
                               verificar si ya no se realizó antes. (implica nueva base de datos xq firebase no tiene SDK para PHP ++++++++++++)
                               En al APP si incluimos guardar el registro de todos los pagos (intentos, completados, acreditados, etc) y lo guardamos en firebase ]]
-
+                              (hacer registro en Server)
+                Gestion manual:
+                              Deberiamos contemplar poder modificar manualmente el estado de un pago en Mooven, en función de cambios que sucedan en MP.
+                              Situación:
+                                - un servicio es pagado con MP desde la App, la API devuelve esta acreditado y se registra en la Mooven.
+                                - el servicio se hace, pero luego por alguna razon el usuario reclama a MP, MP da a lugar y el pago acreditado se devuelve.
+                                - en Mooven deberíamos poder cambiar manualmente el estado del servicio de "Pagado-acreditado" a "Reclamo-devuelto"
+                              Esta funcionalidad de cambiar estado en formar manual se debiera incluir en el admin.                                 
 
 
 
