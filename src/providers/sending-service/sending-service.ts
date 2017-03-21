@@ -1,4 +1,3 @@
-import { PrepaymentData } from '../payment-gateways/mercadopago-model';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { UserAccountSettings, UserProfileData } from '../../models/user-model';
@@ -18,8 +17,7 @@ import {
     SENDING_CFG,
     SendingOperator,
     SendingRequest,
-    SendingStages,
-    StageClosedNode
+    SendingStages
 } from '../../models/sending-model';
 
 import firebase from 'firebase';

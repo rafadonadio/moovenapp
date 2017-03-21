@@ -3,8 +3,6 @@ import { NavController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 
-import firebase from 'firebase';
-
 @Component({
     selector: 'page-start',
     templateUrl: 'start.html',

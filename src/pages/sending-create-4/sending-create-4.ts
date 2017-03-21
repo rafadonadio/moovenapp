@@ -180,20 +180,6 @@ export class SendingCreate4Page implements OnInit {
         });
     }
 
-    private presentToast() {
-        let toast = this.toastCtrl.create({
-            message: 'Tu envío fue creado!',
-            duration: 3000,
-            position: 'bottom'
-        });
-
-        toast.onDidDismiss(() => {
-            console.log('f4 > toast > dismissed');
-        });
-
-        toast.present();
-    }
-
     /**
      *  DATA
      */

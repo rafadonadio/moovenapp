@@ -7,8 +7,6 @@ import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password';
 
-import firebase from 'firebase';
-
 @Component({
     selector: 'page-login',
     templateUrl: 'login.html'

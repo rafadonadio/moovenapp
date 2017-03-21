@@ -116,7 +116,7 @@ export class CheckoutPage implements OnInit {
      *  6. UPDATE-DB: update firebase DB with results
      *  7. PROMPT: show message with results to user
      */
-    private runCheckout() {
+    runCheckout() {
         console.info('runCheckout > start');
         // 1. VERIFY
         if (!this.chForm.valid) {

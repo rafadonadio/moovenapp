@@ -1,10 +1,9 @@
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { SENDING_CFG, SendingRequest } from '../../models/sending-model';
+import { SendingRequest } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ActionSheetController, AlertController } from 'ionic-angular';
 
-const CFG = SENDING_CFG;
 const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 
 @Component({

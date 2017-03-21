@@ -54,7 +54,6 @@ export class MercadopagoService {
     // https://www.mercadopago.com.ar/developers/en/api-docs/custom-checkout/card-tokens/
     createCardToken(form:CardTokenData):Promise<any> {
         let self = this;
-        let result:any;
         return new Promise((resolve, reject) => {
             console.log('MP>>', Mercadopago);
             Mercadopago.createToken(form, function(status, response) {
@@ -352,8 +351,6 @@ export class MercadopagoService {
             errorCodes: [],
             msg: '',
         };
-        let msg:string;
-        let errorCodes: Array<any> = [];
         for(let index in cause) {
             let code = cause[index].code;
             result.errorCodes.push(code);
