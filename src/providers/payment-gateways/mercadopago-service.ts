@@ -39,7 +39,7 @@ export class MercadopagoService {
         Mercadopago.getPaymentMethod({
                 "bin": input
             }, function (status, response){
-                console.log('guessPaymentMethod > status ', status);
+                //console.log('guessPaymentMethod > status ', status);
                 if(status==200 || status==400) {
                     result = self.getPaymentMethodResponse(status, response);
                     resolve(result);
@@ -55,7 +55,7 @@ export class MercadopagoService {
     createCardToken(form:CardTokenData):Promise<any> {
         let self = this;
         return new Promise((resolve, reject) => {
-            console.log('MP>>', Mercadopago);
+            //console.log('MP>>', Mercadopago);
             Mercadopago.createToken(form, function(status, response) {
                 //console.log('createCardToken > status ', status, response);
                 if(status==200 || status==201 || status==400) {
@@ -92,7 +92,7 @@ export class MercadopagoService {
      */
 
     private generatePaymentData(preData:PrepaymentData) {
-        console.log('preData > ', preData);
+        //console.log('preData > ', preData);
         let data:PaymentData = {
             transactionAmount:preData.transactionAmount,
             token: preData.cardToken,
@@ -102,7 +102,7 @@ export class MercadopagoService {
             payerEmail: preData.payerEmail,
             externalReference: preData.externalReference
         }
-        console.log('paymentData > ', data);
+        //console.log('paymentData > ', data);
         return data;
     }
 
@@ -121,7 +121,7 @@ export class MercadopagoService {
                         +'&externalReference='+data.externalReference;
         return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
                     .map((response: Response) => {
-                        console.log('runServerPayment > response', response);                       
+                        //console.log('runServerPayment > response', response);                       
                         return this.getServerPaymentResponse(response);
                     })
                     .catch(this.handleHttpError);

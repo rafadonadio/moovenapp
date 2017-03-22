@@ -53,7 +53,7 @@ SECUENCIA DEL PAGO
             enviar prepayment data a nuestro server con PHP SDK instalado
             esperar respuesta 
             mostrar errores si hubiese en frontend
-        backend:
+        BACKEND:
             verificar campos enviados en backend, devolver error si hubiese
             preparar payment data con valores enviados por frontend
             llamar a mp->post(/payment) y esperar respuesta
@@ -74,6 +74,15 @@ SECUENCIA DEL PAGO
                     datos en json:
                         _payment: dato de pago completado (objeto completo devuleto por la API)
                         _paymentError: dato de codigo de error, detail y raw message
+        FRONTEND:
+            
+
+
+
+#################
+# ANALISIS FLOW
+#################
+
         frontend:
             capturar respuesta de server    
                 -  http code == 200 (respuesta recibida correctamente) ***

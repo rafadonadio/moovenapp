@@ -112,23 +112,23 @@ export class CheckoutPage implements OnInit {
      *  2. TOKEN-DATA: generate Token Data (with form data) to request Card Token
      *  3. CARD-TOKEN: create card token with MP API
      *  4. PREPAYMENT-DATA: generate Pre-Payment data, with token id from step 3
-     *  5. PAY: do payment > send payment request to backend server (with MP SDK deployed)
-     *  6. UPDATE-DB: update firebase DB with results
-     *  7. PROMPT: show message with results to user
+     *  5. PAY: create payment > send payment request to backend server (with MP SDK deployed)
+     *  6. UPDATE-DB AND PROMPT: update firebase DB with results > show message with results to user
      */
     runCheckout() {
-        console.info('runCheckout > start');
+        console.info('__[0]__runCheckout');
+        console.log('__[1]__formValid');
         // 1. VERIFY
-        if (!this.chForm.valid) {
-            console.info('form invalid');
+        let formValid = this.chForm.valid;
+        console.log('__[1]__', formValid);
+        if (!formValid) {
             this.showRequired = true;
-            return null;
-            ///// DIE /////
+            return null; ///// DIE /////
         }
         // 2. TOKEN-DATA
-        console.info('form valid');
+        console.log('__[2]__tokenData');
         this.setTokenData(this.chForm.value);
-        console.log('tokenData >', this.tokenData);
+        console.log('__[2]__', this.tokenData);
         // Init steps
         let steps = {
             genCardToken: false,
@@ -139,40 +139,45 @@ export class CheckoutPage implements OnInit {
         // init loader
         let loader = this.loadingCtrl.create({ content: 'Procesando pago ...' });
         // 3. CARD-TOKEN
+        console.log('__[3]__cardToken');
         this.paySrv.createCardTokenMP(this.tokenData)
             .then((cardTokenResult) => {
-                console.log('createCardTokenMP > ', cardTokenResult);
+                console.log('__[3]__', cardTokenResult);
                 let statusCode = cardTokenResult._response_status;
+                console.log('__[3]__', statusCode);
                 if (statusCode != 200 && statusCode != 201) {
                     let cause = cardTokenResult.cause;
                     let errorMsg: any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
                     // error, show
                     this.showCardTokenErrors(errorMsg.msg);
                 } else {
+                    console.log('__[4]__prepaymentData');
                     // good, continue
                     steps.genCardToken = true;
                     // show loader
                     loader.present();
                     // 4. PAYMENT-DATA               
                     let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
+                    console.log('__[4]__', prepaymentData);
                     // 5: CREATE PAYMENT
-                    this.paySrv.checkoutMP(prepaymentData)
-                        .subscribe(
+                    console.log('__[5]__pay');
+                    let checkoutSuscription = this.paySrv.checkoutMP(prepaymentData).subscribe(
                         result => {
                             // response success
-                            console.log('checkoutMP, response success', result);
+                            console.log('__[5]__', result);
                             this.clearSessionMP();
+                            checkoutSuscription.unsubscribe();
                             loader.dismiss()
                                 .then(() => {
-                                    // 6. UPDATE DB
-                                    this.saveCheckoutResult(result);
-                                    // 7. PROMPT
-                                    this.showAlertForCheckoutResult(result);
+                                    // 6. UPDATE DB AND PROMPT
+                                    console.log('__[6]__saveAndPrompt');
+                                    this.saveResultAndShowAlert(result);
                                 });
                         },
                         error => {
-                            console.log('checkoutMP > response error', error);
+                            console.log('__[5]__', error);
                             this.clearSessionMP();
+                            checkoutSuscription.unsubscribe();
                             loader.dismiss()
                                 .then(() => {
                                     let alertError = this.alertCtrl.create({
@@ -246,43 +251,31 @@ export class CheckoutPage implements OnInit {
      *  PAYMENT STEPS HELPERS
      */
 
-    private saveCheckoutResult(response:any) {
-        this.paySrv.saveCheckoutToDB(response);
-    }
-
-    private showAlertForCheckoutResult(result) {
+    private saveResultAndShowAlert(result) {
+        let title:string = '';
+        let message:string = '';
+        // no response, show error and die
         if(!result.responseSuccess) {
-            // no response, show error and die
-            this.showCheckoutAlert(
-                    'Ocurrió un Error', 
-                    `El pago no pudo procesarse, por favor intentalo de nuevo. (${result.responseCode})`);
-            return null;
-            ///// DIE /////
+            title = 'Ocurrió un Error'
+            message = `El pago no pudo procesarse, por favor intentalo de nuevo. (${result.responseCode})`;
         }
+        // payment not completed, show error msg/code and die
         if(!result.paymentCompleted) {
-            // payment not completed, show error msg/code and die
-            this.showCheckoutAlert(
-                    'Pago incompleto', 
-                    result.paymentMessage);
-            return null;
-            ///// DIE /////
+            title = 'Pago incompleto';
+            message = result.paymentMessage;
         }
+        // payment completed  and rejected, show error and die
         if(result.paymentCompleted && !result.paymentSuccess) {
-            // payment completed  and rejected, show error and die
-            this.showCheckoutAlert(
-                    'Pago rechazado', 
-                    result.paymentMessage);
-            return null;
-            ///// DIE /////            
+            title = 'Pago rechazado';
+            message = result.paymentMessage;    
         }
+        // payment succesfull, show if acredited or pending
         if(result.paymentCompleted && result.paymentSuccess) {
-            // payment succesfull, show if acredited or pending
-            this.showCheckoutAlert(
-                    'Pago completado', 
-                    result.paymentMessage);
-            return null;
-            ///// DIE /////             
+            title = 'Pago completado';
+            message = result.paymentMessage;         
         }
+        // SHOW
+        this.showCheckoutAlert(title, message);
     }
 
     // reset session, because if you need to repeat a new payment
