@@ -46,7 +46,7 @@ export class MyApp{
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public af:AngularFire) {     
+        public af:AngularFire) {   
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -76,24 +76,50 @@ export class MyApp{
         ];
 
         /**
+         *  IS USER ALREADY LOGGED IN? GO HOME
+         */
+        let authInit = this.af.auth.subscribe((state) => {
+            if(state) {
+                this.nav.setRoot(SendingsPage);
+            }
+            authInit.unsubscribe();
+        });
+
+        /**
          *  FIREBASE AUTH OBSERVER
          */
-        // fix to avoid Exception on promise false - 
-        af.auth.subscribe( user => {
-            console.info('__authStateChanged', user);
-            if (user) {
-                console.log('signedIn > user.uid: ', user.uid);
-                this.setUser(user.auth);
-                // verify user account, status, active, etc
-                this.runUserAccountVerification();
-                // go
-                this.nav.setRoot(SendingsPage);
-            } else {
-                // If there's no user logged in send him to the StartPage
-                console.log('authStateChanged > no user signed in', user);
-                this.nav.setRoot(StartPage);
-            }
-        });        
+        this.af.auth.subscribe((state) => {
+            console.info('__authStateChanged');
+                if (state) {
+                    console.log('__authStateChanged > OK');
+                    this.user = state.auth;
+                    this.getUserAccount();
+                    //this.runUserAccountVerification();
+                } else {
+                    console.log('__authStateChanged > NULL');
+                    this.user = null;
+                    this.userAccount = null;
+                }
+            });        
+    }
+
+
+    private getUserAccount() {
+        console.log('__[1]__getUserAccount');
+        this.usersService.getAccount()
+            .then((snapshot) => {
+                this.userAccount = snapshot.val();
+                if(this.userAccount === null) {
+                    console.error('__[1]__NULL');
+                    this.presentAlertAndAction('Cuenta inválida',
+                        'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
+                        'signout'
+                        );                 
+                }else{
+                    console.log('__[1]__OK');
+                }                
+            })
+            .catch((error) => console.log('error', error));        
     }
 
     /**
@@ -109,53 +135,45 @@ export class MyApp{
         // get account data
         this.usersService.getAccount()
             .then((snapshot) => {
-                // check account is set
-                let account:any;
-                if(snapshot.val() === null) {
-                    account = null;
-                    this.userAccount = false;
+                this.userAccount = snapshot.val();
+                if(this.userAccount === null) {
                     console.error('__[1]__getUserAccount: NULL, SignOut');
                     this.presentAlertAndAction('Cuenta inválida',
                         'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
                         'signout'
-                        );           
-                                 
+                        );                 
                 }else{
-                    account = snapshot.val();
-                    this.userAccount = account;
                     console.log('__[1]__getUserAccount');
-                    //console.log('userAccount > ', account);
                     this.loader.dismiss()
                         .then(() => {
                             // is user active?
                             console.info('__[2]__isAccountActive');
-                            if(this.usersService.accountIsActive(account)===false) {
-                                // account is inactive, show error and signout
-                                console.log('UserAccount active==FALSE, SignOut');
-                                this.presentAlertAndAction('Cuenta inactiva',
-                                    'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
-                                    'signout'
-                                    );
-                                        
-                            }else{
-                                console.log('UserAccount active==TRUE');
-                            }
-                            return;
+                            // if(this.usersService.accountIsActive(this.userAccount)===false) {
+                            //     // account is inactive, show error and signout
+                            //     console.log('UserAccount active==FALSE, SignOut');
+                            //     this.presentAlertAndAction('Cuenta inactiva',
+                            //         'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
+                            //         'signout'
+                            //         );
+                            // }else{
+                            //     console.log('UserAccount active==TRUE');
+                            // }
+                            // return;
                         })
                         .then(() => {
                             // is basic profile complete ? 
                             console.info('__[3]__accountProfileIsComplete');
-                            if(this.usersService.accountProfileFieldsIsComplete(account, PROFILE_BASIC)===false) {
-                                console.warn('profileIsComplete==FALSE, goTo MergePage');
-                                this.nav.setRoot(SignupMergePage);
-                            }
-                            else{
-                                console.log('profileIsComplete==TRUE');
-                                // all good, audit if account email is verified
-                                this.auditAccountEmailIsVerified();                                
-                            }                   
-                                 
-                        });    
+                            // if(this.usersService.accountProfileFieldsIsComplete(this.userAccount, PROFILE_BASIC)===false) {
+                            //     console.warn('profileIsComplete==FALSE, goTo MergePage');
+                            //     this.nav.setRoot(SignupMergePage);
+                            // }
+                            // else{
+                            //     console.log('profileIsComplete==TRUE');
+                            //     // all good, audit if account email is verified
+                            //     //>>>>>>this.auditAccountEmailIsVerified();                                
+                            // }                    
+                        })
+                        .catch((error) => console.log('error', error));    
                 }                         
             })
             .catch((error) => {
@@ -235,9 +253,7 @@ export class MyApp{
         this.loader.present();
     }
 
-    presentAlertAndAction(title: string,
-        subtitle: string,
-        action: string): void {
+    presentAlertAndAction(title:string, subtitle:string, action: string):void {
         console.log('present alert > ', action);
         var self = this;
         let alertError = this.alertCtrl.create({
@@ -264,8 +280,4 @@ export class MyApp{
         }
     }
 
-    private setUser(userData:firebase.User) {
-        this.user = userData;
-        //console.log('user data > ', userData.displayName, userData.photoURL);
-    }
 }

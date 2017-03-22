@@ -82,8 +82,8 @@ export class SendingCreatePage implements OnInit {
 
     cancelSending() {
         let alert = this.alertCtrl.create({
-            title: '¿Cancelar Envío?',
-            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+            title: '¿Deseas cancelar?',
+            message: 'Se perderán todos los datos ingresados del Nuevo Servicio.',
             buttons: [
                 {
                     text: 'No',

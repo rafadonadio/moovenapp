@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content class="login" padding>
     <h6 style="margin-top:50px;" text-center margin class="create-account-title">Inicia sesión con tu correo electrónico</h6>
-    <form [formGroup]="signinForm" (ngSubmit)="submitSigninForm(signinForm.value)">
+    <form [formGroup]="signinForm" (ngSubmit)="login(signinForm.value)">
 
         <ion-item [class.error]="!email.valid && email.touched">
             <ion-label floating>Email</ion-label>

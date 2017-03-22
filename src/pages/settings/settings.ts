@@ -1,3 +1,4 @@
+import { StartPage } from '../start/start';
 import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
@@ -78,6 +79,7 @@ export class SettingsPage implements OnInit{
             .then(() => {
                 console.log('updateAccountSettingsNotifications > success');
             })
+            .catch((error) => console.log('error', error));  
     }
 
     /**
@@ -127,7 +129,8 @@ export class SettingsPage implements OnInit{
             toast.dismiss()
                 .then(() => {
                     this.setAccountData();
-                });
+                })
+                .catch((error) => console.log('error', error));  
         })
         .catch((error) => {
             console.log('updatePicture > error > ' + error, steps);
@@ -144,11 +147,16 @@ export class SettingsPage implements OnInit{
         // loader effect
         let loader = this.loadingCtrl.create({
             content: 'Cerrando sesión ...',
-            dismissOnPageChange: true
         });
         loader.present();
+        setTimeout(() => {
+            this.users.signOut();
+            this.navCtrl.setRoot(StartPage);
+        }, 1000);
 
-        this.users.signOut();
+        setTimeout(() => {
+            loader.dismiss();
+        }, 3000);        
     }
 
     /**

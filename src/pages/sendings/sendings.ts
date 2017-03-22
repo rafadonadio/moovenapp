@@ -1,6 +1,6 @@
 import { LoadingController } from 'ionic-angular/components/loading/loading';
 import { Component, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ViewController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
 import { CheckoutPage } from '../checkout/checkout';
@@ -15,14 +15,23 @@ export class SendingsPage implements OnInit {
 
     sendings: any;
     sendingsEmpty = true;
+    sendingsSuscription: any;
 
-    constructor(public navCtrl: NavController,
+    constructor(public viewCtrl: ViewController,
+        public navCtrl: NavController,
         public loadingCtrl: LoadingController,
         public sendingsService: SendingService) {
     }
 
     ngOnInit() {
-        this.getAllActive();
+        this.viewCtrl.didEnter.subscribe( () => {
+            console.log('sending > didEnter');
+            this.getAllActive();            
+        });
+        this.viewCtrl.didLeave.subscribe( () => {
+            console.log('sending > didLeave');
+            this.sendingsSuscription.unsubscribe();
+        });
     }
 
     goToDetail(key: string) {
@@ -112,27 +121,26 @@ export class SendingsPage implements OnInit {
      */
 
     private getAllActive() {
+        console.log('sendings suscription > getAllActive');
+        this.sendings = [];
         let listRef = this.sendingsService.getAllMyActiveRef();
-        listRef
-            .subscribe(snapshots => {
-                console.log('sendings > getAllActive > subscribe > init');
-                this.sendings = [];
-                if (snapshots) {
-                    snapshots.forEach(snapshot => {
-                        let key = snapshot.key;
-                        let item = {
-                            key: key,
-                            data: snapshot.val(),
-                        };
-                        this.sendings.push(item);
-                    });
-                }
-                if (this.sendings.length > 0) {
-                    this.sendingsEmpty = false;
-                } else {
-                    this.sendingsEmpty = true;
-                }
-            });
+        this.sendingsSuscription = listRef.subscribe(snapshots => {
+            if (snapshots) {
+                snapshots.forEach(snapshot => {
+                    let key = snapshot.key;
+                    let item = {
+                        key: key,
+                        data: snapshot.val(),
+                    };
+                    this.sendings.push(item);
+                });
+            }
+            if (this.sendings.length > 0) {
+                this.sendingsEmpty = false;
+            } else {
+                this.sendingsEmpty = true;
+            }
+        });
     }
 
 }

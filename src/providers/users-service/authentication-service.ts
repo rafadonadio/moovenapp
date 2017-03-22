@@ -9,13 +9,13 @@ export class AuthenticationService {
     // FIREBASE AUTH REFERENCES
     fbAuthRef: any = firebase.auth();
     // angularFire references
-    fireAuth: any;
+    fbuser: any;
 
     constructor(public af:AngularFire) {
         // subscribe to user change
         af.auth.subscribe( user => {
             if(user) {
-                this.fireAuth = user.auth;
+                this.fbuser = user.auth;
             }
         });
     }

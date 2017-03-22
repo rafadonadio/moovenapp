@@ -1,8 +1,7 @@
+import { SendingsPage } from '../sendings/sendings';
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-
-import { UserCredentials } from '../../models/user-model';
 import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password';
@@ -16,6 +15,7 @@ export class LoginPage {
     signinForm: FormGroup;
     email: AbstractControl;
     password: AbstractControl;
+    loader:any;
 
     constructor(private navCtrl: NavController,
         private users: UsersService,
@@ -39,35 +39,17 @@ export class LoginPage {
     /**
      * Signup Form Submit
      */
-    submitSigninForm(value: any):void {
+    login(value: any):void {
         // verify inputs are valid
-        if(this.signinForm.valid!==true) {
-            // something went wrong
+        if(!this.signinForm.valid) {
             console.log('signinform valid = false')
         }else{
-            // loader effect
-            let loader = this.loadingCtrl.create({
-                content: 'Iniciando sesión ...',
-                dismissOnPageChange: true
-            });
-            loader.present();
-            // init user
-            let userData: UserCredentials = {
-                email: value.email,
-                password: value.password
-            };
-            // signin
-            this.users.signIn(userData)
-                .then((user) => {
-                    console.log('sign in ok > ', user);
-                    loader.dismiss();
+            this.showLoader();
+            this.users.signIn({email:value.email, password:value.password})
+                .then((user) => { 
+                    this.goToHome();
                 })
-                .catch((error) => {
-                    loader.dismiss()
-                        .then(() => {
-                            this.presentErrorAlert(error.code);
-                        });
-                });
+                .catch((error) => this.showLoginError(error));
         }
     }
 
@@ -79,6 +61,30 @@ export class LoginPage {
     /**
      *  PRIVATE METHODS
      */
+
+    private goToHome() {
+        this.loader.dismiss()
+            .then(() => {
+                this.navCtrl.setRoot(SendingsPage);
+            })
+            .catch((error) => console.log('error', error)); 
+    }
+
+    private showLoginError(error) {
+        this.loader.dismiss()
+            .then(() => {
+                this.presentErrorAlert(error.code);
+            })
+            .catch((error) => console.log('error', error)); 
+    }
+
+    private showLoader() {
+        // loader effect
+        this.loader = this.loadingCtrl.create({
+            content: 'Iniciando sesión ...'
+        });
+        this.loader.present();        
+    }
 
     private presentErrorAlert(msgCode: string ):void {
         // set strings
