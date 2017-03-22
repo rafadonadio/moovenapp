@@ -93,8 +93,7 @@ export class MyApp{
                 if (state) {
                     console.log('__authStateChanged > OK');
                     this.user = state.auth;
-                    this.getUserAccount();
-                    //this.runUserAccountVerification();
+                    this.verifyAccount();
                 } else {
                     console.log('__authStateChanged > NULL');
                     this.user = null;
@@ -103,83 +102,108 @@ export class MyApp{
             });        
     }
 
-
-    private getUserAccount() {
-        console.log('__[1]__getUserAccount');
-        this.usersService.getAccount()
-            .then((snapshot) => {
-                this.userAccount = snapshot.val();
-                if(this.userAccount === null) {
-                    console.error('__[1]__NULL');
-                    this.presentAlertAndAction('Cuenta inválida',
-                        'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
-                        'signout'
-                        );                 
-                }else{
-                    console.log('__[1]__OK');
-                }                
-            })
-            .catch((error) => console.log('error', error));        
-    }
-
     /**
-     *  USER ACCOUNT VERIFICATION 
+     *  VERIFY USER ACCOUNT
      *  1- get user account
      *  2- check account is active
      *  3- check profile.basic is complete 
+     *  4- audit email is verified
      */
-    private runUserAccountVerification() {
-        console.info('__[0]__AccountVerification');
-        // show loader
-        this.presentLoader('Verificando credenciales ...');
-        // get account data
-        this.usersService.getAccount()
-            .then((snapshot) => {
-                this.userAccount = snapshot.val();
-                if(this.userAccount === null) {
-                    console.error('__[1]__getUserAccount: NULL, SignOut');
-                    this.presentAlertAndAction('Cuenta inválida',
-                        'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
-                        'signout'
-                        );                 
-                }else{
-                    console.log('__[1]__getUserAccount');
-                    this.loader.dismiss()
-                        .then(() => {
-                            // is user active?
-                            console.info('__[2]__isAccountActive');
-                            // if(this.usersService.accountIsActive(this.userAccount)===false) {
-                            //     // account is inactive, show error and signout
-                            //     console.log('UserAccount active==FALSE, SignOut');
-                            //     this.presentAlertAndAction('Cuenta inactiva',
-                            //         'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
-                            //         'signout'
-                            //         );
-                            // }else{
-                            //     console.log('UserAccount active==TRUE');
-                            // }
-                            // return;
-                        })
-                        .then(() => {
-                            // is basic profile complete ? 
-                            console.info('__[3]__accountProfileIsComplete');
-                            // if(this.usersService.accountProfileFieldsIsComplete(this.userAccount, PROFILE_BASIC)===false) {
-                            //     console.warn('profileIsComplete==FALSE, goTo MergePage');
-                            //     this.nav.setRoot(SignupMergePage);
-                            // }
-                            // else{
-                            //     console.log('profileIsComplete==TRUE');
-                            //     // all good, audit if account email is verified
-                            //     //>>>>>>this.auditAccountEmailIsVerified();                                
-                            // }                    
-                        })
-                        .catch((error) => console.log('error', error));    
-                }                         
-            })
-            .catch((error) => {
-                console.error('verifyUserAccount > failed', error);
-                
-            });     
+    private verifyAccount() {
+        console.log('__[0]__verifyAccount');
+        return new Promise((resolve, reject) => {
+            console.log('__[1]__get');
+            this.usersService.getAccount()
+                .then((snapshot) => {
+                    this.userAccount = snapshot.val();
+                    return this.checkAccountExistOrDie();
+                })
+                .then((result) => {
+                    console.log('__[1]__', result); 
+                    if(result) {
+                        return this.checkAccountIsActiveOrDie();
+                    }else{
+                        return false;
+                    }
+                })
+                .then((result) => {
+                    console.log('__[2]__', result);
+                    if(result) {
+                        return this.checkProfileIsCompleteOrGo();
+                    }else{
+                        return false;
+                    }
+                })
+                .then((result) => {
+                    console.log('__[3]__', result);
+                    if(result) {
+                        this.auditAccountEmailIsVerified();
+                    }
+                })
+                .catch((error) => console.log('error', error));  
+        });     
+    }
+
+    private checkProfileIsCompleteOrGo():boolean {
+        console.info('__[3]__profileIsComplete');
+        let isComplete = this.usersService.accountProfileFieldsIsComplete(this.userAccount, PROFILE_BASIC);
+        if(isComplete) {
+            return true;
+        }else{
+            this.nav.setRoot(SignupMergePage);
+            return false;
+        }
+    }
+
+    private checkAccountIsActiveOrDie():boolean {
+        console.info('__[2]__isActive');
+        let accountActive = this.usersService.accountIsActive(this.userAccount);
+        if(accountActive) {
+            return true;    
+        }else{
+            let alertError = this.alertCtrl.create({
+                title: 'Cuenta inactiva',
+                subTitle: 'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
+                buttons: [{
+                    text: 'Cerrar',
+                    role: 'cancel',
+                    handler: () => {
+                        this.nav.setRoot(StartPage);
+                        setTimeout(() => {
+                            this.usersService.signOut();
+                        }, 2000);                        
+                    }
+                }]
+            });
+            alertError.present();            
+            return false;
+        }
+    }
+
+
+    // check userAccount is not null
+    // else die
+    private checkAccountExistOrDie():boolean {        
+        if(this.userAccount){                    
+            return true;
+        }else{
+            let alertError = this.alertCtrl.create({
+                title: 'Cuenta inválida',
+                subTitle: 'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo.',
+                buttons: [{
+                    text: 'Cerrar',
+                    role: 'cancel',
+                    handler: () => {
+                        this.nav.setRoot(StartPage);
+                        setTimeout(() => {
+                            this.usersService.signOut();
+                        }, 2000);                        
+                    }
+                }]
+            });
+            alertError.present();
+            return false; 
+        } 
     }
 
     /**
@@ -193,28 +217,27 @@ export class MyApp{
      * 3- update account verification to whatever is
      */
     auditAccountEmailIsVerified(): void {
-        let self = this;
         if(this.userAccount.hasOwnProperty('profile')===false) {
             console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
         }else{
             console.info('__auditAccountEmailIsVerified > (this.userAccount)', this.userAccount);
             let ref = this.usersService.getRef_AccountEmailVerification();
-            ref.once('value', function(snapshot) {
-                console.log('profile.verification.email.verified == ', snapshot.val());
-                let isVerified:boolean = snapshot.val();
-                if(isVerified === false) {                 
-                    self.usersService.runAuthEmailVerification()
-                        .then((result) => {
-                            console.log('checkAuthEmailIsVerified > ', result);                           
-                        })
-                        .catch((error) => {
-                            console.log('checkAuthEmailIsVerified > error > ', error);                            
-                        });
-                }
+            ref.once('value')
+                .then((snapshot) => {
+                    console.log('profile.verification.email.verified == ', snapshot.val());
+                    let isVerified:boolean = snapshot.val();
+                    if(isVerified === false) {                 
+                        this.usersService.runAuthEmailVerification()
+                            .then((result) => {
+                                console.log('checkAuthEmailIsVerified > ', result);                           
+                            })
+                            .catch((error) => {
+                                console.log('checkAuthEmailIsVerified > error > ', error);                            
+                            });
+                    }
             });
         }
     }
-
 
     /**
      *  NAVIGATION
@@ -251,33 +274,6 @@ export class MyApp{
           dismissOnPageChange: true
         });
         this.loader.present();
-    }
-
-    presentAlertAndAction(title:string, subtitle:string, action: string):void {
-        console.log('present alert > ', action);
-        var self = this;
-        let alertError = this.alertCtrl.create({
-            title: title,
-            subTitle: subtitle,
-            buttons: [{
-                text: 'Cerrar',
-                role: 'cancel',
-                handler: () => {
-                    self.alertActionTrigger(action);
-                }
-            }]
-        });
-        alertError.present();
-    }
-
-    alertActionTrigger(action: string): void {
-        switch(action){
-            case 'signout':
-                this.usersService.signOut();
-                break;
-            default:
-                console.log('app > alertActionTrigger not found > ', action);
-        }
     }
 
 }
