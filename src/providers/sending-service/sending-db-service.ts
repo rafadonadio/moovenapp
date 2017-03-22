@@ -266,6 +266,15 @@ export class SendingDbService {
     }
 
 
+    writePaymentResult(userId:string, sendingId:string, prepaymenteData:any, paymentResult:any) {
+        console.log('__WPR__writePaymentResult');
+        console.log(userId, sendingId, prepaymenteData, paymentResult);
+        let updates = {};
+
+        console.log('__WPR__', updates);
+        return this.dbRef.update(updates);
+    }
+
 
     /**
      *  READ

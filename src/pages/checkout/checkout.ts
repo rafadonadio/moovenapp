@@ -171,8 +171,9 @@ export class CheckoutPage implements OnInit {
                                 .then(() => {
                                     // 6. UPDATE DB AND PROMPT
                                     console.log('__[6]__saveAndPrompt');
-                                    this.saveResultAndShowAlert(result);
-                                });
+                                    this.saveResultAndShowAlert(prepaymentData, result);
+                                })
+                                .catch(error => console.log('dismiss error', error));
                         },
                         error => {
                             console.log('__[5]__', error);
@@ -251,9 +252,10 @@ export class CheckoutPage implements OnInit {
      *  PAYMENT STEPS HELPERS
      */
 
-    private saveResultAndShowAlert(result) {
+    private saveResultAndShowAlert(prepaymentData, result) {
         let title:string = '';
         let message:string = '';
+
         // no response, show error and die
         if(!result.responseSuccess) {
             title = 'Ocurrió un Error'
@@ -270,12 +272,30 @@ export class CheckoutPage implements OnInit {
             message = result.paymentMessage;    
         }
         // payment succesfull, show if acredited or pending
-        if(result.paymentCompleted && result.paymentSuccess) {
-            title = 'Pago completado';
+        if(result.paymentCompleted 
+            && result.paymentSuccess && result.paymentStatusCode=='in_process') {
+            title = 'Pago en Proceso';
             message = result.paymentMessage;         
         }
-        // SHOW
-        this.showCheckoutAlert(title, message);
+        // payment succesfull, show if acredited or pending
+        if(result.paymentCompleted 
+            && result.paymentSuccess && result.paymentStatusCode=='approved') {
+            title = 'Recibimos tu Pago';
+            message = result.paymentMessage;         
+        }
+        // save to Db 
+        let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
+        loader.present();        
+        this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, prepaymentData, result)
+            .then((result) => {
+                console.log('__[6]__OK')
+                loader.dismiss()
+                    .then(() => {
+                        this.showCheckoutAlert(title, message);
+                    })
+                    .catch(error => console.log('dismiss error', error));                               
+            })
+            .catch((error) => console.error('__[6]__', error));
     }
 
     // reset session, because if you need to repeat a new payment
