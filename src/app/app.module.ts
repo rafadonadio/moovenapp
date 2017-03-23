@@ -58,7 +58,6 @@ import { MercadopagoService } from '../providers/payment-gateways/mercadopago-se
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
-
 // IONIC.IO
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 const cloudSettings: CloudSettings = {
@@ -180,7 +179,8 @@ const myFirebaseAuthConfig = {
     GoogleMapsService,
     DateService,
     HashService,
-    MercadopagoService
+    MercadopagoService,
+    Camera
   ],
 })
 export class AppModule {}
