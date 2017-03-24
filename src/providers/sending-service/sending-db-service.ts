@@ -295,7 +295,7 @@ export class SendingDbService {
         let updates = {};
         updates[DBPYM.ALL.REF + newKey] = paymentData;
         updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.PAYMENTS + newKey] = sendingPaymentData;
-        console.log('__WPR__', updates);
+        // console.log('__WPR__', updates);
         return this.dbRef.update(updates);
     }
 

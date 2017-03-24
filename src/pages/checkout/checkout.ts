@@ -1,3 +1,4 @@
+import { SendingService } from '../../providers/sending-service/sending-service';
 import { UsersService } from '../../providers/users-service/users-service';
 import { SendingRequest } from '../../models/sending-model';
 import { CardTokenData, PrepaymentData } from '../../providers/payment-gateways/mercadopago-model';
@@ -55,6 +56,7 @@ export class CheckoutPage implements OnInit {
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
+        public sendingSrv: SendingService,
         public paySrv: SendingPaymentService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
@@ -239,11 +241,23 @@ export class CheckoutPage implements OnInit {
     }
 
 
-    private showCheckoutAlert(title:string, msg:string) {
+    private showCheckoutAlert(title:string, msg:string, goToSendings:boolean = false) {
         let alertError = this.alertCtrl.create({
             title: title,
             subTitle: msg,
-            buttons: [{text:'Cerrar', role:'cancel'}]
+            buttons: [
+                {
+                    text:'Cerrar', 
+                    handler: () => {
+                        if(goToSendings) {
+                            console.log('checkout > goToSendings');
+                            this.navCtrl.setRoot(SendingsPage);
+                        }else{
+                            console.log('checkout > stay');
+                        }
+                    }
+                }
+            ]
         });
         alertError.present();        
     }
@@ -255,7 +269,8 @@ export class CheckoutPage implements OnInit {
     private saveResultAndShowAlert(result) {
         let title:string = '';
         let message:string = '';
-
+        let setSendingPaid = false;
+        let setSendingEnabled = false;
         // no response, show error and die
         if(!result.responseSuccess) {
             title = 'Ocurrió un Error'
@@ -271,17 +286,20 @@ export class CheckoutPage implements OnInit {
             title = 'Pago rechazado';
             message = result.paymentMessage;    
         }
-        // payment succesfull, show if acredited or pending
+        // payment succesfull, show if pending
         if(result.paymentCompleted 
             && result.paymentSuccess && result.paymentStatusCode=='in_process') {
             title = 'Pago en Proceso';
-            message = result.paymentMessage;         
+            message = result.paymentMessage;       
+            setSendingPaid = true;  
         }
-        // payment succesfull, show if acredited or pending
+        // payment succesfull, show if acredited
         if(result.paymentCompleted 
             && result.paymentSuccess && result.paymentStatusCode=='approved') {
             title = 'Recibimos tu Pago';
-            message = result.paymentMessage;         
+            message = result.paymentMessage;     
+            setSendingPaid = true;
+            setSendingEnabled = true;    
         }
         // save to Db 
         let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
@@ -289,9 +307,27 @@ export class CheckoutPage implements OnInit {
         this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, result)
             .then((result) => {
                 console.info('__[RC-6]__OK')
+                if(setSendingPaid) {
+                    console.log('__[RC-6]__PAID')
+                    return this.sendingSrv.paid(this.sending.sendingId);
+                }else{
+                    return false;
+                }
+            })
+            .then((result) => {
+                if(result && setSendingEnabled) {
+                    console.log('__[RC-6]__PAID_OK')
+                    console.log('__[RC-6]__ENABLED')
+                    return this.sendingSrv.enable(this.sending.sendingId);
+                }else{
+                    return false;
+                }
+            })
+            .then((result) => {
+                console.log('__[RC-6]__ENABLED_OK')
                 loader.dismiss()
                     .then(() => {
-                        this.showCheckoutAlert(title, message);
+                        this.showCheckoutAlert(title, message, true);
                     })
                     .catch(error => console.log('dismiss error', error));                               
             })
@@ -301,7 +337,7 @@ export class CheckoutPage implements OnInit {
     // reset session, because if you need to repeat a new payment
     // card token does not get created again. WTF??
     private clearSessionMP() {
-        console.info('clearSessionMP()');
+        console.info('__[RC-5]__clearSessionMP()');
         this.paySrv.clearSessionMP();
     }
 
