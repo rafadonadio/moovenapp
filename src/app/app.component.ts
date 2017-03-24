@@ -89,13 +89,13 @@ export class MyApp{
          *  FIREBASE AUTH OBSERVER
          */
         this.af.auth.subscribe((state) => {
-            console.info('__authStateChanged');
+            console.info('__ASC__authStateChanged');
                 if (state) {
-                    console.log('__authStateChanged > OK');
+                    console.log('__ASC__ true');
                     this.user = state.auth;
                     this.verifyAccount();
                 } else {
-                    console.log('__authStateChanged > NULL');
+                    console.log('__ASC__ NULL');
                     this.user = null;
                     this.userAccount = null;
                 }
@@ -112,7 +112,7 @@ export class MyApp{
     private verifyAccount() {
         console.log('__[0]__verifyAccount');
         return new Promise((resolve, reject) => {
-            console.log('__[1]__get');
+            console.info('__[1]__get');
             this.usersService.getAccount()
                 .then((snapshot) => {
                     this.userAccount = snapshot.val();
@@ -140,7 +140,7 @@ export class MyApp{
                         this.auditAccountEmailIsVerified();
                     }
                 })
-                .catch((error) => console.log('error', error));  
+                .catch((error) => console.log('__[0]__', error));  
         });     
     }
 
@@ -217,22 +217,24 @@ export class MyApp{
      * 3- update account verification to whatever is
      */
     auditAccountEmailIsVerified(): void {
+        console.info('__[4]__auditAccountEmailIsVerified');
         if(this.userAccount.hasOwnProperty('profile')===false) {
-            console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
+            console.error('__[4]__ no-profile', this.userAccount);            
         }else{
-            console.info('__auditAccountEmailIsVerified > (this.userAccount)', this.userAccount);
+            console.log('__[4]__OK');
+            //console.log('__[4]__userAccount', this.userAccount);
             let ref = this.usersService.getRef_AccountEmailVerification();
             ref.once('value')
                 .then((snapshot) => {
-                    console.log('profile.verification.email.verified == ', snapshot.val());
+                    //console.log('profile.verification.email.verified == ', snapshot.val());
                     let isVerified:boolean = snapshot.val();
                     if(isVerified === false) {                 
                         this.usersService.runAuthEmailVerification()
                             .then((result) => {
-                                console.log('checkAuthEmailIsVerified > ', result);                           
+                                //console.log('checkAuthEmailIsVerified > ', result);                           
                             })
                             .catch((error) => {
-                                console.log('checkAuthEmailIsVerified > error > ', error);                            
+                                console.log('__[4]__', error);                            
                             });
                     }
             });

@@ -276,33 +276,30 @@ export class UsersService {
             setVerified: false,
             updateStatus: false
         };
-        console.group('runAuthEmailVerification');
+        //console.group('runAuthEmailVerification');
         return new Promise((resolve, reject) => {
             this.reloadUser()
                 .then((result) => {
-                    console.log('reloadAuthUser > success');
+                    //console.log('reloadAuthUser > success');
                     steps.reload = true;
                     if(fbuser.emailVerified === true) {
                         return this.emailVerification.setVerified(fbuser);
                     }else{
-                        console.groupEnd();
                         resolve(steps);
                     }
                 })
                 .then((result) => {
-                    console.log('setVerified > success');
+                    //console.log('setVerified > success');
                     steps.setVerified = true;
                     return this.accountSrv.updateProfileStatus(fbuser.uid);
                 })                
                 .then((result) => {
-                    console.log('updateProfileStatus > success');
+                    //console.log('updateProfileStatus > success');
                     steps.updateStatus = true;
-                    console.groupEnd();
                     resolve(steps);
                 })
                 .catch((error) => {
-                    console.log('something failed');
-                    console.groupEnd();
+                    //console.log('something failed');
                     reject(steps);
                 });
         });

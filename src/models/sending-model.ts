@@ -251,7 +251,8 @@ export const SENDING_DB = {
             CURRENT_STATUS: '/_currentStatus/',
             CURRENT_STAGE_STATUS: '/_currentStage_Status/',
             OPERATOR: '/_operator/',
-            NOTIFICATIONS: '/_notifications/'
+            NOTIFICATIONS: '/_notifications/',
+            PAYMENTS: '/_payments/'
         }
     },
     HASHID: {
@@ -389,6 +390,7 @@ export class SendingRequest {
     _currentStage_Status?: string;  
     _operator?: SendingOperator;
     _notifications?: Array<SendingNotifications>;
+    _payments?: any;
     objectShortName: string;
     objectImageSet: boolean;
     objectImageUrlTemp: string;  // deleted once uploaded

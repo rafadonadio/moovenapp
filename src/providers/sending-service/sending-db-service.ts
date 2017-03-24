@@ -1,3 +1,4 @@
+import { PAYMENTS_DB } from '../../models/payments-model';
 import { SHIPMENT_CFG, SHIPMENT_DB } from '../../models/shipment-model';
 import { DateService } from '../date-service/date-service';
 import { Injectable } from '@angular/core';
@@ -8,7 +9,8 @@ import { SENDING_DB, SendingOperator, SendingRequest, SendingStages } from '../.
 import firebase from 'firebase';
 
 const DB = SENDING_DB;
-const DB2 = SHIPMENT_DB;
+const DBSHP = SHIPMENT_DB;
+const DBPYM = PAYMENTS_DB;
 const VACANT_LOCK_TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT + SHIPMENT_CFG.WAIT_AFTER_UNLOCK; // ADDED SECONDS TO AVOID COLISSIONS
 
 @Injectable()
@@ -257,20 +259,42 @@ export class SendingDbService {
          * SHIPMENT
         */        
         // update ALL (shipments)
-        updates[DB2.ALL.REF + shipmentId + DB2.ALL._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status; 
+        updates[DBSHP.ALL.REF + shipmentId + DBSHP.ALL._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status; 
         // update operatorShipment.active
-        updates[DB2.BYUSER.REF + operatorUserId + DB2.BYUSER._CHILD.ACTIVE.REF + shipmentId + DB2.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
+        updates[DBSHP.BYUSER.REF + operatorUserId + DBSHP.BYUSER._CHILD.ACTIVE.REF + shipmentId + DBSHP.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
         // update
         console.log('updateSendingCreatedStages > updates > ', updates);               
         return this.dbRef.update(updates);         
     }
 
 
-    writePaymentResult(userId:string, sendingId:string, prepaymenteData:any, paymentResult:any) {
+    writePaymentResult(userId:string, sendingId:string, paymentResult:any) {
         console.log('__WPR__writePaymentResult');
-        console.log(userId, sendingId, prepaymenteData, paymentResult);
+        console.log('__WPR__', userId, sendingId, paymentResult);
+        // init
+        let newKey = this.dbRef.child(DBPYM.ALL.REF).push().key;
+        let paymentData = {
+            paymentId: newKey,
+            userId: userId,
+            sendingId: sendingId,
+            statusCode: paymentResult.paymentStatusCode,
+            statusDetail: paymentResult.paymentStatusDetail,
+            completed: paymentResult.paymentCompleted,
+            success: paymentResult.paymentSuccess,
+            resultData: paymentResult.paymentData,
+            errorData: paymentResult.errorData,
+        }
+        let sendingPaymentData = {
+            paymentId: newKey,
+            sendingId: sendingId,
+            statusCode: paymentResult.paymentStatusCode,
+            statusDetail: paymentResult.paymentStatusDetail,
+            completed: paymentResult.paymentCompleted,
+            success: paymentResult.paymentSuccess,            
+        }
         let updates = {};
-
+        updates[DBPYM.ALL.REF + newKey] = paymentData;
+        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.PAYMENTS + newKey] = sendingPaymentData;
         console.log('__WPR__', updates);
         return this.dbRef.update(updates);
     }

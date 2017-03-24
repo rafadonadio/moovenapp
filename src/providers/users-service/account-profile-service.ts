@@ -103,20 +103,18 @@ export class AccountProfileService {
         for(let field in profileData) {
             updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + field] = profileData[field];
         }
-        console.log('updateProfileImage > data ', profileData, updates);
+        // console.log('updateProfileImage > data ', profileData, updates);
         return this.dbRef.update(updates);
     }        
 
     updateStatus(userId:string, profile: UserAccountProfile ): firebase.Promise<any> {
-        console.info('accountProfileStatus > update > start');
-        console.group('update');
+        // console.info('accountProfileStatus > update > start');
         // init status object
         let status = this.initStatus();
         status = this.setFieldsCompleteStatus(status, profile.data);
         status = this.setVerificationsCompleteStatus(status, profile.verifications);
         let updates = {};
         updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.STATUS._NODE] = status;
-        console.groupEnd();
         return this.dbRef.update(updates);
     }
 
@@ -144,7 +142,7 @@ export class AccountProfileService {
                 }); 
            notFilled[typeLower] = notFound;     
         }
-        console.log('setFieldsCompleteStatus > notFilled > ', notFilled);
+        // console.log('setFieldsCompleteStatus > notFilled > ', notFilled);
         return profileStatus;
     }
 
@@ -168,7 +166,7 @@ export class AccountProfileService {
                 }); 
            notVerified[typeLower] = unverified;     
         }
-        console.log('setVerificationsCompleteStatus > notVerified > ', notVerified);
+        // console.log('setVerificationsCompleteStatus > notVerified > ', notVerified);
         return profileStatus;
     }    
 
@@ -177,7 +175,7 @@ export class AccountProfileService {
      */
 
     initData(email: string):UserProfileData {
-        console.info('initAccountProfileData');
+        // console.info('initAccountProfileData');
         let data:UserProfileData = {
             email: email,
             emailOnChange: false,
@@ -195,12 +193,12 @@ export class AccountProfileService {
             residenceAddressL2: '',
             lastTosAccepted: ''
         }
-        console.log('initAccountProfileData > data ', data);
+        // console.log('initAccountProfileData > data ', data);
         return data;
     }
 
     initStatus():UserProfileStatus {
-        console.info('initAccountProfileStatus');
+        // console.info('initAccountProfileStatus');
         let status:UserProfileStatus;
         status = {
             basic: {
@@ -216,12 +214,12 @@ export class AccountProfileService {
                 verificationsComplete:false
             },            
         };
-        console.log('initAccountProfileStatus > status ', status);
+        // console.log('initAccountProfileStatus > status ', status);
         return status;
     }
 
     initVerifications():UserProfileVerifications {
-        console.info('initAccountVerifications');
+        // console.info('initAccountVerifications');
         let verifications:UserProfileVerifications;
         verifications = {
             email: {
@@ -251,7 +249,7 @@ export class AccountProfileService {
                 verifiedBy: '',
             } 
         }
-        console.log('initAccountVerifications > verifications > ', verifications);
+        // console.log('initAccountVerifications > verifications > ', verifications);
         return verifications;
     }    
 

@@ -74,16 +74,16 @@ export class AccountService {
     }
 
     updateProfileStatus(userId: string): Promise<any> {
-        console.info('updateProfileStatus > start');
+        //console.info('updateProfileStatus > start');
         return new Promise((resolve, reject) => {
             this.getByUid(userId)
                 .then((snapshot) => {
-                    console.log('updateProfileStatus > getProfile > ok');
+                    //console.log('updateProfileStatus > getProfile > ok');
                     let account:UserAccount = snapshot.val();
                     return this.profileSrv.updateStatus(userId, account.profile);
                 })
                 .then((result) => {
-                    console.log('updateProfileStatus > update > success');
+                    //console.log('updateProfileStatus > update > success');
                     resolve(result);
                 })
                 .catch((error) => {

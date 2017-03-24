@@ -8,6 +8,8 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
 
+import { Camera } from 'ionic-native';
+
 @Component({
     selector: 'page-sending-create',
     templateUrl: 'sending-create.html'

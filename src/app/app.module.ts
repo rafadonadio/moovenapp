@@ -179,8 +179,7 @@ const myFirebaseAuthConfig = {
     GoogleMapsService,
     DateService,
     HashService,
-    MercadopagoService,
-    Camera
+    MercadopagoService
   ],
 })
 export class AppModule {}

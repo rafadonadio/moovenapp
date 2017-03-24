@@ -24,18 +24,19 @@ export class SendingsPage implements OnInit {
     }
 
     ngOnInit() {
+        console.info('__SND__sendings');
         this.viewCtrl.didEnter.subscribe( () => {
-            console.log('sending > didEnter');
+            console.log('__SND__didEnter()');
             this.getAllActive();            
         });
         this.viewCtrl.didLeave.subscribe( () => {
-            console.log('sending > didLeave');
+            console.log('__SND__didLeave()');
             this.sendingsSuscription.unsubscribe();
         });
     }
 
     goToDetail(key: string) {
-        console.log('go to detail > ', key);
+        console.log('__SND__goToDetail()', key);
         // loader
         let loader = this.loadingCtrl.create({
             content: "Cargando ...",
@@ -44,14 +45,14 @@ export class SendingsPage implements OnInit {
         // get
         let service = this.sendingsService.getSending(key);
         service.subscribe(snapshot => {
-            console.log('getSending > success');
+            //console.log('getSending > success');
             loader.dismiss();
             this.navCtrl.push(SendingDetailPage, { sending: snapshot.val() });
         });
     }
 
     goToCheckout(key: string) {
-        console.log('go to checkout > ', key);
+        console.log('__SND__goToCheckout()', key);
         // loader
         let loader = this.loadingCtrl.create({
             content: "Cargando ...",
@@ -60,7 +61,7 @@ export class SendingsPage implements OnInit {
         // get
         let service = this.sendingsService.getSending(key);
         service.subscribe(snapshot => {
-            console.log('getSending > success');
+            //console.log('getSending > success');
             loader.dismiss();
             this.navCtrl.push(CheckoutPage, { sending: snapshot.val() });
         });
@@ -121,7 +122,7 @@ export class SendingsPage implements OnInit {
      */
 
     private getAllActive() {
-        console.log('sendings suscription > getAllActive');
+        console.log('__SND__getAllActive()');
         this.sendings = [];
         let listRef = this.sendingsService.getAllMyActiveRef();
         this.sendingsSuscription = listRef.subscribe(snapshots => {

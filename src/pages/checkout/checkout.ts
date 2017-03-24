@@ -116,19 +116,19 @@ export class CheckoutPage implements OnInit {
      *  6. UPDATE-DB AND PROMPT: update firebase DB with results > show message with results to user
      */
     runCheckout() {
-        console.info('__[0]__runCheckout');
-        console.log('__[1]__formValid');
+        console.info('__[RC-0]__runCheckout');
+        console.info('__[RC-1]__formValid');
         // 1. VERIFY
         let formValid = this.chForm.valid;
-        console.log('__[1]__', formValid);
+        console.log('__[RC-1]__', formValid);
         if (!formValid) {
             this.showRequired = true;
             return null; ///// DIE /////
         }
         // 2. TOKEN-DATA
-        console.log('__[2]__tokenData');
+        console.info('__[RC-2]__tokenData');
         this.setTokenData(this.chForm.value);
-        console.log('__[2]__', this.tokenData);
+        console.log('__[RC-2]__', this.tokenData);
         // Init steps
         let steps = {
             genCardToken: false,
@@ -139,44 +139,44 @@ export class CheckoutPage implements OnInit {
         // init loader
         let loader = this.loadingCtrl.create({ content: 'Procesando pago ...' });
         // 3. CARD-TOKEN
-        console.log('__[3]__cardToken');
+        console.info('__[RC-3]__cardToken');
         this.paySrv.createCardTokenMP(this.tokenData)
             .then((cardTokenResult) => {
-                console.log('__[3]__', cardTokenResult);
+                console.log('__[RC-3]__', cardTokenResult);
                 let statusCode = cardTokenResult._response_status;
-                console.log('__[3]__', statusCode);
+                console.log('__[RC-3]__', statusCode);
                 if (statusCode != 200 && statusCode != 201) {
                     let cause = cardTokenResult.cause;
                     let errorMsg: any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
                     // error, show
                     this.showCardTokenErrors(errorMsg.msg);
                 } else {
-                    console.log('__[4]__prepaymentData');
+                    console.info('__[RC-4]__prepaymentData');
                     // good, continue
                     steps.genCardToken = true;
                     // show loader
                     loader.present();
                     // 4. PAYMENT-DATA               
                     let prepaymentData = this.getPrepaymentData(cardTokenResult.id);
-                    console.log('__[4]__', prepaymentData);
+                    console.log('__[RC-4]__', prepaymentData);
                     // 5: CREATE PAYMENT
-                    console.log('__[5]__pay');
+                    console.info('__[RC-5]__pay');
                     let checkoutSuscription = this.paySrv.checkoutMP(prepaymentData).subscribe(
                         result => {
                             // response success
-                            console.log('__[5]__', result);
+                            console.log('__[RC-5]__', result);
                             this.clearSessionMP();
                             checkoutSuscription.unsubscribe();
                             loader.dismiss()
                                 .then(() => {
                                     // 6. UPDATE DB AND PROMPT
-                                    console.log('__[6]__saveAndPrompt');
-                                    this.saveResultAndShowAlert(prepaymentData, result);
+                                    console.info('__[RC-6]__saveAndPrompt');
+                                    this.saveResultAndShowAlert(result);
                                 })
-                                .catch(error => console.log('dismiss error', error));
+                                .catch(error => console.error('dismiss error', error));
                         },
                         error => {
-                            console.log('__[5]__', error);
+                            console.error('__[RC-5]__', error);
                             this.clearSessionMP();
                             checkoutSuscription.unsubscribe();
                             loader.dismiss()
@@ -252,7 +252,7 @@ export class CheckoutPage implements OnInit {
      *  PAYMENT STEPS HELPERS
      */
 
-    private saveResultAndShowAlert(prepaymentData, result) {
+    private saveResultAndShowAlert(result) {
         let title:string = '';
         let message:string = '';
 
@@ -286,16 +286,16 @@ export class CheckoutPage implements OnInit {
         // save to Db 
         let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
         loader.present();        
-        this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, prepaymentData, result)
+        this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, result)
             .then((result) => {
-                console.log('__[6]__OK')
+                console.info('__[RC-6]__OK')
                 loader.dismiss()
                     .then(() => {
                         this.showCheckoutAlert(title, message);
                     })
                     .catch(error => console.log('dismiss error', error));                               
             })
-            .catch((error) => console.error('__[6]__', error));
+            .catch((error) => console.error('__[RC-6]__', error));
     }
 
     // reset session, because if you need to repeat a new payment
@@ -378,7 +378,7 @@ export class CheckoutPage implements OnInit {
         this.dates.current.standard = this.dateSrv.readISO8601FromTimestamp(timestamp);
         this.dates.currentplus20.timestamp = this.dateSrv.addTsYears(timestamp, 20);
         this.dates.currentplus20.standard = this.dateSrv.readISO8601FromTimestamp(this.dates.currentplus20.timestamp);
-        console.log('setCurrentDates', this.dates);
+        //console.log('setCurrentDates', this.dates);
     }
 
     private setDefaultDates(): void {
