@@ -16,7 +16,7 @@ export const MERCADOPAGO_REF = {
     },
     BACKEND_SERVER: {
         URL: {
-            PAYMENT: 'http://be.moovenapp.dev/api/v1/gateway/mp/payments',
+            PAYMENT: 'http://be.moovenapp.com/api/v1/gateway/mp/payments',
         },
     }
 }
