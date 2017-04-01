@@ -1,3 +1,4 @@
+import { APP_CFG } from '../models/app-model';
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
@@ -61,6 +62,8 @@ import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
 // IONIC.IO
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+
+
 const cloudSettings: CloudSettings = {
   'core': {
     'app_id': '226f3be4'
@@ -71,11 +74,11 @@ const cloudSettings: CloudSettings = {
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
 // AF2 Settings
 export const firebaseConfig = {
-    apiKey: "AIzaSyC6tq6l0EVThcHsvkWHEoPYenGZg2p7PiU",
-    authDomain: "mooven-f9e3c.firebaseapp.com",
-    databaseURL: "https://mooven-f9e3c.firebaseio.com",
-    storageBucket: "mooven-f9e3c.appspot.com",
-    messagingSenderId: "301998553220"
+    apiKey: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.apiKey,
+    authDomain: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.authDomain,
+    databaseURL: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.databaseURL,
+    storageBucket: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.storageBucket,
+    messagingSenderId: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.messagingSenderId
 };
 const myFirebaseAuthConfig = {
     provider: AuthProviders.Password,
@@ -123,7 +126,10 @@ const myFirebaseAuthConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig),
     CloudModule.forRoot(cloudSettings),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot({
+      name: APP_CFG.ENVIRONMENTS.DEV.LOCALSTORAGE.name,
+         driverOrder: ['localstorage','indexeddb', 'sqlite', 'websql']
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [

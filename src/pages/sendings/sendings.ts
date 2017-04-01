@@ -27,6 +27,7 @@ export class SendingsPage implements OnInit {
         console.info('__SND__sendings');
         this.viewCtrl.didEnter.subscribe( () => {
             console.log('__SND__didEnter()');
+            this.sendingsService.setUser();
             this.getAllActive();            
         });
         this.viewCtrl.didLeave.subscribe( () => {

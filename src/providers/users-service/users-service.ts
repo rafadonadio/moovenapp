@@ -24,7 +24,7 @@ export class UsersService {
 
     // create firebase user
     createUser(user: UserCredentials):Promise<firebase.User> {
-     return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
+        return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
     }
 
     // Create User account and profile in firebase database
@@ -191,6 +191,7 @@ export class UsersService {
     }
     // logout
     signOut() {
+        console.log('______SIGNOUT_______BYE');
         return this.auth.signOutFromFirebase();
     }
     // password reset

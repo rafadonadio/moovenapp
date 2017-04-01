@@ -356,6 +356,7 @@ export class SendingService {
      */
 
     private getMyLiveSendingsRef():any {
+        //console.log('__SNDSRV__ userId', this.user.uid);
         return this.dbSrv.getSendingsLiveByUser(this.user.uid);
     }
 
@@ -401,7 +402,7 @@ export class SendingService {
      *  HELPERS
      */
 
-    private setUser(){
+    setUser(){
         // set user data
         this.user = this.users.getUser();
         // set user settings

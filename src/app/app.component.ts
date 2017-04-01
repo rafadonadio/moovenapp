@@ -76,7 +76,7 @@ export class MyApp{
         ];
 
         /**
-         *  IS USER ALREADY LOGGED IN? GO HOME
+         *  IS USER ALREADY LOGGED IN? RELOAD AND GO HOME
          */
         let authInit = this.af.auth.subscribe((state) => {
             if(state) {
@@ -84,22 +84,33 @@ export class MyApp{
             }
             authInit.unsubscribe();
         });
+        
+        this.susbcribeAuthState();
+    }
 
-        /**
-         *  FIREBASE AUTH OBSERVER
-         */
+
+    /**
+     *  FIREBASE AUTH OBSERVER
+     */
+    private susbcribeAuthState() {
         this.af.auth.subscribe((state) => {
             console.info('__ASC__authStateChanged');
                 if (state) {
                     console.log('__ASC__ true');
                     this.user = state.auth;
-                    this.verifyAccount();
+                    this.usersService.reloadUser()
+                        .then((result) => {
+                            //console.log('__ASC__ reloadUser', this.usersService.getUser().uid);
+                            console.log('__ASC__ reloadUser');
+                            this.verifyAccount();
+                        })
+                        .catch(error => console.log('__ASC__ > reloadUser > error') );
                 } else {
                     console.log('__ASC__ NULL');
                     this.user = null;
                     this.userAccount = null;
                 }
-            });        
+            });   
     }
 
     /**
