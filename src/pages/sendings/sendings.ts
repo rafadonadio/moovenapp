@@ -25,8 +25,8 @@ export class SendingsPage implements OnInit {
 
     ngOnInit() {
         console.info('__SND__sendings');
-        this.viewCtrl.didEnter.subscribe( () => {
-            console.log('__SND__didEnter()');
+        this.viewCtrl.willEnter.subscribe( () => {
+            console.log('__SND__willEnter()');
             this.sendingsService.setUser();
             this.getAllActive();            
         });
@@ -38,18 +38,7 @@ export class SendingsPage implements OnInit {
 
     goToDetail(key: string) {
         console.log('__SND__goToDetail()', key);
-        // loader
-        let loader = this.loadingCtrl.create({
-            content: "Cargando ...",
-        });
-        loader.present();        
-        // get
-        let service = this.sendingsService.getSending(key);
-        service.subscribe(snapshot => {
-            //console.log('getSending > success');
-            loader.dismiss();
-            this.navCtrl.push(SendingDetailPage, { sending: snapshot.val() });
-        });
+        this.navCtrl.push(SendingDetailPage, { sendingId: key });
     }
 
     goToCheckout(key: string) {

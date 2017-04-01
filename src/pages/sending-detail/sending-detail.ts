@@ -1,6 +1,8 @@
+import { SendingService } from '../../providers/sending-service/sending-service';
+import { LoadingController } from 'ionic-angular/components/loading/loading';
 import { SendingRequest } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, Platform, AlertController, ActionSheetController } from 'ionic-angular';
+import { ViewController, NavController, NavParams, Platform, AlertController, ActionSheetController } from 'ionic-angular';
 
 import { CheckoutPage } from '../checkout/checkout';
 
@@ -11,7 +13,9 @@ import { CheckoutPage } from '../checkout/checkout';
 export class SendingDetailPage implements OnInit {
 
     sendingtab:string = "notifications";
+    sendingId:string;
     sending:SendingRequest;
+    sendingListener:any;
     notifications:Array<any>;
     private _platform: Platform;
     private _isAndroid: boolean;
@@ -22,7 +26,10 @@ export class SendingDetailPage implements OnInit {
         public navCtrl: NavController,
         public navParams: NavParams,
         public alertCtrl: AlertController,
-        public actionShCtrl: ActionSheetController) {
+        public actionShCtrl: ActionSheetController,
+        public viewCtrl: ViewController,
+        public loadingCtrl: LoadingController,
+        public sendingsService: SendingService) {
         this._platform = platform;
         this._isAndroid = platform.is('android');
         this._isiOS = platform.is('ios');
@@ -30,9 +37,29 @@ export class SendingDetailPage implements OnInit {
     }
 
     ngOnInit() {
-        this.sending = this.navParams.get('sending');
-        console.info('navParams > ', this.sending);
-        this.convertNotificationsToArray();        
+        let loader = this.loadingCtrl.create({ content: "Cargando ..." });
+        loader.present();              
+        this.viewCtrl.willEnter.subscribe( () => {
+            console.info('__SDT__willEnter');
+            this.getParams();
+            let sending = this.sendingsService.getSending(this.sendingId);
+            this.sendingListener = sending.subscribe(snapshot => {
+                console.log('sending > ',snapshot.val());
+                this.sending = snapshot.val();
+                this.convertNotificationsToArray();
+                loader.dismiss();
+            });
+        });
+        this.viewCtrl.didLeave.subscribe( () => {
+            console.info('__SDT__didLeave');
+            this.sendingListener.unsubscribe();
+        });                        
+    }
+
+    private getParams() {
+        console.info('__PRM__  getParams');
+        this.sendingId = this.navParams.get('sendingId');
+        console.log('__PRM__', this.sendingId);
     }
 
     private convertNotificationsToArray() {
