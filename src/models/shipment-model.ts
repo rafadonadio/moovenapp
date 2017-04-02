@@ -4,7 +4,7 @@
  */
 
 export const SHIPMENT_CFG = {
-    CONFIRM_TIMEOUT: 20,
+    CONFIRM_TIMEOUT: 40,
     WAIT_AFTER_UNLOCK: 10,
     SUMMARY_FIELDS: [
         'objectShortName',

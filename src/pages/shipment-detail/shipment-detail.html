@@ -71,7 +71,7 @@
                     Notificar
                 </button>
             </ion-item>
-            <button class="active" ion-item no-lines *ngIf="sending?._stages.live.status.dropped.set==true">
+            <button *ngIf="sending?._stages.live.status.dropped.set==true" class="active" ion-item no-lines (click)="goToTab('drop')">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entregado</h3>
                 <p>Entregado en {{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</p>

@@ -147,22 +147,22 @@ ___
     - save and set - angularfire
     - public ID (hashid)
     - storage photo
-         
-#############
-# DOING NOW
-#############
 
+...
+
+
+
+
+
+#############
+# TO_DO
+#############
     - sendings > item detail
     - sendings > item en created_registered > habilitar boton de pago
     - sendings > item en created_paid > habilitar boton de enable (en admin):
     - sendings > item > live_inroute > set completed
     - sendings > item > live > set canceled
     - payment gateway > mercadopago
-
-
-#############
-# TO_DO
-#############
 
 - ajustes: 
      - validar número de móvil 
@@ -186,23 +186,11 @@ ___
 
 ## RAFA FEEDBACK 
 
-- timer pedidos
-    40 segundos
-
-- page operador
-    cambiar texto por ganancia
-
-- TOS
-    el texto arriba del btn siguiente
-    poner check de confirmación y que lo valide
-
-- nro de movil
-    no validar ahora       
-
-- BUG
-    al sacar foto de servicio
-    se cuelga y no guarda foto
-
+- OK__ timer pedidos, set 40 segundos
+- page operador, cambiar texto por ganancia
+- TOS, el texto arriba del btn siguiente, poner check de confirmación y que lo valide
+- nro de movil, no validar ahora       
+- BUG, al sacar foto de servicio, se cuelga y no guarda foto (en IOS)
 - PRECIO
     precio por km $10.-
         precio variable por km total
@@ -213,15 +201,8 @@ ___
                                         332        
             mas de 51 - 5 x km           
     comision mooven 30%
-
-- Operador
-    Queres registrarte como Operador?
-    Envíanos un email con tus datos a contacto@moovenapp.com
-
-
-- Validacion
-    usuario
-        email de validacion en español - usar mailgun
+- Operador, Queres registrarte como Operador? Envíanos un email con tus datos a contacto@moovenapp.com
+- Validacion, usuario, email de validacion en español - usar mailgun
 
 
 

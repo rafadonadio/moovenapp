@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UsersService } from '../../providers/users-service/users-service';
 import { VerifyPhonePage } from '../verify-phone/verify-phone';
@@ -18,14 +18,9 @@ const STRG_USER_FILES = 'userFiles/';
 })
 export class SignupMergePage implements OnInit{
 
-    signupMergeForm: FormGroup;
-    firstName: AbstractControl;
-    lastName: AbstractControl;
-    phonePrefix: AbstractControl;
-    phoneMobile: AbstractControl;
-    confirmTos: AbstractControl;
+    form: FormGroup;
     profileBgDefault: string = 'assets/img/mooven_avatar.png';
-
+    showErrors:boolean = false;
     user: firebase.User;
 
     constructor(public navCtrl: NavController,
@@ -39,25 +34,31 @@ export class SignupMergePage implements OnInit{
 
     ngOnInit() {
         this.setUser();
-        this.signupMergeForm = this.formBuilder.group({
-            'firstName': ['', Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(50)])],
-            'lastName': ['', Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(50)])],
-            'phonePrefix': ['+549', Validators.compose([Validators.required])],
-            'phoneMobile': ['', Validators.compose([Validators.required, Validators.minLength(5), Validators.maxLength(25)])]
+        this.form = this.formBuilder.group({
+            firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+            lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+            phonePrefix: ['+549', [Validators.required]],
+            phoneMobile: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(25)]],
+            tosAccept: [false, []]
         });
-        this.firstName = this.signupMergeForm.controls['firstName'];
-        this.lastName = this.signupMergeForm.controls['lastName'];
-        this.phonePrefix = this.signupMergeForm.controls['phonePrefix'];
-        this.phoneMobile = this.signupMergeForm.controls['phoneMobile'];
     }
 
 
     submitSignupMergeForm(value: any): void {
+        console.info('__SMF__ SignupMergeForm');
+        console.log('__SMF__ ',this.form.valid, this.form.get('tosAccept').value);
         // verify inputs are valid
-        if(this.signupMergeForm.valid!==true) {
+        if(!this.form.valid || this.form.get('tosAccept').value==false) {
             // something is not good
-            console.log('signupMergeForm = false');
+            this.showErrors = true;
+            let alert = this.alertCtrl.create({
+                title: 'Datos incompletos',
+                subTitle: 'Por favor completa todos los campos, lee y acepta los términos y condiciones',
+                buttons: ['Cerrar']
+            });
+            alert.present();            
         }else{
+            this.showErrors = false;
             // loader effect
             let loader = this.loadingCtrl.create({
                 content: 'Guardando ...',
