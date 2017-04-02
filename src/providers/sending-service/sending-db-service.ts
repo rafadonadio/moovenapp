@@ -1,3 +1,4 @@
+import { FirebaseListObservable } from 'angularfire2/database';
 import { PAYMENTS_DB } from '../../models/payments-model';
 import { SHIPMENT_CFG, SHIPMENT_DB } from '../../models/shipment-model';
 import { DateService } from '../date-service/date-service';
@@ -312,7 +313,18 @@ export class SendingDbService {
     }  
 
     getSendingsLiveVacantRef():firebase.database.Query {
-        return this.dbRef.child(DB.STAGE_LIVE.REF).orderByChild('_currentStatus').equalTo('waitoperator');
+        return this.dbRef.child(DB.STAGE_LIVE.REF).orderByChild('_currentStatus').equalTo('waitoperator');        
+    }
+
+    getSendingsLiveVacant(userid:string, getSnapshot:boolean = true):FirebaseListObservable<any[]> {
+        return this.af.database
+                .list(DB.STAGE_LIVE.REF, {
+                    query: {
+                        orderByChild: '_currentStatus',
+                        equalTo: 'waitoperator'
+                    }, 
+                    preserveSnapshot: getSnapshot,
+                });        
     }
 
     getSendingById(sendingId:string, getSnapshot:boolean = true) {

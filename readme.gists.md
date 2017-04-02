@@ -24,6 +24,17 @@
         // get
         let service = get();
         let subscription = service.subscribe(snapshot => {
-            ....
+            if (snapshots) {
+                snapshots.forEach(snapshot => {
+                    let key = snapshot.key;
+                    let item = {
+                        key: key,
+                        data: snapshot.val(),
+                    };
+                    list.push(item);
+                });
+            }
+
+            // eventually
             subscription.unsubscribe();
         });

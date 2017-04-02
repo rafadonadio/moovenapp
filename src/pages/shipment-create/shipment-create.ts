@@ -1,6 +1,6 @@
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
-import { AlertController, LoadingController, NavController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
 import { ShipmentCreate2Page } from '../shipment-create-2/shipment-create-2';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
@@ -21,6 +21,7 @@ import { UsersService } from '../../providers/users-service/users-service';
 export class ShipmentCreatePage implements OnInit {
 
     vacants = [];
+    vacantListener:any;
     // map
     map: any;
     mapMarkers = {
@@ -37,15 +38,22 @@ export class ShipmentCreatePage implements OnInit {
         public shipSrv:ShipmentsService,
         public sendingSrv:SendingService,
         public alertCtrl: AlertController,
-        public loaderCtrl: LoadingController) {
+        public loaderCtrl: LoadingController,
+        public viewCtrl: ViewController) {
 
     }
 
     ngOnInit() {
-        // set map
-        this.initMap();
-        /// get vacants
-        this.getVacants();
+        console.info('__SCT__ shipmentCreate');
+        this.viewCtrl.didEnter.subscribe( () => {
+            console.log('__SCT__willEnter()');
+            this.initMap();
+            this.getVacants();            
+        });
+        this.viewCtrl.didLeave.subscribe( () => {
+            console.log('__SCT__didLeave()');
+            this.vacantListener.unsubscribe();
+        });
     }
 
     select(sendingVacantId:string, sendingVacantData:any) {
@@ -133,17 +141,27 @@ export class ShipmentCreatePage implements OnInit {
      */
 
     private getVacants() {
-        let ref = this.sendingSrv.getLiveVacantRef();
-        ref.on('child_added', (data) => {
-            this.vacants.push({key:data.key, data: data.val()});
-            console.log('getVacants > data', this.vacants);
-            // add markers to map
-            let latlng = {
-                lat: data.val().pickupAddressLat,
-                lng: data.val().pickupAddressLng,
+        let vacants = this.sendingSrv.getLiveVacant();
+        this.vacantListener = vacants.subscribe(snapshots => {
+            if(snapshots) {
+                snapshots.forEach(snapshot => {
+                    let key = snapshot.key;
+                    let value = snapshot.val();
+                    //console.log('vacants', key, value);
+                    let item = {
+                        key: key,
+                        data: value
+                    }
+                    this.vacants.push(item);
+                    //add markers to map
+                    let latlng = {
+                        lat: value.pickupAddressLat,
+                        lng: value.pickupAddressLng,
+                    }
+                    this.addMapMarker(latlng, key);                    
+                });
             }
-            this.addMapMarker(latlng, data.key);
-        })
+        });
     }
 
     private goToConfirm(sendingId:string, sendingData:any) {

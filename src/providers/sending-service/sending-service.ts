@@ -1,3 +1,4 @@
+import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { UserAccountSettings, UserProfileData } from '../../models/user-model';
@@ -85,6 +86,10 @@ export class SendingService {
 
     getLiveVacantRef():firebase.database.Query {
         return this.getAllLiveVacantRef();
+    }
+
+    getLiveVacant():FirebaseListObservable<any> {
+        return this.getAllLiveVacant();
     }
 
     attemptToLockVacant(sendingId:string):Promise<any> {
@@ -363,6 +368,10 @@ export class SendingService {
     private getAllLiveVacantRef():firebase.database.Query  {
         return this.dbSrv.getSendingsLiveVacantRef();
     }      
+
+    private getAllLiveVacant():FirebaseListObservable<any>  {
+        return this.dbSrv.getSendingsLiveVacant(this.user.uid);
+    }
 
     private getSendingById(sendingId:string) {
         return this.dbSrv.getSendingById(sendingId);
