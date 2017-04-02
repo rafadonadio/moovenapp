@@ -1,8 +1,6 @@
-import { UsersService } from '../../providers/users-service/users-service';
-import { SendingService } from '../../providers/sending-service/sending-service';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ViewController } from 'ionic-angular';
 import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 
@@ -14,46 +12,35 @@ export class ShipmentsPage implements OnInit{
 
     shipments:any;
     shipmentsEmpty:boolean;
+    shipmentsSuscription:any;
 
     constructor(private navCtrl: NavController,
         public shipmentsSrv:ShipmentsService,
-        public sendingsSrv:SendingService,
-        public userSrv:UsersService) {
-
-    }
+        public viewCtrl: ViewController) {}
 
     ngOnInit() {
-        this.getAllActive();
+        console.info('__SHP__shipments');
+        this.viewCtrl.willEnter.subscribe( () => {
+            console.log('__SHP__willEnter()');
+            this.getAllActive();            
+        });
+        this.viewCtrl.didLeave.subscribe( () => {
+            console.log('__SHP__didLeave()');
+            this.shipmentsSuscription.unsubscribe();
+        });                
     }
 
     goToDetail(data:any) {
         console.log('go to detail > ', data.shipmentId);
-        let service = this.sendingsSrv.getSending(data.sendingId);
-        service.subscribe(snapshot => {
-            console.log('getSending > success');
-            let sending = snapshot.val();
-            this.userSrv.getAccountProfileDataByUid(sending.userUid)
-                .then((snapshot) => {
-                    this.navCtrl.push(ShipmentDetailPage, { 
-                        sender: snapshot.val(),
-                        sending: sending,
-                        shipment: data 
-                    });
-                })
+        this.navCtrl.push(ShipmentDetailPage, { 
+            shipmentId: data.shipmentId,
+            sendingId: data.sendingId,
         });         
     }
 
     goToCreate() {
         this.navCtrl.setRoot(ShipmentCreatePage);
     }
-
-    doRefresh(refresher) {
-        this.getAllActive();
-        setTimeout(() => {
-            console.log('Async operation has ended');
-            refresher.complete();
-        }, 2000);
-    }    
 
     getStatusMessage(currentStageStatus) {
         let message = '';
@@ -80,9 +67,8 @@ export class ShipmentsPage implements OnInit{
 
     private getAllActive() {
         let listRef = this.shipmentsSrv.getAllMyActiveRef();
-        listRef
-            .subscribe(snapshots => {
-                console.log('shipments > getAllActive > subscribe > init');                
+        this.shipmentsSuscription = listRef.subscribe(snapshots => {
+                console.log('__SHP__ getAllActive');                
                 this.shipments = [];
                 if(snapshots) {
                     snapshots.forEach(snapshot => {

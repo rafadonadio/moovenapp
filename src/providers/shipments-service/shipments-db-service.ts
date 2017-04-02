@@ -51,4 +51,10 @@ export class ShipmentsDbService {
                 });
     } 
 
+    getShipmentById(shipmentId:string, getSnapshot:boolean = true) {
+        return this.af.database
+                .object(DB.ALL.REF + shipmentId, {
+                    preserveSnapshot: getSnapshot,
+                });       
+    }
 }

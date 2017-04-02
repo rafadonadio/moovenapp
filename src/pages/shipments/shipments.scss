@@ -48,5 +48,7 @@ page-shipments {
     ion-card ion-item.footer ion-note{
         color: color($colors, green); 
     } 
-
+    .scroll-content {
+        overflow-y:auto;
+    }
 }

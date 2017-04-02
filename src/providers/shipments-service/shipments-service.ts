@@ -57,12 +57,20 @@ export class ShipmentsService {
         return this.getMyLiveShipmentsRef();
     }
 
+    getShipment(id:string) {
+        return this.getShipmentById(id);
+    }
+
     /**
      *  DATABASE READ
      */
 
     private getMyLiveShipmentsRef():any {
         return this.dbSrv.getShipmentsActiveByUser(this.user.uid);
+    }
+
+    private getShipmentById(shipmentId:string) {
+        return this.dbSrv.getShipmentById(shipmentId);
     }
 
     /**

@@ -1,8 +1,11 @@
+import { LoadingController } from 'ionic-angular/components/loading/loading';
+import { UsersService } from '../../providers/users-service/users-service';
+import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { SendingRequest } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ActionSheetController, AlertController } from 'ionic-angular';
+import { ActionSheetController, AlertController, NavController, NavParams, ViewController } from 'ionic-angular';
 
 const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 
@@ -13,23 +16,61 @@ const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 export class ShipmentDetailPage implements OnInit{
 
     shipmenttab: string = "notifications";
+    shipmentId:string;
+    sendingId:string;
+    senderId:string;    
     sending:SendingRequest;
     shipment:any;
     sender:any;
+    shipmentListener:any;
+    sendingListener:any;
+    senderListener:any;
     notifications:Array<any>;
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public actionShCtrl: ActionSheetController,
         public alertCtrl: AlertController,
-        public sendingSrv: SendingService) {
+        public sendingSrv: SendingService,
+        public shipmentSrv: ShipmentsService,
+        public userSrv: UsersService,
+        public viewCtrl: ViewController,
+        public loadingCtrl: LoadingController) {
     }
 
     ngOnInit() {
-        this.sending = this.navParams.get('sending');
-        this.shipment = this.navParams.get('shipment');
-        this.sender = this.navParams.get('sender');
-        this.filterAndConvertNotificationsToArray();  
+        console.info('__SHD__shipmentDetail');
+        let loader = this.loadingCtrl.create({ content: "Cargando ..." });
+        loader.present();           
+        this.viewCtrl.willEnter.subscribe( () => {
+            console.log('__SHD__willEnter()');
+            this.getParams();
+            let shipment = this.shipmentSrv.getShipment(this.shipmentId);
+            this.shipmentListener = shipment.subscribe(snapshot => {
+                this.shipment = snapshot.val();
+                loader.dismiss();
+            })
+            let sending = this.sendingSrv.getSending(this.sendingId);
+            this.sendingListener = sending.subscribe(snapshot => {
+                this.sending = snapshot.val();
+                this.filterAndConvertNotificationsToArray();
+                this.userSrv.getAccountProfileDataByUid(this.sending.userUid)
+                    .then((snapshot) => {
+                        this.sender = snapshot.val();
+                    })                
+            })
+        });
+        this.viewCtrl.didLeave.subscribe( () => {
+            console.log('__SHD__didLeave()');
+            this.shipmentListener.unsubscribe();
+            this.sendingListener.unsubscribe();
+        });  
+    }
+
+    private getParams() {
+        console.info('__PRM__  getParams');
+        this.shipmentId = this.navParams.get('shipmentId');
+        this.sendingId = this.navParams.get('sendingId');
     }
 
     goToTab(tab: string) {
