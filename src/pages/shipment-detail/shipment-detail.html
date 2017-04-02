@@ -71,12 +71,12 @@
                     Notificar
                 </button>
             </ion-item>
-            <ion-item *ngIf="sending?._stages.live.status.dropped.set==true">
+            <button class="active" ion-item no-lines *ngIf="sending?._stages.live.status.dropped.set==true">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entregado</h3>
                 <p>Entregado en {{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
-            </ion-item>
+            </button>
             <!-- ENDIF -->
 
             <ion-item-divider>Notificaciones</ion-item-divider>
