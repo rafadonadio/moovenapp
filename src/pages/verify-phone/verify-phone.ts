@@ -1,5 +1,12 @@
-import { Component } from '@angular/core';
-import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import {
+    AlertController,
+    LoadingController,
+    ModalController,
+    NavController,
+    ToastController,
+    ViewController
+} from 'ionic-angular';
 import { SendingsPage } from '../sendings/sendings';
 import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit-phone';
 
@@ -7,13 +14,22 @@ import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit
     selector: 'page-verify-phone',
     templateUrl: 'verify-phone.html',
 })
-export class VerifyPhonePage {
+export class VerifyPhonePage implements OnInit {
 
     constructor(public navCtrl: NavController,
         public alertCtrl:  AlertController,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
-        public modalCtrl: ModalController) {
+        public modalCtrl: ModalController,
+        public viewCtrl: ViewController) {
+        }
+
+        ngOnInit() {
+            this.viewCtrl.willEnter.subscribe(() => {                
+                // THIS COMPONENT IS NOT USED 
+                /// BUT WILL SOON
+                this.navCtrl.setRoot(SendingsPage);
+            });
         }
 
         goToUpdatePhoneNumber() {
