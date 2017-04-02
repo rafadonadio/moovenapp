@@ -40,18 +40,18 @@ export class SendingDetailPage implements OnInit {
         let loader = this.loadingCtrl.create({ content: "Cargando ..." });
         loader.present();              
         this.viewCtrl.willEnter.subscribe( () => {
-            console.info('__SDT__willEnter');
+            console.info('__SDT__willEnter()');
             this.getParams();
             let sending = this.sendingsService.getSending(this.sendingId);
             this.sendingListener = sending.subscribe(snapshot => {
-                console.log('sending > ',snapshot.val());
+                //console.log('sending > ', snapshot.val());
                 this.sending = snapshot.val();
                 this.convertNotificationsToArray();
                 loader.dismiss();
             });
         });
         this.viewCtrl.didLeave.subscribe( () => {
-            console.info('__SDT__didLeave');
+            console.info('__SDT__didLeave()');
             this.sendingListener.unsubscribe();
         });                        
     }

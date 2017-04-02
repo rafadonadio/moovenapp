@@ -9,7 +9,7 @@
 
     ngOnInit() {
         this.viewCtrl.didEnter.subscribe( () => {
-            console.log('__X__didEnter()');
+            console.log('__X__willEnter()');
             ...
         });
         this.viewCtrl.didLeave.subscribe( () => {
