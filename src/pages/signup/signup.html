@@ -4,21 +4,25 @@
     </ion-navbar>
 </ion-header>
 <ion-content class="signup" padding>
-    <h6 style="margin-top:50px;" text-center margin class="create-account-title">Registrate con tu correo electrónico</h6>
-    <form [formGroup]="signupForm" (ngSubmit)="submitSignupForm(signupForm.value)">
+    <h6 style="margin-top:50px;" text-center margin class="create-account-title">REGISTRATE<br>CON TU CORREO ELECTRÓNICO</h6>
+    <form [formGroup]="form" (ngSubmit)="submit()">
 
-        <ion-item [class.error]="!email.valid && email.touched">
+        <ion-item [class.error]="!form.get('email').valid && form.get('email').touched">
             <ion-label floating>Email</ion-label>
-            <ion-input type="email" value="" [formControl]="email"></ion-input>
+            <ion-input type="email" formControlName="email"></ion-input>
         </ion-item>
-        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched" class="input-error">* Ingresa un email válido</div>
+        <div *ngIf="form.get('email').hasError('required') && (form.get('email').touched || showErrors)" 
+            class="input-error">* Ingresa un email</div>
+        <div *ngIf="form.get('email').hasError('isValid') && form.get('email').touched" 
+            class="input-error">* Ingresa un email válido</div>
 
-        <ion-item [class.error]="!password.valid && password.touched" margin-bottom>
+        <ion-item [class.error]="form.get('password').hasError('required') && form.get('password').touched" margin-bottom>
             <ion-label floating>Crea una contraseña</ion-label>
-            <ion-input type="password" value="" [formControl]="password"></ion-input>
+            <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
-        <div *ngIf="password.hasError('required') && password.touched" class="input-error">* Crea una contraseña</div>
-        <div *ngIf="password.hasError('minlength') && password.touched" class="input-error">* De al menos 6 caracteres</div>
-        <button ion-button type="submit" color="primary" block class="submit" [disabled]="!signupForm.valid">Registrarse</button>
+        <div *ngIf="form.get('password').hasError('required') && (form.get('password').touched || showErrors)" class="input-error">* Crea una contraseña</div>
+        <div *ngIf="form.get('password').hasError('minlength') && form.get('password').touched" class="input-error">* De al menos 6 caracteres</div>
+
+        <button ion-button type="submit" color="primary" block class="submit">Registrarse</button>
     </form>
 </ion-content>
