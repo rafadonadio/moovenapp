@@ -58,7 +58,7 @@ export class UsersService {
                     console.log('[1] createStep2 > success');
                     steps.create = true;                    
                     // update account profile status                    
-                    return this.accountSrv.updateProfileStatus(fbuser.uid);
+                    return this.updateUserProfileStatus();
                 })
                 .then(() => {
                     console.log('[2] updateProfileStatus > success');
@@ -292,7 +292,7 @@ export class UsersService {
                 .then((result) => {
                     //console.log('setVerified > success');
                     steps.setVerified = true;
-                    return this.accountSrv.updateProfileStatus(fbuser.uid);
+                    return this.updateUserProfileStatus();
                 })                
                 .then((result) => {
                     //console.log('updateProfileStatus > success');
@@ -352,6 +352,9 @@ export class UsersService {
         return this.settingsSrv.updateNotificationsInDB(fbuser.uid, notifications);
     }
 
-
+    updateUserProfileStatus() {
+        let fbuser = this.getUser();
+        return this.accountSrv.updateProfileStatus(fbuser.uid);
+    }
 
 }

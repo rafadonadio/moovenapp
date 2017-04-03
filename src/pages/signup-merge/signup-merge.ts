@@ -1,4 +1,3 @@
-import { SendingsPage } from '../sendings/sendings';
 import { StartPage } from '../start/start';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';

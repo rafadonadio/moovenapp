@@ -38,13 +38,13 @@
         <ion-item>
             <ion-icon name='call' item-left></ion-icon>
             <h3>{{ profData?.phonePrefix }}{{ profData?.phoneMobile }}</h3>
-            <p [hidden]="profVrfs?.phone.verified==true">Validar</p>
-            <ion-icon name="alert" item-right color="sublight" [hidden]="profVrfs?.phone.verified==true"></ion-icon>
-            <p [hidden]="profVrfs?.phone.verified==false">Validado</p>
-            <ion-icon name="checkmark" item-right [hidden]="profVrfs?.phone.verified==false"></ion-icon>
+            <!--<p [hidden]="profVrfs?.phone.verified==true">Validar</p>-->
+            <!--<ion-icon name="alert" item-right color="sublight" [hidden]="profVrfs?.phone.verified==true"></ion-icon>-->
+            <!--<p [hidden]="profVrfs?.phone.verified==false">Validado</p>-->
+            <!--<ion-icon name="checkmark" item-right [hidden]="profVrfs?.phone.verified==false"></ion-icon>-->
         </ion-item>
         <ion-item-divider color="subdark">
-            Perfiles
+            Perfiles <button ion-button item-right color="dark" (click)="updateUserProfileStatus()">Actualizar</button>
         </ion-item-divider>
         <ion-item>
             <ion-icon name='contact' item-left></ion-icon>

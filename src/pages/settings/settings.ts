@@ -195,7 +195,7 @@ export class SettingsPage implements OnInit{
             account: false
         }
         let account: UserAccount;
-        console.group('settings.setAccount');
+        //console.group('settings.setAccount');
         // show loader
         let loader = this.loadingCtrl.create({
             content: "Actualizando datos ...",
@@ -206,14 +206,14 @@ export class SettingsPage implements OnInit{
             .then(() => {
                 steps.reload = true;
                 this.fbuser = this.users.getUser();
-                console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
+                //console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
                 if(this.fbuser){     
                     return this.users.getAccount();
                 }
             })
             .then((snapshot) => {
                 steps.account = true;
-                console.info('setAccountData > success');
+                //console.info('setAccountData > success');
                 account = snapshot.val();              
                 // profile data
                 this.profData = account.profile.data;
@@ -224,15 +224,13 @@ export class SettingsPage implements OnInit{
                 // account status
                 this.accountStatus = this.users.accountProfilesStatus(account);     
                 if(this.profVrfs.email.verified===false) {
-                    console.info('settings.setAccount > run email verification');
+                    //console.info('settings.setAccount > run email verification');
                     this.users.runAuthEmailVerification();
                 }  
-                console.groupEnd();
                 loader.dismiss();         
             })
             .catch((error) => {
-                console.log('setAccountData > error ', error, steps);
-                console.groupEnd();
+                //console.log('setAccountData > error ', error, steps);
                 loader.dismiss();
             });            
 
@@ -261,5 +259,14 @@ export class SettingsPage implements OnInit{
         this.notificationSettings = this.accountSettings.notifications;
         // enable
         this.accountSettingsDisabled = false;
+    }
+
+    private updateUserProfileStatus() {
+        this.users.updateUserProfileStatus()
+            .then(() => {
+                console.log('status updated');
+                this.setAccountData(); 
+            })
+            .catch(error => console.log(error));
     }
 }

@@ -18,7 +18,7 @@ export const USER_CFG = {
             },
             REQUIRED_VERIFICATIONS: {
                 BASIC: ['email'],
-                SENDER: ['email', 'phone'],
+                SENDER: ['email'],
                 OPERATOR: ['email', 'phone', 'residenceAddress', 'legalIdentityNumber'],      
             }
         },
