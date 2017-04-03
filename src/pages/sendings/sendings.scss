@@ -51,4 +51,7 @@ page-sendings {
     ion-card ion-item.footer.item-md > .item-inner{
         margin-left: 5px;
     }
+    .scroll-content {
+        overflow-y:auto;
+    }    
 }
