@@ -189,6 +189,8 @@ ___
 - OK__ timer pedidos, set 40 segundos
 - OK__ TOS, el texto arriba del btn siguiente, poner check de confirmación y que lo valide
 - OK__ nro de movil, no validar ahora       
+- OK__ Operador, Queres registrarte como Operador? Envíanos un email con tus datos a contacto@moovenapp.com
+
 - STBY__ BUG, al sacar foto de servicio, se cuelga y no guarda foto (en IOS)
 - page operador, cambiar texto por ganancia
 - PRECIO - precio variable por km total
@@ -200,7 +202,6 @@ ___
                                   332        
         mas de 51 - 5 x km           
         comision mooven 30%
-- Operador, Queres registrarte como Operador? Envíanos un email con tus datos a contacto@moovenapp.com
 - Validacion, usuario, email de validacion en español - usar mailgun
 
 

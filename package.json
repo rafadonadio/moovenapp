@@ -26,7 +26,7 @@
     "@ionic/storage": "2.0.0",
     "@types/jasmine": "^2.5.36",
     "angularfire2": "^2.0.0-beta.8",
-    "firebase": "^3.7.2",
+    "firebase": "^3.7.5",
     "hashids": "^1.1.1",
     "ionic-native": "2.4.1",
     "ionic-angular": "2.3.0",

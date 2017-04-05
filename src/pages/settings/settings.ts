@@ -51,6 +51,15 @@ export class SettingsPage implements OnInit{
         }, 2000);
     }
 
+    updateUserProfileStatus() {
+        this.users.updateUserProfileStatus()
+            .then(() => {
+                console.log('status updated');
+                this.setAccountData(); 
+            })
+            .catch(error => console.log(error));
+    }
+    
     presentPopover(myEvent) {
         let popover = this.popoverCtrl.create(SettingsPopoverPage, { 
             profData: this.profData
@@ -259,14 +268,5 @@ export class SettingsPage implements OnInit{
         this.notificationSettings = this.accountSettings.notifications;
         // enable
         this.accountSettingsDisabled = false;
-    }
-
-    private updateUserProfileStatus() {
-        this.users.updateUserProfileStatus()
-            .then(() => {
-                console.log('status updated');
-                this.setAccountData(); 
-            })
-            .catch(error => console.log(error));
     }
 }
