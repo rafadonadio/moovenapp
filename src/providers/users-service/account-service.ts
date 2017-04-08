@@ -110,6 +110,10 @@ export class AccountService {
         return this.profileSrv.updatePhoneMobile(userId, data);
     }
 
+    updateEmail(userId:string, newEmail:string):firebase.Promise<any> {
+        return this.profileSrv.updateEmail(userId, newEmail);
+    }
+
     updateProfileImage(userId: string, downloadURL:string, fullPath:string):firebase.Promise<any> {
         let data = {
             photoURL: downloadURL,

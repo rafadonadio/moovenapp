@@ -83,8 +83,7 @@ export class MyApp{
                 this.nav.setRoot(SendingsPage);
             }
             authInit.unsubscribe();
-        });
-        
+        });        
         this.susbcribeAuthState();
     }
 

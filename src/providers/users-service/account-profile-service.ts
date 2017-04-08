@@ -93,6 +93,12 @@ export class AccountProfileService {
         return this.dbRef.update(updates);
     }   
 
+    updateEmail(userId:string, newEmail:string): firebase.Promise<any> {
+        var updates = {};
+        updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._FIELD + 'email'] = newEmail;
+        return this.dbRef.update(updates);        
+    }
+
     // update user profile (updates only the included nodes)
     updateProfileImage(userId: string, data: any): firebase.Promise<any> {
         var profileData:any = {

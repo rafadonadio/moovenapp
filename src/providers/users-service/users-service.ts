@@ -104,14 +104,16 @@ export class UsersService {
      * @return {Promise<any>}          [description]
      */
     updateUserEmail(newEmail: string): Promise<any> {
-        let user = this.getUser();
+        let fbuser = this.getUser();
         return new Promise((resolve, reject) => {
             this.auth.updateFirebaseUserEmail(newEmail)
                 .then(() => {
                     console.log('auth.updateEmail > ok');
-                    console.log('init create email verification ...');
-                    this.emailVerification.create(user, true);
-                    resolve();
+                    return this.accountSrv.updateEmail(fbuser.uid, newEmail);
+                })
+                .then(() => {
+                    console.log('CF_Trigger: userEmailUpdate > send email verification');
+                    resolve();                    
                 })
                 .catch((error:any) => {
                     console.log('auth.updateEmail > error: ', error.code);
@@ -261,10 +263,10 @@ export class UsersService {
      *  EMAIL VERIFICATION
      */
 
-    // send email verification code and record the process
-    sendEmailVerification(): void {
+    // trigger email verification process
+    resendVerification(): void {
         let user:firebase.User = this.getUser();
-        this.emailVerification.create(user);
+        this.emailVerification.resend(user);
     }
 
     // run email verification

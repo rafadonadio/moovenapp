@@ -80,7 +80,8 @@ export class SignupPage implements OnInit {
             .then(() => {
                 console.log('__2__ success');
                 // send email address verification
-                // MOVED TO CLOUD FUNCTIONS
+                // CLOUD FUNCTIONS TRIGGER
+                console.log('CF_Trigger:setUserVerifyEmail|user.onCreate()');
                 this.loader.dismiss()
                     .then(() => {
                         // end
