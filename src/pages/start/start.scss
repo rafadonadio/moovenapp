@@ -7,7 +7,7 @@ page-start {
     ion-content.content-md,
     ion-content.content-ios{    
 	    // background-color: #060a7a;
-        background-image: url('../assets/img/splash_bg.png');		
+        background-image: url('../assets/img/splash_bg.jpg');		
         background-size:cover;
         background-position:center;	
         img{
@@ -19,7 +19,6 @@ page-start {
 	}
 
     ion-footer{
-	    padding: 80px;
 	    .signin{
 		    color: $base-color-first-level;
 	    }

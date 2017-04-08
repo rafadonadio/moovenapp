@@ -16,27 +16,57 @@ export class GoogleMapsService {
         return latlng;
     }   
 
+    initInfoWindow() {
+        return new google.maps.InfoWindow();
+    }
+
+    initPolyline(config:MapsMapPolylineOptions) {
+        return new google.maps.Polyline({
+            path: config.path,
+            geodesic: config.geodesic,
+            strokeColor: config.strokeColor,
+            strokeOpacity: config.strokeOpacity,
+            strokeWeight: config.strokeWeight
+        });
+    }
+
+    initLatLngBounds() {
+        return new google.maps.LatLngBounds();
+    }
+
     ///////////////////// 
     // google.maps.MAP //
     /////////////////////
 
-    initMap(latlng, htmlInputElement, zoom:number = 10) {
+    initMap(latlng, htmlInputElement, options:MapsMapOptions = {}) {
         console.info('gmapService > initMap');
-        return new google.maps.Map(htmlInputElement, {
+        let mapOptions = {
             center: latlng,
-            zoom: zoom,
-            disableDefaultUI: true,
+            zoom: 10,
+            maxZoom: 16,
+            minZoom:4,
             draggable: false,
-            clickableIcons: false,
             zoomControl: true,
-            mapTypeId: google.maps.MapTypeId.ROADMAP            
-        });
+            streetViewControl: false,
+            scrollwheel: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControl: false,
+        };
+        for(let key in mapOptions) {
+            if(key in options) {
+                mapOptions[key] = options[key];
+            }
+        }
+        console.log(mapOptions);
+        return new google.maps.Map(htmlInputElement, mapOptions);
     }
 
-    addMapMarker(latlng:any, map:any):any {
+    addMapMarker(latlng:any, map:any, icon:any = GMAP_CFG.ICONS.DEFAULT):any {
        return new google.maps.Marker({
            map: map,
-           position: latlng
+           position: latlng,
+           animation: google.maps.Animation.DROP,
+           icon: icon
        }) 
     }
 
@@ -230,3 +260,42 @@ export class GoogleMapsService {
     }    
 
 }    
+
+/**
+ *  CLASSES
+ */
+
+export class MapsMapOptions {
+    zoom?: number;
+    minZoom?: number;
+    maxZoom?: number;
+    draggable?: boolean;
+    clickableIcons?: boolean;
+    zoomControl?: boolean;
+    mapTypeId?: string;
+    mapTypeControl?: boolean;
+    scrollwheel?: boolean;
+    streetViewControl?: boolean;
+}
+
+export class MapsMapPolylineOptions {
+    path: Array<{lat: number, lng: number}>;
+    geodesic: boolean;
+    strokeColor: string;
+    strokeOpacity: number;
+    strokeWeight: number;
+}
+
+export const GMAP_CFG = {
+    ICONS: {
+        DEFAULT: 'assets/img/map_icon_green_3.png',
+        SELECTED: 'assets/img/map_icon_green_3_selected.png',
+        CHECKERED: 'assets/img/map_icon_checkered.png',
+    },
+    POINTS: {
+        CABA: {
+            LAT: -34.603684, 
+            LNG: -58.449240
+        }
+    }
+}

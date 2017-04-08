@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 
+import firebase from 'firebase';
+
 @Injectable()
 export class AuthenticationService {
 
     // FIREBASE AUTH REFERENCES
-    fbAuthRef: any = firebase.auth();
+    fbAuthRef: any;
     // angularFire references
-    fireAuth: any;
+    fbuser: any;
 
     constructor(public af:AngularFire) {
+        this.fbAuthRef = firebase.auth();
         // subscribe to user change
-        af.auth.subscribe( user => {
-            if(user) {
-                this.fireAuth = user.auth;
+        af.auth.subscribe( state => {
+            if(state) {
+                this.fbuser = state.auth;
             }
         });
     }
@@ -30,6 +33,7 @@ export class AuthenticationService {
     // Signout firebase user
     // AUTH STATE CHANGE WATCHER will send user to start page
     signOutFromFirebase() {
+        this.fbuser = null;
         return this.fbAuthRef.signOut();
     }
 
@@ -43,7 +47,7 @@ export class AuthenticationService {
      */
 
     getFirebaseUser() {
-        return this.fbAuthRef.currentUser;
+        return this.fbuser;
     }
 
     /**

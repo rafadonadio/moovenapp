@@ -1,3 +1,4 @@
+import { AccountSettingsService } from './account-settings-service';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 import { AccountProfileService } from '../users-service/account-profile-service';
@@ -12,6 +13,8 @@ import {
 } from '../../models/user-model';
 import { TOS_CFG } from '../../models/tos-model';
 
+import firebase from 'firebase';
+
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
 const PROFILES_LIST = USER_CFG.ACCOUNT.PROFILE.LIST;
@@ -24,7 +27,8 @@ export class AccountService {
 
     constructor(public af:AngularFire,
         public profileSrv:AccountProfileService,
-        public verificSrv:AccountVerificationsService) {
+        public verificSrv:AccountVerificationsService,
+        public settingsSrv:AccountSettingsService) {
     }
 
     /**
@@ -70,16 +74,16 @@ export class AccountService {
     }
 
     updateProfileStatus(userId: string): Promise<any> {
-        console.info('updateProfileStatus > start');
+        //console.info('updateProfileStatus > start');
         return new Promise((resolve, reject) => {
             this.getByUid(userId)
                 .then((snapshot) => {
-                    console.log('updateProfileStatus > getProfile > ok');
+                    //console.log('updateProfileStatus > getProfile > ok');
                     let account:UserAccount = snapshot.val();
                     return this.profileSrv.updateStatus(userId, account.profile);
                 })
                 .then((result) => {
-                    console.log('updateProfileStatus > update > success');
+                    //console.log('updateProfileStatus > update > success');
                     resolve(result);
                 })
                 .catch((error) => {
@@ -104,6 +108,10 @@ export class AccountService {
             phoneMobile: number
         }
         return this.profileSrv.updatePhoneMobile(userId, data);
+    }
+
+    updateEmail(userId:string, newEmail:string):firebase.Promise<any> {
+        return this.profileSrv.updateEmail(userId, newEmail);
     }
 
     updateProfileImage(userId: string, downloadURL:string, fullPath:string):firebase.Promise<any> {
@@ -133,6 +141,10 @@ export class AccountService {
     getProfileVerificationByUid(userId: string): firebase.Promise<any> {
         return this.profileSrv.getVerificationsByUid(userId);
     }    
+    // get account.settings from firebase database
+    getSettingsByUid(userId:string): firebase.Promise<any> {
+        return this.settingsSrv.getByUid(userId);
+    }
 
 
     /**
@@ -203,7 +215,8 @@ export class AccountService {
                 acceptedVersionId: 0,
                 acceptedVersionTag: '',
                 history: [],
-            }            
+            },
+            settings: this.settingsSrv.init()
         }
         console.log('accountSrv.initData > ', account);
         return account;

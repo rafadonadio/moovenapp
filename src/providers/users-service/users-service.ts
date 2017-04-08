@@ -2,17 +2,20 @@ import { Injectable } from '@angular/core';
 
 import { AuthenticationService } from '../users-service/authentication-service';
 import { AccountService } from '../users-service/account-service';
+import { AccountSettingsService } from '../users-service/account-settings-service';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
 import { UserCredentials, UserAccount } from '../../models/user-model';
 
+import firebase from 'firebase';
 
 @Injectable()
 export class UsersService {
 
     constructor(public auth: AuthenticationService,
         public accountSrv: AccountService,
-        public emailVerification: AccountEmailVerificationService) {
+        public emailVerification: AccountEmailVerificationService,
+        public settingsSrv: AccountSettingsService) {
     }
 
     /**
@@ -21,7 +24,7 @@ export class UsersService {
 
     // create firebase user
     createUser(user: UserCredentials):Promise<firebase.User> {
-     return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
+        return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
     }
 
     // Create User account and profile in firebase database
@@ -55,7 +58,7 @@ export class UsersService {
                     console.log('[1] createStep2 > success');
                     steps.create = true;                    
                     // update account profile status                    
-                    return this.accountSrv.updateProfileStatus(fbuser.uid);
+                    return this.updateUserProfileStatus();
                 })
                 .then(() => {
                     console.log('[2] updateProfileStatus > success');
@@ -101,14 +104,16 @@ export class UsersService {
      * @return {Promise<any>}          [description]
      */
     updateUserEmail(newEmail: string): Promise<any> {
-        let user = this.getUser();
+        let fbuser = this.getUser();
         return new Promise((resolve, reject) => {
             this.auth.updateFirebaseUserEmail(newEmail)
                 .then(() => {
                     console.log('auth.updateEmail > ok');
-                    console.log('init create email verification ...');
-                    this.emailVerification.create(user, true);
-                    resolve();
+                    return this.accountSrv.updateEmail(fbuser.uid, newEmail);
+                })
+                .then(() => {
+                    console.log('CF_Trigger: userEmailUpdate > send email verification');
+                    resolve();                    
                 })
                 .catch((error:any) => {
                     console.log('auth.updateEmail > error: ', error.code);
@@ -188,6 +193,7 @@ export class UsersService {
     }
     // logout
     signOut() {
+        console.log('______SIGNOUT_______BYE');
         return this.auth.signOutFromFirebase();
     }
     // password reset
@@ -215,11 +221,24 @@ export class UsersService {
         return this.accountSrv.getProfileVerificationByUid(user.uid);
     }
 
+    getAccountSettings(): firebase.Promise<any> {
+        let user = this.getUser();
+        return this.accountSrv.getSettingsByUid(user.uid);
+    }
+
     // get reference for profile verification email
     getRef_AccountEmailVerification():firebase.database.Reference {
         let user = this.getUser();
         return this.accountSrv.getRef_profileVerificationEmail(user.uid);
     }
+
+    // GET OTHER USERS DATA
+
+    // get user account data
+    getAccountProfileDataByUid(uid:string): firebase.Promise<any> {
+        return this.accountSrv.getProfileDataByUid(uid);
+    }    
+
 
     /**
      *  ACCOUNT - READ DATA
@@ -244,10 +263,10 @@ export class UsersService {
      *  EMAIL VERIFICATION
      */
 
-    // send email verification code and record the process
-    sendEmailVerification(): void {
+    // trigger email verification process
+    resendVerification(): void {
         let user:firebase.User = this.getUser();
-        this.emailVerification.create(user);
+        this.emailVerification.resend(user);
     }
 
     // run email verification
@@ -260,36 +279,84 @@ export class UsersService {
             setVerified: false,
             updateStatus: false
         };
-        console.group('runAuthEmailVerification');
+        //console.group('runAuthEmailVerification');
         return new Promise((resolve, reject) => {
             this.reloadUser()
                 .then((result) => {
-                    console.log('reloadAuthUser > success');
+                    //console.log('reloadAuthUser > success');
                     steps.reload = true;
                     if(fbuser.emailVerified === true) {
                         return this.emailVerification.setVerified(fbuser);
                     }else{
-                        console.groupEnd();
                         resolve(steps);
                     }
                 })
                 .then((result) => {
-                    console.log('setVerified > success');
+                    //console.log('setVerified > success');
                     steps.setVerified = true;
-                    return this.accountSrv.updateProfileStatus(fbuser.uid);
+                    return this.updateUserProfileStatus();
                 })                
                 .then((result) => {
-                    console.log('updateProfileStatus > success');
+                    //console.log('updateProfileStatus > success');
                     steps.updateStatus = true;
-                    console.groupEnd();
                     resolve(steps);
                 })
                 .catch((error) => {
-                    console.log('something failed');
-                    console.groupEnd();
+                    //console.log('something failed');
                     reject(steps);
                 });
         });
+    }
+
+    // SETTINGS
+
+    checkAccountSettingsConsistency(account: UserAccount):boolean {         
+        if(this.settingsSrv.settingsExistInAccount(account)) {
+            return this.settingsSrv.checkConsistency(account.settings);
+        }else{
+            return false;
+        }
+    }
+
+    initAccountSettingsMissingParams(account: UserAccount) {
+        let fbuser = this.getUser();
+        return new Promise((resolve, reject) => {
+            // check settings exist
+            if(this.settingsSrv.settingsExistInAccount(account)) {
+                // check consistency, complete or resolve ok
+                if(this.settingsSrv.checkConsistency(account.settings)) {
+                    resolve(true);
+                }else{
+                    this.settingsSrv.completeMissingValuesInDB(fbuser.uid, account.settings)
+                        .then(() => {
+                            console.log('completeMissingValuesInDB > success');
+                            resolve(true);
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                }
+            }else{
+                this.settingsSrv.setInitValuesInDB(fbuser.uid)
+                    .then(() => {
+                        console.log('setInitValuesInDB > success');
+                        resolve(true);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            }   
+        });
+    }
+
+    updateAccountSettingsNotifications(notifications:any):firebase.Promise<any> {
+        let fbuser = this.getUser();
+        return this.settingsSrv.updateNotificationsInDB(fbuser.uid, notifications);
+    }
+
+    updateUserProfileStatus() {
+        let fbuser = this.getUser();
+        return this.accountSrv.updateProfileStatus(fbuser.uid);
     }
 
 }

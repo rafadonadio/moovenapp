@@ -84,6 +84,7 @@ export class SendingRequestService {
             pickupPersonName: '',
             pickupPersonPhone: '',
             pickupPersonEmail: '',
+            pickupSecurityCode: '',
             dropAddressSet: false,
             dropAddressIsComplete: false,
             dropAddressUserForcedValidation: false,
@@ -111,6 +112,7 @@ export class SendingRequestService {
             dropPersonName: '',
             dropPersonPhone: '',
             dropPersonEmail: '',
+            dropSecurityCode: ''
         }
         return data;
     }

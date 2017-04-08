@@ -15,6 +15,8 @@ import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
 import { USER_CFG } from '../models/user-model';
 
+import firebase from 'firebase';
+
 declare var window: any;
 
 const PROFILE_BASIC = USER_CFG.ACCOUNT.PROFILE.LIST.BASIC;
@@ -44,7 +46,7 @@ export class MyApp{
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public af:AngularFire) {     
+        public af:AngularFire) {   
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -74,92 +76,144 @@ export class MyApp{
         ];
 
         /**
-         *  FIREBASE AUTH OBSERVER
+         *  IS USER ALREADY LOGGED IN? RELOAD AND GO HOME
          */
-        af.auth.subscribe( user => {
-            console.info('MyApp > authStateChanged');
-            if (user) {
-                console.log('> user signedIn > user.uid: ', user.uid);
-                this.setUser(user.auth);
-                // verify user account, status, active, etc
-                this.runUserAccountVerification();
-                // go
+        let authInit = this.af.auth.subscribe((state) => {
+            if(state) {
                 this.nav.setRoot(SendingsPage);
-            } else {
-                // If there's no user logged in send him to the StartPage
-                console.log('authStateChanged > no user signed in', user);
-                this.nav.setRoot(StartPage);
             }
+            authInit.unsubscribe();
         });        
+        this.susbcribeAuthState();
+    }
 
+
+    /**
+     *  FIREBASE AUTH OBSERVER
+     */
+    private susbcribeAuthState() {
+        this.af.auth.subscribe((state) => {
+            console.info('__ASC__authStateChanged');
+                if (state) {
+                    console.log('__ASC__ true');
+                    this.user = state.auth;
+                    this.usersService.reloadUser()
+                        .then((result) => {
+                            //console.log('__ASC__ reloadUser', this.usersService.getUser().uid);
+                            console.log('__ASC__ reloadUser');
+                            this.verifyAccount();
+                        })
+                        .catch(error => console.log('__ASC__ > reloadUser > error') );
+                } else {
+                    console.log('__ASC__ NULL');
+                    this.user = null;
+                    this.userAccount = null;
+                }
+            });   
     }
 
     /**
-     *  USER ACCOUNT VERIFICATION 
+     *  VERIFY USER ACCOUNT
      *  1- get user account
      *  2- check account is active
      *  3- check profile.basic is complete 
+     *  4- audit email is verified
      */
-    private runUserAccountVerification() {
-        console.info('[0] user account verification start');
-        console.group('account verification');
-        // show loader
-        this.presentLoader('Verificando credenciales ...');
-        // get account data
-        this.usersService.getAccount()
-            .then((snapshot) => {
-                // check account is set
-                let account:any;
-                if(snapshot.val() === null) {
-                    account = null;
-                    this.userAccount = false;
-                    console.error('[1] getUserAccount: NULL, SignOut');
-                    this.presentAlertAndAction('Cuenta inválida',
-                        'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo. ',
-                        'signout'
-                        );           
-                    console.groupEnd();             
-                }else{
-                    account = snapshot.val();
-                    this.userAccount = account;
-                    console.log('[1] getUserAccount: ', account);
-                    this.loader.dismiss()
-                        .then(() => {
-                            // is user active?
-                            console.info('[2] isAccountActive');
-                            if(this.usersService.accountIsActive(account)===false) {
-                                // account is inactive, show error and signout
-                                console.log('UserAccount active==FALSE, SignOut');
-                                this.presentAlertAndAction('Cuenta inactiva',
-                                    'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
-                                    'signout'
-                                    );
-                                console.groupEnd();        
-                            }else{
-                                console.log('UserAccount active==TRUE');
-                            }
-                            return;
-                        })
-                        .then(() => {
-                            // is basic profile complete ? 
-                            console.info('[3] accountProfileIsComplete');
-                            if(this.usersService.accountProfileFieldsIsComplete(account, PROFILE_BASIC)===false) {
-                                console.warn('profileIsComplete==FALSE, goTo MergePage');
-                                this.nav.setRoot(SignupMergePage);
-                            }
-                            else{
-                                console.log('profileIsComplete==TRUE');
-                                // all good, audit if account email is verified
-                                this.auditAccountEmailIsVerified();                                
-                            }                   
-                            console.groupEnd();     
-                        });    
-                }                         
-            })
-            .catch((error) => {
-                console.log('verifyUserAccount > failed', error);
-                console.groupEnd();
-            });     
+    private verifyAccount() {
+        console.log('__[0]__verifyAccount');
+        return new Promise((resolve, reject) => {
+            console.info('__[1]__get');
+            this.usersService.getAccount()
+                .then((snapshot) => {
+                    this.userAccount = snapshot.val();
+                    return this.checkAccountExistOrDie();
+                })
+                .then((result) => {
+                    console.log('__[1]__', result); 
+                    if(result) {
+                        return this.checkAccountIsActiveOrDie();
+                    }else{
+                        return false;
+                    }
+                })
+                .then((result) => {
+                    console.log('__[2]__', result);
+                    if(result) {
+                        return this.checkProfileIsCompleteOrGo();
+                    }else{
+                        return false;
+                    }
+                })
+                .then((result) => {
+                    console.log('__[3]__', result);
+                    if(result) {
+                        this.auditAccountEmailIsVerified();
+                    }
+                })
+                .catch((error) => console.log('__[0]__', error));  
+        });     
+    }
+
+    private checkProfileIsCompleteOrGo():boolean {
+        console.info('__[3]__profileIsComplete');
+        let isComplete = this.usersService.accountProfileFieldsIsComplete(this.userAccount, PROFILE_BASIC);
+        if(isComplete) {
+            return true;
+        }else{
+            this.nav.setRoot(SignupMergePage);
+            return false;
+        }
+    }
+
+    private checkAccountIsActiveOrDie():boolean {
+        console.info('__[2]__isActive');
+        let accountActive = this.usersService.accountIsActive(this.userAccount);
+        if(accountActive) {
+            return true;    
+        }else{
+            let alertError = this.alertCtrl.create({
+                title: 'Cuenta inactiva',
+                subTitle: 'Lo sentimos, esta cuenta esta inactiva, no es posible ingresar',
+                buttons: [{
+                    text: 'Cerrar',
+                    role: 'cancel',
+                    handler: () => {
+                        this.nav.setRoot(StartPage);
+                        setTimeout(() => {
+                            this.usersService.signOut();
+                        }, 2000);                        
+                    }
+                }]
+            });
+            alertError.present();            
+            return false;
+        }
+    }
+
+
+    // check userAccount is not null
+    // else die
+    private checkAccountExistOrDie():boolean {        
+        if(this.userAccount){                    
+            return true;
+        }else{
+            let alertError = this.alertCtrl.create({
+                title: 'Cuenta inválida',
+                subTitle: 'Lo sentimos, esta cuenta es inválida, vuelve a registrarte o intenta de nuevo.',
+                buttons: [{
+                    text: 'Cerrar',
+                    role: 'cancel',
+                    handler: () => {
+                        this.nav.setRoot(StartPage);
+                        setTimeout(() => {
+                            this.usersService.signOut();
+                        }, 2000);                        
+                    }
+                }]
+            });
+            alertError.present();
+            return false; 
+        } 
     }
 
     /**
@@ -173,31 +227,29 @@ export class MyApp{
      * 3- update account verification to whatever is
      */
     auditAccountEmailIsVerified(): void {
-        let self = this;
-        if(this.userAccount === false) {
-            console.error('auditAccountEmailIsVerified > Account == ', this.userAccount);            
+        console.info('__[4]__auditAccountEmailIsVerified');
+        if(this.userAccount.hasOwnProperty('profile')===false) {
+            console.error('__[4]__ no-profile', this.userAccount);            
         }else{
-            console.info('app > auditAccountEmailIsVerified > start');
-            console.group('auditAccountEmailIsVerified');
+            console.log('__[4]__OK');
+            //console.log('__[4]__userAccount', this.userAccount);
             let ref = this.usersService.getRef_AccountEmailVerification();
-            ref.once('value', function(snapshot) {
-                console.log('profile.verification.email.verified == ', snapshot.val());
-                let isVerified:boolean = snapshot.val();
-                if(isVerified === false) {                 
-                    self.usersService.runAuthEmailVerification()
-                        .then((result) => {
-                            console.log('checkAuthEmailIsVerified > ', result);
-                            console.groupEnd();
-                        })
-                        .catch((error) => {
-                            console.log('checkAuthEmailIsVerified > error > ', error);
-                            console.groupEnd();
-                        });
-                }
+            ref.once('value')
+                .then((snapshot) => {
+                    //console.log('profile.verification.email.verified == ', snapshot.val());
+                    let isVerified:boolean = snapshot.val();
+                    if(isVerified === false) {                 
+                        this.usersService.runAuthEmailVerification()
+                            .then((result) => {
+                                //console.log('checkAuthEmailIsVerified > ', result);                           
+                            })
+                            .catch((error) => {
+                                console.log('__[4]__', error);                            
+                            });
+                    }
             });
         }
     }
-
 
     /**
      *  NAVIGATION
@@ -236,37 +288,4 @@ export class MyApp{
         this.loader.present();
     }
 
-    presentAlertAndAction(title: string,
-        subtitle: string,
-        action: string): void {
-        console.log('present alert > ', action);
-        var self = this;
-        let alertError = this.alertCtrl.create({
-            title: title,
-            subTitle: subtitle,
-            buttons: [{
-                text: 'Cerrar',
-                role: 'cancel',
-                handler: () => {
-                    self.alertActionTrigger(action);
-                }
-            }]
-        });
-        alertError.present();
-    }
-
-    alertActionTrigger(action: string): void {
-        switch(action){
-            case 'signout':
-                this.usersService.signOut();
-                break;
-            default:
-                console.log('app > alertActionTrigger not found > ', action);
-        }
-    }
-
-    private setUser(userData:firebase.User) {
-        this.user = userData;
-        console.log('user data > ', userData.displayName, userData.photoURL);
-    }
 }

@@ -9,13 +9,15 @@ import { AngularFire } from 'angularfire2';
 @Injectable()
 export class AccountVerificationsService {
 
-    db = firebase.database();
-    dbRef = firebase.database().ref();
+    // db = firebase.database();
+    // dbRef = firebase.database().ref();
 
     constructor(public af:AngularFire) {
     }
 
 
+    test() {
 
+    }
 
 }

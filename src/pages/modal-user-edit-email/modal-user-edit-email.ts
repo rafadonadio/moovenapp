@@ -1,3 +1,4 @@
+import { StartPage } from '../start/start';
 import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController, AlertController, NavParams } from 'ionic-angular';
@@ -122,6 +123,7 @@ export class ModalUserEditEmailPage implements OnInit {
                     handler: () => {
                         this.dismiss();
                         this.users.signOut();
+                        this.navCtrl.setRoot(StartPage);
                     }
                 }
             ]

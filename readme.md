@@ -147,47 +147,62 @@ ___
     - save and set - angularfire
     - public ID (hashid)
     - storage photo
-         
+
+...
 
 
 
-    
-# device debug
-    
-    "Attempt to use a destroyed view: detectChanges"
-    "Error: Attempt to use a destroyed view: detectChanges 
-        at e [as constructor] (file:///android_asset/www/build/main.js:5:13512)
-
-    main.js:6 EXCEPTION: Firebase.update failed: 
-        First argument contains undefined in property 
-            'usersSendings.BEmkzTfvzDNefFWbTDDsJ1qBNUF3.active.-KVN54Ed6CM0TrqKcfVw.pickupAddressCity'
 
 
-> to-do´s
-    - settings  
-        estado perfil para envíos  
-        estado perfil para cargas  
-        conf notificaciones  
-            push  
-            email  
-        cerrar cuenta  
-    - envios  
-        - form nuevo envío  
-        - listado envios  
-    - cargas
-        - listado cargas
-        - form nueva carga
-    - notificaciones
-    - pagos
-    - ayuda
+#############
+# TO_DO
+#############
+    - sendings > item detail
+    - sendings > item en created_registered > habilitar boton de pago
+    - sendings > item en created_paid > habilitar boton de enable (en admin):
+    - sendings > item > live_inroute > set completed
+    - sendings > item > live > set canceled
+    - payment gateway > mercadopago
 
-    # meetings
-        - agregar fecha a los envíos
-        -cambiar
-            transport > operador
-            envios > servicios
-        - sidemenu > user name
-            dejar icono mapa
+- ajustes: 
+     - validar número de móvil 
+     - guardar config user --OK
+     - cerrar cuenta
+- servicio: 
+     - agregar fecha al pedido 
+     - agregar opción de gestión
+     - en vista item creado, agregar acciones permitidas al user (cancelar) --OK
+     - procesar pago
+- operador: 
+     - en vista tomar servicio, listar vacantes en función de center-map + limite mapa, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.
+     - listar servicios tomados por user --OK
+     - vista item servicio tomado, agregar acciones permitidas al operador (actualizar avance, cancelar) 
+     - vista historial y notificaciones
+- pagos
+- push notifications
+- ayuda
+- login, social auth: facebook
+
+
+## RAFA FEEDBACK 
+
+- OK__ timer pedidos, set 40 segundos
+- OK__ TOS, el texto arriba del btn siguiente, poner check de confirmación y que lo valide
+- OK__ nro de movil, no validar ahora       
+- OK__ Operador, Queres registrarte como Operador? Envíanos un email con tus datos a contacto@moovenapp.com
+- OK__ Validacion, usuario, email de validacion en español - (cloud function)
+
+- STBY__ BUG, al sacar foto de servicio, se cuelga y no guarda foto (en IOS)
+- page operador, cambiar texto por ganancia
+- PRECIO - precio variable por km total
+        tarifa minima $100
+        precio por km $10.-
+        primeros 25 - 10 x km     100
+        sig 26-50 - 8 x km        120
+                                  -------
+                                  332        
+        mas de 51 - 5 x km           
+        comision mooven 30%
 
 
 

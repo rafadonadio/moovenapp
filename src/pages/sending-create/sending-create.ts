@@ -82,8 +82,8 @@ export class SendingCreatePage implements OnInit {
 
     cancelSending() {
         let alert = this.alertCtrl.create({
-            title: '¿Cancelar Envío?',
-            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+            title: '¿Deseas cancelar?',
+            message: 'Se perderán todos los datos ingresados del Nuevo Servicio.',
             buttons: [
                 {
                     text: 'No',
@@ -212,7 +212,7 @@ export class SendingCreatePage implements OnInit {
         }
         else {
             console.log('f1 > initSending > this.sending initiated');
-            this.sending = this.sendingSrv.initRequest();
+            this.sending = this.sendingSrv.initObj();
         }
         console.log('f1 > this.sending > ', this.sending);
     }

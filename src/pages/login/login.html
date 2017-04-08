@@ -4,25 +4,8 @@
     </ion-navbar>
 </ion-header>
 <ion-content class="login" padding>
-    <ion-grid>
-        <ion-row>
-            <ion-col width="100">
-                <h6 text-center margin>Ingresa con tu cuenta de</h6>
-            </ion-col>
-        </ion-row>
-        <ion-row center class="signin-buttons">
-            <ion-col width-50>
-                <button ion-button block color="danger">Google</button>
-            </ion-col>
-            <ion-col width-50>
-                <button ion-button block color="facebook">Facebook</button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <div style="height:50px;"></div>
-    <hr>
-    <h6 text-center margin class="create-account-title">Inicia sesión con tu correo electrónico</h6>
-    <form [formGroup]="signinForm" (ngSubmit)="submitSigninForm(signinForm.value)">
+    <h6 style="margin-top:50px;" text-center margin class="create-account-title">Inicia sesión con tu correo electrónico</h6>
+    <form [formGroup]="signinForm" (ngSubmit)="login(signinForm.value)">
 
         <ion-item [class.error]="!email.valid && email.touched">
             <ion-label floating>Email</ion-label>

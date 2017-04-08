@@ -1,7 +1,10 @@
+import { APP_CFG } from '../models/app-model';
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { IonicStorageModule } from '@ionic/storage';
 // PAGES
+import { CheckoutPage } from '../pages/checkout/checkout';
 import { HelpPage } from '../pages/help/help';
 import { HistorialPage } from '../pages/historial/historial';
 import { LoginPage } from '../pages/login/login';
@@ -34,23 +37,33 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
 import { AccountService } from '../providers/users-service/account-service';
 import { AccountProfileService } from '../providers/users-service/account-profile-service';
+import { AccountSettingsService } from '../providers/users-service/account-settings-service';
 import { AccountVerificationsService } from '../providers/users-service/account-verifications-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
+import { SendingStageCreatedService } from  '../providers/sending-service/sending-stage-created-service';
+import { SendingStageLiveService } from  '../providers/sending-service/sending-stage-live-service';
+import { SendingStageClosedService } from  '../providers/sending-service/sending-stage-closed-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
 import { SendingStagesService } from  '../providers/sending-service/sending-stages-service';
+import { SendingNotificationsService } from  '../providers/sending-service/sending-notifications-service';
 import { SendingRequestService } from  '../providers/sending-service/sending-request-service';
+import { SendingPaymentService } from  '../providers/sending-service/sending-payment-service';
 import { ShipmentsService } from  '../providers/shipments-service/shipments-service';
+import { ShipmentsDbService } from  '../providers/shipments-service/shipments-db-service';
+import { NotificationsService } from  '../providers/notifications-service/notifications-service';
 import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
+import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
-
 // IONIC.IO
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+
+
 const cloudSettings: CloudSettings = {
   'core': {
     'app_id': '226f3be4'
@@ -61,11 +74,11 @@ const cloudSettings: CloudSettings = {
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
 // AF2 Settings
 export const firebaseConfig = {
-    apiKey: "AIzaSyC6tq6l0EVThcHsvkWHEoPYenGZg2p7PiU",
-    authDomain: "mooven-f9e3c.firebaseapp.com",
-    databaseURL: "https://mooven-f9e3c.firebaseio.com",
-    storageBucket: "mooven-f9e3c.appspot.com",
-    messagingSenderId: "301998553220"
+    apiKey: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.apiKey,
+    authDomain: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.authDomain,
+    databaseURL: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.databaseURL,
+    storageBucket: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.storageBucket,
+    messagingSenderId: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.messagingSenderId
 };
 const myFirebaseAuthConfig = {
     provider: AuthProviders.Password,
@@ -76,6 +89,7 @@ const myFirebaseAuthConfig = {
   declarations: [
     MyApp,
     // PAGES
+    CheckoutPage,
     HelpPage,
     HistorialPage,
     LoginPage,
@@ -111,11 +125,16 @@ const myFirebaseAuthConfig = {
   imports: [
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig),
-    CloudModule.forRoot(cloudSettings)
+    CloudModule.forRoot(cloudSettings),
+    IonicStorageModule.forRoot({
+      name: APP_CFG.ENVIRONMENTS.DEV.LOCALSTORAGE.name,
+         driverOrder: ['localstorage','indexeddb', 'sqlite', 'websql']
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    CheckoutPage,
     HelpPage,
     HistorialPage,
     LoginPage,
@@ -149,17 +168,26 @@ const myFirebaseAuthConfig = {
     AccountEmailVerificationService,
     AccountService,
     AccountProfileService,
+    AccountSettingsService,
     AccountVerificationsService,
     AuthenticationService,
     SendingService,
+    SendingStageCreatedService,
+    SendingStageLiveService,
+    SendingStageClosedService,
     SendingDbService,
+    SendingNotificationsService,
     SendingRequestService,  
     SendingStagesService,
-    ShipmentsService,            
+    ShipmentsService,
+    ShipmentsDbService, 
+    NotificationsService,
+    SendingPaymentService,           
     UsersService,
     GoogleMapsService,
     DateService,
-    HashService
+    HashService,
+    MercadopagoService
   ],
 })
 export class AppModule {}

@@ -7,10 +7,19 @@ export interface ValidationResult {
 export class NumberValidator {
 
     public static nonZero(control: FormControl): ValidationResult {
-        var valid = control.value <= 0;
+        let valid = control.value <= 0;
         if (valid) {
             return { nonZero: true };
         }
         return null;
     }
+
+    public static isNumber(control: FormControl): ValidationResult {
+        let input = new Number(control.value);
+        let valid = input>0;
+        if (!valid) {
+            return { isNumber: true };
+        }
+        return null;
+    }    
 }

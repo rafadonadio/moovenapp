@@ -10,8 +10,8 @@ export const SENDING_CFG = {
             STATUS: {
                 _LIST: ['registered', 'paid', 'enabled'],
                 REGISTERED: 'registered',
-                PAID: 'paid',
-                ENABLED: 'enabled'
+                PAID: 'paid', // paid done, not yet confirmed
+                ENABLED: 'enabled', // payment confirmed 
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
@@ -65,7 +65,10 @@ export const SENDING_CFG = {
                 'dropTimeFrom',
                 'dropTimeTo',
                 'objectType',
-                'price'
+                'objectImageDownloadUrl',
+                'price',
+                'routeDistanceKm',
+                'objectDeclaredValue'
             ]
         },
         CLOSED: {
@@ -81,12 +84,160 @@ export const SENDING_CFG = {
     },
 }
 
+export const NOTIFICATIONS_CFG = {
+        'created_registered': {
+            NOTIFY: false,
+            TITLE: {
+                'es': 'Servicio registrado',
+            },
+            MSG: {
+                'es': 'Registrado con ID #{PUBLICID}, el {DATE}',
+            },
+            ICON: 'checkmark'
+        },
+        'created_paid': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Pago aceptado',
+            },
+            MSG: {
+                'es': 'Se debitaron ${PRICE} de tu cuenta',
+            },
+            ICON: 'card'
+        },
+        'created_enabled': {    
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Servicio habilitado',
+            },
+            MSG: {
+                'es': 'Servicio habilitado para ser tomado por un operador',
+            },
+            ICON: 'send'
+        },
+        'live_waitoperator': {
+            NOTIFY: false,
+            TITLE: {
+                'es': 'Esperando Operador',
+            },
+            MSG: {
+                'es': 'Aguardando ser tomado por Operador',
+            },
+            ICON: 'time'
+        },
+        'live_gotoperator': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Operador confirmado',
+            },
+            MSG: {
+                'es': 'El operador {OPERATOR_NAME}, fue confirmado el {DATE}',
+            },
+            ICON: 'person'
+        },
+        'live_waitpickup': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Código de seguridad: Retiro',
+            },
+            MSG: {
+                'es': 'El operador debe informar: {CODE}',
+            },
+            ICON: 'time'
+        },
+        'live_pickedup': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Servicio retirado',
+            },
+            MSG: {
+                'es': 'Retiro informado el {DATE}',
+            },
+            ICON: 'checkmark'
+        },
+        'live_inroute': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Código de seguridad: Entrega',
+            },
+            MSG: {
+                'es': 'Informar al operador: {CODE}',
+            },
+            ICON: 'time'
+        },
+        'live_dropped': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Servicio entregado',
+            },
+            MSG: {
+                'es': 'Entrega informada el {DATE}',
+            },
+            ICON: 'checkmark'
+        },
+        'closed_complete': {
+            NOTIFY: false,
+            TITLE: {
+                'es': 'Servicio completado',
+            },
+            MSG: {
+                'es': 'El servicio ha sido completado el {DATE}',
+            },
+            ICON: 'checkmark'
+        },
+        'closed_canceledbysender': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Cancelado por Solicitante',
+            },
+            MSG: {
+                'es': 'Has canceledo el servicio el {DATE}',
+            },
+            ICON: 'close'
+        },
+        'closed_canceledbyoperator': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Cancelado por Operador',
+            },
+            MSG: {
+                'es': 'Informó cancelación el {DATE}',
+            },
+            ICON: 'close'
+        },
+        'closed_gotoperatorexpired': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Servicio expiró',
+            },
+            MSG: {
+                'es': 'El servicio no fue tomado y expiró el {DATE}',
+            },
+            ICON: 'close'
+        },
+    };
+
 /**
  * SENDING DATA 
  * FIREBASE REFERENCES
  */
 
 export const SENDING_DB = {
+    NOTIFICATIONS_ALL: {
+        REF: 'log_Notifications/',
+        _NODE: 'log_Notifications',
+        _CHILD: {
+            SENDINGID: '/sendingId/',
+            PUBLICID: '/publicId/',
+            TIMESTAMP: '/timestamp/',
+            CURRENT_STAGE: '/currentStage/',
+            CURRENT_STATUS: '/currentStatus/',
+            CURRENT_STAGE_STATUS: '/currentStage_Status/',
+            TITLE: '/title/',
+            MSG: '/msg/',
+            ICON: '/icon/',
+        }
+    },
     ALL: {
         REF: 'sendings/',
         _NODE: 'sendings',
@@ -98,7 +249,10 @@ export const SENDING_DB = {
             STAGES: '/_stages/',
             CURRENT_STAGE: '/_currentStage/',
             CURRENT_STATUS: '/_currentStatus/',
-            CURRENT_STAGE_STATUS: '/_currentStage_Status/'
+            CURRENT_STAGE_STATUS: '/_currentStage_Status/',
+            OPERATOR: '/_operator/',
+            NOTIFICATIONS: '/_notifications/',
+            PAYMENTS: '/_payments/'
         }
     },
     HASHID: {
@@ -128,7 +282,11 @@ export const SENDING_DB = {
             CURRENT_STAGE_STATUS: {
                 REF: '/_currentStage_Status/',
                 _NODE: '_currentStage_Status'
-            }              
+            },
+            OPERATOR: {
+                REF: '/_operator/',
+                _NODE: '_operator'
+            },             
         }
     },    
     STAGE_CREATED: {
@@ -152,6 +310,29 @@ export const SENDING_DB = {
     STAGE_LIVE: {
         REF: '_sendingsLive/',
         _NODE: 'sendingsLive',
+        _LOCK: {
+                REF: '/_locked/',   
+                TIMESTAMP: 'timestamp',
+                BY_USERID: 'userid'
+        },
+        _CHILD: {
+            CURRENT_STAGE: {
+                REF: '/_currentStage/',
+                _NODE: '_currentStage'
+            },
+            CURRENT_STATUS: {
+                REF: '/_currentStatus/',
+                _NODE: '_currentStatus'
+            },
+            CURRENT_STAGE_STATUS: {
+                REF: '/_currentStage_Status/',
+                _NODE: '_currentStage_Status'
+            },
+            OPERATOR: {
+                REF: '/_operator/',
+                _NODE: '_operator'
+            },
+        }         
     },    
     STAGE_CLOSED: {
         REF: 'sendingsClosed/',
@@ -162,6 +343,34 @@ export const SENDING_DB = {
 /**
  *  SENDING MODELS
  */
+
+export class SendingRequestLiveSummary {
+    publicId: string;
+    timestamp: number;
+    price: number;           
+    routeDistanceKm: number;
+    _currentStage?: string;
+    _currentStatus?: string;
+    _currentStage_Status?: string;  
+    objectShortName: string;
+    objectImageDownloadUrl: string;
+    objectType: string;
+    pickupAddressLat: number;
+    pickupAddressLng: number;  
+    pickupAddressStreetShort: string;
+    pickupAddressNumber: string;
+    pickupAddressPostalCode: string;            
+    pickupAddressCityShort: string;
+    pickupTimeFrom: string;
+    pickupTimeTo: string;
+    dropAddressLat: number;
+    dropAddressLng: number;  
+    dropAddressStreetShort: string;
+    dropAddressNumber: string;            
+    dropAddressCityShort: string;
+    dropTimeFrom: string;
+    dropTimeTo: string;          
+}
 
 export class SendingRequest {
     sendingId: string;
@@ -179,6 +388,9 @@ export class SendingRequest {
     _currentStage?: string;
     _currentStatus?: string;
     _currentStage_Status?: string;  
+    _operator?: SendingOperator;
+    _notifications?: Array<SendingNotifications>;
+    _payments?: any;
     objectShortName: string;
     objectImageSet: boolean;
     objectImageUrlTemp: string;  // deleted once uploaded
@@ -215,6 +427,7 @@ export class SendingRequest {
     pickupPersonName: string;
     pickupPersonPhone: string;
     pickupPersonEmail: string;
+    pickupSecurityCode: string;
     dropAddressSet: boolean;
     dropAddressIsComplete: boolean;
     dropAddressUserForcedValidation: boolean;
@@ -241,7 +454,20 @@ export class SendingRequest {
     dropTimeTo: string;
     dropPersonName: string;
     dropPersonPhone: string;
-    dropPersonEmail: string;          
+    dropPersonEmail: string;   
+    dropSecurityCode: string;       
+}
+
+export class SendingNotifications {
+    sendingId:string;
+    publicId:string;
+    timestamp:number;
+    currentStage:string;
+    currentStatus:string;
+    currentStage_Status:string;
+    title:string;
+    msg:string;
+    icon:string;
 }
 
 export class SendingStages {
@@ -257,15 +483,15 @@ export class StageCreatedNode {
     status: {
         registered: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },
         paid: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         }, 
         enabled: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },                
     } 
 }
@@ -276,27 +502,27 @@ export class StageLiveNode {
     status: {
         waitoperator: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },
         gotoperator: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },        
         waitpickup: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         }, 
         pickedup: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },               
         inroute: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },     
         dropped: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },                    
     } 
 }
@@ -307,21 +533,28 @@ export class StageClosedNode {
     status: {
         completed: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },
         canceledbysender: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },        
         canceledbyoperator: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },     
         gotoperatorexpired: {
             set: boolean,
-            timestamp: boolean,
+            timestamp: number,
         },                    
     } 
 }
 
+export class SendingOperator {
+    userId:string;
+    displayName:string;
+    photoURL:string;
+    phone:string;
+    email:string;
+}
 

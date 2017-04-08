@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController  } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UserCredentials } from '../../models/user-model';
 import { UsersService } from '../../providers/users-service/users-service';
@@ -12,9 +12,9 @@ import { EmailValidator } from '../../validators/email.validator';
 })
 export class SignupPage implements OnInit {
 
-    signupForm: FormGroup;
-    email: AbstractControl;
-    password: AbstractControl;
+    form: FormGroup;
+    showErrors:boolean;
+    loader:any;
 
     constructor(public navCtrl: NavController,
         public usersSrv: UsersService,
@@ -25,29 +25,35 @@ export class SignupPage implements OnInit {
     }
 
     ngOnInit() {
-        this.signupForm = this.formBuilder.group({
-            'email':  ['', Validators.compose([Validators.required, EmailValidator.isValid])],
-            'password': ['', Validators.compose([Validators.required, Validators.minLength(6)])]
+        this.showErrors =  false;
+        this.form = this.formBuilder.group({
+            'email':  ['', [Validators.required, EmailValidator.isValid]],
+            'password': ['', [Validators.required, Validators.minLength(6)]]
         });
-
-        this.email = this.signupForm.controls['email'];
-        this.password = this.signupForm.controls['password'];
     }
 
     /**
      * Signup Form Submit
      */
-    submitSignupForm(value: any):void {
-        console.info('signup > submitSignupForm > ', value);
-        if(this.signupForm.valid!==true) {
-            // something went wrong, errors on view
-            console.error('signup > signupform.valid==false')
+    submit():void {
+        console.info('__SUB__ submit()');
+        console.log('__SUB__ form.valid',this.form.valid)
+        if(!this.form.valid) {
+            this.showErrors = true;
+            let alertError = this.alertCtrl.create({
+                title: 'Campos incompletos',
+                subTitle: 'Por favor ingresa tu correo y crea una contraseña',
+                buttons: [{
+                    text: 'Cerrar',
+                    role: 'cancel'
+                }]
+            });
+            alertError.present();            
         }else{
-            // loader effect
-            let loader = this.setLoader();
-            // init user
-            let newUser: UserCredentials = { email: value.email, password: value.password };
-            this.createUser(newUser, loader);
+            let email = this.form.get('email').value;
+            let password = this.form.get('password').value;
+            this.setLoader();
+            this.createUser({ email: email, password: password });
         }
     }
 
@@ -61,35 +67,41 @@ export class SignupPage implements OnInit {
      *  2- create account in database, with user id and email
      *  3- send email verification
      */
-    private createUser(newUser: UserCredentials, loader:any):void {
+    private createUser(newUser: UserCredentials):void {
+        console.info('__CUS__createUser()');
+        console.info('__1__createUser');
         this.usersSrv.createUser(newUser)
             .then((fbuser:firebase.User) => {
-                console.log('submitSignupForm > createUserWithEmailAndPassword > success > fbuser ', fbuser);
+                console.log('__1__', fbuser.uid);
                 // create account in DB
-                this.usersSrv.createAccountStep1(fbuser)
+                console.info('__2__createAccount');
+                return this.usersSrv.createAccountStep1(fbuser)
+            })
+            .then(() => {
+                console.log('__2__ success');
+                // send email address verification
+                // CLOUD FUNCTIONS TRIGGER
+                console.log('CF_Trigger:setUserVerifyEmail|user.onCreate()');
+                this.loader.dismiss()
                     .then(() => {
-                        console.log('submitSignupForm > createUserWithEmailAndPassword > createAccountFromCurrentUser > success');
-                        // send email address verification
-                        this.usersSrv.sendEmailVerification();
-                });
-        })
-        .catch((error) => {
-            console.error('createUserWithEmailAndPassword > error > ', error);
-            loader.dismiss()
-                .then(() => {
-                    this.presentErrorAlert(error.code);
-                });
+                        // end
+                    });
+            })
+            .catch((error) => {
+                console.error('__CUS__', error);
+                this.loader.dismiss()
+                    .then(() => {
+                        this.presentErrorAlert(error.code);
+                    });
         });
     }
 
-    private setLoader():any {
+    private setLoader() {
         // loader effect
-        let loader = this.loadingCtrl.create({
-            content: 'Registrando tu cuenta ...',
-            dismissOnPageChange: true
+        this.loader = this.loadingCtrl.create({
+            content: 'Registrando tu cuenta ...'
         });
-        loader.present();
-        return loader;
+        this.loader.present();
     }
 
     private presentErrorAlert(msgCode: string ):void {

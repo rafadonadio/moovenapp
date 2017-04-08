@@ -18,8 +18,16 @@ export const USER_CFG = {
             },
             REQUIRED_VERIFICATIONS: {
                 BASIC: ['email'],
-                SENDER: ['email', 'phone'],
+                SENDER: ['email'],
                 OPERATOR: ['email', 'phone', 'residenceAddress', 'legalIdentityNumber'],      
+            }
+        },
+        SETTINGS: {
+            DEFAULT_VALUES: {
+                NOTIFICATIONS: {
+                    LOCAL_PUSH: true,
+                    EMAIL: false,
+                }
             }
         }
     }
@@ -36,17 +44,25 @@ export class UserCredentials {
 
 export class UserAccount {
     active: boolean;
-    createdAt: number;
-    deletedAt: number;
+    createdAt: any;
+    deletedAt: any;
     providerId: string;
     profile: UserAccountProfile;
     ToS: {
         accepted: boolean,
-        acceptedTimestamp: number,
+        acceptedTimestamp: any,
         acceptedVersionId: number,
         acceptedVersionTag: string,
-        history: Array<{ versionId:string, timestamp:number}>
+        history: Array<{ versionId:string, timestamp:any}>
     };
+    settings: UserAccountSettings;
+}
+
+export class UserAccountSettings {
+    notifications: {
+        localPush: boolean;
+        email: boolean;
+    }   
 }
 
 export class UserAccountProfile {
@@ -98,21 +114,21 @@ export class UserProfileVerifications {
 export class UserProfileEmailVerification {
     verified: boolean;
     verifiedAddress: string;
-    verifiedTimestamp: number;
+    verifiedTimestamp: any;
     attemptsIds: Array<VerificationAttempts>;
 }
 
 export class UserProfilePhoneVerification {
     verified: boolean;
     verifiedNumber: string;
-    verifiedTimestamp: number;
+    verifiedTimestamp: any;
     attemptsIds: Array<VerificationAttempts>;
 }
 
 export class UserProfileResidenceVerification {
     verified: boolean;
     verifiedAddress: string;
-    verifiedTimestamp: number;
+    verifiedTimestamp: any;
     imageUrl: string;
     verifiedBy: string;
 }
@@ -120,13 +136,13 @@ export class UserProfileResidenceVerification {
 export class UserProfileLegalidVerification {
     verified: boolean;
     verifiedNumber: string;
-    verifiedTimestamp: number;
+    verifiedTimestamp: any;
     imageUrl: string;
     verifiedBy: string;
 }
 
 export class VerificationAttempts {
-    timestamp: number;
+    timestamp: any;
     reference: any;
 }
 
@@ -211,6 +227,14 @@ export const USER_DB_REF = {
             ACCEPTED_VERSION_TAG: '/ToS/acceptedVersionTag',
             HISTORY: '/ToS/history/',
         },
+        SETTINGS: {
+            _NODE: '/settings',
+            NOTIFICATIONS: {
+                _NODE: '/settings/notifications',
+                LOCALPUSH: '/settings/notifications/localPush',
+                EMAIL: '/settings/notifications/email',
+            }
+        }
     }
 }
 

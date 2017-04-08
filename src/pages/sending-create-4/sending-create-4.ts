@@ -1,3 +1,4 @@
+import { CheckoutPage } from '../checkout/checkout';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
@@ -26,13 +27,17 @@ export class SendingCreate4Page implements OnInit {
         value:0,
         minFareApplied: false,
     };
+    // when created
+    sendingId:string;    
+    sendingCreated:boolean = false;
+    sendingPayed:boolean = false;    
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public sendings: SendingService,
+        public sendingSrv: SendingService,
         public gmapsSrv: GoogleMapsService) {
     }
 
@@ -54,10 +59,10 @@ export class SendingCreate4Page implements OnInit {
         this.goBackToStep(step);
     }
 
-    submit() {
+    runCreate() {
         let alert = this.alertCtrl.create({
-            title: 'Confirmar envío',
-            message: 'Se debitarán $' + this.sending.price + ' de tu cuenta y tu envío será confirmado',
+            title: 'Nuevo Servicio',
+            message: 'Confirmo que los datos ingresados estan correctos y deseo crear un nuevo servicio',
             buttons: [
                 {
                     text: 'Cancelar',
@@ -67,7 +72,7 @@ export class SendingCreate4Page implements OnInit {
                     }
                 },
                 {
-                    text: 'Confirmar y Pagar',
+                    text: 'Confirmar',
                     handler: () => {
                         console.log('f4 > submit > confirm > process');
                         this.createSending();
@@ -78,7 +83,31 @@ export class SendingCreate4Page implements OnInit {
         alert.present();
     }
 
-    cancel() {
+    runPayment() {
+        let alert = this.alertCtrl.create({
+            title: 'Pago',
+            message: 'Proceder con el el pago de $' + this.sending.price + ' para confirmar el servicio.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > submit > confirm > canceled');
+                    }
+                },
+                {
+                    text: 'Pagar',
+                    handler: () => {
+                        console.log('f4 > goTo Checkout');
+                        this.navCtrl.push(CheckoutPage, { sending: this.sending });
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
+    cancelSending() {
         let alert = this.alertCtrl.create({
             title: '¿Cancelar Envío?',
             message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
@@ -103,6 +132,31 @@ export class SendingCreate4Page implements OnInit {
         alert.present();
     }
 
+    goToSendings() {
+        let alert = this.alertCtrl.create({
+            title: 'Volver al listado?',
+            message: 'El servicio esta creado y puedes finalizar el pago luego, hasta una hora antes de la hora de retiro.',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > cancel form > no, continue');
+
+                    }
+                },
+                {
+                    text: 'Si, volver',
+                    handler: () => {
+                        console.log('f4 > cancel form > yes, cancel');
+                        this.navCtrl.setRoot(SendingsPage);
+                    }
+                }
+            ]
+        });
+        alert.present();
+    }    
+
     /**
      *  NAVIGATION
      */
@@ -126,49 +180,27 @@ export class SendingCreate4Page implements OnInit {
         });
     }
 
-    private presentToast() {
-        let toast = this.toastCtrl.create({
-            message: 'Tu envío fue creado!',
-            duration: 3000,
-            position: 'bottom'
-        });
-
-        toast.onDidDismiss(() => {
-            console.log('f4 > toast > dismissed');
-        });
-
-        toast.present();
-    }
-
     /**
      *  DATA
      */
 
     private createSending() {
         console.info('f4 > createSending > start');
-        let newSendingId:string;
         // loader effect
         let loader = this.loadingCtrl.create({
             content: 'registrando servicio ...',
         });
         loader.present();
         // save to db
-        this.sendings.create(this.sending)
+        this.sendingSrv.register(this.sending)
             .then((result) => {
                 console.log('create success > steps ', result);
-                newSendingId = result.sendingId;
-                loader.setContent('procesando pago ...');
-                return this.sendings.processPayment(newSendingId);
-            })
-            .then(() => {
-                console.log('payment ok, wait 3 seconds');
-                setTimeout(() => {
-                    loader.dismiss()
-                        .then(() => {
-                            this.navCtrl.setRoot(SendingsPage);
-                            this.presentToast();
-                        });
-                },3000);
+                this.sendingId = result.sendingId;
+                this.sendingCreated= true;
+                loader.dismiss()
+                    .then(() => {
+                        this.runPayment();
+                    });
             })
             .catch((error) => {
                 console.log('f4 > create sending > error', error);

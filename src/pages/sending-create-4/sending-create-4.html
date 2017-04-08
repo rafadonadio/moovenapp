@@ -116,11 +116,19 @@
         </ion-item>
     </ion-list>
     <div margin>
+
+        <!-- CREATING -->
         <button ion-button block color="primary" 
-            (click)="submit()">Confirmar Envío</button>
+            (click)="runCreate()" *ngIf="!sendingCreated">Confirmar Servicio</button>
         <button ion-button block color="primary" outline margin-top 
-            (click)="goBack(3)">Volver</button>              
-        <button ion-button block color="subdark" 
-            clear margin-top (click)="cancel()">Cancelar</button> 
+            (click)="goBack(3)" *ngIf="!sendingCreated">Volver</button>              
+        <button ion-button block color="subdark" clear margin-top 
+            (click)="cancelSending()" *ngIf="!sendingCreated">Cancelar</button> 
+
+        <!-- CREATED, NOT PAYED -->
+        <button ion-button block color="primary" 
+            (click)="runPayment()" *ngIf="sendingCreated && !sendingPayed">Pagar Servicio</button>            
+        <button ion-button block color="primary" outline margin-top 
+            (click)="goToSendings()" *ngIf="sendingCreated && !sendingPayed">Volver a Servicios</button>     
     </div>
 </ion-content>

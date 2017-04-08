@@ -16,6 +16,12 @@ export class HashService {
     }
 
     /**
+     *  HASHIDS 
+     *  http://hashids.org/
+     *  
+     */
+
+    /**
      *  generates a unique hashed ID based on
      * - unix seconds
      * - random(10)
@@ -27,6 +33,13 @@ export class HashService {
         let random2 = Math.floor((Math.random() * 10) + 1);          
         let hashid:string = this.hashids.encode(random1, random2);      
         return hashid;
+    }
+
+    genSecurityCode():string {
+        this.hashids = new hashids(this.userSalt, 4, '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        let random = Math.floor((Math.random() * 10) + 1);           
+        let hashid:string = this.hashids.encode(random);      
+        return hashid;        
     }
 
 }

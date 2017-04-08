@@ -29,16 +29,55 @@ export class DateService {
         return time;                      
     }
 
+
+
+    getTimestamp():any {
+        return moment();
+    }
+
+    getUnixTimestamp():any {
+        return moment().valueOf();
+    }    
+
+    /**
+     *  HELPERS
+     */
+
     // transform a timestamp to date
     transformTimestampToHuman(timestamp:string):string {
-        console.info('dateService > transformTimestampToHuman > timestamp > ', timestamp);
+        //console.info('transformTimestampToHuman');
         let day = moment(timestamp);
         let human = day.format('DD/MM/YYYY HH:mm');
         return human;
     }
 
-    getTimestamp():any {
-        return moment();
+    // momentInput: timestamp, ISO8601 string date
+    getMonthStr(momentInput:any):string{
+        let day = moment(momentInput);
+        return day.format('MM').toString();
     }
+    getMonthNum(momentInput:any):number{
+        let day = moment(momentInput);
+        return day.month();
+    }    
+    getYearStr(momentInput:any):string{
+        let day = moment(momentInput);
+        return day.format('YYYY').toString();
+    }
+    getYearNum(momentInput:any):number{
+        let day = moment(momentInput);
+        return day.year();
+    }        
+
+    addTsYears(timestamp:number, years:number):number {
+        let date = moment(timestamp);
+        return date.add(years, 'y').valueOf();
+    }
+
+    //  ISO 8601 datetime format standard
+    readISO8601FromTimestamp(timestamp:number):string {
+        let day = moment(timestamp);
+        return day.format('YYYY-MM-DD')
+    }        
 
 }

@@ -1,9 +1,12 @@
-import { UserAccount, UserProfileData, UserProfileVerifications } from '../../models/user-model';
+import { StartPage } from '../start/start';
+import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
 import { Camera } from 'ionic-native';
+
+import firebase from 'firebase';
 
 const STRG_USER_FILES = 'userFiles/';
 
@@ -18,6 +21,12 @@ export class SettingsPage implements OnInit{
     profVrfs: UserProfileVerifications;
     accountStatus: any;
     profileBgDefault: string = 'assets/img/mooven_avatar.png';
+    accountSettings: UserAccountSettings;
+    accountSettingsDisabled:boolean;
+    notificationSettings = {
+        localPush: false,
+        email: false
+    }
 
     constructor(public navCtrl: NavController,
         public users: UsersService,
@@ -29,6 +38,7 @@ export class SettingsPage implements OnInit{
     }
 
     ngOnInit() {
+        this.accountSettingsDisabled = true;
         this.setAccountData();
     }
 
@@ -41,6 +51,15 @@ export class SettingsPage implements OnInit{
         }, 2000);
     }
 
+    updateUserProfileStatus() {
+        this.users.updateUserProfileStatus()
+            .then(() => {
+                console.log('status updated');
+                this.setAccountData(); 
+            })
+            .catch(error => console.log(error));
+    }
+    
     presentPopover(myEvent) {
         let popover = this.popoverCtrl.create(SettingsPopoverPage, { 
             profData: this.profData
@@ -60,6 +79,17 @@ export class SettingsPage implements OnInit{
         });      
     }
 
+    /**
+     *  SETTINGS
+     */
+
+    updateNotificationSettings(e) {
+        this.users.updateAccountSettingsNotifications(this.notificationSettings)
+            .then(() => {
+                console.log('updateAccountSettingsNotifications > success');
+            })
+            .catch((error) => console.log('error', error));  
+    }
 
     /**
      * Take picture and save imageData
@@ -108,7 +138,8 @@ export class SettingsPage implements OnInit{
             toast.dismiss()
                 .then(() => {
                     this.setAccountData();
-                });
+                })
+                .catch((error) => console.log('error', error));  
         })
         .catch((error) => {
             console.log('updatePicture > error > ' + error, steps);
@@ -125,11 +156,16 @@ export class SettingsPage implements OnInit{
         // loader effect
         let loader = this.loadingCtrl.create({
             content: 'Cerrando sesión ...',
-            dismissOnPageChange: true
         });
         loader.present();
+        setTimeout(() => {
+            this.users.signOut();
+            this.navCtrl.setRoot(StartPage);
+        }, 1000);
 
-        this.users.signOut();
+        setTimeout(() => {
+            loader.dismiss();
+        }, 3000);        
     }
 
     /**
@@ -168,7 +204,7 @@ export class SettingsPage implements OnInit{
             account: false
         }
         let account: UserAccount;
-        console.group('settings.setAccount');
+        //console.group('settings.setAccount');
         // show loader
         let loader = this.loadingCtrl.create({
             content: "Actualizando datos ...",
@@ -179,30 +215,58 @@ export class SettingsPage implements OnInit{
             .then(() => {
                 steps.reload = true;
                 this.fbuser = this.users.getUser();
-                console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
+                //console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
                 if(this.fbuser){     
                     return this.users.getAccount();
                 }
             })
             .then((snapshot) => {
                 steps.account = true;
-                console.info('setAccountData > success');
+                //console.info('setAccountData > success');
                 account = snapshot.val();              
+                // profile data
                 this.profData = account.profile.data;
+                // profile verifications
                 this.profVrfs = account.profile.verifications;
+                // account settings
+                this.checkAccountSettings(account);
+                // account status
                 this.accountStatus = this.users.accountProfilesStatus(account);     
                 if(this.profVrfs.email.verified===false) {
-                    console.info('settings.setAccount > run email verification');
+                    //console.info('settings.setAccount > run email verification');
                     this.users.runAuthEmailVerification();
                 }  
-                console.groupEnd();
                 loader.dismiss();         
             })
             .catch((error) => {
-                console.log('setAccountData > error ', error, steps);
-                console.groupEnd();
+                //console.log('setAccountData > error ', error, steps);
                 loader.dismiss();
             });            
 
+    }
+
+    private checkAccountSettings(account: UserAccount):void {
+        console.info('check user settings');
+        if(this.users.checkAccountSettingsConsistency(account)) {
+            console.log('checkAccountSettingsConsistency > true');
+            this.enableAccountSetting(account.settings);
+        }else{
+            this.users.initAccountSettingsMissingParams(account)
+                .then(() => {
+                    this.setAccountData();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });            
+        }
+    }
+
+    private enableAccountSetting(settings:any) {
+        // set
+        this.accountSettings = settings;
+        // copy
+        this.notificationSettings = this.accountSettings.notifications;
+        // enable
+        this.accountSettingsDisabled = false;
     }
 }
