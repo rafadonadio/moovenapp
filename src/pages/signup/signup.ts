@@ -80,7 +80,7 @@ export class SignupPage implements OnInit {
             .then(() => {
                 console.log('__2__ success');
                 // send email address verification
-                this.usersSrv.sendEmailVerification();
+                // MOVED TO CLOUD FUNCTIONS
                 this.loader.dismiss()
                     .then(() => {
                         // end
