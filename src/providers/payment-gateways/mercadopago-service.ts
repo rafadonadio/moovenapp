@@ -119,7 +119,7 @@ export class MercadopagoService {
                         +'&paymentMethodId='+data.paymentMethodId
                         +'&payerEmail='+data.payerEmail
                         +'&externalReference='+data.externalReference;
-        return this.http.post(CFG.BACKEND_SERVER.URL.PAYMENT, tokendata, {headers:headers})
+        return this.http.post(CFG.BACKEND_SERVER.DEV_URL.PAYMENT, tokendata, {headers:headers})
                     .map((response: Response) => {
                         //console.log('runServerPayment > response', response);                       
                         return this.getServerPaymentResponse(response);

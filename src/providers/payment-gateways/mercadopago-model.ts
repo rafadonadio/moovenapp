@@ -15,9 +15,18 @@ export const MERCADOPAGO_REF = {
         },
     },
     BACKEND_SERVER: {
-        URL: {
-            PAYMENT: 'http://be.moovenapp.com/api/v1/gateway/mp/payments',
+        LOCAL_URL: {
+            PAYMENT: 'http://be.moovenapp.dev/api/v1/gateway/mp/payments',
         },
+        DEV_URL: {
+            PAYMENT: 'https://be-dev.moovenapp.com/api/v1/gateway/mp/payments',
+        },
+        STAGE_URL: {
+            PAYMENT: 'https://be-stage.moovenapp.com/api/v1/gateway/mp/payments',
+        },
+        PROD_URL: {
+            PAYMENT: 'https://be.moovenapp.com/api/v1/gateway/mp/payments',
+        },        
     }
 }
 
