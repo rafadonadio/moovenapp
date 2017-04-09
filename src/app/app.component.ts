@@ -15,6 +15,7 @@ import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
 import { USER_CFG } from '../models/user-model';
 
+
 import firebase from 'firebase';
 
 declare var window: any;

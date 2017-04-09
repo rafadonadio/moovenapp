@@ -63,10 +63,10 @@ import { Ts2DatePipe } from '../pipes/ts2date-pipe';
 // IONIC.IO
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
-
+const ENV = APP_CFG.CURRENT_ENV;
 const cloudSettings: CloudSettings = {
   'core': {
-    'app_id': '226f3be4'
+    'app_id': APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
   }
 };
 
@@ -74,11 +74,11 @@ const cloudSettings: CloudSettings = {
 import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
 // AF2 Settings
 export const firebaseConfig = {
-    apiKey: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.apiKey,
-    authDomain: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.authDomain,
-    databaseURL: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.databaseURL,
-    storageBucket: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.storageBucket,
-    messagingSenderId: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.messagingSenderId
+    apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
+    authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
+    databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
+    storageBucket: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.storageBucket,
+    messagingSenderId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.messagingSenderId
 };
 const myFirebaseAuthConfig = {
     provider: AuthProviders.Password,
@@ -127,7 +127,7 @@ const myFirebaseAuthConfig = {
     AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
-      name: APP_CFG.ENVIRONMENTS.DEV.LOCALSTORAGE.name,
+      name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
          driverOrder: ['localstorage','indexeddb', 'sqlite', 'websql']
     })
   ],

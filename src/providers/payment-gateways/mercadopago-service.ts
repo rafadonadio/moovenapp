@@ -12,6 +12,11 @@ import { Http, Headers, Response } from '@angular/http';
 declare var Mercadopago:any;
 
 const CFG = MERCADOPAGO_REF;
+// SANDBOX
+const MERCADOPAGO_KEY = CFG.PUBLIC_KEY.SANDBOX.PUBLIC_KEY;
+// DEV URL
+//const SERVER_PAYMENT_URL = CFG.BACKEND_SERVER.LOCAL_URL.PAYMENT;
+const SERVER_PAYMENT_URL = CFG.BACKEND_SERVER.DEV_URL.PAYMENT;
 
 @Injectable()
 export class MercadopagoService {
@@ -83,7 +88,7 @@ export class MercadopagoService {
      */
 
     private init():void {
-        Mercadopago.setPublishableKey(CFG.PUBLIC_KEY.SANDBOX.PUBLIC_KEY);
+        Mercadopago.setPublishableKey(MERCADOPAGO_KEY);
     }
 
 
@@ -119,7 +124,7 @@ export class MercadopagoService {
                         +'&paymentMethodId='+data.paymentMethodId
                         +'&payerEmail='+data.payerEmail
                         +'&externalReference='+data.externalReference;
-        return this.http.post(CFG.BACKEND_SERVER.DEV_URL.PAYMENT, tokendata, {headers:headers})
+        return this.http.post(SERVER_PAYMENT_URL, tokendata, {headers:headers})
                     .map((response: Response) => {
                         //console.log('runServerPayment > response', response);                       
                         return this.getServerPaymentResponse(response);

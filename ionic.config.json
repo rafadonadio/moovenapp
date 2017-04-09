@@ -1,6 +1,20 @@
 {
-  "name": "moovenAppDev",
-  "app_id": "4557e0f5",
+  "name": "MoovenAppDev",
+  "app_id": "c9b3dcc7",
   "typescript": true,
   "v2": true
 }
+
+// {
+//   "name": "MoovenAppStage",
+//   "app_id": "7cbebd36",
+//   "typescript": true,
+//   "v2": true
+// }
+
+// {
+//   "name": "MoovenApp",
+//   "app_id": "b7c29866",
+//   "typescript": true,
+//   "v2": true
+// }
