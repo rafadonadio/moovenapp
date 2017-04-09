@@ -1,3 +1,4 @@
+import { APP_CFG } from '../../models/app-model';
 import { LoadingController } from 'ionic-angular/components/loading/loading';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
@@ -16,6 +17,7 @@ export class SendingsPage implements OnInit {
     sendings: any;
     sendingsEmpty = true;
     sendingsSuscription: any;
+    appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
         public navCtrl: NavController,
