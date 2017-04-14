@@ -22,11 +22,10 @@
                 secret
 
         sign the unsigned APK: run the jarsigner tool which is also included in the JDK:
-            $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore c:\ANDROID\my-release-key.keystore D:\vmbox\mooven\dev\MoovenAppDev\platforms\android\build\outputs\apk\android-release-unsigned.apk mooven
+            $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore c:\ANDROID\my-release-key.keystore D:\vmbox\mooven\production\MoovenApp\platforms\android\build\outputs\apk\android-release-unsigned.apk mooven
 
         run the zip align tool to optimize the APK
-            C:\Users\RW\AppData\Local\Android\sdk\build-tools\24.0.2\zipalign
-            $ C:\Users\RW\AppData\Local\Android\sdk\build-tools\24.0.2\zipalign -v 4 D:\vmbox\mooven\dev\MoovenAppDev\platforms\android\build\outputs\apk\android-release-unsigned.apk android.apk
+            $ C:\Users\RW\AppData\Local\Android\sdk\build-tools\25.0.0\zipalign -v 4 D:\vmbox\mooven\production\MoovenApp\platforms\android\build\outputs\apk\android-release-unsigned.apk android.apk
 
     
     
