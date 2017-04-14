@@ -46,8 +46,7 @@ export class MyApp {
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public af: AngularFire,
-        public deploy: Deploy) {
+        public af: AngularFire) {
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.

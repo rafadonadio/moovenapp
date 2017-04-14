@@ -21,7 +21,7 @@
                 secret
                 secret
 
-        sign the unsigned APK, run the jarsigner tool which is also included in the JDK:
+        sign the unsigned APK: run the jarsigner tool which is also included in the JDK:
             $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore c:\ANDROID\my-release-key.keystore D:\vmbox\mooven\dev\MoovenAppDev\platforms\android\build\outputs\apk\android-release-unsigned.apk mooven
 
         run the zip align tool to optimize the APK
