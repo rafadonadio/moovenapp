@@ -15,8 +15,6 @@ import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
 import { USER_CFG } from '../models/user-model';
 
-import { Deploy } from '@ionic/cloud-angular';
-
 import firebase from 'firebase';
 
 declare var window: any;
@@ -58,9 +56,9 @@ export class MyApp {
                 // Okay, so the platform is ready and our plugins are available.
                 // Here you can do any higher level native things you might need.
                 StatusBar.styleDefault();
-                console.log('app > cordova ready..');
+                console.log('__CVA__ cordova ready');
                 let array: string[] = platform.platforms();
-                console.log(array);
+                console.log('__CVA__', array);
                 // let isAndroid: boolean = platform.is('android');
                 // let isIos: boolean = platform.is('ios');
                 // let isWindows: boolean = platform.is('windows');
@@ -88,13 +86,7 @@ export class MyApp {
             }
             authInit.unsubscribe();
         });
-        this.susbcribeAuthState();
-
-        /**
-         *  IONIC DEPLOYS
-         */
-        this.checkIonicDeploys();
-
+        this.susbcribeAuthState();     
     }
 
 
@@ -291,38 +283,6 @@ export class MyApp {
     goToSettings(): void {
         this.menu.close();
         this.nav.push(SettingsPage);
-    }
-
-    /**
-     *  IONIC DEPLOYS
-     */
-
-    checkIonicDeploys() {
-        console.info('__DPY__ deploy check');
-        if(this.platform.is('cordova')) { 
-            // loader
-            const loader = this.loadingCtrl.create({
-                content: 'Verificando actualizaciones ...'
-            });
-            loader.present();
-            // check
-            this.deploy.channel = 'production';
-            this.deploy.check()
-                .then((snapshotAvailable: boolean) => {
-                    loader.dismiss();
-                    if (snapshotAvailable) {
-                        console.log('__DPY__ snapshot available', snapshotAvailable);
-                    }else{
-                        console.log('__DPY__ no snapshot available');
-                    }
-                })
-                .catch((error) => {
-                    loader.dismiss();
-                    console.log('__DPY__ error', error);
-                });
-        }else{
-            console.log('__DPY__ no cordova device');
-        }
     }
 
     /**

@@ -41,6 +41,7 @@
     <preference name="SplashScreenBackgroundColor" value="0xFFFFFFFF" />
     <preference name="orientation" value="portrait" />
     <preference name="SplashScreen" value="screen" />
+    <preference name="loadUrlTimeoutValue" value="700000" />
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
@@ -55,5 +56,4 @@
     <allow-navigation href="http://192.168.1.125:8100" />
     <allow-navigation href="http://192.168.1.125:8000" />
     <icon src="resources\android\icon\drawable-xhdpi-icon.png" />
-    <plugin name="ionic-plugin-deploy" spec="~0.6.6" />
 </widget>

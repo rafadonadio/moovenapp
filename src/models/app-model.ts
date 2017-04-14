@@ -7,7 +7,7 @@ export const APP_CFG = {
     CURRENT_ENV: 'DEV', // DEV, STAGE, PROD
     ENVIRONMENTS: {
         'DEV': {
-            APP_NAME: 'MOOVEN DEV',
+            APP_NAME: 'MOOVEN.dev',
             FIREBASE: {
                 apiKey: 'AIzaSyBNWjiziTT1lzPL1WIl2pffupVa-ABJp7E',
                 authDomain: 'moovendev.firebaseapp.com',
