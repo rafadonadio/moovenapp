@@ -1,5 +1,5 @@
 import { APP_CFG } from '../../models/app-model';
-import { LoadingController } from 'ionic-angular/components/loading/loading';
+import { LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';

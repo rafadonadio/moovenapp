@@ -1,4 +1,4 @@
-import { LoadingController } from 'ionic-angular/components/loading/loading';
+import { LoadingController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';

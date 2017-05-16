@@ -1,7 +1,7 @@
 import { UsersService } from '../../providers/users-service/users-service';
 import { UserAccount } from '../../models/user-model';
 import { SendingsPage } from '../sendings/sendings';
-import { AlertController } from 'ionic-angular/components/alert/alert';
+import { AlertController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';

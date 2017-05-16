@@ -1,5 +1,5 @@
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { LoadingController } from 'ionic-angular/components/loading/loading';
+import { LoadingController } from 'ionic-angular';
 import { SendingRequest } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { ViewController, NavController, NavParams, Platform, AlertController, ActionSheetController } from 'ionic-angular';
