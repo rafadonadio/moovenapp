@@ -1,6 +1,8 @@
 
 ### Pendientes
 
+    -
+
 
 
 
@@ -23,6 +25,8 @@
             CF_Trigger > user.onCreate()
                 dispara cloud function: setUserVerifyEmail
                 envia email de validación de correo electronico ingresado
+
+--- 
 
 ### CREAR USUARIO > STEP 2
 > Datos adicionales del usuario:  
