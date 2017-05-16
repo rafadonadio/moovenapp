@@ -38,8 +38,8 @@
         "zone.js": "0.7.2"
     },
     "devDependencies": {
-        "@ionic/app-scripts": "1.1.4",
-        "typescript": "^2.0.9"
+        "@ionic/app-scripts": "1.3.7",
+        "typescript": "2.0.9"
     },
     "description": "moovenAppDev: An Ionic project",
     "cordovaPlugins": [
