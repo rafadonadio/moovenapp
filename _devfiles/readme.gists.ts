@@ -2,7 +2,7 @@
 
 
 
-# didEnter / didLeave
+// didEnter / didLeave
     // for subscribing and unsubscribing
 
     import { ViewController } from 'ionic-angular';
@@ -19,7 +19,7 @@
     }
 
 
-# suscribe
+// suscribe
 
         // get
         let service = get();

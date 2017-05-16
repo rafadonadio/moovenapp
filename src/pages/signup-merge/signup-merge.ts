@@ -46,9 +46,10 @@ export class SignupMergePage implements OnInit{
     }
 
 
-    submitSignupMergeForm(value: any): void {
+    submit(): void {
         console.info('__SMF__ SignupMergeForm');
         console.log('__SMF__ ',this.form.valid, this.form.get('tosAccept').value);
+        let values = this.form.value;
         // verify inputs are valid
         if(!this.form.valid || this.form.get('tosAccept').value==false) {
             // something is not good
@@ -68,10 +69,10 @@ export class SignupMergePage implements OnInit{
             this.loader.present();
             // profile data
             let profileData = {
-                firstName: value.firstName,
-                lastName: value.lastName,
-                phonePrefix: value.phonePrefix,
-                phoneMobile: value.phoneMobile
+                firstName: values.firstName,
+                lastName: values.lastName,
+                phonePrefix: values.phonePrefix,
+                phoneMobile: values.phoneMobile
             };
             // update
             console.info('__CA2__ createAccountStep2');

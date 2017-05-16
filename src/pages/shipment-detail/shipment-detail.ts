@@ -13,7 +13,7 @@ const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
     selector: 'page-shipment-detail',  
     templateUrl: 'shipment-detail.html',
 })
-export class ShipmentDetailPage implements OnInit{
+export class ShipmentDetailPage implements OnInit {
 
     shipmenttab: string = "notifications";
     shipmentId:string;
