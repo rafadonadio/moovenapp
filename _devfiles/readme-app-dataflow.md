@@ -7,11 +7,15 @@
 
 
 
-# APP WORK/DATA FLOW
+# LOGIC/DATA FLOW
+
+> APP: operador /
 
 ## SIGNUP
 ### CREAR USUARIO
-> completa email y contraseña  
+> Datos de registro
+>  - email 
+>  - contraseña  
 
 *pages/signup/signup.ts*  
     
@@ -30,10 +34,10 @@
 
 ### CREAR USUARIO > STEP 2
 > Datos adicionales del usuario:  
-  nombre  
-  apellido  
-  telefono  
-  ver y aceptar TOS  
+>  - nombre  
+>  - apellido  
+>  - telefono  
+>  - ver y aceptar TOS   
 
 *pages/signup-merge/signup-merge.ts*
 
