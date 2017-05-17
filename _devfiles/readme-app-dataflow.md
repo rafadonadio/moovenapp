@@ -7,11 +7,11 @@
 
 
 
-# LOGIC/DATA FLOW
+# **LOGIC/DATA FLOW**
 
 > IONIC APP: Usuario / Operador      
-
-## SIGNUP
+  
+## **SIGN-UP**
 ### CREAR USUARIO
 > Form para crear usuario  
 > Datos de registro:
@@ -102,7 +102,10 @@
 
 ---
 
-### ACTION
+
+## **SERVICIOS**
+
+### NUEVO SERVICIO
 > descripción
 
 *pages/..*
