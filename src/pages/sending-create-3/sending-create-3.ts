@@ -64,22 +64,7 @@ export class SendingCreate3Page implements OnInit{
         this.initPlaceDetails();
         this.initMap();        
         // init form
-        this.formThree = this.formBuilder.group({
-            'dropAddressFullText': ['', Validators.compose([Validators.required])],
-            'dropAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
-            'dropTimeFrom': ['', Validators.compose([Validators.required])],
-            'dropTimeTo': ['', Validators.compose([Validators.required])],
-            'dropPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-            'dropPersonPhone': ['', Validators.compose([Validators.required])],
-            'dropPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
-        });
-        this.dropAddressFullText = this.formThree.controls['dropAddressFullText'];
-        this.dropAddressLine2 = this.formThree.controls['dropAddressLine2'];        
-        this.dropTimeFrom = this.formThree.controls['dropTimeFrom'];
-        this.dropTimeTo = this.formThree.controls['dropTimeTo'];
-        this.dropPersonName = this.formThree.controls['dropPersonName'];
-        this.dropPersonPhone = this.formThree.controls['dropPersonPhone'];
-        this.dropPersonEmail = this.formThree.controls['dropPersonEmail'];
+        this.initForm();
         // set sending from param
         this.getSendingFromParams();
         // populate page
@@ -395,6 +380,25 @@ export class SendingCreate3Page implements OnInit{
     private initPlaceDetails() {
         console.info('f3 > initPlaceDetails');
         this.placeDetails = this.gmapsService.initPlaceDetails();
+    }
+
+    private initForm() {
+        this.formThree = this.formBuilder.group({
+            'dropAddressFullText': ['', Validators.compose([Validators.required])],
+            'dropAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
+            'dropTimeFrom': ['', Validators.compose([Validators.required])],
+            'dropTimeTo': ['', Validators.compose([Validators.required])],
+            'dropPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
+            'dropPersonPhone': ['', Validators.compose([Validators.required])],
+            'dropPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
+        });
+        this.dropAddressFullText = this.formThree.controls['dropAddressFullText'];
+        this.dropAddressLine2 = this.formThree.controls['dropAddressLine2'];        
+        this.dropTimeFrom = this.formThree.controls['dropTimeFrom'];
+        this.dropTimeTo = this.formThree.controls['dropTimeTo'];
+        this.dropPersonName = this.formThree.controls['dropPersonName'];
+        this.dropPersonPhone = this.formThree.controls['dropPersonPhone'];
+        this.dropPersonEmail = this.formThree.controls['dropPersonEmail'];        
     }
 
     private getSendingFromParams() {

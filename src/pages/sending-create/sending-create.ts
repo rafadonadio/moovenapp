@@ -91,7 +91,6 @@ export class SendingCreatePage implements OnInit {
                     role: 'cancel',
                     handler: () => {
                         console.log('f1 > cancel > no, continue');
-
                     }
                 },
                 {
@@ -102,7 +101,8 @@ export class SendingCreatePage implements OnInit {
                             .then(() => {
                                 this.navCtrl.setRoot(SendingsPage);
                             })
-                            .catch((error) => console.log(error));                        
+                            .catch((error) => console.log(error));     
+                        return false;                   
                     }
                 }
             ]

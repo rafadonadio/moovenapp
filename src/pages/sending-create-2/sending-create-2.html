@@ -23,19 +23,12 @@
                 <div id="mapf2"></div>
             </div>
             <ion-list-header>Dirección de Retiro</ion-list-header>
-            <ion-item>
+            <ion-item no-lines>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="pickupAddressFullText"
                     (focus)="showAddressSearchModal()"></ion-input>
             </ion-item> 
-            <ion-item *ngIf="sending.pickupAddressSet==true">
-                <ion-label color="warn" stacked>Info adicional de la dirección</ion-label>
-                <ion-input type="text" clearInput 
-                    placeholder="nro de piso, depto, oficina, etc" 
-                    formControlName="pickupAddressLine2"
-                    ></ion-input>
-            </ion-item> 
-            <ion-item *ngIf="sending.pickupAddressSet==true">
+            <ion-item *ngIf="sending.pickupAddressSet==true" no-lines>
                 <ion-icon name="pin" item-left></ion-icon>
                 <h2>{{ sending.pickupAddressStreetShort }} {{ sending.pickupAddressNumber }}</h2>
                 <h3>{{ sending.pickupAddressCityShort }}</h3>
@@ -47,8 +40,15 @@
             </ion-item>              
             <div *ngIf="showErrors && !pickupAddressFullText.valid" 
                 class="input-error">* Dirección de retiro es requerida</div>
+            <ion-list-header>Info adicional Dirección</ion-list-header>
+            <ion-item no-lines>
+                <ion-input type="text" clearInput 
+                    placeholder="nro de piso, depto, oficina, etc" 
+                    formControlName="pickupAddressLine2"
+                    ></ion-input>
+            </ion-item> 
             <ion-list-header margin-top>Banda horaria de Retiro</ion-list-header>
-            <ion-item>
+            <ion-item no-lines>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 
                     formControlName="pickupTimeFrom" 
@@ -59,7 +59,7 @@
                     [(ngModel)]="rangeFrom" 
                     (ionChange)="adjustPickupTimeTo($event)"></ion-datetime>
             </ion-item>
-            <ion-item>
+            <ion-item no-lines>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
                 formControlName="pickupTimeTo" 

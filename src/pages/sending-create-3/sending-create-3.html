@@ -22,20 +22,12 @@
             <div class="map-container">
                 <div id="mapf3"></div>
             </div>
-            <ion-list-header>Dirección de Entrega</ion-list-header>
-            <ion-item>
+            <ion-item no-lines>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="dropAddressFullText"
                     (focus)="showAddressSearchModal()"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="sending.dropAddressSet==true">
-                <ion-label color="warn" stacked>Info adicional de la dirección</ion-label>
-                <ion-input type="text" clearInput 
-                    placeholder="nro de piso, depto, oficina, etc" 
-                    formControlName="dropAddressLine2"
-                    ></ion-input>
-            </ion-item>          
-            <ion-item *ngIf="sending.dropAddressSet==true">
+            </ion-item>     
+            <ion-item *ngIf="sending.dropAddressSet==true" no-lines>
                 <ion-icon name="pin" item-left></ion-icon>
                 <h2>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h2>
                 <h3>{{ sending.dropAddressCityShort }}</h3>
@@ -47,8 +39,15 @@
             </ion-item>                
             <div *ngIf="showErrors && !dropAddressFullText.valid"
                 class="input-error">* Direccion de entrega es requerida</div>
+            <ion-list-header>Info Adicional Dirección</ion-list-header>
+            <ion-item no-lines>
+                <ion-input type="text" clearInput 
+                    placeholder="nro de piso, depto, oficina, etc" 
+                    formControlName="dropAddressLine2"
+                    ></ion-input>
+            </ion-item>                    
             <ion-list-header margin-top>Banda horaria de Entrega</ion-list-header>
-            <ion-item>
+            <ion-item no-lines>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 
                     formControlName="dropTimeFrom" 
@@ -59,7 +58,7 @@
                     [(ngModel)]="rangeFrom" 
                     (ionChange)="adjustDropTimeTo($event)"></ion-datetime>
             </ion-item>
-            <ion-item>
+            <ion-item no-lines>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
                 formControlName="dropTimeTo" 

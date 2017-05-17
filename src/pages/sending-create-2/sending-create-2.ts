@@ -65,22 +65,7 @@ export class SendingCreate2Page implements OnInit {
         this.initPlaceDetails();        
         this.initMap();
         // init form
-        this.formTwo = this.formBuilder.group({
-            'pickupAddressFullText': ['', Validators.compose([Validators.required])],
-            'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
-            'pickupTimeFrom': ['', Validators.compose([Validators.required])],
-            'pickupTimeTo': ['', Validators.compose([Validators.required])],
-            'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-            'pickupPersonPhone': ['', Validators.compose([Validators.required])],
-            'pickupPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
-        });
-        this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
-        this.pickupAddressLine2 = this.formTwo.controls['pickupAddressLine2'];
-        this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
-        this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
-        this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
-        this.pickupPersonPhone = this.formTwo.controls['pickupPersonPhone'];
-        this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];
+        this.initForm();
         // set request from param
         this.getSendingFromParams();
         // populate page
@@ -384,6 +369,25 @@ export class SendingCreate2Page implements OnInit {
     /**
      *  INIT HELPERS
      */
+
+     private initForm() {
+        this.formTwo = this.formBuilder.group({
+            'pickupAddressFullText': ['', Validators.compose([Validators.required])],
+            'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
+            'pickupTimeFrom': ['', Validators.compose([Validators.required])],
+            'pickupTimeTo': ['', Validators.compose([Validators.required])],
+            'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
+            'pickupPersonPhone': ['', Validators.compose([Validators.required])],
+            'pickupPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
+        });
+        this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
+        this.pickupAddressLine2 = this.formTwo.controls['pickupAddressLine2'];
+        this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
+        this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
+        this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
+        this.pickupPersonPhone = this.formTwo.controls['pickupPersonPhone'];
+        this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];         
+     }
 
     private setUser() {
         this.user = this.users.getUser();
