@@ -23,6 +23,7 @@ export class SendingCreatePage implements OnInit {
     objectType: any;
     objectNoValueDeclared: any;
     objectDeclaredValue: any;
+    noValueToggle:any;
     //aux
     showErrors:boolean = false;
     rangeValue: any = 0;
@@ -97,8 +98,11 @@ export class SendingCreatePage implements OnInit {
                     text: 'Si',
                     handler: () => {
                         console.log('f1 > cancel > yes, cancel');
-                        alert.dismiss();
-                        this.navCtrl.setRoot(SendingsPage);
+                        alert.dismiss()
+                            .then(() => {
+                                this.navCtrl.setRoot(SendingsPage);
+                            })
+                            .catch((error) => console.log(error));                        
                     }
                 }
             ]
@@ -109,9 +113,14 @@ export class SendingCreatePage implements OnInit {
     /**
      * Reset value of range input
      */
-    resetObjectDeclaredValue(e) {
-        console.log('f1 > objectDeclaredValue > reseted');
-        this.rangeValue = 0;
+    resetObjectDeclaredValue() {
+        console.log('f1 > no value toggle', this.noValueToggle);
+        if(this.noValueToggle == true) {
+            this.rangeValue = 0;    
+            this.formOne.controls['objectDeclaredValue'].disable();
+        }else{
+            this.formOne.controls['objectDeclaredValue'].enable();
+        }
     }
 
     /**

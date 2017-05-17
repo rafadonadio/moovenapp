@@ -66,16 +66,17 @@
             <ion-item no-lines>
                 <ion-range min="0" max="3000" step="100" 
                     [(ngModel)]="rangeValue" 
-                    formControlName="objectDeclaredValue" 
-                    [disabled]="objectNoValueDeclared.value==true">
+                    formControlName="objectDeclaredValue">
                     <ion-label range-right>${{ objectDeclaredValue.value }}</ion-label>
                 </ion-range>
             </ion-item>
-            <ion-item no-lines>
+            <ion-item no-lines
+                [ngClass]="{'toggled': noValueToggle}">
                 <ion-label>Sin valor</ion-label>
                 <ion-toggle 
                     formControlName="objectNoValueDeclared" 
-                    (ionChange)="resetObjectDeclaredValue($event)"></ion-toggle>
+                    (ionChange)="resetObjectDeclaredValue()"
+                    [(ngModel)]="noValueToggle"></ion-toggle>
             </ion-item>
             <div *ngIf="showErrors && objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" 
                 class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
