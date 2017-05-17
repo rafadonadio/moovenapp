@@ -23,7 +23,30 @@
 
 --------------------------------------------
 
-    
+- Ionic v3 - Runtime Error Uncaught (in promise): removeView was not found 
 
+        let alert = this.alertCtrl.create({
+            title: '',
+            message: '',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                    }
+                },
+                {
+                    text: 'Si',
+                    handler: () => {
+                        // end with return false;
+                        // when view is ending
+                        return false;                   
+                    }
+                }
+            ]
+        });
+        alert.present();
+    
+--------------------------------------------
 
     

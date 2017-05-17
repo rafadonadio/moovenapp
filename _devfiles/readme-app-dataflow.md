@@ -1,8 +1,15 @@
 
 ### Pendientes
 
-    - boton para cerrar aplicación
-
+    - Ajustes
+        boton para cerrar aplicación
+        
+    - Nuevo Servicio - Paso 2
+        ingresar fecha
+        validar horario
+    - Nuevo Servicio - Paso 3
+        ingresar fecha
+        validar horario        
 
 
 
@@ -105,20 +112,142 @@
 
 ## **SERVICIOS**
 
-### NUEVO SERVICIO
-> descripción
+### NUEVO SERVICIO - Paso 1
+> Paso 1 de alta de servicio  
+> form:  
+> - foto (opcional)
+> - Descripción corta
+> - Tipo de objeto
+> - Valor a declarar
 
-*pages/..*
+*pages/sending-create/sending-create.ts*
 
-    method()
+    ngOnInit()
+        initSending
+            inicializa sending
+
+    populateForm()
+        si es una re-visita, hay datos en parametro
+        se rellena form con datos ya ingresados
+
+    takePicture()
+        guarda foto tomada con movil
+        guarda foto en formato base64
+
+    cancelSending()
+        anular todo y salir a sendings
+
+    resetObjectDeclaredValue()
+        observer de toggle para "sin valor"
+            para toggle=si
+                rango de valores deshabilitado
+                rango de valores a zero
+
+    submit()
+        form.invalid
+            showError
+        form.valid
+            showPictureAlert()
+                si no hay foto cargada, alertar
+            processForm()
+                saveSending()
+                    guarda valores en app (sending), no db
+                goToNextStep()
+                    redirige a paso 2
+                    envia datos guardados en parametro   
 
 ---
 
-### ACTION
-> descripción
+### NUEVO SERVICIO - Paso 2
+> Paso 2 de alta de servicio  
+> form:  
+> - dirección de retiro
+> - banda horaria de Retiro
+> - contacto para retiro
 
-*pages/..*
+*pages/sending-create/sending-create.ts*
 
-    method()
+    ngOnInit()
+        setUser()
+            trae datos de usuario
+        initPlaceDetails()
+        iniMap()
+            inicializa google maps
+        initForm()
+            inicializa form
+        getSendingFromParams()
+        populatePage()
+            rellena datos de form
+    
 
+    submit()
+        form.invalid
+            showError
+        form.valid
+            update()
+                guarda datos en app
+            gotoNextStep()
+   
+---
+
+### NUEVO SERVICIO - Paso 2
+> Paso 2 de alta de servicio  
+> form: Datos del Retiro  
+> - dirección de retiro
+> - banda horaria de Retiro
+> - contacto para retiro
+
+*pages/sending-create-2/sending-create-2.ts*
+
+    ngOnInit()
+        setUser()
+            trae datos de usuario
+        initPlaceDetails()
+        iniMap()
+            inicializa google maps
+        initForm()
+            inicializa form
+        getSendingFromParams()
+        populatePage()
+            rellena datos de form  
+
+    submit()
+        form.invalid
+            showError
+        form.valid
+            update()
+                guarda datos en app
+            gotoNextStep()
+   
+---
+
+### NUEVO SERVICIO - Paso 3
+> Paso 3 de alta de servicio  
+> form: Datos de la Entrega  
+> - dirección de entrega
+> - banda horaria de Entrega
+> - contacto para entrega
+
+*pages/sending-create-3/sending-create-3.ts*
+
+    ngOnInit()
+        setUser()
+            trae datos de usuario
+        initPlaceDetails()
+        iniMap()
+            inicializa google maps
+        initForm()
+            inicializa form
+        getSendingFromParams()
+        populatePage()
+            rellena datos de form  
+
+    submit()
+        form.invalid
+            showError
+        form.valid
+            update()
+                guarda datos en app
+            gotoNextStep()
+   
 ---
