@@ -1,16 +1,21 @@
 
 ### Pendientes
 
+    - Varios
+        registrar cada acción de usuario
+        obtener datos marca/modelo del dispositivo del usuario
+
     - Ajustes
         boton para cerrar aplicación
-        
+
     - Nuevo Servicio - Paso 2
         ingresar fecha
         validar horario
     - Nuevo Servicio - Paso 3
         ingresar fecha
         validar horario        
-
+    - Nuevo Servicio - Paso 4
+        calculo precio
 
 
 
@@ -112,7 +117,7 @@
 
 ## **SERVICIOS**
 
-### NUEVO SERVICIO - Paso 1
+### NUEVO SERVICIO - Paso 1/4
 > Paso 1 de alta de servicio  
 > form:  
 > - foto (opcional)
@@ -158,7 +163,7 @@
 
 ---
 
-### NUEVO SERVICIO - Paso 2
+### NUEVO SERVICIO - Paso 2/4
 > Paso 2 de alta de servicio  
 > form:  
 > - dirección de retiro
@@ -190,38 +195,7 @@
    
 ---
 
-### NUEVO SERVICIO - Paso 2
-> Paso 2 de alta de servicio  
-> form: Datos del Retiro  
-> - dirección de retiro
-> - banda horaria de Retiro
-> - contacto para retiro
-
-*pages/sending-create-2/sending-create-2.ts*
-
-    ngOnInit()
-        setUser()
-            trae datos de usuario
-        initPlaceDetails()
-        iniMap()
-            inicializa google maps
-        initForm()
-            inicializa form
-        getSendingFromParams()
-        populatePage()
-            rellena datos de form  
-
-    submit()
-        form.invalid
-            showError
-        form.valid
-            update()
-                guarda datos en app
-            gotoNextStep()
-   
----
-
-### NUEVO SERVICIO - Paso 3
+### NUEVO SERVICIO - Paso 3/4
 > Paso 3 de alta de servicio  
 > form: Datos de la Entrega  
 > - dirección de entrega
@@ -249,5 +223,38 @@
             update()
                 guarda datos en app
             gotoNextStep()
+   
+---
+
+### NUEVO SERVICIO - Paso 4/4 
+> Paso 4 de alta de servicio  
+> form: Confirmar Datos  
+> - visualización completa de datos ingresados
+> - visualización de trayecto en mapa
+> - confirmación crear servicio
+> - efectuar pago
+
+*pages/sending-create-4/sending-create-4.ts*
+
+    ngOnInit()
+        getSendingFromParams()
+        initMap()
+            inicializa mapa
+        initRouteDetails()
+        getRoute()
+            inicializa mapa
+            obtiene datos de trayecto
+            dibuja trayecto sugerido en mapa
+            setPrice()
+                establece precio en función de distancia aproximada
+
+    runCreate()
+        createSending()
+            guarda en DB
+            runPayment()
+                confirm
+                    push(CheckoutPage)
+
+            
    
 ---
