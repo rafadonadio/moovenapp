@@ -52,7 +52,7 @@ export class SendingCreatePage implements OnInit {
         this.objectType = this.formOne.controls['objectType'];
         this.objectNoValueDeclared = this.formOne.controls['objectNoValueDeclared'];
         this.objectDeclaredValue = this.formOne.controls['objectDeclaredValue'];
-
+        this.noValueToggle = false;
         // init data
         this.initSending();
     }

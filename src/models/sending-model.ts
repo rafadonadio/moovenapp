@@ -82,6 +82,18 @@ export const SENDING_CFG = {
             }
         }
     },
+    PRICE_LIST: {
+        BASIC: {
+            MIN_FARE: {
+                VALUE: 100
+            },
+            PER_DISTANCE: [
+                { ID:'0-25', GRTR_THAN:0, SMLR_OR_EQUAL:25, VALUE_PER_KM: 10 },
+                { ID:'25-50', GRTR_THAN:25, SMLR_OR_EQUAL:50, VALUE_PER_KM: 8 },
+                { ID:'50-10000', GRTR_THAN:50, SMLR_OR_EQUAL:10000, VALUE_PER_KM: 5 },
+            ]                 
+        }
+    }
 }
 
 export const NOTIFICATIONS_CFG = {
@@ -378,7 +390,8 @@ export class SendingRequest {
     timestamp: number;
     userUid: string;
     price: number;   
-    priceMinFareApplied: boolean;               
+    priceMinFareApplied: boolean;  
+    priceItems: Array<any>;             
     routeDistanceMt: number;
     routeDistanceKm: number;
     routeDistanceTxt: string;

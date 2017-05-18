@@ -231,6 +231,7 @@
 > form: Confirmar Datos  
 > - visualización completa de datos ingresados
 > - visualización de trayecto en mapa
+> - establecer precio del servicio
 > - confirmación crear servicio
 > - efectuar pago
 

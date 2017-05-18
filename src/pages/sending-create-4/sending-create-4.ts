@@ -1,3 +1,4 @@
+import { PriceService } from '../../providers/price-service/price-service';
 import { CheckoutPage } from '../checkout/checkout';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
@@ -10,9 +11,6 @@ import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 
-const MIN_FARE_PRICE_IN_ARS = 75;
-const PRICE_PER_KM_IN_ARS = 10;
-
 @Component({
     selector: 'page-sending-create-4',
     templateUrl: 'sending-create-4.html',
@@ -24,8 +22,10 @@ export class SendingCreate4Page implements OnInit {
     map: any;
     routeDetails: any;
     price = {
-        value:0,
-        minFareApplied: false,
+        value: 0,
+        applyMinFare: false,
+        items: [],
+        processedKms: 0
     };
     // when created
     sendingId:string;    
@@ -38,7 +38,8 @@ export class SendingCreate4Page implements OnInit {
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
         public sendingSrv: SendingService,
-        public gmapsSrv: GoogleMapsService) {
+        public gmapsSrv: GoogleMapsService,
+        public priceSrv: PriceService) {
     }
 
     ngOnInit() {
@@ -256,25 +257,14 @@ export class SendingCreate4Page implements OnInit {
      */
 
     private setPrice():void {
-        console.log('setSendingPrice > ', this.routeDetails.totalDistance.kms + ' * ' + PRICE_PER_KM_IN_ARS);
-        let price = 0;
-        let minFareApplied = false;
-        let result = this.routeDetails.totalDistance.kms * PRICE_PER_KM_IN_ARS;
-        console.log('setSendingPrice > ', this.routeDetails.totalDistance.kms + ' * ' + PRICE_PER_KM_IN_ARS + ' = ' + price);
-        let roundResult = Math.round(result);
-        if(roundResult < MIN_FARE_PRICE_IN_ARS) {
-            price = MIN_FARE_PRICE_IN_ARS;
-            minFareApplied = true;
-        }else{
-            price = roundResult;
-        }
-        this.price.value = price;
-        this.price.minFareApplied = minFareApplied;
+        console.log('setSendingPrice > ', this.routeDetails.totalDistance.kms);
+        this.price = this.priceSrv.setSendingPrice(this.routeDetails.totalDistance.kms);
     }
 
     private updateSendingPrice() {
         this.sending.price = this.price.value;
-        this.sending.priceMinFareApplied = this.price.minFareApplied; 
+        this.sending.priceMinFareApplied = this.price.applyMinFare; 
+        this.sending.priceItems = this.price.items;
     }
 
     private updateSendingRoute() {
