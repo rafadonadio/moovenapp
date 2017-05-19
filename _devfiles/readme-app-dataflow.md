@@ -286,7 +286,7 @@
     runCreate()
         createSending()
             alert()
-                confirmar
+                opc:confirmar
                     sendingSrv.register()
                         getSummary()
                         dbSrv.newSending()
@@ -295,9 +295,8 @@
                             updateSendingImage()
                         runPayment()
                             alert()
-                                pagar
+                                opc:pagar
                                     goToCheckout()
-
             
    
 ---
