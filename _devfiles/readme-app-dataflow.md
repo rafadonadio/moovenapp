@@ -263,11 +263,11 @@
 ### NUEVO SERVICIO - Paso 4/4 
 > Paso 4 de alta de servicio  
 > form: Confirmar Datos  
-> - visualización completa de datos ingresados
-> - visualización de trayecto en mapa
-> - establecer precio del servicio
-> - confirmación crear servicio
-> - efectuar pago
+> - visualización completa de servicio cargado
+> - visualización de trayecto dibujado en mapa
+> - calculo de precio del servicio
+> - confirmar crear servicio
+> - redirigir a Pagar (Checkout)
 
 *pages/sending-create-4/sending-create-4.ts*
 
