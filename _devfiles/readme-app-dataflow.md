@@ -69,7 +69,7 @@
 
 ---
 
-## **# Secciones**
+## **# SECCIONES**
 
 ---
 
@@ -161,7 +161,7 @@
                     notifications
                         email
                         localPush
-
+        
 
 ---
 
@@ -419,6 +419,41 @@
 
 
 ---
+
+
+
+
+---
+
+## **# CLOUD FUNCTIONS**
+#### Firebase Cloud Functions (CF)
+---
+
+### TRIGGER: verificación de dirección de correo 
+> Envía email de verificación
+> - se crea usuario con firebase.auth()
+> - CF dispara ejecución de exports.setUserVerifyEmail
+>   - crea y escribe token en DB
+>       /userVerifyEmailTokens/
+>       /userVerifyEmailTokensByUser/
+>   - envía email en español a user.email con link de validación   
+
+*functions/index.js*
+    setUserVerifyEmail()   
+
+*functions/services/user-email-validation.js*
+    set()
+        writeTokenData()
+                escribe en db
+            sendEmail()
+                envia email con link
+   
+---
+
+
+
+
+
 
 
 
