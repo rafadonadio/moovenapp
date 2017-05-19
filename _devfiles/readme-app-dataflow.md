@@ -21,10 +21,13 @@
 # **LOGIC/DATA FLOW**
 
 > IONIC APP: Usuario / Operador      
-  
-     
-     DATA LOGIC MAP
 
+---
+
+## **# DATA LOGIC MAP**
+
+---  
+     
      [Menu]
         SERVICIOS
             _+ (crear nuevo)
@@ -83,6 +86,11 @@
 
        
 
+---
+
+## **# Secciones**
+
+---
 
 ## **SIGN-UP**
 ### CREAR USUARIO
