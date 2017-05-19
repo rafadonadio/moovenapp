@@ -1,23 +1,4 @@
 
-### Pendientes
-- Nuevo Servicio - Paso 2    
-    - ingresar fecha  
-    - validar horario  
-- Nuevo Servicio - Paso 3  
-    - ingresar fecha  
-    - validar horario        
-- ~~Nuevo Servicio - Paso 4~~  
-    - ~~calculo precio~~
-- Varios  
-    - registrar cada acción de usuario  
-    - obtener datos marca/modelo del dispositivo del usuario
-- Ajustes  
-    - boton para cerrar aplicación
-    - notificaciones (locales/email) - revisar
-
----    
-
-
 # **LOGIC/DATA FLOW**
 
 > IONIC APP: Usuario / Operador      
@@ -344,8 +325,38 @@
 *pages/checkout/checkout.ts*
 
     ngOnInit()
-           
+        setUser();
+            setea user data
+        setCurrentDates();
+            setea fechas para usar con pago (vencimiento tarj)
+                current
+                    fecha actual
+                currentplus20
+                    hoy+20años
+        setDefaultDates();
+            setea fecha por defecto para vencimiento tarjeta (mes/año actual)
+        setSending();
+            setea sending con dato en param
+        initForm();
+            inicializa form
+        setGenericCreditCardImage();
+            setea imagen x defecto tarj
    
+    guessPaymentMethod()
+        valida nro de tarjeta ingresado y resuelve emisor
+    
+    runCheckout()
+        *  Method: runCheckout() > PAYMENT PROCESS STEPS
+        *  1. VERIFY: if form is valid, proceed or prompt error
+        *  2. TOKEN-DATA: generate Token Data (with form data) to request Card Token
+        *  3. CARD-TOKEN: create card token with MP API
+        *  4. PREPAYMENT-DATA: generate Pre-Payment data, with token id from step 3
+        *  5. PAY: create payment > send payment request to backend server (with MP SDK deployed)
+        *  6. UPDATE-DB AND PROMPT: update firebase DB with results > show message with results to user        
+
+
+
+
 ---
 
 

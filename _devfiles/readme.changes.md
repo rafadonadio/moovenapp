@@ -38,7 +38,29 @@
             email de validacion en español - usar mailgun
 
                 
-                
+
+### Pendientes
+- Nuevo Servicio - Paso 2    
+    - ingresar fecha  
+    - validar horario  
+- Nuevo Servicio - Paso 3  
+    - ingresar fecha  
+    - validar horario        
+- ~~Nuevo Servicio - Paso 4~~  
+    - ~~calculo precio~~
+- Checkout
+    - crear usuario MP
+    - guardar datos tarjeta en MP
+
+- Varios  
+    - registrar cada acción de usuario  
+    - obtener datos marca/modelo del dispositivo del usuario
+- Ajustes  
+    - boton para cerrar aplicación
+    - notificaciones (locales/email) - revisar
+
+--- 
+
 ### Registración
 
 - Providers  
@@ -178,12 +200,12 @@ ___
 #############
 # TO_DO
 #############
-    - sendings > item detail
-    - sendings > item en created_registered > habilitar boton de pago
-    - sendings > item en created_paid > habilitar boton de enable (en admin):
-    - sendings > item > live_inroute > set completed
-    - sendings > item > live > set canceled
-    - payment gateway > mercadopago
+- sendings > item detail
+- sendings > item en created_registered > habilitar boton de pago
+- sendings > item en created_paid > habilitar boton de enable (en admin):
+- sendings > item > live_inroute > set completed
+- sendings > item > live > set canceled
+- payment gateway > mercadopago
 
 - ajustes: 
      - validar número de móvil 
@@ -212,18 +234,17 @@ ___
 - OK__ nro de movil, no validar ahora       
 - OK__ Operador, Queres registrarte como Operador? Envíanos un email con tus datos a contacto@moovenapp.com
 - OK__ Validacion, usuario, email de validacion en español - (cloud function)
-
 - STBY__ BUG, al sacar foto de servicio, se cuelga y no guarda foto (en IOS)
 - page operador, cambiar texto por ganancia
-- PRECIO - precio variable por km total
-        tarifa minima $100
-        precio por km $10.-
-        primeros 25 - 10 x km     100
-        sig 26-50 - 8 x km        120
-                                  -------
-                                  332        
-        mas de 51 - 5 x km           
-        comision mooven 30%
+- OK__ PRECIO - precio variable por km total
+            tarifa minima $100
+            precio por km $10.-
+            primeros 25 - 10 x km     100
+            sig 26-50 - 8 x km        120
+                                    -------
+                                      332        
+            mas de 51 - 5 x km           
+            comision mooven 30%
 
 
 
