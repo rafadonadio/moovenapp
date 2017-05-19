@@ -24,6 +24,30 @@
   
      Menu
         SERVICIOS
+            _+ (crear nuevo)
+                Nuevo servicio (paso 1)
+                    _tomar foto
+                    _form_crear (descripcion, tipo, valor)
+                    _siguiente
+                Nuevo servicio (paso 2)
+                    _form_retiro (dirección, horario, contacto)
+                    _siguiente
+                Nuevo servicio (paso 3)
+                    _form_entrega (dirección, horario, contacto)
+                    _siguiente
+                Nuevo servicio (paso 4)
+                    visualización info cargada
+                    visualización mapa con trayecto dibujado
+                    calculo de precio servicio
+                    _confirmar
+                        crea servicio
+                        _ir a pagar
+                            redirige a checkout
+                        _volver a servicios
+                            opcíón para salir sin pagar
+                    _cancelar
+                        cancela el servicio cargado (aun no creado)
+                        y vuelve a lista servicios
 
         OPERADOR
         
