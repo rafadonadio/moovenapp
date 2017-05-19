@@ -1,28 +1,62 @@
 
 ### Pendientes
+- Nuevo Servicio - Paso 2    
+    - ingresar fecha  
+    - validar horario  
+- Nuevo Servicio - Paso 3  
+    - ingresar fecha  
+    - validar horario        
+- ~~Nuevo Servicio - Paso 4~~  
+    - ~~calculo precio~~
+- Varios  
+    - registrar cada acción de usuario  
+    - obtener datos marca/modelo del dispositivo del usuario
+- Ajustes  
+    - boton para cerrar aplicación
+    - notificaciones (locales/email) - revisar
 
-    - Varios
-        registrar cada acción de usuario
-        obtener datos marca/modelo del dispositivo del usuario
-
-    - Ajustes
-        boton para cerrar aplicación
-
-    - Nuevo Servicio - Paso 2
-        ingresar fecha
-        validar horario
-    - Nuevo Servicio - Paso 3
-        ingresar fecha
-        validar horario        
-    - Nuevo Servicio - Paso 4
-        calculo precio
-
+---    
 
 
 # **LOGIC/DATA FLOW**
 
 > IONIC APP: Usuario / Operador      
   
+     Menu
+        SERVICIOS
+
+        OPERADOR
+        
+        PAGOS
+        
+        HISTORIAL
+        
+        NOTIFICACIONES
+        
+        AYUDA
+        
+        AJUSTES
+            _tomar foto
+                modifica foto perfil
+            _popover
+                _Nombre y Apellido
+                    modificar 
+                _Dirección de email
+                    modificar
+                _Número de móvil     
+                    modificar
+            Perfiles
+                _actualizar
+                    actualiza vista estado perfil
+            Avisos
+                _toggle notificaciones locales  
+                    habilita / deshabilita notificaciones locales
+                _toggle email
+                    habilita / deshabilita notificaciones via email
+
+       
+
+
 ## **SIGN-UP**
 ### CREAR USUARIO
 > Form para crear usuario  
@@ -251,10 +285,18 @@
 
     runCreate()
         createSending()
-            guarda en DB
-            runPayment()
-                confirm
-                    push(CheckoutPage)
+            alert()
+                confirmar
+                    sendingSrv.register()
+                        getSummary()
+                        dbSrv.newSending()
+                        logNotifications()
+                        uploadSendingImage()
+                            updateSendingImage()
+                        runPayment()
+                            alert()
+                                pagar
+                                    goToCheckout()
 
             
    

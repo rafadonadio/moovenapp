@@ -25,7 +25,8 @@ export class PriceService {
             subtotal: 0,
             items: [],
         }
-        // run
+        // iterate through all ranges of price per km
+        // each range has a km price, and the total is the sum of all subtotals
         for(let index in ranges) {
             range = ranges[index];
             // calcKms

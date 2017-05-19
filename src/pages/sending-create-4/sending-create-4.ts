@@ -100,7 +100,7 @@ export class SendingCreate4Page implements OnInit {
                     text: 'Pagar',
                     handler: () => {
                         console.log('f4 > goTo Checkout');
-                        this.navCtrl.push(CheckoutPage, { sending: this.sending });
+                        this.goToCheckout();
                     }
                 }
             ]
@@ -158,9 +158,15 @@ export class SendingCreate4Page implements OnInit {
         alert.present();
     }    
 
+
+
     /**
      *  NAVIGATION
      */
+
+    private goToCheckout() {
+        this.navCtrl.push(CheckoutPage, { sending: this.sending });        
+    }
 
     private goBackToStep(step: number) {
         console.log('f4 > go to f' + step + ', include this.sending in params');
