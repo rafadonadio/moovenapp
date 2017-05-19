@@ -107,12 +107,12 @@
         form.valid  
             createUser()  
                 goTo > createAccountStep1()  
-                redirige a page para completar datos personales
+                    redirige a page para completar datos personales
             CF_Trigger 
                 (ver Cloud Functions)
                 user.onCreate()
-                dispara cloud function: setUserVerifyEmail
-                envia email de validación de correo electronico ingresado
+                    dispara cloud function: setUserVerifyEmail
+                    envia email de validación de correo electronico ingresado
 
 --- 
 
@@ -333,5 +333,35 @@
                                 opc:pagar
                                     goToCheckout()
             
+   
+---
+
+### CHECKOUT 
+> ingresar datos de tarjeta de crédito 
+> se crea pago con Mercadopago
+> - si hubiese un error, se devuelve con mensaje en alerta
+
+*pages/checkout/checkout.ts*
+
+    ngOnInit()
+           
+   
+---
+
+
+
+
+
+
+TEMPLATE
+---
+
+### lorem ipsum 
+> lorem ipsum  
+> -  lorem ipsum 
+
+*pages/yiytit/yorytort.ts*
+
+    ngOnInit()      
    
 ---
