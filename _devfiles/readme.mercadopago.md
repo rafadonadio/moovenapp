@@ -44,7 +44,7 @@ SECUENCIA DEL PAGO
         generar Card Token con MP API
             - API valida el correcto formarto de los campos de la tarjeta 
             - API devuelve errores con codigos
-            - procesar errores, armas mensajes humanos y mostrarlos
+            - procesar errores, armar mensajes humanos y mostrarlos
     4. PrePayment Data
         generar prepayment data con tokenId de paso 3.
         completar con datos del servicio para posterior referencia(external_reference, etc)

@@ -5,7 +5,7 @@
 
 ---
 
-## **# DATA LOGIC MAP**
+## **# MENU > LOGIC MAP**
 
 ---  
      
@@ -94,6 +94,8 @@
                 user.onCreate()
                     dispara cloud function: setUserVerifyEmail
                     envia email de validación de correo electronico ingresado
+            
+    
 
 --- 
 
@@ -122,6 +124,44 @@
         form.invalid || !TOS_accepted
             showError
         form.valid
+    
+    ________
+
+    FIREBASE AUTH
+        create user
+
+    FIREBASE DATABASE
+        userAccount
+            uid
+                ToS
+                    accepted
+                    acceptedTimestamp
+                    acceptedVersionId
+                    acceptedVersionTag
+                active
+                createdAt
+                deletedAt
+                profile
+                    data
+                        {email, firstname, ...}
+                    status
+                        basic
+                            {fieldsComplete, VerificationsComplete}
+                        operator
+                            {fieldsComplete, VerificationsComplete}
+                        sender
+                            {fieldsComplete, VerificationsComplete}
+                    verifications
+                        email
+                        legalIdentity
+                        phone
+                        residenceAddress
+                providerId
+                settings
+                    notifications
+                        email
+                        localPush
+
 
 ---
 
@@ -325,34 +365,55 @@
 *pages/checkout/checkout.ts*
 
     ngOnInit()
-        setUser();
+        setUser()
             setea user data
-        setCurrentDates();
+        setCurrentDates()
             setea fechas para usar con pago (vencimiento tarj)
                 current
                     fecha actual
                 currentplus20
                     hoy+20años
-        setDefaultDates();
+        setDefaultDates()
             setea fecha por defecto para vencimiento tarjeta (mes/año actual)
-        setSending();
+        setSending()
             setea sending con dato en param
-        initForm();
+        initForm()
             inicializa form
-        setGenericCreditCardImage();
+        setGenericCreditCardImage()
             setea imagen x defecto tarj
    
     guessPaymentMethod()
-        valida nro de tarjeta ingresado y resuelve emisor
+        valida nro de tarjeta ingresado con API y resuelve emisor
     
     runCheckout()
-        *  Method: runCheckout() > PAYMENT PROCESS STEPS
-        *  1. VERIFY: if form is valid, proceed or prompt error
-        *  2. TOKEN-DATA: generate Token Data (with form data) to request Card Token
-        *  3. CARD-TOKEN: create card token with MP API
-        *  4. PREPAYMENT-DATA: generate Pre-Payment data, with token id from step 3
-        *  5. PAY: create payment > send payment request to backend server (with MP SDK deployed)
-        *  6. UPDATE-DB AND PROMPT: update firebase DB with results > show message with results to user        
+        isFormValid()
+            valida campos completos form 
+                (cardNumber, securityCode, cardExpiration, 
+                cardHolderName, docNumber, docType, paymentMethodId)
+            setTokenData() 
+                setear datos para solicitar token
+            createCardToken()
+                crear card token (MP API)
+            validateCardTokenAndPay()
+                tokenHasError()
+                    true
+                        showCardTokenErrors()
+                            display errores al generar token (CardToken API)
+                            (errores previos al intento de pago)
+                    false
+                        createPayment()
+                                crear nuevo pago
+                            getPrepaymentData()
+                                setear datos para crear pago
+                            paySrv.checkoutMP()
+                                    solicita crear pago al server
+                                clearSessionMP()
+                                    // hack por si hay que repetir pago en caso de error
+                                saveResultAndShowAlert()
+                                    en función del resultado, muestra mensaje
+
+            
+     
 
 
 
