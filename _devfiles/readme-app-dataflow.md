@@ -469,21 +469,21 @@ FIREBASE
 ----------- | ---------- | -------
 CREATED | &nbsp; | Creado
  &nbsp; | registered | ha sido registrado correctamente. 
- &nbsp; | paid | el pago ha sido intentado, en proceso de confirmarse.
- &nbsp; | enabled | el pago esta confirmado, el servicio esta habilitado para ser tomado por un operador.
+ &nbsp; | paid | el pago ha sido intentado, en proceso de confirmarse.  
+ &nbsp; | enabled | el pago ha sido confirmado, el servicio queda habilitado para operar en Mooven.
 LIVE | &nbsp; | En vivo 
- &nbsp; | waitoperator | lorem   
- &nbsp; | gotoperator | lorem  
- &nbsp; | waitpickup | lorem  
- &nbsp; | pickedup | lorem  
- &nbsp; | inroute | lorem  
- &nbsp; | dropped | lorem  
+ &nbsp; | waitoperator | el servicio esta disponible para ser tomado por un operador.   
+ &nbsp; | gotoperator | el servicio ha sido tomado por un operador.
+ &nbsp; | waitpickup | el servicio esta en espera de ser retirado por el operador asignado. 
+ &nbsp; | pickedup | el servicio ha sido retirado por el operador.  
+ &nbsp; | inroute | el servicio esta en ruta hacia el destino.
+ &nbsp; | dropped | el servicio ha sido entregado en destino.
 CLOSED | &nbsp; | Cerrado
- &nbsp; | complete | lorem  
- &nbsp; | canceledbysender | lorem  
- &nbsp; | canceledbyoperator | lorem  
- &nbsp; | gotoperatorexpired | lorem
-  
+ &nbsp; | complete | el servicio ha sido completado satisfactoriamente.
+ &nbsp; | canceledbysender | el servicio ha sido cancelado por el solicitante.
+ &nbsp; | canceledbyoperator | el servicio ha sido cancelado por el operador.
+ &nbsp; | gotoperatorexpired | el servicio ha expirado antes de ser tomado por un operador.
+
 ---
 
 
