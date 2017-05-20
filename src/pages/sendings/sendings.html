@@ -36,19 +36,26 @@
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>
             <ion-item class="footer">
-                <ion-icon name="time" item-left [class.active]="item.data._currentStage_Status=='created_registered'">
+                <ion-icon name="time" item-left 
+                    [class.active]="item.data._currentStage_Status=='created_registered'">
                 </ion-icon>
-                <ion-icon name="card" item-left [class.active]="item.data._currentStage_Status=='created_paid'">
+                <ion-icon name="card" item-left 
+                    [class.active]="item.data._currentStage_Status=='created_paid'">
                 </ion-icon>                    
-                <ion-icon name="send" item-left [class.active]="item.data._currentStage_Status=='created_enabled' || item.data._currentStage_Status=='live_waitoperator'">
+                <ion-icon name="send" item-left 
+                    [class.active]="item.data._currentStage_Status=='created_enabled' || item.data._currentStage_Status=='live_waitoperator'">
                 </ion-icon>
-                <ion-icon name="home" item-left [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
+                <ion-icon name="home" item-left 
+                    [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
                 </ion-icon>
-                <ion-icon name="pin" item-left [class.active]="item.data._currentStage_Status=='live_inroute'">
+                <ion-icon name="pin" item-left 
+                    [class.active]="item.data._currentStage_Status=='live_pickedup' || item.data._currentStage_Status=='live_inroute' ">
                 </ion-icon>
-                <ion-icon name="checkmark-circle" item-left [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
+                <ion-icon name="checkmark-circle" item-left 
+                    [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
                 </ion-icon>
-                <ion-icon name="alert" item-left [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
+                <ion-icon name="alert" item-left 
+                    [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
                 </ion-icon>
                 <ion-note 
                     *ngIf="getStatusMessage(item.data._currentStage_Status).mode=='note'"
