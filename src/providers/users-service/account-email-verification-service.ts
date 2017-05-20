@@ -6,6 +6,7 @@ import firebase from 'firebase';
 // firebase references
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
 const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
+const EMAIL_VERIFIY_RESEND = '/userVerifyEmailResend/';
 
 @Injectable()
 export class AccountEmailVerificationService {
@@ -14,9 +15,20 @@ export class AccountEmailVerificationService {
 
     constructor() {}
 
-    resend(user:firebase.User) {
-        console.info('resend user email verification');
-        // TO-DO
+    // resend email verification
+    // writes to list in DB to trigger CF that runs the email sending
+    resend(user:firebase.User): firebase.Promise<any> {
+        console.info('emailVerification:resend');
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let key = this.dbRef.child(EMAIL_VERIFIY_RESEND).push().key;
+        let data = {
+            userId: user.uid,
+            timestamp: timestamp 
+        }
+        let updates = {};
+        // push to list, to trigger CF
+        updates[`${EMAIL_VERIFIY_RESEND}/${key}`] = data;
+        return this.dbRef.update(updates);
     }
 
     setVerified(fbuser:firebase.User): firebase.Promise<any> {

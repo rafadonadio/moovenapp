@@ -2,8 +2,9 @@
 # **LOGIC/DATA FLOW**
 
 > IONIC APP: Usuario / Operador      
-
----
+  
+&nbsp;  
+&nbsp;  
 
 ## **# MENU > LOGIC MAP**
 
@@ -103,35 +104,8 @@ FIREBASE
     DATABASE
         userAccount
             uid
-                ToS
-                    accepted
-                    acceptedTimestamp
-                    acceptedVersionId
-                    acceptedVersionTag
-                active
-                createdAt
-                deletedAt
-                profile
-                    data
-                        {email, firstname, ...}
-                    status
-                        basic
-                            {fieldsComplete, VerificationsComplete}
-                        operator
-                            {fieldsComplete, VerificationsComplete}
-                        sender
-                            {fieldsComplete, VerificationsComplete}
-                    verifications
-                        email
-                        legalIdentity
-                        phone
-                        residenceAddress
-                providerId
-                settings
-                    notifications
-                        email
-                        localPush
-    
+                (user account node)
+   
     CLOUD FUNCTIONS
         functions.auth.user().onCreate()
             setUserVerifyEmail()
@@ -459,7 +433,6 @@ FIREBASE
             sendEmail()
                 envia email con link
    
----
 
 ---
 
@@ -504,13 +477,109 @@ live_dropped        | LIVE      | dropped       | checkmark-circle | Entregado
 closed_completed    | CLOSED    | completed     | checkmark-circle | Entregado
 closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
+
+&nbsp;  
+&nbsp; 
+&nbsp;  
+&nbsp; 
+
+
 ---
 
+## **# DATABASE: TREE**
+
+> userAccount
+
+        userAccount
+            uid 
+                ToS
+                    accepted
+                    acceptedTimestamp
+                    acceptedVersionId
+                    acceptedVersionTag
+                    history
+                        uid
+                            timestamp
+                            versionId
+                active
+                createdAt
+                deletedAt
+                profile
+                    data
+                        dateBirth
+                        email
+                        emailOnChange
+                        firstName
+                        lastName
+                        legalIdentityNumber
+                        phoneMobile
+                        phonePrefix
+                        photoPath
+                        photoURL
+                        residenceAddress
+                        residenceAddressL2
+                        residenceCity
+                        residenceCountry
+                    status
+                        basic
+                            fieldsComplete
+                            VerificationsComplete
+                        operator
+                            fieldsComplete
+                            VerificationsComplete
+                        sender
+                            fieldsComplete
+                            VerificationsComplete
+                    verifications
+                        email
+                            verified
+                            verifiedAddress
+                            verifiedTimestamp
+                        legalIdentity
+                            imageURL
+                            verified
+                            verifiedBy
+                            verifiedNumber
+                            verifiedTimestamp
+                        phone
+                            verified
+                            verifiedNumber
+                            verifiedTimestamp
+                        residenceAddress
+                            imageUrl
+                            verified
+                            verifiedAddress
+                            verifiedBy
+                            verifiedTimestamp
+                providerId
+                settings
+                    notifications
+                        email
+                        localPush
+&nbsp;
+> userVerifyEmailTokens
+
+    userVerifyEmailTokens
+        tokenId
+            email
+            expire
+            token
+            uid     (userId)
+            used
+
+&nbsp;
+> userVerifyEmailTokensByUser
+
+    userVerifyEmailTokensByUser
+        uid (userId)
+            tokenId
+                timestamp
+                token
+                uid     (userId)
 
 
-
-
-
+&nbsp;
+userVerifyEmailTokens
 
 
 

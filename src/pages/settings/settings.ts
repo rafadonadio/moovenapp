@@ -42,25 +42,98 @@ export class SettingsPage implements OnInit{
         this.setAccountData();
     }
 
-    doRefresh(refresher) {
-        console.log('Begin async operation', refresher);
-        this.setAccountData();
-        setTimeout(() => {
-            console.log('Async operation has ended');
-            refresher.complete();
-        }, 2000);
+    doRefresh(refresher):void {
+        this.refreshData(refresher);
     }
 
-    updateUserProfileStatus() {
-        this.users.updateUserProfileStatus()
-            .then(() => {
-                console.log('status updated');
-                this.setAccountData(); 
-            })
-            .catch(error => console.log(error));
+    updateUserProfileStatus():void {
+        this.updateProfileStatus();
     }
-    
-    presentPopover(myEvent) {
+
+    presentPopover(myEvent):void {
+        this.openPopover(myEvent);
+    }
+
+    reverifyEmail() {
+        this.confirmReverifyEmail();
+    }
+
+    updateNotifications() {
+        this.updateNotificationSettings();
+    }
+
+    signOut() {
+        this.userSignout();
+    }
+
+    updatePicture() {
+        this.takePictureAndUpdate();
+    }
+
+    /**
+     * ----------------
+     * PRIVATE METHODS
+     * ----------------
+     */
+
+    private confirmReverifyEmail() {
+        let alert = this.alertCtrl.create({
+            title: 'Validar Email',
+            message: 'Si aun no has recibido un correo electrónico con un link para validar tu dirección de email, prueba reenviarlo.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        //console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: 'Reenviar',
+                    handler: () => {
+                        this.resendEmailVerification();
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
+    private resendEmailVerification() {
+        this.users.resendEmailVerification()
+            .then((result) => {
+                console.log('resend', result);
+            })
+            .catch((error) => {
+                console.error('resend', error);
+            });
+    }
+
+    private userSignout() {
+        // loader effect
+        let loader = this.loadingCtrl.create({
+            content: 'Cerrando sesión ...',
+        });
+        loader.present();
+        setTimeout(() => {
+            this.users.signOut();
+            this.navCtrl.setRoot(StartPage);
+        }, 1000);
+
+        setTimeout(() => {
+            loader.dismiss();
+        }, 3000); 
+    }
+
+    private updateNotificationSettings() {
+        this.users.updateAccountSettingsNotifications(this.notificationSettings)
+            .then(() => {
+                console.log('updateAccountSettingsNotifications > success');
+            })
+            .catch((error) => console.log('error', error));  
+    }
+
+    private openPopover(myEvent:any):void {
         let popover = this.popoverCtrl.create(SettingsPopoverPage, { 
             profData: this.profData
         });
@@ -76,101 +149,26 @@ export class SettingsPage implements OnInit{
                     self.setAccountData();
                 }
             }
-        });      
+        });    
     }
 
-    /**
-     *  SETTINGS
-     */
-
-    updateNotificationSettings(e) {
-        this.users.updateAccountSettingsNotifications(this.notificationSettings)
+    private updateProfileStatus():void {
+        this.users.updateUserProfileStatus()
             .then(() => {
-                console.log('updateAccountSettingsNotifications > success');
+                console.log('status updated');
+                this.setAccountData(); 
             })
-            .catch((error) => console.log('error', error));  
+            .catch(error => console.log(error));
     }
 
-    /**
-     * Take picture and save imageData
-     */
-    updatePicture() {
-        console.info('settings > updatePicture');
-        let steps = {
-            get: false,
-            upload: false,
-            update: false
-        }
-        Camera.getPicture({
-            quality: 95,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: Camera.PictureSourceType.CAMERA,
-            allowEdit: true,
-            encodingType: Camera.EncodingType.JPEG,
-            targetWidth: 900,
-            targetHeight: 900,
-            saveToPhotoAlbum: true,
-            correctOrientation: true
-        })
-        .then((imageData) => {
-            console.log('updatePicture > getPicture > success');
-            steps.get = true;
-            let base64Image: string;
-            base64Image = "data:image/jpeg;base64," + imageData;
-            return this.uploadProfileImage(base64Image);
-        })
-        .then((snapshot) => {
-            console.log('updatePicture > uploadProfileImage > success');
-            steps.upload = true;
-            let downloadURL = snapshot.downloadURL;
-            let fullPath = snapshot.ref.fullPath;
-            return this.users.updateAccountImage(downloadURL, fullPath);
-        })        
-        .then((result) => {
-            steps.update = true;
-            console.log('updatePicture > updateAccountImage > success', steps);
-            let toast = this.toastCtrl.create({
-                message: 'Tu foto de perfil fue actualizada!',
-                duration: 3000,
-                position: 'top'
-            });
-            toast.present();
-            toast.dismiss()
-                .then(() => {
-                    this.setAccountData();
-                })
-                .catch((error) => console.log('error', error));  
-        })
-        .catch((error) => {
-            console.log('updatePicture > error > ' + error, steps);
-            let alert = this.alertCtrl.create({
-                title: 'Error',
-                subTitle: 'Ocurrió un error, por favor vuelve a intentarlo',
-                buttons: ['Cerrar']
-            });
-            alert.present();
-        });
-    }
-
-    signOut() {
-        // loader effect
-        let loader = this.loadingCtrl.create({
-            content: 'Cerrando sesión ...',
-        });
-        loader.present();
+    private refreshData(refresher):void {
+        console.log('Begin async operation', refresher);
+        this.setAccountData();
         setTimeout(() => {
-            this.users.signOut();
-            this.navCtrl.setRoot(StartPage);
-        }, 1000);
-
-        setTimeout(() => {
-            loader.dismiss();
-        }, 3000);        
+            console.log('Async operation has ended');
+            refresher.complete();
+        }, 2000);
     }
-
-    /**
-     *  PRIVATE METHODS
-     */
 
     private uploadProfileImage(imageData: string): Promise<any> {
         console.group('uploadProfileImage');
@@ -269,4 +267,63 @@ export class SettingsPage implements OnInit{
         // enable
         this.accountSettingsDisabled = false;
     }
+
+    private takePictureAndUpdate() {
+        console.info('settings > updatePicture');
+        let steps = {
+            get: false,
+            upload: false,
+            update: false
+        }
+        Camera.getPicture({
+            quality: 95,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            allowEdit: true,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: 900,
+            targetHeight: 900,
+            saveToPhotoAlbum: true,
+            correctOrientation: true
+        })
+        .then((imageData) => {
+            console.log('updatePicture > getPicture > success');
+            steps.get = true;
+            let base64Image: string;
+            base64Image = "data:image/jpeg;base64," + imageData;
+            return this.uploadProfileImage(base64Image);
+        })
+        .then((snapshot) => {
+            console.log('updatePicture > uploadProfileImage > success');
+            steps.upload = true;
+            let downloadURL = snapshot.downloadURL;
+            let fullPath = snapshot.ref.fullPath;
+            return this.users.updateAccountImage(downloadURL, fullPath);
+        })        
+        .then((result) => {
+            steps.update = true;
+            console.log('updatePicture > updateAccountImage > success', steps);
+            let toast = this.toastCtrl.create({
+                message: 'Tu foto de perfil fue actualizada!',
+                duration: 3000,
+                position: 'top'
+            });
+            toast.present();
+            toast.dismiss()
+                .then(() => {
+                    this.setAccountData();
+                })
+                .catch((error) => console.log('error', error));  
+        })
+        .catch((error) => {
+            console.log('updatePicture > error > ' + error, steps);
+            let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'Ocurrió un error, por favor vuelve a intentarlo',
+                buttons: ['Cerrar']
+            });
+            alert.present();
+        });
+    }
+
 }

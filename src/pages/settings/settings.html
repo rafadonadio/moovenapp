@@ -30,8 +30,12 @@
         <ion-item>
             <ion-icon name='mail' item-left></ion-icon>
             <h3>{{ profData?.email }}</h3>
+            <!-- not validated yet -->
             <p [hidden]="profVrfs?.email.verified==true">Validar</p>
-            <ion-icon name="alert" item-right color="sublight" [hidden]="profVrfs?.email.verified==true"></ion-icon>
+            <button ion-button item-right color="dark" 
+                 [hidden]="profVrfs?.email.verified==true"
+                (click)="reverifyEmail()">Validar</button>
+            <!-- validated -->
             <p [hidden]="profVrfs?.email.verified==false">Validado</p>
             <ion-icon name="checkmark" item-right [hidden]="profVrfs?.email.verified==false"></ion-icon>
         </ion-item>
@@ -76,14 +80,21 @@
             Avisos
         </ion-item-divider>
         <ion-item>
-            <ion-toggle [(ngModel)]="notificationSettings.localPush" [disabled]="accountSettingsDisabled" (ionChange)="updateNotificationSettings($event)" color="subdark"></ion-toggle>
+            <ion-toggle 
+                [(ngModel)]="notificationSettings.localPush" 
+                [disabled]="accountSettingsDisabled" 
+                (ionChange)="updateNotifications()" 
+                color="subdark"></ion-toggle>
             <ion-label>
                 Via notificaciones locales
             </ion-label>
             <ion-icon name='notifications' item-left></ion-icon>
         </ion-item>
         <ion-item>
-            <ion-toggle [(ngModel)]="notificationSettings.email" [disabled]="accountSettingsDisabled" (ionChange)="updateNotificationSettings($event)" color="subdark"></ion-toggle>
+            <ion-toggle 
+                [(ngModel)]="notificationSettings.email" 
+                [disabled]="accountSettingsDisabled" 
+                (ionChange)="updateNotifications()" color="subdark"></ion-toggle>
             <ion-label>
                 Via email
             </ion-label>

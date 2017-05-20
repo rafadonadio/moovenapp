@@ -264,9 +264,9 @@ export class UsersService {
      */
 
     // trigger email verification process
-    resendVerification(): void {
+    resendEmailVerification(): firebase.Promise<any> {
         let user:firebase.User = this.getUser();
-        this.emailVerification.resend(user);
+        return this.emailVerification.resend(user);
     }
 
     // run email verification
