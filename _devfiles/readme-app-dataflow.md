@@ -95,42 +95,12 @@
                     dispara cloud function: setUserVerifyEmail
                     envia email de validación de correo electronico ingresado
             
-    
+FIREBASE
 
---- 
-
-### CREAR USUARIO > STEP 2
-> Crear usuario paso 2  
-> Este paso es forzado, si el usuario sale antes de completar, al loguerse nuevamente se redirige a esta pantalla.
-> Solo puede salir de esta pantalla completando los datos requeridos.
->   
-> Form para datos adicionales del usuario:    
->  - nombre  
->  - apellido  
->  - telefono  
->  - foto perfil (opcional)
->  - ver y aceptar TOS   
-
-*pages/signup-merge/signup-merge.ts*
-
-    uploadPicture()
-        getPicture()
-            toma foto con camara de movil
-        uploadProfileImage()
-            guarda foto en storage 
-        updateAccountImage()
-            actualiza perfil
-    submit()
-        form.invalid || !TOS_accepted
-            showError
-        form.valid
-    
-    ________
-
-    FIREBASE AUTH
+    AUTH
         create user
 
-    FIREBASE DATABASE
+    DATABASE
         userAccount
             uid
                 ToS
@@ -161,7 +131,40 @@
                     notifications
                         email
                         localPush
-        
+    
+    CLOUD FUNCTIONS
+        functions.auth.user().onCreate()
+            setUserVerifyEmail()
+
+
+--- 
+
+### CREAR USUARIO > STEP 2
+> Crear usuario paso 2  
+> Este paso es forzado, si el usuario sale antes de completar, al loguerse nuevamente se redirige a esta pantalla.
+> Solo puede salir de esta pantalla completando los datos requeridos.
+>   
+> Form para datos adicionales del usuario:    
+>  - nombre  
+>  - apellido  
+>  - telefono  
+>  - foto perfil (opcional)
+>  - ver y aceptar TOS   
+
+*pages/signup-merge/signup-merge.ts*
+
+    uploadPicture()
+        getPicture()
+            toma foto con camara de movil
+        uploadProfileImage()
+            guarda foto en storage 
+        updateAccountImage()
+            actualiza perfil
+    submit()
+        form.invalid || !TOS_accepted
+            showError
+        form.valid 
+
 
 ---
 
@@ -340,9 +343,9 @@
                 establece precio en función de distancia aproximada
 
     runCreate()
-        createSending()
-            alert()
-                opc:confirmar
+        create()
+            opc:confirmar
+                createSending()
                     sendingSrv.register()
                         getSummary()
                         dbSrv.newSending()
@@ -354,7 +357,11 @@
                                 opc:pagar
                                     goToCheckout()
             
-   
+FIREBASE
+
+    DATABASE
+
+
 ---
 
 ### CHECKOUT 
@@ -402,13 +409,15 @@
                             (errores previos al intento de pago)
                     false
                         createPayment()
-                                crear nuevo pago
+                                crear pago
                             getPrepaymentData()
                                 setear datos para crear pago
                             paySrv.checkoutMP()
-                                    solicita crear pago al server
+                                    hacer pago (envia solicitud a server)
                                 clearSessionMP()
                                     // hack por si hay que repetir pago en caso de error
+                                getPaymentResultState() 
+                                    setea estado del pago en función de respuesta
                                 saveResultAndShowAlert()
                                     en función del resultado, muestra mensaje
 
@@ -418,7 +427,7 @@
 
 
 
----
+
 
 
 
@@ -452,7 +461,21 @@
    
 ---
 
+---
 
+## **# SERVICIO: ETAPAS Y ESTADOS**
+
+**STAGES**  | **STATES** | Detalle
+----------- | ---------- | -------
+CREATED |            | Creado  
+        | registered | ha sido registrado correctamente. 
+        | paid       | el pago ha sido intentado, en proceso de confirmarse.
+        | enabled    | el pago esta confirmado, el servicio esta habilitado para ser tomado por un operador.
+LIVE    |            |
+        |            |   
+CLOSED  |            |
+
+---
 
 
 

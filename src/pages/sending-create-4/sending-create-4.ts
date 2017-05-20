@@ -56,11 +56,69 @@ export class SendingCreate4Page implements OnInit {
      *  MAIN ACTIONS
      */
 
+    runCreate() {
+        this.create();
+    }
+
+    runPayment() {
+        this.pay();
+    }
+
     goBack(step: number): void {
         this.goBackToStep(step);
     }
 
-    runCreate() {
+    cancelSending() {
+        this.cancel();
+    }
+
+    goToListing() {
+        this.confirmGoToListing();
+    }    
+
+    /**
+     * ----------------
+     *  PRIVATE METHODS
+     * ----------------
+     */
+
+    /**
+     *  PAYMENT
+     */
+
+    private pay() {
+        let alert = this.alertCtrl.create({
+            title: 'Pago',
+            message: 'Proceder con el el pago de $' + this.sending.price + ' para confirmar el servicio.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > submit > confirm > canceled');
+                    }
+                },
+                {
+                    text: 'Pagar',
+                    handler: () => {
+                        console.log('f4 > goTo Checkout');
+                        this.goToCheckout();
+                    }
+                }
+            ]
+        });
+        alert.present();  
+    }
+
+    private goToCheckout() {
+        this.navCtrl.push(CheckoutPage, { sending: this.sending });        
+    }
+
+    /**
+     *  CREATE
+     */
+
+    private create() {
         let alert = this.alertCtrl.create({
             title: 'Nuevo Servicio',
             message: 'Confirmo que los datos ingresados estan correctos y deseo crear un nuevo servicio',
@@ -83,113 +141,6 @@ export class SendingCreate4Page implements OnInit {
         });
         alert.present();
     }
-
-    runPayment() {
-        let alert = this.alertCtrl.create({
-            title: 'Pago',
-            message: 'Proceder con el el pago de $' + this.sending.price + ' para confirmar el servicio.',
-            buttons: [
-                {
-                    text: 'Cancelar',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('f4 > submit > confirm > canceled');
-                    }
-                },
-                {
-                    text: 'Pagar',
-                    handler: () => {
-                        console.log('f4 > goTo Checkout');
-                        this.goToCheckout();
-                    }
-                }
-            ]
-        });
-        alert.present();        
-    }
-
-    cancelSending() {
-        let alert = this.alertCtrl.create({
-            title: '¿Cancelar Envío?',
-            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
-            buttons: [
-                {
-                    text: 'No',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('f4 > cancel form > no, continue');
-
-                    }
-                },
-                {
-                    text: 'Si',
-                    handler: () => {
-                        console.log('f4 > cancel form > yes, cancel');
-                        this.navCtrl.setRoot(SendingsPage);
-                    }
-                }
-            ]
-        });
-        alert.present();
-    }
-
-    goToSendings() {
-        let alert = this.alertCtrl.create({
-            title: 'Volver al listado?',
-            message: 'El servicio esta creado y puedes finalizar el pago luego, hasta una hora antes de la hora de retiro.',
-            buttons: [
-                {
-                    text: 'No',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('f4 > cancel form > no, continue');
-
-                    }
-                },
-                {
-                    text: 'Si, volver',
-                    handler: () => {
-                        console.log('f4 > cancel form > yes, cancel');
-                        this.navCtrl.setRoot(SendingsPage);
-                    }
-                }
-            ]
-        });
-        alert.present();
-    }    
-
-
-
-    /**
-     *  NAVIGATION
-     */
-
-    private goToCheckout() {
-        this.navCtrl.push(CheckoutPage, { sending: this.sending });        
-    }
-
-    private goBackToStep(step: number) {
-        console.log('f4 > go to f' + step + ', include this.sending in params');
-        let page: any;
-        switch (step) {
-            case 1:
-                page = SendingCreatePage;
-                break;
-            case 2:
-                page = SendingCreate2Page;
-                break;
-            case 3:
-                page = SendingCreate3Page;
-                break;
-        }
-        this.navCtrl.setRoot(page, {
-            sending: this.sending
-        });
-    }
-
-    /**
-     *  DATA
-     */
 
     private createSending() {
         console.info('f4 > createSending > start');
@@ -226,6 +177,87 @@ export class SendingCreate4Page implements OnInit {
                     });
             });
     }
+
+    private cancel() {
+        let alert = this.alertCtrl.create({
+            title: '¿Cancelar Envío?',
+            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > cancel form > no, continue');
+
+                    }
+                },
+                {
+                    text: 'Si',
+                    handler: () => {
+                        console.log('f4 > cancel form > yes, cancel');
+                        this.goToSendings();
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
+    /**
+     *  NAVIGATION
+     */
+
+    private confirmGoToListing() {
+        let alert = this.alertCtrl.create({
+            title: 'Volver al listado?',
+            message: 'El servicio esta creado y puedes finalizar el pago luego, hasta una hora antes de la hora de retiro.',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('f4 > cancel form > no, continue');
+
+                    }
+                },
+                {
+                    text: 'Si, volver',
+                    handler: () => {
+                        console.log('f4 > cancel form > yes, cancel');
+                        this.navCtrl.setRoot(SendingsPage);
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
+    private goBackToStep(step: number) {
+        console.log('f4 > go to f' + step + ', include this.sending in params');
+        let page: any;
+        switch (step) {
+            case 1:
+                page = SendingCreatePage;
+                break;
+            case 2:
+                page = SendingCreate2Page;
+                break;
+            case 3:
+                page = SendingCreate3Page;
+                break;
+        }
+        this.navCtrl.setRoot(page, {
+            sending: this.sending
+        });
+    }
+
+    private goToSendings() {
+        this.navCtrl.setRoot(SendingsPage);        
+    }
+
+    /**
+     *  DATA
+     */
 
     private getRoute() {
         console.info('f4 > getRoute > init');
