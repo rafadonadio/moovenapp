@@ -467,14 +467,23 @@ FIREBASE
 
 **STAGES**  | **STATES** | Detalle
 ----------- | ---------- | -------
-CREATED |            | Creado  
-        | registered | ha sido registrado correctamente. 
-        | paid       | el pago ha sido intentado, en proceso de confirmarse.
-        | enabled    | el pago esta confirmado, el servicio esta habilitado para ser tomado por un operador.
-LIVE    |            |
-        |            |   
-CLOSED  |            |
-
+CREATED | &nbsp; | Creado
+ &nbsp; | registered | ha sido registrado correctamente. 
+ &nbsp; | paid | el pago ha sido intentado, en proceso de confirmarse.
+ &nbsp; | enabled | el pago esta confirmado, el servicio esta habilitado para ser tomado por un operador.
+LIVE | &nbsp; | En vivo 
+ &nbsp; | waitoperator | lorem   
+ &nbsp; | gotoperator | lorem  
+ &nbsp; | waitpickup | lorem  
+ &nbsp; | pickedup | lorem  
+ &nbsp; | inroute | lorem  
+ &nbsp; | dropped | lorem  
+CLOSED | &nbsp; | Cerrado
+ &nbsp; | complete | lorem  
+ &nbsp; | canceledbysender | lorem  
+ &nbsp; | canceledbyoperator | lorem  
+ &nbsp; | gotoperatorexpired | lorem
+  
 ---
 
 
