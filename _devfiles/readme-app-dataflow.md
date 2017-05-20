@@ -427,7 +427,15 @@ FIREBASE
 ## **# CLOUD FUNCTIONS**
 ### Firebase Cloud Functions (CF)
 
-> &nbsp;
+&nbsp;
+
+> Main file  
+> *functions/index.js*
+
+    setUserVerifyEmail()   
+
+&nbsp;    
+
 > ### **Trigger: On User Create** 
 > **Verificación de dirección de correo del usuario**   
 > Envía email de verificación
@@ -441,9 +449,7 @@ FIREBASE
 
 &nbsp;
 
-*functions/index.js*
 
-    setUserVerifyEmail()   
 
 *functions/services/user-email-validation.js*
 
@@ -482,8 +488,9 @@ CLOSED | &nbsp; | Cerrado
 &nbsp;  
 &nbsp;  
 
-> ### Display de estado
-> Etapa/estado combinado visualizado mediante icono en pantalla "Servicios".
+> ### **Display de estado**
+> Etapa/estado combinado visualizado mediante icono en pantalla "Servicios".  
+> &nbsp;  
 
 **DISPLAY COMBINADO**  | Stage  | Status        | Icono | Texto
 ---------------------- | ------ | ------------- | ----- | -----
@@ -499,6 +506,14 @@ live_dropped        | LIVE      | dropped       | checkmark-circle | Entregado
 closed_completed    | CLOSED    | completed     | checkmark-circle | Entregado
 closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
+
+&nbsp;  
+&nbsp;  
+
+---
+## **# SERVICIO: LIFE CYCLE**
+
+![life-cycle](service-lifecycle.png)
 
 &nbsp;  
 &nbsp;  
