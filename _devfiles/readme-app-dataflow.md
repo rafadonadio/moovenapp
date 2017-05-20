@@ -75,7 +75,6 @@
 ## **# SECCIONES**
 
 &nbsp;  
-> &nbsp;
 > ### **SIGN-UP**
 > ### **Crear Usuario** > Paso 1
 > Form para crear usuario  
@@ -116,10 +115,9 @@ FIREBASE
         functions.auth.user().onCreate()
             setUserVerifyEmail()
 
+&nbsp; 
 
 --- 
-
-> &nbsp;
 > ### **SIGN-UP**
 > ### **Crear Usuario** > Paso 2
 > Este paso es forzado a completarse, si el usuario sale antes de completar, al loguerse nuevamente se redirige a esta pantalla.
@@ -149,9 +147,9 @@ FIREBASE
             showError
         form.valid 
 
+&nbsp; 
 
 ---
-> &nbsp;
 > ### **AJUSTES**  
 > Pagina de ajuste y visualización de datos del usuario.  
 > Visualizar:  
@@ -192,14 +190,14 @@ FIREBASE
     signOut()
         desloguearse
 
----
+&nbsp; 
 
-> &nbsp;  
+---
 > ## **SERVICIOS**
 > &nbsp;  
 
+&nbsp; 
 
-> &nbsp;  
 > ### **Nuevo Servicio** > Paso 1/4
 > Paso 1 de alta de servicio  
 > form:  
@@ -247,15 +245,16 @@ FIREBASE
                     redirige a paso 2
                     envia datos guardados en parametro   
 
----
+&nbsp; 
 
-> &nbsp;  
+--- 
 > ### **Nuevo Servicio** > Paso 2/4
 > Paso 2 de alta de servicio  
 > form:  
 > - dirección de retiro
 > - banda horaria de Retiro
-> - contacto para retiro
+> - contacto para retiro  
+>  &nbsp; 
 
 *pages/sending-create/sending-create.ts*
 
@@ -280,9 +279,9 @@ FIREBASE
                 guarda datos en app
             gotoNextStep()
    
----
+&nbsp;    
 
-> &nbsp;  
+---
 > ### **Nuevo Servicio** > Paso 3/4
 > Paso 3 de alta de servicio  
 > form: Datos de la Entrega  
@@ -312,10 +311,10 @@ FIREBASE
             update()
                 guarda datos en app
             gotoNextStep()
-   
----
 
-> &nbsp;  
+&nbsp; 
+
+---
 > ### **Nuevo Servicio** > Paso 4/4 
 > Paso 4 de alta de servicio  
 > form: Confirmar Datos  
@@ -357,10 +356,9 @@ FIREBASE
                                 opc:pagar
                                     goToCheckout()
 
-
+&nbsp;  
 
 ---
-> &nbsp;
 > ### **CHECKOUT**
 > 
 > ingresar datos de tarjeta de crédito 
