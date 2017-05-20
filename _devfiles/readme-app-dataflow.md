@@ -484,6 +484,26 @@ CLOSED | &nbsp; | Cerrado
  &nbsp; | canceledbyoperator | el servicio ha sido cancelado por el operador.
  &nbsp; | gotoperatorexpired | el servicio ha expirado antes de ser tomado por un operador.
 
+&nbsp;  
+&nbsp;  
+
+> ### Display de estado
+> Etapa/estado combinado visualizado mediante icono en pantalla "Servicios".
+
+**DISPLAY COMBINADO**  | Stage  | Status        | Icono | Texto
+---------------------- | ------ | ------------- | ----- | -----
+created_registered  | CREATED   | registered    | time  | boton PAGAR
+created_paid        | CREATED   | paid          | card | Verificando pago
+created_enabled     | CREATED   | enabled       | send | Aguardar Operador
+live_waitoperator   | LIVE      | waitoperator  | send | Aguardar Operador
+live_gotoperator    | LIVE      | gotoperator   | home | Aguardar Retiro
+live_waitpickup     | LIVE      | waitpickup    | home | Aguardar Retiro
+live_pickedup       | LIVE      | pickedup      | pin | En transito
+live_inroute        | LIVE      | inroute       | pin | En transito
+live_dropped        | LIVE      | dropped       | checkmark-circle | Entregado 
+closed_completed    | CLOSED    | completed     | checkmark-circle | Entregado
+closed_canceledbysender | CLOSED | canceledbysender | alert | --
+closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
 ---
 
 
