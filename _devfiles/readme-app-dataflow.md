@@ -1,16 +1,16 @@
 
 # **LOGIC/DATA FLOW**
 
-> IONIC APP: Usuario / Operador      
+> IONIC APP  
+> Usuario servicio / Operador      
   
 &nbsp;  
 &nbsp;  
 
-## **# MENU > LOGIC MAP**
+---
+## **# MENU** > SITEMAP
 
----  
-     
-     [Menu]
+    [Menu]
         SERVICIOS
             _+ (crear nuevo)
                 Nuevo servicio (paso 1)
@@ -68,20 +68,26 @@
 
        
 
----
+&nbsp;  
+&nbsp;  
 
+---
 ## **# SECCIONES**
 
----
-
-## **SIGN-UP**
-### CREAR USUARIO
+&nbsp;  
+> &nbsp;
+> ### **SIGN-UP**
+> ### **Crear Usuario** > Paso 1
 > Form para crear usuario  
 > Datos de registro:
 >  - email 
 >  - contraseña  
+> &nbsp;
+
+&nbsp;
 
 *pages/signup/signup.ts*  
+
     
     submit()  
         form.invalid  
@@ -113,9 +119,10 @@ FIREBASE
 
 --- 
 
-### CREAR USUARIO > STEP 2
-> Crear usuario paso 2  
-> Este paso es forzado, si el usuario sale antes de completar, al loguerse nuevamente se redirige a esta pantalla.
+> &nbsp;
+> ### **SIGN-UP**
+> ### **Crear Usuario** > Paso 2
+> Este paso es forzado a completarse, si el usuario sale antes de completar, al loguerse nuevamente se redirige a esta pantalla.
 > Solo puede salir de esta pantalla completando los datos requeridos.
 >   
 > Form para datos adicionales del usuario:    
@@ -124,6 +131,9 @@ FIREBASE
 >  - telefono  
 >  - foto perfil (opcional)
 >  - ver y aceptar TOS   
+> &nbsp;
+
+&nbsp;
 
 *pages/signup-merge/signup-merge.ts*
 
@@ -141,10 +151,9 @@ FIREBASE
 
 
 ---
-
-### AJUSTES  
-
-> pagina de ajuste y visualización de datos del usuario.  
+> &nbsp;
+> ### **AJUSTES**  
+> Pagina de ajuste y visualización de datos del usuario.  
 > Visualizar:  
 >   - nombre y apellido
 >   - dirección de email
@@ -153,6 +162,7 @@ FIREBASE
 >       - registro (estado del alta como usuario)  
 >       - servicio (estado del alta como solicitante de servicio)
 >       - operador (estado del alta como operador)  
+> &nbsp;  
 >
 > Acciones:  
 > - foto de perfil
@@ -164,7 +174,10 @@ FIREBASE
 >   - deslizar hacia abajo 
 > Avisos
 > - notifaciones vía email
-> - notificaciones locales
+> - notificaciones locales  
+> &nbsp;
+
+&nbsp;  
 
 *pages/settings/settings.ts*
 
@@ -181,16 +194,22 @@ FIREBASE
 
 ---
 
+> &nbsp;  
+> ## **SERVICIOS**
+> &nbsp;  
 
-## **SERVICIOS**
 
-### NUEVO SERVICIO - Paso 1/4
+> &nbsp;  
+> ### **Nuevo Servicio** > Paso 1/4
 > Paso 1 de alta de servicio  
 > form:  
 > - foto (opcional)
 > - Descripción corta
 > - Tipo de objeto
-> - Valor a declarar
+> - Valor a declarar  
+> &nbsp;  
+
+&nbsp;  
 
 *pages/sending-create/sending-create.ts*
 
@@ -230,7 +249,8 @@ FIREBASE
 
 ---
 
-### NUEVO SERVICIO - Paso 2/4
+> &nbsp;  
+> ### **Nuevo Servicio** > Paso 2/4
 > Paso 2 de alta de servicio  
 > form:  
 > - dirección de retiro
@@ -262,12 +282,14 @@ FIREBASE
    
 ---
 
-### NUEVO SERVICIO - Paso 3/4
+> &nbsp;  
+> ### **Nuevo Servicio** > Paso 3/4
 > Paso 3 de alta de servicio  
 > form: Datos de la Entrega  
 > - dirección de entrega
 > - banda horaria de Entrega
-> - contacto para entrega
+> - contacto para entrega  
+>   &nbsp;  
 
 *pages/sending-create-3/sending-create-3.ts*
 
@@ -293,14 +315,18 @@ FIREBASE
    
 ---
 
-### NUEVO SERVICIO - Paso 4/4 
+> &nbsp;  
+> ### **Nuevo Servicio** > Paso 4/4 
 > Paso 4 de alta de servicio  
 > form: Confirmar Datos  
 > - visualización completa de servicio cargado
 > - visualización de trayecto dibujado en mapa
 > - calculo de precio del servicio
 > - confirmar crear servicio
-> - redirigir a Pagar (Checkout)
+> - redirigir a Pagar (Checkout)  
+>  &nbsp;
+
+&nbsp;
 
 *pages/sending-create-4/sending-create-4.ts*
 
@@ -330,18 +356,19 @@ FIREBASE
                             alert()
                                 opc:pagar
                                     goToCheckout()
-            
-FIREBASE
 
-    DATABASE
 
 
 ---
-
-### CHECKOUT 
+> &nbsp;
+> ### **CHECKOUT**
+> 
 > ingresar datos de tarjeta de crédito 
 > se crea pago con Mercadopago
-> - si hubiese un error, se devuelve con mensaje en alerta
+> - si hubiese un error, se devuelve con mensaje en alerta  
+> &nbsp;  
+
+&nbsp;  
 
 *pages/checkout/checkout.ts*
 
@@ -395,24 +422,16 @@ FIREBASE
                                 saveResultAndShowAlert()
                                     en función del resultado, muestra mensaje
 
-            
-     
-
-
-
-
-
-
-
-
+&nbsp;  
+&nbsp;  
 
 ---
-
 ## **# CLOUD FUNCTIONS**
-#### Firebase Cloud Functions (CF)
----
+### Firebase Cloud Functions (CF)
 
-### TRIGGER: verificación de dirección de correo 
+> &nbsp;
+> ### **Trigger: On User Create** 
+> **Verificación de dirección de correo del usuario**   
 > Envía email de verificación
 > - se crea usuario con firebase.auth()
 > - CF dispara ejecución de exports.setUserVerifyEmail
@@ -420,6 +439,9 @@ FIREBASE
 >       /userVerifyEmailTokens/  
 >       /userVerifyEmailTokensByUser/  
 >   - envía email en español a user.email con link de validación   
+> &nbsp;
+
+&nbsp;
 
 *functions/index.js*
 
@@ -434,8 +456,10 @@ FIREBASE
                 envia email con link
    
 
----
+&nbsp;  
+&nbsp;  
 
+---
 ## **# SERVICIO: ETAPAS Y ESTADOS**
 
 **STAGES**  | **STATES** | Detalle
@@ -479,26 +503,22 @@ closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
 
 &nbsp;  
-&nbsp; 
 &nbsp;  
-&nbsp; 
-
 
 ---
-
 ## **# DATABASE: TREE**
 
 > userAccount
 
         userAccount
-            uid 
+            {uid} 
                 ToS
                     accepted
                     acceptedTimestamp
                     acceptedVersionId
                     acceptedVersionTag
                     history
-                        uid
+                        {uid}
                             timestamp
                             versionId
                 active
@@ -556,11 +576,30 @@ closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | --
                     notifications
                         email
                         localPush
+
+&nbsp;
+> userVerifyEmailAttemptsByTokens
+
+    userVerifyEmailAttemptsByTokens
+        {tokenId}
+            timestamp
+            token
+            validToken
+            verified
+
+&nbsp;
+> userVerifyEmailResend
+
+    userVerifyEmailResend
+        {uid}
+            timestamp
+            userId
+
 &nbsp;
 > userVerifyEmailTokens
 
     userVerifyEmailTokens
-        tokenId
+        {tokenId}
             email
             expire
             token
@@ -571,15 +610,14 @@ closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | --
 > userVerifyEmailTokensByUser
 
     userVerifyEmailTokensByUser
-        uid (userId)
-            tokenId
+        {userId}
+            {tokenId}
                 timestamp
                 token
                 uid     (userId)
 
 
-&nbsp;
-userVerifyEmailTokens
+
 
 
 
