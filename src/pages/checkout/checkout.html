@@ -11,7 +11,7 @@
 <ion-content>  
     <form
         [formGroup]="chForm"
-        (ngSubmit)="runCheckout()"> 
+        (ngSubmit)="checkout()"> 
     <ion-list>
         <ion-item no-lines>
             <h2>Mi Servicio: <b>{{ sending.objectShortName }}</b></h2>
@@ -28,7 +28,7 @@
             <ion-input type="text" data-checkout="cardNumber"
                 placeholder="Número de tarjeta"
                 formControlName="cardNumber"
-                (keyup)="guessPaymentMethod($event)"></ion-input>
+                (keyup)="triggerPaymentGuess()"></ion-input>
         </ion-item>
         <div class="error"
             *ngIf="chForm.get('cardNumber').hasError('required') && (chForm.get('cardNumber').touched || showRequired)"

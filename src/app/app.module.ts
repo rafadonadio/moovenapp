@@ -60,6 +60,7 @@ import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
 import { PriceService } from '../providers/price-service/price-service';
 import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
+import { CheckoutService } from '../providers/checkout-service/checkout-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
@@ -193,7 +194,8 @@ const myFirebaseAuthConfig = {
     DateService,
     HashService,
     MercadopagoService,
-    PriceService
+    PriceService,
+    CheckoutService
   ],
 })
 export class AppModule {}
