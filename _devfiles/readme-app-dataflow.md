@@ -95,14 +95,24 @@
         form.invalid  
             showError
         form.valid  
-            createUser()  
-                goTo > createAccountStep1()  
-                    redirige a page para completar datos personales
-            CF_Trigger 
-                (ver Cloud Functions)
-                user.onCreate()
-                    dispara cloud function: setUserVerifyEmail
-                    envia email de validación de correo electronico ingresado
+            createUser() 
+                usersSrv.createUser()
+                    crear usuario con Firebase Auth
+                createAccountStep1()  
+                    escribe nueva cuenta en Db [DB_WRITE]
+                        /userAccount/
+
+                    ** AuthChange **
+                        (app/app.component.ts)
+                        auth.subscribe() detecta cambios
+                        y redirige automaticamente a "Step 2" 
+                        para permitir completar datos personales
+                        
+                    ** CF_Trigger **
+                        (ver Cloud Functions)
+                        user.onCreate()
+                            dispara cloud function: setUserVerifyEmail
+                            envia email de validación de correo electronico ingresado
             
 FIREBASE
 
@@ -196,7 +206,7 @@ FIREBASE
         confirmReverifyEmail()
             resendEmailVerification()
                 crea registro en DB para disparar CF
-                CF_Trigger 
+                ** CF_Trigger **
                 (ver Cloud Functions)
                 database.onWrite()
                     dispara cloud function: resendUserVerifyEmail
@@ -361,7 +371,13 @@ FIREBASE
                 createSending()
                     sendingSrv.register()
                         getSummary()
-                        dbSrv.newSending()
+                            setea datos de resumen para "estado actual"               
+                        dbSrv.newSending() [DB_WRITE]
+                            escribe en DB
+                                /sendings/
+                                /sendingsByPublicid/
+                                /_sendingsCreated/
+                                /userSendings/
                         logNotifications()
                         uploadSendingImage()
                             updateSendingImage()
@@ -374,9 +390,21 @@ FIREBASE
 FIREBASE
 
     DATABASE
+
         sendings
             {uid}
                 [sending node]
+            sendingsByPublicid
+                {publicId}
+                    {sendingId}
+            _sendingsCreated
+                {sendingId}
+                    [summary node]
+            userSendings
+                {userId}
+                    {stage}
+                        {sendingId}
+                            [summary node]
 
     CLOUD FUNCTIONS
 
