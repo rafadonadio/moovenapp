@@ -266,10 +266,14 @@ export class CheckoutPage implements OnInit {
 
     private validateCardTokenAndPay(response) {
         console.info('__[CKT-3]__', response);
+        this.cardToken = response;
         if (this.hasTokenCardResponseError(response)) {
-            this.showCreateCardTokenResponseError();
+            this.payLoader.dismiss()
+                    .then(() => {
+                        this.showCreateCardTokenResponseError();
+                    })
+                    .catch(error => console.log('dismiss error', error));
         } else {                
-            this.cardToken = response;
             this.createPayment();
         }
     }
