@@ -125,26 +125,34 @@ export class CheckoutPage implements OnInit {
         let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
         loader.present();
         this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, checkoutResponse)
+            // .then((result) => {
+            //     console.info('__[CKT-6]__ WRITE OK')
+            //     // if (paymentResultState.setSendingPaid) {
+            //     //     console.log('__[CKT-6]__SET PAID')
+            //     //     return this.sendingSrv.paid(this.sending.sendingId);
+            //     // } else {
+            //     //     return false;
+            //     // }
+            // })
+            // .then((result) => {
+            //     // if (result && paymentResultState.setSendingEnabled) {
+            //     //     console.log('__[CKT-6]__PAID_OK')
+            //     //     console.log('__[CKT-6]__SET ENABLED')
+            //     //     return this.sendingSrv.enable(this.sending.sendingId);
+            //     // } else {
+            //     //     return false;
+            //     // }
+            // })
+            // .then((result) => {
+            //     console.log('__[CKT-6]__ENABLED_OK')
+            //     loader.dismiss()
+            //         .then(() => {
+            //             this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
+            //         })
+            //         .catch(error => console.log('dismiss error', error));
+            // })
             .then((result) => {
-                console.info('__[CKT-6]__OK')
-                if (paymentResultState.setSendingPaid) {
-                    console.log('__[CKT-6]__PAID')
-                    return this.sendingSrv.paid(this.sending.sendingId);
-                } else {
-                    return false;
-                }
-            })
-            .then((result) => {
-                if (result && paymentResultState.setSendingEnabled) {
-                    console.log('__[CKT-6]__PAID_OK')
-                    console.log('__[CKT-6]__ENABLED')
-                    return this.sendingSrv.enable(this.sending.sendingId);
-                } else {
-                    return false;
-                }
-            })
-            .then((result) => {
-                console.log('__[CKT-6]__ENABLED_OK')
+                console.info('__[CKT-6]__ WRITE OK')
                 loader.dismiss()
                     .then(() => {
                         this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);

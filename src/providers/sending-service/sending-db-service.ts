@@ -285,17 +285,23 @@ export class SendingDbService {
             resultData: paymentResult.paymentData,
             errorData: paymentResult.errorData,
         }
-        let sendingPaymentData = {
-            paymentId: newKey,
-            sendingId: sendingId,
-            statusCode: paymentResult.paymentStatusCode,
-            statusDetail: paymentResult.paymentStatusDetail,
-            completed: paymentResult.paymentCompleted,
-            success: paymentResult.paymentSuccess,            
-        }
+        
+        // let sendingPaymentData = {
+        //     paymentId: newKey,
+        //     sendingId: sendingId,
+        //     statusCode: paymentResult.paymentStatusCode,
+        //     statusDetail: paymentResult.paymentStatusDetail,
+        //     completed: paymentResult.paymentCompleted,
+        //     success: paymentResult.paymentSuccess,            
+        // }
+
         let updates = {};
+        // write to /payments/{paymentId}/paymentData
         updates[DBPYM.ALL.REF + newKey] = paymentData;
-        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.PAYMENTS + newKey] = sendingPaymentData;
+
+        // write to /sendings/{sendingId}/_payments/{paymentId}/sendingPaymentData
+        // updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.PAYMENTS + newKey] = sendingPaymentData;
+
         // console.log('__WPR__', updates);
         return this.dbRef.update(updates);
     }
