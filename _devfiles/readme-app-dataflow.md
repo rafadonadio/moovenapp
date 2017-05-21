@@ -207,6 +207,7 @@ FIREBASE
         confirmReverifyEmail()
             resendEmailVerification()
                 crea registro en DB para disparar CF
+                
                 ** CF_Trigger **
                 (ver Cloud Functions)
                 database.onWrite()
@@ -447,8 +448,9 @@ FIREBASE
         valida nro de tarjeta ingresado con API y resuelve emisor
     
     runCheckout()
+        showPayLoader()
         isFormValid()
-            valida campos completos form 
+                valida campos completos form 
                 (cardNumber, securityCode, cardExpiration, 
                 cardHolderName, docNumber, docType, paymentMethodId)
             setTokenData() 
@@ -456,24 +458,51 @@ FIREBASE
             createCardToken()
                 crear card token (MP API)
             validateCardTokenAndPay()
-                tokenHasError()
+                hasTokenCardResponseError()
                     true
-                        showCardTokenErrors()
+                        showCreateCardTokenResponseError()
                             display errores al generar token (CardToken API)
-                            (errores previos al intento de pago)
+                            errores en datos cargados en el form de pago
+                            (ej: num de tark, fecha venc, nombre, etc)
                     false
                         createPayment()
                                 crear pago
                             getPrepaymentData()
                                 setear datos para crear pago
                             paySrv.checkoutMP()
-                                    hacer pago (envia solicitud a server)
+                                    hacer pago (envia solicitud a server) 
                                 clearSessionMP()
                                     // hack por si hay que repetir pago en caso de error
                                 getPaymentResultState() 
-                                    setea estado del pago en función de respuesta
+                                    establece estado del pago en función de respuesta del server
                                 saveResultAndShowAlert()
-                                    en función del resultado, muestra mensaje
+                                    dbSrv.writePaymentResult() [DB_WRITE]
+                                        escribe resultado pago en DB
+                                            /payments/
+
+                                ** CF_Trigger **
+                                (ver Cloud Functions)
+                                database.onWrite()         
+                                    
+                                    asigna registro de pago a servicio
+                                        cambia estado de registered a paid
+                                        cambia estado de paid a enabled
+                                        cambia estado de enabled a waitoperator
+
+FIREBASE
+
+    DATABASE
+
+        /payments/
+            {paymentId}
+                [paymentData node]
+
+        /sendings/
+            {sendingId}
+                _payment
+                    {paymentId}
+                        [sendingPaymentData]
+
 
 &nbsp;  
 &nbsp;  
