@@ -37,20 +37,23 @@ export class CheckoutService {
             state.message = checkoutResponse.paymentMessage;
         }
         // payment completed  and rejected, show error and die
-        if (checkoutResponse.paymentCompleted && !checkoutResponse.paymentSuccess) {
+        if (checkoutResponse.paymentCompleted 
+            && !checkoutResponse.paymentSuccess) {
             state.title = 'Pago rechazado';
             state.message = checkoutResponse.paymentMessage;
         }
         // payment succesfull, show if pending
         if (checkoutResponse.paymentCompleted
-            && checkoutResponse.paymentSuccess && checkoutResponse.paymentStatusCode == 'in_process') {
+            && checkoutResponse.paymentSuccess 
+            && checkoutResponse.paymentStatusCode == 'in_process') {
             state.title = 'Pago en Proceso';
             state.message = checkoutResponse.paymentMessage;
             state.setSendingPaid = true;
         }
         // payment succesfull, show if acredited
         if (checkoutResponse.paymentCompleted
-            && checkoutResponse.paymentSuccess && checkoutResponse.paymentStatusCode == 'approved') {
+            && checkoutResponse.paymentSuccess 
+            && checkoutResponse.paymentStatusCode == 'approved') {
             state.title = 'Recibimos tu Pago';
             state.message = checkoutResponse.paymentMessage;
             state.setSendingPaid = true;

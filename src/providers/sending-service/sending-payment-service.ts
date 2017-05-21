@@ -42,8 +42,8 @@ export class SendingPaymentService {
      *  DB METHODS
      */
 
-     saveCheckoutResultToDB(userId:string, sendingId:string, paymentResult:any) {   
-        return this.dbSrv.writePaymentResult(userId, sendingId, paymentResult);
+     saveCheckoutResultToDB(userId:string, sendingId:string, paymentResult:any, paymentResultState:any) {   
+        return this.dbSrv.writePaymentResult(userId, sendingId, paymentResult, paymentResultState);
      }
 
 }

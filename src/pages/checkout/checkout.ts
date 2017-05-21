@@ -103,11 +103,13 @@ export class CheckoutPage implements OnInit {
      *  3. CARD-TOKEN: create card token with MP API
      *  4. PREPAYMENT-DATA: generate Pre-Payment data, with token id from step 3
      *  5. PAY: create payment > send payment request to backend server (with MP SDK deployed)
-     *  6. UPDATE-DB AND PROMPT: update firebase DB with results > show message with results to user
+     *  6. PROCESS RESPONSE > getPaymentResultState
+     *  7. SAVE: write paymentresult and paymentstate to Db
+     *  8. SHOW MESSAGE
      */
     private runCheckout() {
         console.info('__[CKT-0]__runCheckout');        
-        this.showPayLoader();        
+        this.showPayLoader('Procesando pago ...');        
         if(this.isFormValid()) {
             this.setTokenData();
             this.createCardToken()
@@ -120,46 +122,65 @@ export class CheckoutPage implements OnInit {
      *  POST PAYMENT
      */
 
-    private saveResultAndShowAlert(checkoutResponse, paymentResultState) {
-        // save to Db 
-        let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
-        loader.present();
-        this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, checkoutResponse)
-            // .then((result) => {
-            //     console.info('__[CKT-6]__ WRITE OK')
-            //     // if (paymentResultState.setSendingPaid) {
-            //     //     console.log('__[CKT-6]__SET PAID')
-            //     //     return this.sendingSrv.paid(this.sending.sendingId);
-            //     // } else {
-            //     //     return false;
-            //     // }
-            // })
-            // .then((result) => {
-            //     // if (result && paymentResultState.setSendingEnabled) {
-            //     //     console.log('__[CKT-6]__PAID_OK')
-            //     //     console.log('__[CKT-6]__SET ENABLED')
-            //     //     return this.sendingSrv.enable(this.sending.sendingId);
-            //     // } else {
-            //     //     return false;
-            //     // }
-            // })
-            // .then((result) => {
-            //     console.log('__[CKT-6]__ENABLED_OK')
-            //     loader.dismiss()
-            //         .then(() => {
-            //             this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
-            //         })
-            //         .catch(error => console.log('dismiss error', error));
-            // })
+    // private saveResultAndShowAlert(checkoutResponse, paymentResultState) {
+    //     // save to Db 
+    //     let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
+    //     loader.present();
+    //     this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, checkoutResponse, paymentResultState)
+    //         // .then((result) => {
+    //         //     console.info('__[CKT-6]__ WRITE OK')
+    //         //     // if (paymentResultState.setSendingPaid) {
+    //         //     //     console.log('__[CKT-6]__SET PAID')
+    //         //     //     return this.sendingSrv.paid(this.sending.sendingId);
+    //         //     // } else {
+    //         //     //     return false;
+    //         //     // }
+    //         // })
+    //         // .then((result) => {
+    //         //     // if (result && paymentResultState.setSendingEnabled) {
+    //         //     //     console.log('__[CKT-6]__PAID_OK')
+    //         //     //     console.log('__[CKT-6]__SET ENABLED')
+    //         //     //     return this.sendingSrv.enable(this.sending.sendingId);
+    //         //     // } else {
+    //         //     //     return false;
+    //         //     // }
+    //         // })
+    //         // .then((result) => {
+    //         //     console.log('__[CKT-6]__ENABLED_OK')
+    //         //     loader.dismiss()
+    //         //         .then(() => {
+    //         //             this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
+    //         //         })
+    //         //         .catch(error => console.log('dismiss error', error));
+    //         // })
+    //         .then((result) => {
+    //             console.info('__[CKT-6]__ WRITE OK')
+    //             loader.dismiss()
+    //                 .then(() => {
+    //                     this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
+    //                 })
+    //                 .catch(error => console.log('dismiss error', error));
+    //         })
+    //         .catch((error) => console.error('__[CKT-6]__', error));
+    // }
+
+    private processPaymentResponse(checkoutResponse:any) {
+        console.info('__[CKT-6]__ processPaymentResponse');        
+        this.clearSessionMP();
+        let paymentResultState = this.chkServ.getPaymentResultState(checkoutResponse);
+        this.showPayLoader('Finalizando ...');
+        console.info('__[CKT-7]__ save')
+        this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, checkoutResponse, paymentResultState)
             .then((result) => {
-                console.info('__[CKT-6]__ WRITE OK')
-                loader.dismiss()
+                console.info('__[CKT-7]__ write ok')
+                this.payLoader.dismiss()
                     .then(() => {
                         this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
                     })
                     .catch(error => console.log('dismiss error', error));
             })
-            .catch((error) => console.error('__[CKT-6]__', error));
+            .catch((error) => console.error('__[CKT-7]__', error));
+
     }
 
     private showCheckoutAlert(title: string, msg: string, goToSendings: boolean = false) {
@@ -208,36 +229,33 @@ export class CheckoutPage implements OnInit {
         let prepaymentData = this.getPrepaymentData(this.cardToken.id);
         console.log('__[CKT-4]__', prepaymentData);
         console.info('__[CKT-5]__pay');
-        let checkoutSuscription = this.paySrv.checkoutMP(prepaymentData).subscribe(
-            checkoutResponse => {
-                console.log('__[CKT-5]__', checkoutResponse);
-                this.clearSessionMP();
-                checkoutSuscription.unsubscribe();
-                this.payLoader.dismiss()
-                    .then(() => {
-                        // 6. UPDATE DB AND PROMPT
-                        console.info('__[CKT-6]__saveAndPrompt');
-                        let paymentResultState = this.chkServ.getPaymentResultState(checkoutResponse);
-                        this.saveResultAndShowAlert(checkoutResponse, paymentResultState);
-                    })
-                    .catch(error => console.error('dismiss error', error));
-            },
-            error => {
-                console.error('__[CKT-5]__', error);
-                this.clearSessionMP();
-                checkoutSuscription.unsubscribe();
-                this.payLoader.dismiss()
-                    .then(() => {
-                        let alertError = this.alertCtrl.create({
-                            title: 'Ocurrió un Error',
-                            subTitle: `Lo sentimos, el pago no puede procesarse en este momento, por favor intenta nuevamente mas tarde. (statuscode: ${error.status})`,
-                            buttons: [{ text: 'Cerrar', role: 'cancel' }]
-                        });
-                        // show
-                        alertError.present();
-                    });
-            }
-        );
+        let checkoutSuscription = this.paySrv.checkoutMP(prepaymentData)
+                .subscribe(
+                    checkoutResponse => {
+                        console.log('__[CKT-5]__', checkoutResponse);
+                        checkoutSuscription.unsubscribe();
+                        this.payLoader.dismiss()
+                            .then(() => {
+                                this.processPaymentResponse(checkoutResponse);
+                            })
+                            .catch(error => console.error('dismiss error', error));
+                    },
+                    error => {
+                        console.error('__[CKT-5]__', error);
+                        this.clearSessionMP();
+                        checkoutSuscription.unsubscribe();
+                        this.payLoader.dismiss()
+                            .then(() => {
+                                let alertError = this.alertCtrl.create({
+                                    title: 'Ocurrió un Error',
+                                    subTitle: `Lo sentimos, el pago no puede procesarse en este momento, por favor intenta nuevamente mas tarde. (statuscode: ${error.status})`,
+                                    buttons: [{ text: 'Cerrar', role: 'cancel' }]
+                                });
+                                // show
+                                alertError.present();
+                            });
+                    }
+                );
     }
 
     private getPrepaymentData(cardTokenId) {
@@ -365,8 +383,8 @@ export class CheckoutPage implements OnInit {
      *  HELPERS
      */
 
-    private showPayLoader() {
-        this.payLoader = this.loadingCtrl.create({ content: 'Procesando pago ...' });
+    private showPayLoader(text:string) {
+        this.payLoader = this.loadingCtrl.create({ content: text });
         this.payLoader.present();    
     }
 
