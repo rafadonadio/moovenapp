@@ -98,8 +98,9 @@
             createUser() 
                 usersSrv.createUser()
                     crear usuario con Firebase Auth
-                createAccountStep1()  
-                    escribe nueva cuenta en Db [DB_WRITE]
+                usersSrv.createAccountStep1()  
+                    accountSrv.createStep1() [DB_WRITE]
+                        escribe nueva cuenta en Db 
                         /userAccount/
 
                     ** AuthChange **
@@ -107,7 +108,7 @@
                         auth.subscribe() detecta cambios
                         y redirige automaticamente a "Step 2" 
                         para permitir completar datos personales
-                        
+
                     ** CF_Trigger **
                         (ver Cloud Functions)
                         user.onCreate()
