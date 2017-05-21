@@ -58,6 +58,7 @@
 - Ajustes  
     - boton para cerrar aplicación
     - notificaciones (locales/email) - revisar
+    - limitar intentos de reenviar email de validación
 
 --- 
 
