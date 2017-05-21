@@ -57,6 +57,9 @@
                     modificar
                 _Número de móvil     
                     modificar
+            Datos personales
+                Validar
+                    (boton aparece si email no ha sido validado aun)
             Perfiles
                 _actualizar
                     actualiza vista estado perfil
@@ -109,7 +112,7 @@ FIREBASE
     DATABASE
         userAccount
             uid
-                (user account node)
+               [user account node]
    
     CLOUD FUNCTIONS
         functions.auth.user().onCreate()
@@ -167,6 +170,8 @@ FIREBASE
 > - nombre y apellido
 > - dirección de email  
 > - número de movil
+> - reenviar email de validacion
+>   - (si aun no ha sido validado)
 > - actualizar vista
 >   - boton actualizar
 >   - deslizar hacia abajo 
@@ -187,6 +192,15 @@ FIREBASE
         actualiza estado de las notificaciones
     updatePicture()
         modifica imagen perfil
+    reverifyEmail()
+        confirmReverifyEmail()
+            resendEmailVerification()
+                crea registro en DB para disparar CF
+                CF_Trigger 
+                (ver Cloud Functions)
+                database.onWrite()
+                    dispara cloud function: resendUserVerifyEmail
+                        envia email de validación de correo electronico ingresado
     signOut()
         desloguearse
 
@@ -356,6 +370,18 @@ FIREBASE
                                 opc:pagar
                                     goToCheckout()
 
+
+FIREBASE
+
+    DATABASE
+        sendings
+            {uid}
+                [sending node]
+
+    CLOUD FUNCTIONS
+
+
+
 &nbsp;  
 
 ---
@@ -422,22 +448,18 @@ FIREBASE
 
 &nbsp;  
 &nbsp;  
+&nbsp;  
+&nbsp; 
 
 ---
 ## **# CLOUD FUNCTIONS**
 ### Firebase Cloud Functions (CF)
 
-&nbsp;
-
-> Main file  
-> *functions/index.js*
-
-    setUserVerifyEmail()   
-
 &nbsp;    
 
-> ### **Trigger: On User Create** 
-> **Verificación de dirección de correo del usuario**   
+> ### **Validar Email** 
+> ### Trigger: On User Create 
+> **Enviar email para verificar dirección de correo del usuario**   
 > Envía email de verificación
 > - se crea usuario con firebase.auth()
 > - CF dispara ejecución de exports.setUserVerifyEmail
@@ -449,7 +471,9 @@ FIREBASE
 
 &nbsp;
 
+*functions/index.js*
 
+    setUserVerifyEmail() 
 
 *functions/services/user-email-validation.js*
 
@@ -459,7 +483,26 @@ FIREBASE
             sendEmail()
                 envia email con link
    
+FIREBASE
 
+    DATABASE
+        userVerifyEmailTokens
+            {tokenId}
+                email
+                expire
+                token
+                uid
+                used
+   
+        userVerifyEmailTokens
+            {userId}
+                {tokenId}
+                    timestamp
+                    token
+                    uid
+
+&nbsp;  
+&nbsp; 
 &nbsp;  
 &nbsp;  
 
@@ -508,6 +551,8 @@ closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
 
 &nbsp;  
+&nbsp; 
+&nbsp;  
 &nbsp;  
 
 ---
@@ -515,6 +560,8 @@ closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | --
 
 ![life-cycle](service-lifecycle.png)
 
+&nbsp;  
+&nbsp; 
 &nbsp;  
 &nbsp;  
 
