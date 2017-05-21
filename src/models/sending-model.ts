@@ -267,9 +267,9 @@ export const SENDING_DB = {
             PAYMENTS: '/_payments/'
         }
     },
-    HASHID: {
-        REF: 'sendingsHashid/',
-        _NODE: 'sendingsHashid',
+    PUBLICID: {
+        REF: 'sendingsByPublicid/',
+        _NODE: 'sendingsByPublicid',
     },
     BYUSER: {
         REF: 'userSendings/',

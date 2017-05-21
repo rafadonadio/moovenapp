@@ -45,8 +45,8 @@ export class SendingDbService {
         sending.sendingId = newKey;
         // sending full object
         updates[DB.ALL.REF + newKey] = sending;        
-        // sending publicId hash reference 
-        updates[DB.HASHID.REF + sending.publicId] = newKey;
+        // sending publicId reference 
+        updates[DB.PUBLICID.REF + sending.publicId] = newKey;
         // add to sending stage created
         updates[DB.STAGE_CREATED.REF + newKey] = summary;
         // user active sendings reference
