@@ -458,6 +458,7 @@ FIREBASE
             createCardToken()
                 crear card token (MP API)
             validateCardTokenAndPay()
+                    se que se haya generado el token de MP con el sdk
                 hasTokenCardResponseError()
                     true
                         showCreateCardTokenResponseError()
@@ -468,26 +469,30 @@ FIREBASE
                         createPayment()
                                 crear pago
                             getPrepaymentData()
-                                setear datos para crear pago
+                                setear datos para crear pago y enviar a CF
                             paySrv.checkoutMP()
-                                    hacer pago (envia solicitud a server) 
-                                clearSessionMP()
-                                    // hack por si hay que repetir pago en caso de error
-                                getPaymentResultState() 
-                                    establece estado del pago en función de respuesta del server
-                                saveResultAndShowAlert()
-                                    dbSrv.writePaymentResult() [DB_WRITE]
-                                        escribe resultado pago en DB
-                                            /payments/
+                                    hacer pago (envia solicitud a CF) 
+
+                                    ** CF_Trigger **
+                                    (ver Cloud Functions)
+                                    http.request > paymentGatewayMP.create()
+
+                                processPaymentResponse()
+                                    clearSessionMP()
+                                            hack por si hay que repetir pago en caso de error
+                                        getPaymentResultState()
+                                            mensaje humanizado de resultado de pago
+                                        showCheckoutAlert()
+                                            mostrar mensaje y cerrar pagina
 
                                 ** CF_Trigger **
                                 (ver Cloud Functions)
-                                database.onWrite()         
-                                    
+                                database.onWrite()                                     
                                     asigna registro de pago a servicio
                                         cambia estado de registered a paid
                                         cambia estado de paid a enabled
                                         cambia estado de enabled a waitoperator
+
 
 FIREBASE
 
