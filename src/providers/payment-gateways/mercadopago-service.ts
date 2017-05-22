@@ -105,13 +105,15 @@ export class MercadopagoService {
             installments: 1, // will use 1 by default (?)
             paymentMethodId: preData.paymentMethodId,
             payerEmail: preData.payerEmail,
-            externalReference: preData.externalReference
+            externalReference: preData.externalReference,
+            suid: preData.suid,
+            uid: preData.uid
         }
         //console.log('paymentData > ', data);
         return data;
     }
 
-    // send payament data to our server
+    // send payment data to server
     // expect response with transaction result
     private runServerPayment(data:PaymentData):Observable<any> {
         // set header
@@ -123,11 +125,15 @@ export class MercadopagoService {
                         +'&installments='+data.installments
                         +'&paymentMethodId='+data.paymentMethodId
                         +'&payerEmail='+data.payerEmail
-                        +'&externalReference='+data.externalReference;
+                        +'&externalReference='+data.externalReference
+                        +'&suid='+data.suid
+                        +'&uid='+data.uid;
         return this.http.post(SERVER_PAYMENT_URL, tokendata, {headers:headers})
-                    .map((response: Response) => {
-                        //console.log('runServerPayment > response', response);                       
-                        return this.getServerPaymentResponse(response);
+                    .map((response) => {
+                        //console.log('payment response', response);          
+                        let paymentResult = this.extractPaymentResult(response);
+                        console.log('paymentResult', paymentResult);  
+                        return paymentResult;
                     })
                     .catch(this.handleHttpError);
     }
@@ -136,51 +142,9 @@ export class MercadopagoService {
      *  PROCESS RESPONSES
      */
 
-    private getServerPaymentResponse(response:any) {
-        let result = { 
-            responseSuccess: null,      // server response is 200?
-            responseCode: 0,            // server response code
-            statusCode: 0,              // MP Payment http status code
-            paymentStatusCode: null,    // MP Payment status text code
-            paymentStatusDetail: null,  // MP Payment status detail
-            paymentMessage: null,       // human message for user
-            paymentData: null,          // MP Payment OK server response
-            errorData: null ,           // MP Payment Error server response
-            data: null,                 // Server data response 
-            paymentCompleted: null,     // flag, if payment is completed
-            paymentSuccess: null,       // flas, if payment is not rejected     
-        };
-        // get all data
-        result.data = this.extractData(response);
-        // get http response code
-        result.responseCode = response.status;
-        // verify http response code is 200
-        if(response && response.hasOwnProperty('status') && response.status == 200){
-            result.responseSuccess = true;
-            if(result.data._payment 
-                 && result.data._payment.hasOwnProperty('status') 
-                 && result.data._payment.status == 201) {
-                 result.paymentData = result.data._payment.response;                         
-                 result.statusCode = result.data._payment.status;
-                 result.paymentStatusCode = result.data._payment.response.status; 
-                 result.paymentStatusDetail = result.data._payment.response.status_detail;                              
-                 result.paymentCompleted = true;  
-                 result.paymentSuccess = result.paymentStatusCode!=='rejected' ? true : false;                 
-                 result.paymentMessage = this.getMessageForServerPaymentCompleted(result.paymentStatusDetail, result.paymentSuccess);                  
-            }else if(result.data._paymentError && result.data._paymentError.code == 400){
-                 result.errorData = result.data._paymentError;
-                 result.statusCode = result.data._paymentError.code;                          
-                 result.paymentStatusCode = result.data._paymentError.parsed.code; 
-                 result.paymentStatusDetail = result.data._paymentError.parsed.detail;
-                 result.paymentMessage = this.getMessageForServerPaymentError(result.paymentStatusCode, result.paymentStatusDetail); 
-                 result.paymentCompleted = false;
-            }
-        // not 200, get code if exist and set error     
-        }else if(response){
-            result.responseSuccess = false;
-            result.responseCode = response.hasOwnProperty('status') ? response.status : 0;
-        }
-        return result;
+    private extractPaymentResult(res) {
+        let body = res.json();
+        return body.payment_result || { };
     }
 
     private getPaymentMethodResponse(status:number, response:any) {
@@ -274,81 +238,14 @@ export class MercadopagoService {
         return Observable.throw(err);
     }
 
-    private extractData(res: Response) {
-        let body = res.json();
-        return body || { };
-    }
+    // private extractData(res: Response) {
+    //     let body = res.json();
+    //     return body || { };
+    // }
 
     /**
      *  API ERROR CODES
      */
-
-     // messages for payment with error, not completed
-     private getMessageForServerPaymentError(paymentStatusCode:string, paymentStatusDetail:string) {
-         let message = '';
-         switch(paymentStatusCode) {
-             case '2001':
-                message = 'El pago no se procesó, se detectó un pago idéntico hace menos de 1 minuto.';
-                break;
-             case '4037':
-                message = 'El pago no se procesó, el monto es inválido';
-                break;
-             case '3015':
-             case '3016':
-                message = 'El pago no se procesó, por favor revisa el nro de la tarjeta y vuelve a intentarlo.';
-                break;
-             default:
-                message = `Ocurrió un error al intentar el pago (${paymentStatusCode}: "${paymentStatusDetail}").`;
-            }
-         return message;
-     }
-
-    // messages for payment completed: successfull or with errors 
-    // https://www.mercadopago.com.ar/developers/en/solutions/payments/custom-checkout/response-handling#payment-ok
-    private getMessageForServerPaymentCompleted(statusDetail:string, paymentSuccess:boolean) {
-        let message = '';
-        if(paymentSuccess==true){
-            switch(statusDetail) {
-                case 'accredited':
-                    message = 'Tu pago fue acreditado correctamente, muchas gracias!';
-                    break;
-                case 'pending_contingency':
-                    message = 'Estamos procesando tu pago, deberías recibir novedades en menos de 1 hora.';
-                    break;
-                case 'pending_review_manual':
-                    message = 'Estamos procesando tu pago, deberías recibir novedades en menos de 2 días hábiles.';
-                    break;                    
-            }
-        }else if(paymentSuccess==false){
-            switch(statusDetail){
-                case 'cc_rejected_bad_filled_card_number':
-                case 'cc_rejected_bad_filled_date':
-                case 'cc_rejected_bad_filled_security_code':
-                    message = 'El pago no pudo procesarse, por favor revisa los datos ingresados y vuelve a intentarlo.';
-                    break;  
-                case 'cc_rejected_duplicated_payment':
-                    message = 'Un pago ya fue realizado anteriormente por el mismo monto. Si debes repetirlo por favor utiliza otra tarjeta.';
-                    break;  
-                case 'cc_rejected_max_attempts':
-                    message = 'El pago no pudo procesarse, has alcanzado el número máximo de intentos, utiliza otra tarjeta y vuelve a intentarlo.';
-                    break;  
-                case 'cc_rejected_blacklist':
-                case 'cc_rejected_call_for_authorize':
-                case 'cc_rejected_card_disabled':
-                case 'cc_rejected_card_error':
-                case 'cc_rejected_high_risk':
-                case 'cc_rejected_insufficient_amount':
-                case 'cc_rejected_invalid_installments':
-                    message = 'El pago no fue autorizado por el emisor de la tarjeta, por favor comunicate con tu banco para volver a intentar';
-                    break;  
-                case 'cc_rejected_bad_filled_other':
-                case 'cc_rejected_other_reason':
-                    message = 'El pago no pudo procesarse, por favor utiliza otra tarjeta para volver a intentar.';
-                    break;                                                                                  
-            }
-        }        
-        return message;
-    }
 
     // group error messages given by CardToken API
     private groupCardTokenApiErrorsMsgByStatuscode(statusCode:number, cause:Array<any>):any {       

@@ -1,4 +1,3 @@
-import { ANY_CORPUS } from 'ionic-angular/es2015/util/input-tester';
 import { FirebaseListObservable } from 'angularfire2/database';
 import { PAYMENTS_DB } from '../../models/payments-model';
 import { SHIPMENT_CFG, SHIPMENT_DB } from '../../models/shipment-model';

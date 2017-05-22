@@ -164,26 +164,14 @@ export class CheckoutPage implements OnInit {
     //         .catch((error) => console.error('__[CKT-6]__', error));
     // }
 
-    private processPaymentResponse(checkoutResponse:any) {
-        console.info('__[CKT-6]__ processPaymentResponse');        
+    private processPaymentResponse(checkoutResponse:any) {        
         this.clearSessionMP();
         let paymentResultState = this.chkServ.getPaymentResultState(checkoutResponse);
-        this.showPayLoader('Finalizando ...');
-        console.info('__[CKT-7]__ save')
-        this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, checkoutResponse, paymentResultState)
-            .then((result) => {
-                console.info('__[CKT-7]__ write ok')
-                this.payLoader.dismiss()
-                    .then(() => {
-                        this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
-                    })
-                    .catch(error => console.log('dismiss error', error));
-            })
-            .catch((error) => console.error('__[CKT-7]__', error));
-
+        let closePage = checkoutResponse.paymentSuccess ? true : false;
+        this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, closePage);        
     }
 
-    private showCheckoutAlert(title: string, msg: string, goToSendings: boolean = false) {
+    private showCheckoutAlert(title: string, msg: string, closePage: boolean = false) {
         let alertError = this.alertCtrl.create({
             title: title,
             subTitle: msg,
@@ -191,7 +179,7 @@ export class CheckoutPage implements OnInit {
                 {
                     text: 'Cerrar',
                     handler: () => {
-                        if (goToSendings) {
+                        if (closePage) {
                             console.log('checkout > goToSendings');
                             this.navCtrl.setRoot(SendingsPage);
                         } else {
@@ -267,7 +255,9 @@ export class CheckoutPage implements OnInit {
             description: 'Servicio Mooven #' + this.sending.publicId,
             paymentMethodId: this.chForm.controls['paymentMethodId'].value,
             payerEmail: this.fbuser.email,
-            externalReference: this.sending.publicId
+            externalReference: this.sending.publicId,
+            suid: this.sending.sendingId,
+            uid: this.fbuser.uid
         }
         return prepaymentData;
     }

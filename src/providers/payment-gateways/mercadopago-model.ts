@@ -19,7 +19,7 @@ export const MERCADOPAGO_REF = {
             PAYMENT: 'http://be.moovenapp.dev/api/v1/gateway/mp/payments',
         },
         DEV_URL: {
-            PAYMENT: 'https://be-dev.moovenapp.com/api/v1/gateway/mp/payments',
+            PAYMENT: 'https://us-central1-moovendev.cloudfunctions.net/paymentGatewayMP',
         },
         STAGE_URL: {
             PAYMENT: 'https://be-stage.moovenapp.com/api/v1/gateway/mp/payments',
@@ -82,6 +82,8 @@ export class PrepaymentData {
     paymentMethodId:string;
     payerEmail:string;
     externalReference:string;
+    suid:string;
+    uid:string;
 }
 
 export class PaymentData {
@@ -92,4 +94,6 @@ export class PaymentData {
     paymentMethodId:string;
     payerEmail:string;
     externalReference:string;
+    suid:string;
+    uid:string;    
 }
