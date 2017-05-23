@@ -19,7 +19,7 @@ export const MERCADOPAGO_REF = {
             PAYMENT: 'http://be.moovenapp.dev/api/v1/gateway/mp/payments',
         },
         DEV_URL: {
-            PAYMENT: 'https://us-central1-moovendev.cloudfunctions.net/paymentGatewayMP',
+            PAYMENT: 'https://us-central1-moovendev.cloudfunctions.net/createPaymentMP',
         },
         STAGE_URL: {
             PAYMENT: 'https://be-stage.moovenapp.com/api/v1/gateway/mp/payments',
