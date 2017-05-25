@@ -26,9 +26,9 @@ export class SendingDbService {
     }
 
 
-    newSendingKey():any {
-        return this.dbRef.child(DB.ALL.REF).push().key;
-    }
+    /**
+     *  HELPERS
+     */
 
     getTimestamp():any {
         return firebase.database.ServerValue.TIMESTAMP;
@@ -38,7 +38,17 @@ export class SendingDbService {
         return firebase.database().ref();
     }
 
+    /**
+     *  SENDINGS
+     */
 
+    newSendingKey():any {
+        return this.dbRef.child('sendings/').push().key;
+    }
+
+    newSendingTaskKey():any  {
+        return this.dbRef.child('sendingsTask/').push().key;
+    }
 
 
 

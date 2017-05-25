@@ -4,12 +4,11 @@ import { SendingDbService } from './sending-db-service';
 import { SendingRequest } from '../../models/sending-model';
 import { Injectable } from '@angular/core';
 
-const STRG_USER_FILES = 'userFiles/';
-
 @Injectable()
 export class SendingCreateService{
 
     sending: SendingRequest;
+    taskCF: any; // cloud function task data
     userId: string;
     dbRef: firebase.database.Reference;
 
@@ -43,9 +42,7 @@ export class SendingCreateService{
         this.setSendingId();
         // upload sending image
         // write sending to db
-        // set task CF
-        // init stage status (CF)
-        // log notification (CF)
+        // CF >> set task, init stage status, log notification (CF)
         return new Promise((resolve, reject) => {
             this.uploadImage()
                 .then(result => {
@@ -54,6 +51,7 @@ export class SendingCreateService{
                     if(result.imageSet && result.uploaded) {
                         this.setSendingImageUploadedData(result);
                     }
+                    this.setTaskCF();
                     return this.writeToDb();
                 })
                 .then(result => {
@@ -110,7 +108,7 @@ export class SendingCreateService{
         return new Promise((resolve, reject) => {
             // upload
             uploadTask.on('state_changed', function(snapshot) {
-                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    //let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     //console.info('Upload is ' + progress + '% done');
                 }, function (error:any) {
                     //console.log('failed > ', error.code);
@@ -143,9 +141,27 @@ export class SendingCreateService{
     private writeToDb() {
         //console.info('writeToDb');
         let updates = {};
-        updates['sendings/' + this.sending.sendingId] = this.sending;           
+        // write sending
+        updates[`sendings/${this.sending.sendingId}`] = this.sending;
+        // write cf task
+        let taskKey = this.dbSrv.newSendingTaskKey();
+        updates[`sendingsTask/${taskKey}`] = this.taskCF;
         return this.dbRef.update(updates);
     }
+
+    /**
+     *  CLOUD FUNCTION TASK
+     */
+    
+    // set task for Cloud Functions
+    private setTaskCF() {
+        this.taskCF = {
+            sendingId: this.sending.sendingId,
+            task: 'set_registered',
+            timestamp: this.dbSrv.getTimestamp()
+        }
+    }
+
 
     /**
      *  HELPERS
@@ -179,6 +195,8 @@ export class SendingCreateService{
         this.sending.objectImageDownloadUrl = uploadResult.imageUrl;
         this.sending.objectImageName = uploadResult.imageName;
         this.sending.objectImageFullPathRef = uploadResult.fullPath;
+        // reset temp
+        this.sending.objectImageUrlTemp = '';
     }
 
     /**
