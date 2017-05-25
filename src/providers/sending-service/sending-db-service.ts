@@ -25,9 +25,6 @@ export class SendingDbService {
         public dateSrv:DateService) {
     }
 
-    /**
-     *  WRITE
-     */
 
     newSendingKey():any {
         return this.dbRef.child(DB.ALL.REF).push().key;
@@ -37,6 +34,23 @@ export class SendingDbService {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
+    getDatabaseRef(child?:string) {
+        return firebase.database().ref();
+    }
+
+
+
+
+
+
+
+
+    /** DELETE UNUSED */
+
+    /**
+     *  WRITE
+     */
+
     newSending(sending:SendingRequest, summary:any, newKey:string, userid:string):firebase.Promise<any> {  
         console.log('dbSrv > newSending > start'); 
         // update refs array
@@ -44,13 +58,16 @@ export class SendingDbService {
         // set sendingId
         sending.sendingId = newKey;
         // sending full object
-        updates[DB.ALL.REF + newKey] = sending;        
+        updates['sendings/' + newKey] = sending;        
         // sending publicId reference 
-        updates[DB.PUBLICID.REF + sending.publicId] = newKey;
+        // >>> CF
+        updates['sendingsByPublicid/' + sending.publicId] = newKey;
         // add to sending stage created
-        updates[DB.STAGE_CREATED.REF + newKey] = summary;
+        // >>> CF
+        updates['_sendingsCreated/' + newKey] = summary;
         // user active sendings reference
-        updates[DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF + newKey] = summary;
+        // >>> CF
+        updates['userSendings/' + userid + '/active/' + newKey] = summary;
         // update and return promise
         return this.dbRef.update(updates);
     }

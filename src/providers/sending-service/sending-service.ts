@@ -1,3 +1,4 @@
+import { SendingCreateService } from './sending-create-service';
 import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
@@ -41,7 +42,8 @@ export class SendingService {
         public stagesSrv: SendingStagesService,
         public shipmentSrv:ShipmentsService,
         public notificationsSrv:SendingNotificationsService,
-        public paySrv: SendingPaymentService) {
+        public paySrv: SendingPaymentService,
+        private createSrv: SendingCreateService) {
         this.setUser();
     }
 
@@ -50,13 +52,21 @@ export class SendingService {
      * @return {object} [description]
      */
     initObj() {
-        return this.reqSrv.getInitialized();
+        return this.createSrv.new();
     }
 
-    // create sending
-    register(sending:SendingRequest):Promise<any> {
-        return this.stageCreatedSrv.register(sending, this.user.uid);
+    create(sending:SendingRequest): Promise<any> {
+        return this.createSrv.run(sending, this.user.uid);
     }
+
+
+
+
+
+    // register sending
+    // register(sending:SendingRequest):Promise<any> {
+    //     return this.stageCreatedSrv.register(sending, this.user.uid);
+    // }
 
     // set as paid
     paid(sendingId:string):Promise<any> {    

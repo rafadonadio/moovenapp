@@ -43,6 +43,7 @@ import { AccountSettingsService } from '../providers/users-service/account-setti
 import { AccountVerificationsService } from '../providers/users-service/account-verifications-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
+import { SendingCreateService } from '../providers/sending-service/sending-create-service';
 import { SendingStageCreatedService } from  '../providers/sending-service/sending-stage-created-service';
 import { SendingStageLiveService } from  '../providers/sending-service/sending-stage-live-service';
 import { SendingStageClosedService } from  '../providers/sending-service/sending-stage-closed-service';
@@ -61,6 +62,7 @@ import { HashService } from '../providers/hash-service/hash-service';
 import { PriceService } from '../providers/price-service/price-service';
 import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
 import { CheckoutService } from '../providers/checkout-service/checkout-service';
+import { StorageService } from '../providers/storage-service/storage-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
@@ -185,6 +187,7 @@ const myFirebaseAuthConfig = {
     SendingNotificationsService,
     SendingRequestService,  
     SendingStagesService,
+    SendingCreateService,
     ShipmentsService,
     ShipmentsDbService, 
     NotificationsService,
@@ -195,7 +198,8 @@ const myFirebaseAuthConfig = {
     HashService,
     MercadopagoService,
     PriceService,
-    CheckoutService
+    CheckoutService,
+    StorageService
   ],
 })
 export class AppModule {}

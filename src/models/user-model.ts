@@ -32,6 +32,7 @@ export const USER_CFG = {
     }
 }
 
+
 /**
  *  USERS MODELS
  */

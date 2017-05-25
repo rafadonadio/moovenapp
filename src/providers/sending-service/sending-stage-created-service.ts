@@ -64,7 +64,11 @@ export class SendingStageCreatedService {
                         this.uploadSendingImage(newKey, sending.objectImageUrlTemp, userId)
                             .then((snapshot) => {
                                 steps.imageUploaded = true;
-                                this.updateSendingImage(newKey, snapshot.downloadURL, snapshot.ref.name, snapshot.ref.fullPath);
+                                this.updateSendingImage(
+                                    newKey, 
+                                    snapshot.downloadURL, 
+                                    snapshot.ref.name, 
+                                    snapshot.ref.fullPath);
                                 console.log(steps);
                                 resolve(steps);                                
                             });
@@ -85,6 +89,13 @@ export class SendingStageCreatedService {
                     }
                 });
         });
+    }
+
+    private createSending(sending:SendingRequest, newKey:string, userId:string):firebase.Promise<any> {  
+            console.info('createSending > start');
+            //console.log('data > ', sending, newKey, userId);
+            let summary:any = this.reqSrv.getSummary(sending, CFG.STAGE.CREATED.ID);
+            return this.dbSrv.newSending(sending, summary, newKey, userId); 
     }
 
     // pay sending
@@ -244,12 +255,7 @@ export class SendingStageCreatedService {
      *  DATABASE WRITE
      */ 
 
-    private createSending(sending:SendingRequest, newKey:string, userId:string):firebase.Promise<any> {  
-            console.info('createSending > start');
-            //console.log('data > ', sending, newKey, userId);
-            let summary:any = this.reqSrv.getSummary(sending, CFG.STAGE.CREATED.ID);
-            return this.dbSrv.newSending(sending, summary, newKey, userId); 
-    }
+
 
     private updateSendingImage(
         sendingId:string, 

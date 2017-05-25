@@ -26,11 +26,7 @@ export class SendingCreate4Page implements OnInit {
         applyMinFare: false,
         items: [],
         processedKms: 0
-    };
-    // when created
-    sendingId:string;    
-    sendingCreated:boolean = false;
-    sendingPayed:boolean = false;    
+    };  
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
@@ -150,11 +146,11 @@ export class SendingCreate4Page implements OnInit {
         });
         loader.present();
         // save to db
-        this.sendingSrv.register(this.sending)
-            .then((result) => {
-                console.log('create success > steps ', result);
-                this.sendingId = result.sendingId;
-                this.sendingCreated= true;
+        this.create
+        this.sendingSrv.create(this.sending)
+            .then((sending) => {
+                console.log('create success > steps ', sending);
+                this.sending = sending;
                 loader.dismiss()
                     .then(() => {
                         this.runPayment();

@@ -275,10 +275,10 @@ export class CheckoutPage implements OnInit {
     private validateCardTokenAndPay(response) {
         console.info('__[CKT-3]__', response);
         this.cardToken = response;
-        if (this.hasTokenCardResponseError(response)) {
+        if (this.cardTokenResponseHasError(response)) {
             this.payLoader.dismiss()
                     .then(() => {
-                        this.showCreateCardTokenResponseError();
+                        this.showCardTokenResponseError();
                     })
                     .catch(error => console.log('dismiss error', error));
         } else {                
@@ -293,7 +293,7 @@ export class CheckoutPage implements OnInit {
         console.log('__[CKT-2]__', this.tokenData);        
     }
 
-    private hasTokenCardResponseError(response) {
+    private cardTokenResponseHasError(response) {
         let statusCode = response._response_status;
         console.log('__[CKT-3]__', statusCode);   
         return statusCode != 200 && statusCode != 201;
@@ -317,7 +317,7 @@ export class CheckoutPage implements OnInit {
             });             
     }
 
-    private showCreateCardTokenResponseError() {
+    private showCardTokenResponseError() {
         let statusCode = this.cardToken._response_status;
         let cause = this.cardToken.cause;
         let errorMsg: any = this.paySrv.getCardTokenErrorMsgMP(statusCode, cause);
