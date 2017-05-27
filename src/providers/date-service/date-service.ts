@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-
 import * as moment from 'moment';
+
+const defaultUTCzone = '-0300';  // Argentina
 
 @Injectable()
 export class DateService {
@@ -44,10 +45,10 @@ export class DateService {
      */
 
     // transform a timestamp to date
-    transformTimestampToHuman(timestamp:string):string {
+    transformTimestampToHuman(timestamp:string, utcOffset:string = defaultUTCzone):string {
         //console.info('transformTimestampToHuman');
-        let day = moment(timestamp);
-        let human = day.format('DD/MM/YYYY HH:mm');
+        moment(timestamp);
+        let human = moment().utcOffset(utcOffset).format('DD/MM/YYYY HH:mm');
         return human;
     }
 
