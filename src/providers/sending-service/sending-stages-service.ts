@@ -67,7 +67,7 @@ export class SendingStagesService {
      */
 
     getInitialized():SendingStages {
-        let stages:SendingStages = {
+        let stages = {
             _current: '',
             created: {
                 _current: '',
@@ -114,7 +114,11 @@ export class SendingStagesService {
                     dropped: {
                         set: false,
                         timestamp: 0,
-                    },                    
+                    },     
+                    notificationsexpired: {
+                        set: false,
+                        timestamp: 0,
+                    },                     
                 } 
             },
             closed: {
@@ -136,7 +140,11 @@ export class SendingStagesService {
                     gotoperatorexpired: {
                         set: false,
                         timestamp: 0,
-                    },                    
+                    },     
+                    payexpired: {
+                        set: false,
+                        timestamp: 0,
+                    },                   
                 } 
             }
         }

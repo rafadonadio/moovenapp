@@ -11,7 +11,7 @@ export const SENDING_CFG = {
                 _LIST: ['registered', 'paid', 'enabled'],
                 REGISTERED: 'registered',
                 PAID: 'paid', // paid done, not yet confirmed
-                ENABLED: 'enabled', // payment confirmed 
+                ENABLED: 'enabled', // payment confirmed
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
@@ -35,13 +35,14 @@ export const SENDING_CFG = {
         LIVE: {
             ID: 'live',
             STATUS: {
-                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped'],
+                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped','notificationsexpired'],
                 WAITOPERATOR: 'waitoperator',
                 GOTOPERATOR: 'gotoperator',
                 WAITPICKUP: 'waitpickup',
                 PICKEDUP: 'pickedup',
                 INROUTE: 'inroute',
-                DROPPED: 'dropped'
+                DROPPED: 'dropped',
+                NOTIFICATIONSEXPIRED: 'notificationsexpired'
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
@@ -74,11 +75,12 @@ export const SENDING_CFG = {
         CLOSED: {
             ID: 'closed',
             STATUS: {
-                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'gotoperatorexpired'],
+                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'gotoperatorexpired','payexpired'],
                 COMPLETE: 'complete',
                 CANCELEDBYSENDER: 'canceledbysender',
                 CANCELEDBYOPERATOR: 'canceledbyoperator',
-                GOTOPERATOREXPIRED: 'gotoperatorexpired'
+                GOTOPERATOREXPIRED: 'gotoperatorexpired',
+                PAYEXPIRED: 'payexpired' 
             }
         }
     },
@@ -536,7 +538,11 @@ export class StageLiveNode {
         dropped: {
             set: boolean,
             timestamp: number,
-        },                    
+        },        
+        notificationsexpired: {
+            set: boolean,
+            timestamp: number,
+        },                  
     } 
 }
 
@@ -559,7 +565,11 @@ export class StageClosedNode {
         gotoperatorexpired: {
             set: boolean,
             timestamp: number,
-        },                    
+        },      
+        payexpired: {
+            set: boolean,
+            timestamp: number,
+        },                   
     } 
 }
 
