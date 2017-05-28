@@ -172,9 +172,10 @@ export class CheckoutPage implements OnInit {
     }
 
     private showCheckoutAlert(title: string, msg: string, closePage: boolean = false) {
-        let alertError = this.alertCtrl.create({
+        let alert = this.alertCtrl.create({
             title: title,
             subTitle: msg,
+            enableBackdropDismiss: false,
             buttons: [
                 {
                     text: 'Cerrar',
@@ -189,7 +190,7 @@ export class CheckoutPage implements OnInit {
                 }
             ]
         });
-        alertError.present();
+        alert.present();       
     }
 
     // reset session, because if you need to repeat a new payment

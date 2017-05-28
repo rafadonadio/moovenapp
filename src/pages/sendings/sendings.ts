@@ -52,9 +52,10 @@ export class SendingsPage implements OnInit {
         loader.present();        
         // get
         let service = this.sendingsService.getSending(key);
-        service.subscribe(snapshot => {
+        let obs = service.subscribe(snapshot => {
             //console.log('getSending > success');
             loader.dismiss();
+            obs.unsubscribe();
             this.navCtrl.push(CheckoutPage, { sending: snapshot.val() });
         });
     }    

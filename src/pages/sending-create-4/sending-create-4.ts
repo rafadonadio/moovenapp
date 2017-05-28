@@ -84,14 +84,15 @@ export class SendingCreate4Page implements OnInit {
 
     private pay() {
         let alert = this.alertCtrl.create({
-            title: 'Pago',
-            message: 'Proceder con el el pago de $' + this.sending.price + ' para confirmar el servicio.',
+            title: 'Pagar el Servicio',
+            message: 'El servicio se ha registrado correctamente, procede con el pago de $' + this.sending.price + ' para confirmarlo.',
             buttons: [
                 {
                     text: 'Cancelar',
                     role: 'cancel',
                     handler: () => {
                         console.log('f4 > submit > confirm > canceled');
+                        this.goToSendings();
                     }
                 },
                 {
@@ -220,7 +221,7 @@ export class SendingCreate4Page implements OnInit {
                     text: 'Si, volver',
                     handler: () => {
                         console.log('f4 > cancel form > yes, cancel');
-                        this.navCtrl.setRoot(SendingsPage);
+                        this.goToSendings();
                     }
                 }
             ]
