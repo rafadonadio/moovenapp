@@ -7,7 +7,6 @@ import { ShipmentsService } from '../shipments-service/shipments-service';
 import { Injectable } from '@angular/core';
 
 import { UsersService } from '../users-service/users-service';
-import { SendingStageCreatedService } from '../sending-service/sending-stage-created-service';
 import { SendingStageLiveService } from '../sending-service/sending-stage-live-service';
 import { SendingStageClosedService } from '../sending-service/sending-stage-closed-service';
 import { SendingDbService } from '../sending-service/sending-db-service';
@@ -35,7 +34,6 @@ export class SendingService {
     constructor(public users: UsersService,
         public hashSrv: HashService,
         public reqSrv: SendingRequestService,
-        public stageCreatedSrv: SendingStageCreatedService,
         public stageLiveSrv: SendingStageLiveService,
         public stageClosedSrv: SendingStageClosedService,
         public dbSrv: SendingDbService,
@@ -58,25 +56,6 @@ export class SendingService {
     create(sending:SendingRequest): Promise<any> {
         return this.createSrv.run(sending, this.user.uid);
     }
-
-
-
-
-
-    // register sending
-    // register(sending:SendingRequest):Promise<any> {
-    //     return this.stageCreatedSrv.register(sending, this.user.uid);
-    // }
-
-    // set as paid
-    paid(sendingId:string):Promise<any> {    
-        return this.stageCreatedSrv.paid(sendingId, this.user.uid);       
-    }
-
-    enable(sendingId:string):Promise<any>  {
-        return this.stageCreatedSrv.enable(sendingId, this.user.uid);
-    }
-
 
     /**
      * Get REF of All sendings from current user

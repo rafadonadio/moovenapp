@@ -38,13 +38,5 @@ export class SendingPaymentService {
         return this.mpagoSrv.clearSession();
     }
 
-    /**
-     *  DB METHODS
-     */
-
-     saveCheckoutResultToDB(userId:string, sendingId:string, paymentResult:any, paymentResultState:any) {   
-        return this.dbSrv.writePaymentResult(userId, sendingId, paymentResult, paymentResultState);
-     }
-
 }
 

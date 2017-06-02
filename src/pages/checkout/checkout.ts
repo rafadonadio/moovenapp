@@ -122,48 +122,6 @@ export class CheckoutPage implements OnInit {
      *  POST PAYMENT
      */
 
-    // private saveResultAndShowAlert(checkoutResponse, paymentResultState) {
-    //     // save to Db 
-    //     let loader = this.loadingCtrl.create({ content: 'Finalizando ...' });
-    //     loader.present();
-    //     this.paySrv.saveCheckoutResultToDB(this.fbuser.uid, this.sending.sendingId, checkoutResponse, paymentResultState)
-    //         // .then((result) => {
-    //         //     console.info('__[CKT-6]__ WRITE OK')
-    //         //     // if (paymentResultState.setSendingPaid) {
-    //         //     //     console.log('__[CKT-6]__SET PAID')
-    //         //     //     return this.sendingSrv.paid(this.sending.sendingId);
-    //         //     // } else {
-    //         //     //     return false;
-    //         //     // }
-    //         // })
-    //         // .then((result) => {
-    //         //     // if (result && paymentResultState.setSendingEnabled) {
-    //         //     //     console.log('__[CKT-6]__PAID_OK')
-    //         //     //     console.log('__[CKT-6]__SET ENABLED')
-    //         //     //     return this.sendingSrv.enable(this.sending.sendingId);
-    //         //     // } else {
-    //         //     //     return false;
-    //         //     // }
-    //         // })
-    //         // .then((result) => {
-    //         //     console.log('__[CKT-6]__ENABLED_OK')
-    //         //     loader.dismiss()
-    //         //         .then(() => {
-    //         //             this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
-    //         //         })
-    //         //         .catch(error => console.log('dismiss error', error));
-    //         // })
-    //         .then((result) => {
-    //             console.info('__[CKT-6]__ WRITE OK')
-    //             loader.dismiss()
-    //                 .then(() => {
-    //                     this.showCheckoutAlert(paymentResultState.title, paymentResultState.message, true);
-    //                 })
-    //                 .catch(error => console.log('dismiss error', error));
-    //         })
-    //         .catch((error) => console.error('__[CKT-6]__', error));
-    // }
-
     private processPaymentResponse(checkoutResponse:any) {        
         this.clearSessionMP();
         let paymentResultState = this.chkServ.getPaymentResultState(checkoutResponse);

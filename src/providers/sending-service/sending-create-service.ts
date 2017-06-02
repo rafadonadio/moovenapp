@@ -158,7 +158,8 @@ export class SendingCreateService{
         this.taskCF = {
             sendingId: this.sending.sendingId,
             task: 'set_registered',
-            timestamp: this.dbSrv.getTimestamp()
+            timestamp: this.dbSrv.getTimestamp(),
+            origin: 'app'
         }
     }
 
