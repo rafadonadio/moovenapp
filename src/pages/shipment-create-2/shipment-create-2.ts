@@ -128,13 +128,10 @@ export class ShipmentCreate2Page implements OnInit {
             content: 'Confirmando servicio ...'
         });
         loading.present();
-        setTimeout(() => {
-            
-        }, 3000);
         // process
-        this.sendingSrv.takeVacant(this.sendingId)
-            .then((steps) => {
-                console.log('confirm() success > ', steps);
+        this.sendingSrv.setOperator(this.sendingId)
+            .then((result) => {
+                console.log('setOperator success');
                 // done
                 loading.dismiss()
                     .then(() => {
@@ -142,7 +139,8 @@ export class ShipmentCreate2Page implements OnInit {
                         this.presentSuccessToast();                        
                     });
             })
-            .catch((steps) => {
+            .catch((error) => {
+                console.log('setOperator error', error);
                 loading.dismiss()
                     .then(() => {
                         let title = 'Error';

@@ -55,31 +55,31 @@ export class SendingDbService {
      *  WRITE
      */
 
-    moveSendingCreatedToLive(userId:string, sending:SendingRequest, summary:any) {
-        console.log('moveSendingCreatedToLive > start');
-        let sendingId = sending.sendingId;
-        let stages = sending._stages;
-        let currentStage = sending._currentStage;
-        let currentStatus = sending._currentStatus;
-        let currentStage_Status = currentStage + '_' + currentStatus; 
-        // prepare updates
-        let updates = {};
-        // delete sendingCreated
-        updates[DB.STAGE_CREATED.REF + sendingId] = null;
-        // write sendingLive
-        updates[DB.STAGE_LIVE.REF + sendingId] = summary;
-        // update ALL stages
-        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.STAGES] = stages;
-        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE] = currentStage;
-        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STATUS] = currentStatus;
-        updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE_STATUS] = currentStage_Status;        
-        // update BYUSER
-        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE.REF] = currentStage;
-        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STATUS.REF] = currentStatus;
-        updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
-        console.log('moveSendingCreatedToLive > updates > ', updates);               
-        return this.dbRef.update(updates);               
-    }
+    // moveSendingCreatedToLive(userId:string, sending:SendingRequest, summary:any) {
+    //     console.log('moveSendingCreatedToLive > start');
+    //     let sendingId = sending.sendingId;
+    //     let stages = sending._stages;
+    //     let currentStage = sending._currentStage;
+    //     let currentStatus = sending._currentStatus;
+    //     let currentStage_Status = currentStage + '_' + currentStatus; 
+    //     // prepare updates
+    //     let updates = {};
+    //     // delete sendingCreated
+    //     updates[DB.STAGE_CREATED.REF + sendingId] = null;
+    //     // write sendingLive
+    //     updates[DB.STAGE_LIVE.REF + sendingId] = summary;
+    //     // update ALL stages
+    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.STAGES] = stages;
+    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE] = currentStage;
+    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STATUS] = currentStatus;
+    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE_STATUS] = currentStage_Status;        
+    //     // update BYUSER
+    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE.REF] = currentStage;
+    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STATUS.REF] = currentStatus;
+    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
+    //     console.log('moveSendingCreatedToLive > updates > ', updates);               
+    //     return this.dbRef.update(updates);               
+    // }
 
     moveSendingLiveToClosed(userId:string, sending:SendingRequest, summary:any) {
         console.log('moveSendingCreatedToLive > start');
@@ -114,12 +114,14 @@ export class SendingDbService {
             didLock: false,
             hadError: false,
             lockTimeLeft: 0,
+            isTaken: false,
             snapshot: {},
             error: {}            
         };
         let lockNode = {
             timestamp: firebase.database.ServerValue.TIMESTAMP,
             userId: userId,
+            taken: false
         };
         let ref = this.dbRef.child(DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._LOCK.REF);
         let self = this;
@@ -129,6 +131,12 @@ export class SendingDbService {
                 if(currentData === null) {
                     return lockNode;
                 }else{
+                    console.log('lockNode already exists, is it taken?');                    
+                    if(currentData.taken==true) {
+                        console.log('has been taken');
+                        result.isTaken = true;
+                        return;
+                    }
                     console.log('lockNode already exists, has expired?');                    
                     let lockTimestamp = currentData.timestamp;
                     let nowTimestamp = self.dateSrv.getUnixTimestamp();

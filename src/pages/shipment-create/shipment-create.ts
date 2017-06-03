@@ -71,6 +71,13 @@ export class ShipmentCreatePage implements OnInit {
                         .then(() => {
                             this.goToConfirm(sendingVacantId, sendingVacantData);
                         });
+                }else if(result.isTaken===true) {
+                    let title = 'Servicio tomado';
+                    let message = `El servicio ya ha sido tomado y esta siendo procesado. Por favor selecciona otro servicio.`;
+                    loader.dismiss()
+                        .then(() => {
+                            this.showAlertAndCancel(title, message);
+                        });                    
                 }else if(result.didLock===false) {
                     let timeLeft = Math.round(result.lockTimeLeft);
                     let title = 'No disponible';

@@ -62,6 +62,7 @@ import { PriceService } from '../providers/price-service/price-service';
 import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
 import { CheckoutService } from '../providers/checkout-service/checkout-service';
 import { StorageService } from '../providers/storage-service/storage-service';
+import { SendingSetOperatorService } from '../providers/sending-service/sending-set-operator-service';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
@@ -186,6 +187,7 @@ const myFirebaseAuthConfig = {
     SendingRequestService,  
     SendingStagesService,
     SendingCreateService,
+    SendingSetOperatorService,
     ShipmentsService,
     ShipmentsDbService, 
     NotificationsService,
