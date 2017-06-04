@@ -163,21 +163,45 @@ export class ShipmentDetailPage implements OnInit {
     }
 
     private runNotifyAction(action:string):void {      
-        if(action=='pickupDone') {
-            this.sendingSrv.updateLiveStatusToPickedup(
-                                            this.shipment.shipmentId, 
-                                            this.sending.sendingId)
-                .then((result) => {
-                    console.log('runNotifyAction > success', result);
-                })
-                .catch((error) => {
-                    console.error('runNotifyAction > failed', error);
-                });
-        }else if(action=='dropDone') {
-            this.sendingSrv.updateLiveStatusToDroppedAndComplete(this.shipment.shipmentId, this.sending.sendingId);    
-        }else if(action=='cancel') {
-            //this.sendingSrv.updateLiveStatusToCanceled(this.shipment.shipmentId, this.sending.sendingId);    
-        } 
+        switch(action) {
+            case 'pickupDone':
+                this.sendingSrv.setPickedup(this.sending.sendingId)
+                    .then((result) => {
+                        console.log('runNotifyAction > success', result);
+                    })
+                    .catch((error) => {
+                        console.error('runNotifyAction > failed', error);
+                    });
+                break;
+            case 'dropDone':
+                this.sendingSrv.updateLiveStatusToDroppedAndComplete(this.shipment.shipmentId, this.sending.sendingId)
+                    .then((result) => {
+                        console.log('runNotifyAction > success', result);
+                    })
+                    .catch((error) => {
+                        console.error('runNotifyAction > failed', error);
+                    });
+                break;
+            case 'cancel':
+                //this.sendingSrv.updateLiveStatusToCanceled(this.shipment.shipmentId, this.sending.sendingId);    
+                break;
+        }
+
+        // if(action=='pickupDone') {
+        //     this.sendingSrv.updateLiveStatusToPickedup(
+        //                                     this.shipment.shipmentId, 
+        //                                     this.sending.sendingId)
+        //         .then((result) => {
+        //             console.log('runNotifyAction > success', result);
+        //         })
+        //         .catch((error) => {
+        //             console.error('runNotifyAction > failed', error);
+        //         });
+        // }else if(action=='dropDone') {
+        //     this.sendingSrv.updateLiveStatusToDroppedAndComplete(this.shipment.shipmentId, this.sending.sendingId);    
+        // }else if(action=='cancel') {
+        //     //this.sendingSrv.updateLiveStatusToCanceled(this.shipment.shipmentId, this.sending.sendingId);    
+        // } 
     }
 
 }

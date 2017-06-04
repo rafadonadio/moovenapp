@@ -1,4 +1,5 @@
-import { SendingSetOperatorService } from './sending-set-operator-service';
+import { SendingSetPickedupService } from './sending-set-pickedup-service';
+import { SendingSetGotoperatorService } from './sending-set-gotoperator-service';
 import { SendingCreateService } from './sending-create-service';
 import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
@@ -40,7 +41,8 @@ export class SendingService {
         public notificationsSrv:SendingNotificationsService,
         public paySrv: SendingPaymentService,
         private createSrv: SendingCreateService,
-        private setOperSrv: SendingSetOperatorService) {
+        private setGotoperSrv: SendingSetGotoperatorService,
+        private setPickSrv: SendingSetPickedupService) {
         this.setUser();
     }
 
@@ -57,7 +59,11 @@ export class SendingService {
     }
 
     setOperator(sendingId:string) {
-        return this.setOperSrv.run(sendingId, this.user.uid);
+        return this.setGotoperSrv.run(sendingId, this.user.uid);
+    }
+
+    setPickedup(sendingId:string) {
+        return this.setPickSrv.run(sendingId, this.user.uid);
     }
 
     /**
@@ -96,64 +102,64 @@ export class SendingService {
      *  UPDATE STATUS IN STAGE.LIVE
      */
 
-    updateLiveStatusToPickedup(shipmentId:string, sendingId:string):Promise<any> {
-        console.info('updateStatusOnStageLive > init');
-        let steps = {
-            get: false,
-            update1: false,
-            update2: false,
-            updateDb: false
-        };
-        let sending:SendingRequest;
-        let currentStage:string;
-        let currentStatus:string;
-        let timestamp = firebase.database.ServerValue.TIMESTAMP;
-        let operatorUserId:string;
-        return new Promise((resolve, reject) => {
-            this.dbSrv.getSendingbyIdOnce(sendingId)
-                .then((snapshot) => {
-                    console.log('getSendingbyIdOnce > success');
-                    steps.get = true;
-                    sending = snapshot.val();
-                    operatorUserId = sending._operator.userId;
-                    //update LIVE STAGE to new Status
-                    currentStage = CFG.STAGE.LIVE.ID;
-                    currentStatus = CFG.STAGE.LIVE.STATUS.PICKEDUP;
-                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);                    
-                })
-                .then((stages1) => {
-                    console.log('updateStageTo > success');
-                    steps.update1 = true;
-                    // update local variable, used by notification log
-                    sending = this.updateLocalSendingStages(sending, stages1);
-                    // set new notification
-                    this.logNotifications(sendingId, sending);                    
-                    //update LIVE STAGE to new Status
-                    currentStage = CFG.STAGE.LIVE.ID;
-                    currentStatus = CFG.STAGE.LIVE.STATUS.INROUTE;
-                    return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp); 
-                })
-                .then((stages2) => {
-                    console.log('updateStageTo > success');
-                    steps.update2 = true;
-                    // update local variable, used by notification log
-                    sending = this.updateLocalSendingStages(sending, stages2);
-                    // set new notification
-                    this.logNotifications(sendingId, sending);
-                    // update stages in database
-                    return this.dbSrv.updateShipmentAndSendingLiveStage(this.user.uid, sendingId, stages2, shipmentId, operatorUserId);
-                })
-                .then(() => {
-                    console.log('updateShipmentAndSendingLiveStage > success');
-                    steps.updateDb = true;
-                    resolve(steps);
-                })
-                .catch((error) => {
-                    console.log('updateShipmentAndSendingLiveStage > error', error);
-                    reject(steps);
-                });
-        });
-    }
+    // updateLiveStatusToPickedup(shipmentId:string, sendingId:string):Promise<any> {
+    //     console.info('updateStatusOnStageLive > init');
+    //     let steps = {
+    //         get: false,
+    //         update1: false,
+    //         update2: false,
+    //         updateDb: false
+    //     };
+    //     let sending:SendingRequest;
+    //     let currentStage:string;
+    //     let currentStatus:string;
+    //     let timestamp = firebase.database.ServerValue.TIMESTAMP;
+    //     let operatorUserId:string;
+    //     return new Promise((resolve, reject) => {
+    //         this.dbSrv.getSendingbyIdOnce(sendingId)
+    //             .then((snapshot) => {
+    //                 console.log('getSendingbyIdOnce > success');
+    //                 steps.get = true;
+    //                 sending = snapshot.val();
+    //                 operatorUserId = sending._operator.userId;
+    //                 //update LIVE STAGE to new Status
+    //                 currentStage = CFG.STAGE.LIVE.ID;
+    //                 currentStatus = CFG.STAGE.LIVE.STATUS.PICKEDUP;
+    //                 return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);                    
+    //             })
+    //             .then((stages1) => {
+    //                 console.log('updateStageTo > success');
+    //                 steps.update1 = true;
+    //                 // update local variable, used by notification log
+    //                 sending = this.updateLocalSendingStages(sending, stages1);
+    //                 // set new notification
+    //                 this.logNotifications(sendingId, sending);                    
+    //                 //update LIVE STAGE to new Status
+    //                 currentStage = CFG.STAGE.LIVE.ID;
+    //                 currentStatus = CFG.STAGE.LIVE.STATUS.INROUTE;
+    //                 return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp); 
+    //             })
+    //             .then((stages2) => {
+    //                 console.log('updateStageTo > success');
+    //                 steps.update2 = true;
+    //                 // update local variable, used by notification log
+    //                 sending = this.updateLocalSendingStages(sending, stages2);
+    //                 // set new notification
+    //                 this.logNotifications(sendingId, sending);
+    //                 // update stages in database
+    //                 return this.dbSrv.updateShipmentAndSendingLiveStage(this.user.uid, sendingId, stages2, shipmentId, operatorUserId);
+    //             })
+    //             .then(() => {
+    //                 console.log('updateShipmentAndSendingLiveStage > success');
+    //                 steps.updateDb = true;
+    //                 resolve(steps);
+    //             })
+    //             .catch((error) => {
+    //                 console.log('updateShipmentAndSendingLiveStage > error', error);
+    //                 reject(steps);
+    //             });
+    //     });
+    // }
 
     updateLiveStatusToDroppedAndComplete(shipmentId:string, sendingId:string):Promise<any> {
         console.info('updateLiveStatusToDroppedAndComplete > init');

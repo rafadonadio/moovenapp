@@ -1,16 +1,14 @@
 import { SendingDbService } from './sending-db-service';
-import { SendingRequest } from '../../models/sending-model';
 import { Injectable } from '@angular/core';
 
 import firebase from 'firebase';
 
 @Injectable()
-export class SendingSetOperatorService{
+export class SendingSetPickedupService{
 
     private sendingId:string;
     private userId:string;
     private taskCF:any;
-    private lockNode:any;
     private dbRef: firebase.database.Reference;
 
     constructor(private dbSrv: SendingDbService) {}
@@ -19,18 +17,15 @@ export class SendingSetOperatorService{
         this.setDbRef();
         this.sendingId = sendingId;
         this.userId = userId;
-        return this.write();        
+        return this.write();   
     }
 
     private write() {
         this.setTaskCF();
-        this.setLockNode();
         return new Promise((resolve, reject) => {
             // write cf task
             let updates = {};        
             let taskKey = this.dbSrv.newSendingTaskKey();
-            // update lockNode
-            updates[`_sendingsLive/${this.sendingId}/_locked`] = this.lockNode;
             // create task
             updates[`sendingsTask/${taskKey}`] = this.taskCF;
             // write
@@ -49,17 +44,9 @@ export class SendingSetOperatorService{
         this.taskCF = {
             sendingId: this.sendingId,
             userId: this.userId,
-            task: 'set_gotoperator',
+            task: 'set_pickedup',
             timestamp: this.dbSrv.getTimestamp(),
             origin: 'app'
-        }
-    }
-
-    private setLockNode() {
-        this.lockNode = {
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            userId: this.userId,
-            taken: true
         }
     }
 
