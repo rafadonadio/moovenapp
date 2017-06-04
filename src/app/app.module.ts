@@ -64,6 +64,7 @@ import { CheckoutService } from '../providers/checkout-service/checkout-service'
 import { StorageService } from '../providers/storage-service/storage-service';
 import { SendingSetGotoperatorService } from '../providers/sending-service/sending-set-gotoperator-service';
 import { SendingSetPickedupService } from '../providers/sending-service/sending-set-pickedup-service';
+import { SendingSetDroppedService } from '../providers/sending-service/sending-set-dropped-service';
 
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
@@ -191,6 +192,7 @@ const myFirebaseAuthConfig = {
     SendingCreateService,
     SendingSetGotoperatorService,
     SendingSetPickedupService,
+    SendingSetDroppedService,
     ShipmentsService,
     ShipmentsDbService, 
     NotificationsService,
