@@ -116,9 +116,9 @@ export class SendingsPage implements OnInit {
 
     private getAllActive() {
         console.log('__SND__getAllActive()');
-        this.sendings = [];
         let listRef = this.sendingsService.getAllMyActiveRef();
         this.sendingsSuscription = listRef.subscribe(snapshots => {
+            this.sendings = [];
             if (snapshots) {
                 snapshots.forEach(snapshot => {
                     let key = snapshot.key;

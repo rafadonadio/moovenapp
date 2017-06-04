@@ -404,6 +404,7 @@ export class SendingRequest {
     _currentStatus?: string;
     _currentStage_Status?: string;  
     _operator?: SendingOperator;
+    _shipmentId?: string;
     _notifications?: Array<SendingNotifications>;
     _payments?: any;
     objectShortName: string;
