@@ -31,10 +31,9 @@ export class SendingSetOperatorService{
             let taskKey = this.dbSrv.newSendingTaskKey();
             // update lockNode
             updates[`_sendingsLive/${this.sendingId}/_locked`] = this.lockNode;
-            // write task
+            // create task
             updates[`sendingsTask/${taskKey}`] = this.taskCF;
-            // hard lock sending
-
+            // write
             this.dbRef.update(updates)
                 .then((result) => {
                     resolve();

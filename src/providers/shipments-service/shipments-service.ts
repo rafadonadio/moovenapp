@@ -25,14 +25,14 @@ export class ShipmentsService {
         /* populate */
         let shipment:any = {};
         shipment.shipmentId = newKey;
-        shipment.timestamp = this.dbSrv.getTimestamp();
-        shipment.userUid = this.user.uid;
         shipment.publicId = this.hashSrv.genId();
+        shipment.userUid = this.user.uid;
         shipment.sendingId = sending.sendingId;
         shipment.sendingPublicId = sending.publicId;
         shipment.summary = this.getSummary(sending);
         shipment._currentStage_Status = sending._currentStage_Status;
         shipment._active = true;
+        shipment.timestamp = this.dbSrv.getTimestamp();
 
         return new Promise((resolve, reject) => {
             this.dbSrv.newShipment(shipment, newKey, this.user.uid)

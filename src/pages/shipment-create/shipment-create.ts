@@ -20,8 +20,8 @@ import { UsersService } from '../../providers/users-service/users-service';
 })
 export class ShipmentCreatePage implements OnInit {
 
-    vacants = [];
-    vacantListener:any;
+    vacants;
+    vacantSubs:any;
     // map
     map: any;
     mapMarkers = {
@@ -52,7 +52,7 @@ export class ShipmentCreatePage implements OnInit {
         });
         this.viewCtrl.didLeave.subscribe( () => {
             console.log('__SCT__didLeave()');
-            this.vacantListener.unsubscribe();
+            this.vacantSubs.unsubscribe();
         });
     }
 
@@ -148,8 +148,9 @@ export class ShipmentCreatePage implements OnInit {
      */
 
     private getVacants() {
-        let vacants = this.sendingSrv.getLiveVacant();
-        this.vacantListener = vacants.subscribe(snapshots => {
+        let vacantsObs = this.sendingSrv.getLiveVacant();
+        this.vacantSubs = vacantsObs.subscribe(snapshots => {
+            this.vacants = [];
             if(snapshots) {
                 snapshots.forEach(snapshot => {
                     let key = snapshot.key;
