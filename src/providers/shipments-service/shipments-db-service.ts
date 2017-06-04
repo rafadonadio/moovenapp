@@ -1,4 +1,4 @@
-import { SHIPMENT_DB, ShipmentRequest } from '../../models/shipment-model';
+import { SHIPMENT_DB } from '../../models/shipment-model';
 import { Injectable } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 
@@ -16,28 +16,8 @@ export class ShipmentsDbService {
     constructor(public af:AngularFire) {
     }
 
-    newSendingKey():any {
-        return this.dbRef.child(DB.ALL.REF).push().key;
-    }
-
     getTimestamp():any {
         return firebase.database.ServerValue.TIMESTAMP;
-    }
-
-    newShipment(shipment:ShipmentRequest, newKey:string, userid:string):firebase.Promise<any> {  
-        console.log('dbSrv > newShipment > start'); 
-        // update refs array
-        let updates = {};
-        // set sendingId
-        shipment.shipmentId = newKey;
-        // sending full object
-        updates[DB.ALL.REF + newKey] = shipment;        
-        // sending publicId hash reference 
-        updates[DB.HASHID.REF + shipment.publicId] = newKey;
-        // operator new active shipment reference
-        updates[DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF + newKey] = shipment;
-        // update and return promise
-        return this.dbRef.update(updates);
     }
 
     /**

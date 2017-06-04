@@ -56,7 +56,7 @@ export class ShipmentCreate2Page implements OnInit {
             content: 'cancelando ...'
         });
         loading.present();
-        // just try to unlock, if it fails we'll try again in other place
+        // just try to unlock
         this.unlockSending();
         setTimeout(() => {
             loading.dismiss()

@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
 import { ShipmentCreate2Page } from '../shipment-create-2/shipment-create-2';
-import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import {
     GMAP_CFG,
@@ -35,7 +34,6 @@ export class ShipmentCreatePage implements OnInit {
         public gmapsService: GoogleMapsService,
         public dateSrv: DateService,
         public users: UsersService,
-        public shipSrv:ShipmentsService,
         public sendingSrv:SendingService,
         public alertCtrl: AlertController,
         public loaderCtrl: LoadingController,
@@ -45,6 +43,7 @@ export class ShipmentCreatePage implements OnInit {
 
     ngOnInit() {
         console.info('__SCT__ shipmentCreate');
+        // MANAGE SUSCRIPTIONS
         this.viewCtrl.didEnter.subscribe( () => {
             console.log('__SCT__willEnter()');
             this.initMap();

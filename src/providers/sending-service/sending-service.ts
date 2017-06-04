@@ -3,8 +3,7 @@ import { SendingCreateService } from './sending-create-service';
 import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
-import { UserAccountSettings, UserProfileData } from '../../models/user-model';
-import { ShipmentsService } from '../shipments-service/shipments-service';
+import { UserAccountSettings } from '../../models/user-model';
 import { Injectable } from '@angular/core';
 
 import { UsersService } from '../users-service/users-service';
@@ -17,7 +16,6 @@ import { HashService } from '../hash-service/hash-service';
 
 import {
     SENDING_CFG,
-    SendingOperator,
     SendingRequest,
     SendingStages
 } from '../../models/sending-model';
@@ -39,7 +37,6 @@ export class SendingService {
         public stageClosedSrv: SendingStageClosedService,
         public dbSrv: SendingDbService,
         public stagesSrv: SendingStagesService,
-        public shipmentSrv:ShipmentsService,
         public notificationsSrv:SendingNotificationsService,
         public paySrv: SendingPaymentService,
         private createSrv: SendingCreateService,
@@ -94,86 +91,6 @@ export class SendingService {
     unlockVacant(sendingId:string): firebase.Promise<any> {
         return this.dbSrv.unlockSendingLiveVacant(sendingId);
     }
-
-    // sending is locked, and is within timeframe available to confirm
-    // this is not being checked again
-    // takeVacant(sendingId:string):Promise<any> {
-    //     console.info('confirmVacant > start');
-    //     let steps = {
-    //         get: false,
-    //         getOperator: false,
-    //         updateStage1: false,
-    //         updateStage2: false,
-    //         updateDb: false,
-    //         createShipment: false
-    //     };
-    //     let sending:SendingRequest;
-    //     let timestamp = firebase.database.ServerValue.TIMESTAMP;
-    //     let sendingOperator: SendingOperator;        
-    //     return new Promise((resolve, reject) => {
-    //         this.dbSrv.getSendingbyIdOnce(sendingId)
-    //             .then((snapshot) => {
-    //                 console.log('getSendingbyIdOnce > success ', sendingId);
-    //                 steps.get = true;
-    //                 sending = snapshot.val();
-    //                 return this.getUserDataAsOperator();
-    //             })
-    //             .then((operator) => {
-    //                 console.log('get operator data > success', operator);
-    //                 steps.getOperator = true;
-    //                 sendingOperator = operator;
-    //                 sending._operator = operator;
-    //                 // update LIVE to GOTOPERATOR
-    //                 let currentStage = CFG.STAGE.LIVE.ID;
-    //                 let currentStatus = CFG.STAGE.LIVE.STATUS.GOTOPERATOR; // Got Operator
-    //                 // update stage values
-    //                 return this.stagesSrv.updateStageTo(sending._stages, currentStage, currentStatus, timestamp);
-    //             })
-    //             .then((stages1) => {      
-    //                 console.log('updateStageTo 1 > success');
-    //                 steps.updateStage1 = true;
-    //                 // update local variable, used by notification log
-    //                 sending = this.updateLocalSendingStages(sending, stages1);
-    //                 // set new notification
-    //                 this.logNotifications(sendingId, sending);
-    //                 //update LIVE to WAITPICKUP
-    //                 let currentStage = CFG.STAGE.LIVE.ID;
-    //                 let currentStatus = CFG.STAGE.LIVE.STATUS.WAITPICKUP;
-    //                 // update stage values
-    //                 return this.stagesSrv.updateStageTo(stages1, currentStage, currentStatus, timestamp);  
-    //             })              
-    //             .then((stages2) => {    
-    //                 console.log('updateStageTo 2 > success');
-    //                 steps.updateStage2 = true;     
-    //                 // update local variable, used by notification log
-    //                 sending = this.updateLocalSendingStages(sending, stages2);
-    //                 // set new notification
-    //                 this.logNotifications(sendingId, sending);                                                 
-    //                 // update SendingLive Stage and set Operator
-    //                 return this.dbSrv.setSendingLiveOperatorAndUpdateStage(this.user.uid, sendingId, stages2, sendingOperator);
-    //             })
-    //             .then(() => {
-    //                 console.log('updateSendingLiveStage > success');
-    //                 steps.updateDb = true;
-    //                 // create the shipment for reference
-    //                 return this.shipmentSrv.create(sending);
-    //             })                
-    //             .then(() => {
-    //                 console.log('shipment create > success');
-    //                 steps.createShipment = true;
-    //                 // all good
-    //                 resolve(steps);
-    //             }) 
-    //             .catch((error) => {
-    //                 console.log('getSendingbyIdOnce OR updateSendingLiveStage > error', error);
-    //                 if(steps.createShipment == true) {
-    //                     resolve(steps);
-    //                 }else{
-    //                     reject(steps);
-    //                 }
-    //             });                               
-    //     });
-    // }
 
     /**
      *  UPDATE STATUS IN STAGE.LIVE
@@ -414,27 +331,6 @@ export class SendingService {
             .then((snapshot) => {
                 this.userSettings = snapshot.val();
             }); 
-    }
-
-    private getUserDataAsOperator():Promise<any> {
-        let operator:any = {};
-        let profileData:UserProfileData;
-        return new Promise((resolve, reject) => {
-            this.users.getAccountProfileData()
-                .then((snapshot) => {
-                    profileData = snapshot.val();
-                    // populate
-                    operator.userId = this.user.uid;
-                    operator.displayName = this.user.displayName;
-                    operator.email = profileData.email;
-                    operator.phone = profileData.phonePrefix+profileData.phoneMobile;
-                    operator.photoURL = profileData.photoURL;
-                    resolve(operator);
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
     }
 
     private updateLocalSendingStages(sending:SendingRequest, stages:SendingStages):SendingRequest {
