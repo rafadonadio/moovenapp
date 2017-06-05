@@ -1,5 +1,4 @@
 import { SendingDbService } from './sending-db-service';
-import { SendingRequest } from '../../models/sending-model';
 import { Injectable } from '@angular/core';
 
 import firebase from 'firebase';

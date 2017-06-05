@@ -47,39 +47,9 @@ export class SendingDbService {
     }
 
 
-
-    /** DELETE UNUSED */
-
     /**
      *  WRITE
      */
-
-    // moveSendingLiveToClosed(userId:string, sending:SendingRequest, summary:any) {
-    //     console.log('moveSendingCreatedToLive > start');
-    //     let sendingId = sending.sendingId;
-    //     let stages = sending._stages;
-    //     let currentStage = sending._currentStage;
-    //     let currentStatus = sending._currentStatus;
-    //     let currentStage_Status = currentStage + '_' + currentStatus; 
-    //     // prepare updates
-    //     let updates = {};
-    //     // delete sendingCreated
-    //     updates[DB.STAGE_CREATED.REF + sendingId] = null;
-    //     // write sendingLive
-    //     updates[DB.STAGE_LIVE.REF + sendingId] = summary;
-    //     // update ALL stages
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.STAGES] = stages;
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE] = currentStage;
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STATUS] = currentStatus;
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE_STATUS] = currentStage_Status;        
-    //     // update BYUSER
-    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE.REF] = currentStage;
-    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STATUS.REF] = currentStatus;
-    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
-    //     console.log('moveSendingCreatedToLive > updates > ', updates);               
-    //     return this.dbRef.update(updates);               
-    // }
-
 
     attemptToLockSendingLiveVacant(sendingId:string, userId:string):Promise<any> {
         console.info('attemptToLockSendingLiveVacant > init');
@@ -148,43 +118,6 @@ export class SendingDbService {
         updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._LOCK.REF] = null;
         return this.dbRef.update(updates); 
     }
-
-    // updateShipmentAndSendingLiveStage(userId:string, sendingId:string, stages:SendingStages, shipmentId: string, operatorUserId:string):firebase.Promise<any> {
-    //     console.log('update sending and shipment stages > init');
-    //     // set auxiliar value
-    //     let currentStage = stages._current;
-    //     let currentStatus = stages[currentStage]._current;
-    //     let currentStage_Status = `${currentStage}_${currentStatus}`; 
-    //     // prepare updates
-    //     let updates = {};
-    //     /**
-    //      * SENDING
-    //      */
-    //     // update ALL (sendings)
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.STAGES] = stages;
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE] = currentStage;
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STATUS] = currentStatus;
-    //     updates[DB.ALL.REF + sendingId + DB.ALL._CHILD.CURRENT_STAGE_STATUS] = currentStage_Status;
-    //     // update BYUSER (sendings)
-    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE.REF] = currentStage;
-    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STATUS.REF] = currentStatus;
-    //     updates[DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF + sendingId + DB.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
-    //     // update LIVE (sendings)
-    //     updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STAGE.REF] = currentStage;
-    //     updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STATUS.REF] = currentStatus;
-    //     updates[DB.STAGE_LIVE.REF + sendingId + DB.STAGE_LIVE._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status; 
-    //     /**
-    //      * SHIPMENT
-    //     */        
-    //     // update ALL (shipments)
-    //     updates[DBSHP.ALL.REF + shipmentId + DBSHP.ALL._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status; 
-    //     // update operatorShipment.active
-    //     updates[DBSHP.BYUSER.REF + operatorUserId + DBSHP.BYUSER._CHILD.ACTIVE.REF + shipmentId + DBSHP.BYUSER._CHILD.CURRENT_STAGE_STATUS.REF] = currentStage_Status;
-    //     // update
-    //     console.log('updateSendingCreatedStages > updates > ', updates);               
-    //     return this.dbRef.update(updates);         
-    // }
-
 
     /**
      *  READ
