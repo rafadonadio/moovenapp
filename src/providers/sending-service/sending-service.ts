@@ -9,11 +9,8 @@ import { UserAccountSettings } from '../../models/user-model';
 import { Injectable } from '@angular/core';
 
 import { UsersService } from '../users-service/users-service';
-import { SendingStageLiveService } from '../sending-service/sending-stage-live-service';
-import { SendingStageClosedService } from '../sending-service/sending-stage-closed-service';
 import { SendingDbService } from '../sending-service/sending-db-service';
 import { SendingRequestService } from '../sending-service/sending-request-service';
-import { SendingStagesService } from '../sending-service/sending-stages-service';
 import { HashService } from '../hash-service/hash-service';
 import { SendingRequest } from '../../models/sending-model';
 
@@ -28,10 +25,7 @@ export class SendingService {
     constructor(public users: UsersService,
         public hashSrv: HashService,
         public reqSrv: SendingRequestService,
-        public stageLiveSrv: SendingStageLiveService,
-        public stageClosedSrv: SendingStageClosedService,
         public dbSrv: SendingDbService,
-        public stagesSrv: SendingStagesService,
         public notificationsSrv:SendingNotificationsService,
         public paySrv: SendingPaymentService,
         private createSrv: SendingCreateService,

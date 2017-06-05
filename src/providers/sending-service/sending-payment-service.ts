@@ -3,14 +3,12 @@ import { CardTokenData, PrepaymentData } from '../payment-gateways/mercadopago-m
 import { MercadopagoService } from '../payment-gateways/mercadopago-service';
 import { Injectable } from '@angular/core';
 import { SendingDbService } from '../sending-service/sending-db-service';
-import { SendingStagesService } from '../sending-service/sending-stages-service';
 
 
 @Injectable()
 export class SendingPaymentService {
 
     constructor(public dbSrv: SendingDbService,
-        public stagesSrv: SendingStagesService,
         public mpagoSrv: MercadopagoService) {}
 
 
