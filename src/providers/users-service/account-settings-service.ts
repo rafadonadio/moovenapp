@@ -1,6 +1,5 @@
 import { USER_CFG, USER_DB_REF, UserAccount, UserAccountSettings } from '../../models/user-model';
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
 
 import firebase from 'firebase';
 
@@ -13,7 +12,7 @@ export class AccountSettingsService {
 
     dbRef = firebase.database().ref();
 
-    constructor(public af: AngularFire) {
+    constructor() {
     }
 
     getByUid(userid:string): firebase.Promise<any> {

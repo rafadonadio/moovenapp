@@ -1,8 +1,6 @@
 import { AccountSettingsService } from './account-settings-service';
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
 import { AccountProfileService } from '../users-service/account-profile-service';
-import { AccountVerificationsService } from '../users-service/account-verifications-service';
 import {
     USER_CFG,
     USER_DB_REF,
@@ -25,9 +23,7 @@ export class AccountService {
     db = firebase.database();
     dbRef = firebase.database().ref();
 
-    constructor(public af:AngularFire,
-        public profileSrv:AccountProfileService,
-        public verificSrv:AccountVerificationsService,
+    constructor(public profileSrv:AccountProfileService,
         public settingsSrv:AccountSettingsService) {
     }
 

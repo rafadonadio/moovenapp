@@ -88,10 +88,10 @@ export class SignupPage implements OnInit {
                     });
             })
             .catch((error) => {
-                console.error('__CUS__', error);
+                console.error('__CUS__', error.message);
                 this.loader.dismiss()
                     .then(() => {
-                        this.presentErrorAlert(error.code);
+                        this.presentErrorAlert(error.message);
                     });
         });
     }

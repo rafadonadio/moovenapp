@@ -1,6 +1,6 @@
 import { SHIPMENT_DB } from '../../models/shipment-model';
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 import firebase from 'firebase';
 
@@ -13,7 +13,7 @@ export class ShipmentsDbService {
     db: any = firebase.database();
     dbRef: firebase.database.Reference = firebase.database().ref();
 
-    constructor(public af:AngularFire) {
+    constructor(public afDB:AngularFireDatabase) {
     }
 
     getTimestamp():any {
@@ -25,14 +25,14 @@ export class ShipmentsDbService {
      */
 
     getShipmentsActiveByUser(userid:string, getSnapshot:boolean = true) {
-        return this.af.database
+        return this.afDB
                 .list(DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF, { 
                     preserveSnapshot: getSnapshot,
                 });
     } 
 
     getShipmentById(shipmentId:string, getSnapshot:boolean = true) {
-        return this.af.database
+        return this.afDB
                 .object(DB.ALL.REF + shipmentId, {
                     preserveSnapshot: getSnapshot,
                 });       

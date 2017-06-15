@@ -55,8 +55,8 @@ export class ModalAuthResetPasswordPage implements OnInit{
                 alert.present();
             })
             .catch((error) => {
-                console.log('reset password error > ', error.code);
-                this.showAlert(error.code);
+                console.log('reset password error > ', error);
+                this.showAlert(error.message);
             });
     }
 

@@ -5,7 +5,6 @@ import {
     SendingNotifications,
     SendingRequest
 } from '../../models/sending-model';
-import { AngularFire } from 'angularfire2';
 import { Injectable } from '@angular/core';
 import { LocalNotifications } from 'ionic-native';
 
@@ -21,8 +20,7 @@ export class SendingNotificationsService {
     db: any = firebase.database();
     dbRef: firebase.database.Reference = firebase.database().ref();
 
-    constructor(public af:AngularFire,
-        public dateSrv: DateService) {
+    constructor(public dateSrv: DateService) {
     }
 
     // check if currentStage_Status exist in CFG object with notification settings

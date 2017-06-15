@@ -40,7 +40,6 @@ import { AccountEmailVerificationService } from '../providers/users-service/acco
 import { AccountService } from '../providers/users-service/account-service';
 import { AccountProfileService } from '../providers/users-service/account-profile-service';
 import { AccountSettingsService } from '../providers/users-service/account-settings-service';
-import { AccountVerificationsService } from '../providers/users-service/account-verifications-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { SendingService } from  '../providers/sending-service/sending-service';
 import { SendingCreateService } from '../providers/sending-service/sending-create-service';
@@ -77,7 +76,9 @@ const cloudSettings: CloudSettings = {
 };
 
 // AngularFire
-import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireAuthModule } from 'angularfire2/auth';
 // AF2 Settings
 export const firebaseConfig = {
     apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
@@ -86,10 +87,6 @@ export const firebaseConfig = {
     storageBucket: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.storageBucket,
     messagingSenderId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.messagingSenderId
 };
-const myFirebaseAuthConfig = {
-    provider: AuthProviders.Password,
-    method: AuthMethods.Password
-}
 
 @NgModule({
   declarations: [
@@ -132,7 +129,9 @@ const myFirebaseAuthConfig = {
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig),
+    AngularFireModule.initializeApp(firebaseConfig),    
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
@@ -177,7 +176,6 @@ const myFirebaseAuthConfig = {
     AccountService,
     AccountProfileService,
     AccountSettingsService,
-    AccountVerificationsService,
     AuthenticationService,
     SendingService,
     SendingDbService,

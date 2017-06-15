@@ -12,7 +12,7 @@ import firebase from 'firebase';
 @Injectable()
 export class UsersService {
 
-    constructor(public auth: AuthenticationService,
+    constructor(public authSrv: AuthenticationService,
         public accountSrv: AccountService,
         public emailVerification: AccountEmailVerificationService,
         public settingsSrv: AccountSettingsService) {
@@ -23,8 +23,8 @@ export class UsersService {
      */
 
     // create firebase user
-    createUser(user: UserCredentials):Promise<firebase.User> {
-        return this.auth.createFirebaseUserWithEmailAndPassword(user.email, user.password);
+    createUser(user: UserCredentials):firebase.Promise<any> {
+        return this.authSrv.createFirebaseUserWithEmailAndPassword(user.email, user.password);
     }
 
     // Create User account and profile in firebase database
@@ -64,7 +64,7 @@ export class UsersService {
                     console.log('[2] updateProfileStatus > success');
                     steps.status = true
                     // update firebase user displayName
-                    return this.auth.updateFirebaseUserDisplayName(displayName);                    
+                    return this.authSrv.updateFirebaseUserDisplayName(displayName);                    
                 })
                 .then(() => {
                     console.log('[3] updateDisplayName > success');
@@ -86,12 +86,12 @@ export class UsersService {
 
     // get authenticated user
     getUser(): firebase.User {
-        return this.auth.getFirebaseUser();
+        return this.authSrv.getFirebaseUser();
     }
 
     // Reload authenticated user data
     reloadUser(): firebase.Promise<any> {
-        return this.auth.reloadFirebaseUser();
+        return this.authSrv.reloadFirebaseUser();
     }
 
     /**
@@ -106,7 +106,7 @@ export class UsersService {
     updateUserEmail(newEmail: string): Promise<any> {
         let fbuser = this.getUser();
         return new Promise((resolve, reject) => {
-            this.auth.updateFirebaseUserEmail(newEmail)
+            this.authSrv.updateFirebaseUserEmail(newEmail)
                 .then(() => {
                     console.log('auth.updateEmail > ok');
                     return this.accountSrv.updateEmail(fbuser.uid, newEmail);
@@ -139,7 +139,7 @@ export class UsersService {
                     console.log('updateProfileNames > success');
                     steps.updateDb = true;
                     let displayName = firstName + ' ' + lastName;
-                    return this.auth.updateFirebaseUserDisplayName(displayName);
+                    return this.authSrv.updateFirebaseUserDisplayName(displayName);
                 })
                 .then(() => {
                     steps.updateUser = true;
@@ -166,7 +166,7 @@ export class UsersService {
                 .then(() => {
                     console.log('updateProfileImage > success');
                     steps.updateDB = true;
-                    return this.auth.updateFirebaseUserPhotoURL(downloadURL);
+                    return this.authSrv.updateFirebaseUserPhotoURL(downloadURL);
                 })
                 .then(() => {
                     console.log('updateFirebaseUserPhotoURL > success');
@@ -188,17 +188,17 @@ export class UsersService {
      */
 
     // login    
-    signIn(user: UserCredentials) {
-        return this.auth.signInWithEmailAndPassword(user.email, user.password);
+    signIn(user: UserCredentials): firebase.Promise<any> {
+        return this.authSrv.signInWithEmailAndPassword(user.email, user.password);
     }
     // logout
     signOut() {
         console.log('______SIGNOUT_______BYE');
-        return this.auth.signOutFromFirebase();
+        return this.authSrv.signOutFromFirebase();
     }
     // password reset
-    resetPassword(email: string): Promise<void> {
-        return this.auth.sendPasswordResetEmail(email);
+    resetPassword(email: string): firebase.Promise<void> {
+        return this.authSrv.sendPasswordResetEmail(email);
     }
 
     /**

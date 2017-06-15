@@ -2,7 +2,7 @@ import { FirebaseListObservable } from 'angularfire2/database';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { DateService } from '../date-service/date-service';
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 import { SENDING_DB } from '../../models/sending-model';
 
@@ -18,7 +18,7 @@ export class SendingDbService {
     db: any = firebase.database();
     dbRef: firebase.database.Reference = firebase.database().ref();
 
-    constructor(public af:AngularFire,
+    constructor(public afDB:AngularFireDatabase,
         public dateSrv:DateService) {
     }
 
@@ -124,7 +124,7 @@ export class SendingDbService {
      */
 
     getSendingsLiveByUser(userid:string, getSnapshot:boolean = true) {
-        return this.af.database
+        return this.afDB
                 .list(DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF, { 
                     preserveSnapshot: getSnapshot,
                 });
@@ -135,7 +135,7 @@ export class SendingDbService {
     }
 
     getSendingsLiveVacant(userid:string, getSnapshot:boolean = true):FirebaseListObservable<any[]> {
-        return this.af.database
+        return this.afDB
                 .list(DB.STAGE_LIVE.REF, {
                     query: {
                         orderByChild: '_currentStatus',
@@ -146,7 +146,7 @@ export class SendingDbService {
     }
 
     getSendingById(sendingId:string, getSnapshot:boolean = true) {
-        return this.af.database
+        return this.afDB
                 .object(DB.ALL.REF + sendingId, {
                     preserveSnapshot: getSnapshot,
                 });       

@@ -11,7 +11,6 @@ import { NotificationsPage } from '../pages/notifications/notifications';
 import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
-import { AngularFire } from 'angularfire2';
 import { UsersService } from '../providers/users-service/users-service';
 import { USER_CFG } from '../models/user-model';
 
@@ -45,8 +44,7 @@ export class MyApp {
         public menu: MenuController,
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
-        public loadingCtrl: LoadingController,
-        public af: AngularFire) {
+        public loadingCtrl: LoadingController) {
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -78,12 +76,12 @@ export class MyApp {
         /**
          *  IS USER ALREADY LOGGED IN? RELOAD AND GO HOME
          */
-        let authInit = this.af.auth.subscribe((state) => {
-            if (state) {
+        let authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
                 console.log('__LGN__ userIsLoggedIn > setRoot');
                 this.nav.setRoot(SendingsPage);
             }
-            authInit.unsubscribe();
+            authUnsubscribe();
         });
         this.susbcribeAuthState();     
     }
@@ -93,11 +91,11 @@ export class MyApp {
      *  FIREBASE AUTH OBSERVER
      */
     private susbcribeAuthState() {
-        this.af.auth.subscribe((state) => {
+        firebase.auth().onAuthStateChanged((user) => {
             console.info('__ASC__ authStateChanged');
-            if (state) {
+            if (user) {
                 console.log('__ASC__ true');
-                this.user = state.auth;
+                this.user = user;
                 this.usersService.reloadUser()
                     .then((result) => {
                         //console.log('__ASC__ reloadUser', this.usersService.getUser().uid);

@@ -49,7 +49,7 @@ export class LoginPage {
                 .then((user) => { 
                     this.goToHome();
                 })
-                .catch((error) => this.showLoginError(error));
+                .catch((error) => this.showLoginError(error.message));
         }
     }
 
@@ -70,10 +70,10 @@ export class LoginPage {
             .catch((error) => console.log('error', error)); 
     }
 
-    private showLoginError(error) {
+    private showLoginError(errorMsg:string) {
         this.loader.dismiss()
             .then(() => {
-                this.presentErrorAlert(error.code);
+                this.presentErrorAlert(errorMsg);
             })
             .catch((error) => console.log('error', error)); 
     }

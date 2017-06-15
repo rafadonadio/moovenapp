@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
 import { USER_CFG, USER_DB_REF, UserAccountProfile, UserProfileData, UserProfileStatus, UserProfileVerifications } from '../../models/user-model';
 
 import firebase from 'firebase';
@@ -11,10 +10,9 @@ const ACCOUNT_CFG = USER_CFG.ACCOUNT;
 @Injectable()
 export class AccountProfileService {
 
-    db = firebase.database();
     dbRef = firebase.database().ref();
 
-    constructor(public af:AngularFire) {
+    constructor() {
     }
 
     /**

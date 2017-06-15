@@ -1,22 +1,18 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
 
 import firebase from 'firebase';
 
 @Injectable()
 export class AuthenticationService {
 
-    // FIREBASE AUTH REFERENCES
-    fbAuthRef: any;
     // angularFire references
     fbuser: any;
 
-    constructor(public af:AngularFire) {
-        this.fbAuthRef = firebase.auth();
+    constructor() {
         // subscribe to user change
-        af.auth.subscribe( state => {
-            if(state) {
-                this.fbuser = state.auth;
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user) {
+                this.fbuser = user;
             }
         });
     }
@@ -26,20 +22,20 @@ export class AuthenticationService {
      */
 
     // signin firebase user with email and password
-    signInWithEmailAndPassword(email: string, password: string): any {
-        return this.af.auth.login({ email: email, password: password });
+    signInWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+        return firebase.auth().signInWithEmailAndPassword(email, password);
     }
 
     // Signout firebase user
     // AUTH STATE CHANGE WATCHER will send user to start page
     signOutFromFirebase() {
         this.fbuser = null;
-        return this.fbAuthRef.signOut();
+        return firebase.auth().signOut();
     }
 
     // Sends a password reset email to the given email address.
-    sendPasswordResetEmail(email: string): Promise<void> {
-        return this.fbAuthRef.sendPasswordResetEmail(email);
+    sendPasswordResetEmail(email: string): firebase.Promise<any> {
+        return firebase.auth().sendPasswordResetEmail(email);
     }
 
     /**
@@ -54,8 +50,8 @@ export class AuthenticationService {
      *  SETTERS
      */
 
-    createFirebaseUserWithEmailAndPassword(email: string, password: string):Promise<firebase.User> {
-        return this.fbAuthRef.createUserWithEmailAndPassword(email, password);
+    createFirebaseUserWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+        return firebase.auth().createUserWithEmailAndPassword(email, password);
     }
 
     updateFirebaseUserDisplayName(displayName: string):firebase.Promise<any> {
@@ -78,7 +74,7 @@ export class AuthenticationService {
      */
 
     reloadFirebaseUser(): firebase.Promise<any> {
-        var user:firebase.User = this.fbAuthRef.currentUser;
+        var user:firebase.User = firebase.auth().currentUser;
         return user.reload();
     }
 
