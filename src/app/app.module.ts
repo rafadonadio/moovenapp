@@ -62,6 +62,11 @@ import { SendingSetGotoperatorService } from '../providers/sending-service/sendi
 import { SendingSetPickedupService } from '../providers/sending-service/sending-set-pickedup-service';
 import { SendingSetDroppedService } from '../providers/sending-service/sending-set-dropped-service';
 
+// AngularFire
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
@@ -75,12 +80,8 @@ const cloudSettings: CloudSettings = {
   }
 };
 
-// AngularFire
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireAuthModule } from 'angularfire2/auth';
 // AF2 Settings
-export const firebaseConfig = {
+const firebaseConfig = {
     apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
     authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
     databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
@@ -130,8 +131,8 @@ export const firebaseConfig = {
     HttpModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),    
-    AngularFireDatabaseModule,
     AngularFireAuthModule,
+    AngularFireDatabaseModule,
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
