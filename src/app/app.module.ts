@@ -81,7 +81,7 @@ const cloudSettings: CloudSettings = {
 };
 
 // AF2 Settings
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
     authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
     databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
@@ -128,11 +128,11 @@ const firebaseConfig = {
   ],
   imports: [
     BrowserModule,
-    HttpModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),    
     AngularFireAuthModule,
     AngularFireDatabaseModule,
+    HttpModule,
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,

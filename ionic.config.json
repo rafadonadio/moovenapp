@@ -1,6 +1,5 @@
 {
   "name": "MoovenAppDev",
   "app_id": "dc45d46f",
-  "typescript": true,
-  "v2": true
+  "type": "ionic-angular"
 }
