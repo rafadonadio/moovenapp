@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 import firebase from 'firebase';
 
@@ -8,9 +9,9 @@ export class AuthenticationService {
     // angularFire references
     fbuser: any;
 
-    constructor() {
+    constructor(public afAuth: AngularFireAuth) {
         // subscribe to user change
-        firebase.auth().onAuthStateChanged((user) => {
+        this.afAuth.authState.subscribe( user => {
             if(user) {
                 this.fbuser = user;
             }
@@ -23,19 +24,19 @@ export class AuthenticationService {
 
     // signin firebase user with email and password
     signInWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
-        return firebase.auth().signInWithEmailAndPassword(email, password);
+        return this.afAuth.auth.signInWithEmailAndPassword(email, password);
     }
 
     // Signout firebase user
     // AUTH STATE CHANGE WATCHER will send user to start page
     signOutFromFirebase() {
         this.fbuser = null;
-        return firebase.auth().signOut();
+        return this.afAuth.auth.signOut();
     }
 
     // Sends a password reset email to the given email address.
     sendPasswordResetEmail(email: string): firebase.Promise<any> {
-        return firebase.auth().sendPasswordResetEmail(email);
+        return this.afAuth.auth.sendPasswordResetEmail(email);
     }
 
     /**
@@ -51,7 +52,7 @@ export class AuthenticationService {
      */
 
     createFirebaseUserWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
-        return firebase.auth().createUserWithEmailAndPassword(email, password);
+        return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
     }
 
     updateFirebaseUserDisplayName(displayName: string):firebase.Promise<any> {
