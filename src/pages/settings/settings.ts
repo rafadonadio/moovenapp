@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
-import { Camera } from 'ionic-native';
+import { Camera } from '@ionic-native/camera';
 
 import firebase from 'firebase';
 
@@ -34,7 +34,8 @@ export class SettingsPage implements OnInit{
         public toastCtrl: ToastController,
         public popoverCtrl: PopoverController,
         public viewCtrl: ViewController,
-        public alertCtrl: AlertController) {
+        public alertCtrl: AlertController,
+        public cameraPlugin: Camera) {
     }
 
     ngOnInit() {
@@ -275,12 +276,12 @@ export class SettingsPage implements OnInit{
             upload: false,
             update: false
         }
-        Camera.getPicture({
+        this.cameraPlugin.getPicture({
             quality: 95,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: Camera.PictureSourceType.CAMERA,
+            destinationType: this.cameraPlugin.DestinationType.DATA_URL,
+            sourceType: this.cameraPlugin.PictureSourceType.CAMERA,
             allowEdit: true,
-            encodingType: Camera.EncodingType.JPEG,
+            encodingType: this.cameraPlugin.EncodingType.JPEG,
             targetWidth: 900,
             targetHeight: 900,
             saveToPhotoAlbum: true,

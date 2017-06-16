@@ -7,7 +7,7 @@ import { UsersService } from '../../providers/users-service/users-service';
 import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';
 
-import { Camera } from 'ionic-native';
+import { Camera } from '@ionic-native/camera';
 
 import firebase from 'firebase';
 
@@ -31,7 +31,8 @@ export class SignupMergePage implements OnInit{
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public alertCtrl: AlertController,
-        public modalCtrl: ModalController) {
+        public modalCtrl: ModalController,
+        public cameraPlugin: Camera) {
     }
 
     ngOnInit() {
@@ -143,12 +144,12 @@ export class SignupMergePage implements OnInit{
             upload: false,
             update: false
         }
-        Camera.getPicture({
+        this.cameraPlugin.getPicture({
             quality: 95,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: Camera.PictureSourceType.CAMERA,
+            destinationType: this.cameraPlugin.DestinationType.DATA_URL,
+            sourceType: this.cameraPlugin.PictureSourceType.CAMERA,
             allowEdit: true,
-            encodingType: Camera.EncodingType.JPEG,
+            encodingType: this.cameraPlugin.EncodingType.JPEG,
             targetWidth: 900,
             targetHeight: 900,
             saveToPhotoAlbum: true,
