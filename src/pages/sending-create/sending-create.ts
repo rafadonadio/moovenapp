@@ -8,7 +8,7 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
 
-import { Camera } from 'ionic-native';
+import { Camera } from '@ionic-native/camera';
 
 @Component({
     selector: 'page-sending-create',
@@ -34,7 +34,8 @@ export class SendingCreatePage implements OnInit {
         public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
-        public sendingSrv: SendingService) {
+        public sendingSrv: SendingService,
+        public cameraPlugin: Camera) {
     }
 
     ngOnInit() {
@@ -128,12 +129,12 @@ export class SendingCreatePage implements OnInit {
      */
     takePicture() {
         console.log('f1 > takePicture');
-        Camera.getPicture({
+        this.cameraPlugin.getPicture({
             quality: 95,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: Camera.PictureSourceType.CAMERA,
+            destinationType: this.cameraPlugin.DestinationType.DATA_URL,
+            sourceType: this.cameraPlugin.PictureSourceType.CAMERA,
             allowEdit: true,
-            encodingType: Camera.EncodingType.JPEG,
+            encodingType: this.cameraPlugin.EncodingType.JPEG,
             targetWidth: 900,
             targetHeight: 900,
             saveToPhotoAlbum: true,

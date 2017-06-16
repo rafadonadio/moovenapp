@@ -5,6 +5,10 @@ import { MyApp } from './app.component';
 import { IonicStorageModule } from '@ionic/storage';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
+// NATIVE
+import { Camera } from '@ionic-native/camera';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 // PAGES
 import { CheckoutPage } from '../pages/checkout/checkout';
 import { HelpPage } from '../pages/help/help';
@@ -41,15 +45,15 @@ import { AccountService } from '../providers/users-service/account-service';
 import { AccountProfileService } from '../providers/users-service/account-profile-service';
 import { AccountSettingsService } from '../providers/users-service/account-settings-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
-import { SendingService } from  '../providers/sending-service/sending-service';
+import { SendingService } from '../providers/sending-service/sending-service';
 import { SendingCreateService } from '../providers/sending-service/sending-create-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
-import { SendingNotificationsService } from  '../providers/sending-service/sending-notifications-service';
-import { SendingRequestService } from  '../providers/sending-service/sending-request-service';
-import { SendingPaymentService } from  '../providers/sending-service/sending-payment-service';
-import { ShipmentsService } from  '../providers/shipments-service/shipments-service';
-import { ShipmentsDbService } from  '../providers/shipments-service/shipments-db-service';
-import { NotificationsService } from  '../providers/notifications-service/notifications-service';
+import { SendingNotificationsService } from '../providers/sending-service/sending-notifications-service';
+import { SendingRequestService } from '../providers/sending-service/sending-request-service';
+import { SendingPaymentService } from '../providers/sending-service/sending-payment-service';
+import { ShipmentsService } from '../providers/shipments-service/shipments-service';
+import { ShipmentsDbService } from '../providers/shipments-service/shipments-db-service';
+import { NotificationsService } from '../providers/notifications-service/notifications-service';
 import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
@@ -75,9 +79,9 @@ import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
 const ENV = APP_CFG.CURRENT_ENV;
 const cloudSettings: CloudSettings = {
-  'core': {
-    'app_id': APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
-  }
+    'core': {
+        'app_id': APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
+    }
 };
 
 // AF2 Settings
@@ -90,114 +94,117 @@ export const firebaseConfig = {
 };
 
 @NgModule({
-  declarations: [
-    MyApp,
-    // PAGES
-    CheckoutPage,
-    HelpPage,
-    HistorialPage,
-    LoginPage,
-    ModalAuthResetPasswordPage,
-    ModalTosPage,
-    ModalSearchMapAddressPage,
-    ModalUserEditEmailPage,
-    ModalUserEditNamePage,
-    ModalUserEditPhonePage,
-    NotificationsPage,
-    PaymentPage,
-    SendingCreatePage,
-    SendingCreate2Page,
-    SendingCreate3Page,
-    SendingCreate4Page,
-    SendingDetailPage,
-    SendingsPage,
-    SettingsPage,
-    SettingsPopoverPage,
-    ShipmentCreatePage,
-    ShipmentCreate2Page,
-    ShipmentDetailPage,
-    ShipmentsPage,
-    SignupPage,
-    SignupMergePage,
-    StartPage,
-    UpdatePhoneNumberPage,
-    VerifyPhonePage,
-    // PIPES
-    CapitalizePipe,
-    Ts2DatePipe
-  ],
-  imports: [
-    BrowserModule,
-    IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseConfig),    
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
-    HttpModule,
-    CloudModule.forRoot(cloudSettings),
-    IonicStorageModule.forRoot({
-      name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
-         driverOrder: ['localstorage','indexeddb', 'sqlite', 'websql']
-    })
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    CheckoutPage,
-    HelpPage,
-    HistorialPage,
-    LoginPage,
-    ModalAuthResetPasswordPage,
-    ModalTosPage,
-    ModalSearchMapAddressPage,
-    ModalUserEditEmailPage,
-    ModalUserEditNamePage,
-    ModalUserEditPhonePage,
-    NotificationsPage,
-    PaymentPage,
-    SendingCreatePage,
-    SendingCreate2Page,
-    SendingCreate3Page,
-    SendingCreate4Page,
-    SendingDetailPage,
-    SendingsPage,
-    SettingsPage,
-    SettingsPopoverPage,
-    ShipmentCreatePage,
-    ShipmentCreate2Page,
-    ShipmentDetailPage,
-    ShipmentsPage,
-    SignupPage,
-    SignupMergePage,
-    StartPage,
-    UpdatePhoneNumberPage,
-    VerifyPhonePage,       
-  ],
-  providers: [
-    AccountEmailVerificationService,
-    AccountService,
-    AccountProfileService,
-    AccountSettingsService,
-    AuthenticationService,
-    SendingService,
-    SendingDbService,
-    SendingNotificationsService,
-    SendingRequestService, 
-    SendingCreateService,
-    SendingSetGotoperatorService,
-    SendingSetPickedupService,
-    SendingSetDroppedService,
-    ShipmentsService,
-    ShipmentsDbService, 
-    NotificationsService,
-    SendingPaymentService,           
-    UsersService,
-    GoogleMapsService,
-    DateService,
-    HashService,
-    MercadopagoService,
-    PriceService,
-    CheckoutService,
-    StorageService
-  ],
+    declarations: [
+        MyApp,
+        // PAGES
+        CheckoutPage,
+        HelpPage,
+        HistorialPage,
+        LoginPage,
+        ModalAuthResetPasswordPage,
+        ModalTosPage,
+        ModalSearchMapAddressPage,
+        ModalUserEditEmailPage,
+        ModalUserEditNamePage,
+        ModalUserEditPhonePage,
+        NotificationsPage,
+        PaymentPage,
+        SendingCreatePage,
+        SendingCreate2Page,
+        SendingCreate3Page,
+        SendingCreate4Page,
+        SendingDetailPage,
+        SendingsPage,
+        SettingsPage,
+        SettingsPopoverPage,
+        ShipmentCreatePage,
+        ShipmentCreate2Page,
+        ShipmentDetailPage,
+        ShipmentsPage,
+        SignupPage,
+        SignupMergePage,
+        StartPage,
+        UpdatePhoneNumberPage,
+        VerifyPhonePage,
+        // PIPES
+        CapitalizePipe,
+        Ts2DatePipe
+    ],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot(MyApp),
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireAuthModule,
+        AngularFireDatabaseModule,
+        HttpModule,
+        CloudModule.forRoot(cloudSettings),
+        IonicStorageModule.forRoot({
+            name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
+            driverOrder: ['localstorage', 'indexeddb', 'sqlite', 'websql']
+        })
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+        MyApp,
+        CheckoutPage,
+        HelpPage,
+        HistorialPage,
+        LoginPage,
+        ModalAuthResetPasswordPage,
+        ModalTosPage,
+        ModalSearchMapAddressPage,
+        ModalUserEditEmailPage,
+        ModalUserEditNamePage,
+        ModalUserEditPhonePage,
+        NotificationsPage,
+        PaymentPage,
+        SendingCreatePage,
+        SendingCreate2Page,
+        SendingCreate3Page,
+        SendingCreate4Page,
+        SendingDetailPage,
+        SendingsPage,
+        SettingsPage,
+        SettingsPopoverPage,
+        ShipmentCreatePage,
+        ShipmentCreate2Page,
+        ShipmentDetailPage,
+        ShipmentsPage,
+        SignupPage,
+        SignupMergePage,
+        StartPage,
+        UpdatePhoneNumberPage,
+        VerifyPhonePage,
+    ],
+    providers: [
+        Camera,
+        SplashScreen,
+        StatusBar,
+        AccountEmailVerificationService,
+        AccountService,
+        AccountProfileService,
+        AccountSettingsService,
+        AuthenticationService,
+        SendingService,
+        SendingDbService,
+        SendingNotificationsService,
+        SendingRequestService,
+        SendingCreateService,
+        SendingSetGotoperatorService,
+        SendingSetPickedupService,
+        SendingSetDroppedService,
+        ShipmentsService,
+        ShipmentsDbService,
+        NotificationsService,
+        SendingPaymentService,
+        UsersService,
+        GoogleMapsService,
+        DateService,
+        HashService,
+        MercadopagoService,
+        PriceService,
+        CheckoutService,
+        StorageService,
+    ],
 })
-export class AppModule {}
+export class AppModule { }

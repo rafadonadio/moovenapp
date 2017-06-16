@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
-import { StatusBar } from 'ionic-native';
+import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { StartPage } from '../pages/start/start';
 import { SettingsPage } from '../pages/settings/settings';
 import { SendingsPage } from '../pages/sendings/sendings';
@@ -42,6 +43,8 @@ export class MyApp {
     avatarDefault: string = 'assets/img/mooven_avatar.png';
 
     constructor(public platform: Platform,
+        private statusBar: StatusBar,
+        private splashScreen: SplashScreen,
         public usersService: UsersService,
         public menu: MenuController,
         public alertCtrl: AlertController,
@@ -55,7 +58,8 @@ export class MyApp {
             if (window.cordova) {
                 // Okay, so the platform is ready and our plugins are available.
                 // Here you can do any higher level native things you might need.
-                StatusBar.styleDefault();
+                statusBar.styleDefault();
+                splashScreen.hide();
                 console.log('__CVA__ cordova ready');
                 let array: string[] = platform.platforms();
                 console.log('__CVA__', array);
