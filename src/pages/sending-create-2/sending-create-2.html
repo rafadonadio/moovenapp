@@ -61,6 +61,8 @@
                     [(ngModel)]="rangeDate"
                     (ionChange)="setDate($event)"></ion-datetime>
             </ion-item>
+            <div *ngIf="showErrors && !pickupDate.valid" 
+                class="input-error">* Fecha de retiro es requerida</div>            
             <ion-item no-lines>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 

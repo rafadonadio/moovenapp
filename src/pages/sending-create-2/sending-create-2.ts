@@ -454,6 +454,7 @@ export class SendingCreate2Page implements OnInit {
         this.pickupDate.setValue(this.sending.pickupDate);
         this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
         this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
+        this.rangeDate = this.sending.pickupDate;
         this.rangeFrom = this.sending.pickupTimeFrom;
         this.rangeTo = this.sending.pickupTimeTo;
         // contact

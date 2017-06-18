@@ -8,9 +8,11 @@
 
 - Nuevo Servicio - Paso 2    
     - ingresar fecha  
-    - validar horario  
+    - validar horario
+        validar fecha (hasta 5 días en reserva)
+        validar drop time si pickup cambio
+        validar pickup si drop cambio
 - Nuevo Servicio - Paso 3  
-    - ingresar fecha  
     - validar horario        
 - Nuevo Servicio - Paso 4  
     <!--- calculo precio-->
