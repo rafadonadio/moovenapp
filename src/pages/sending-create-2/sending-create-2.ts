@@ -5,14 +5,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
-import { DateService } from '../../providers/date-service/date-service';
+import { DateService, DATES_NAMES, DATE_DEFAULTS } from '../../providers/date-service/date-service';
 
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
 
-const MIN_TIMEDIFF_MINUTES = 120;
+const MIN_TIMEDIFF_MINUTES = DATE_DEFAULTS.PICKUP_DROP_MIN_DIFF_IN_MINUTES;
+const DATES_TXT = DATES_NAMES;
+const PICKUP_DIFF_DAYS = DATE_DEFAULTS.PICKUP_DIFF_DAYS;
 
 @Component({
     selector: 'page-sending-create-2',
@@ -31,16 +33,22 @@ export class SendingCreate2Page implements OnInit {
     formTwo: FormGroup;
     pickupAddressFullText: any;
     pickupAddressLine2: any;
+    pickupDate:any;
     pickupTimeFrom: any;
     pickupTimeTo: any;
     pickupPersonName: any;
     pickupPersonPhone: any;
     pickupPersonEmail: any;
     // form aux
+    rangeDate: any;
     rangeFrom: any;
     rangeTo: any;
     showErrors: boolean = false;
-
+    monthNames: any = DATES_TXT.monthNames.es;
+    monthShortNames: any = DATES_TXT.monthShortNames.es;
+    dayNames: any = DATES_TXT.dayNames.es;
+    dayShortNames: any = DATES_TXT.dayShortNames.es;
+    dateLimits:any;
     // map
     map: any;
     mapMarkers = [];
@@ -59,12 +67,12 @@ export class SendingCreate2Page implements OnInit {
 
     ngOnInit() {
         console.info('f2 > init');
-        console.group('f2');
         // init
         this.setUser();
         this.initPlaceDetails();        
         this.initMap();
         // init form
+        this.setDateLimits();
         this.initForm();
         // set request from param
         this.getSendingFromParams();
@@ -75,6 +83,15 @@ export class SendingCreate2Page implements OnInit {
     /**
      * MAIN ACTIONS
      */
+
+    private setDateLimits() {
+        let today = this.dateSrv.getIsoString();
+        this.dateLimits = {
+            min: today,
+            max: this.dateSrv.addDays(today, PICKUP_DIFF_DAYS),
+        }
+        console.log('limits', this.dateLimits);
+    }
 
     goBack() {
         console.info('f2 > go back to f1');
@@ -139,8 +156,13 @@ export class SendingCreate2Page implements OnInit {
         console.log('f2 > modal present');
     }
 
+    setDate(e) {
+        console.log('setDate', this.rangeDate, this.pickupDate.value);
+        console.log('setDate e', e);
+    }
+
     adjustPickupTimeFrom(e) {
-        console.group('adjustPickupTimeFrom');
+        console.log('adjustPickupTimeFrom');
         console.log('from/to > ', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
         let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
         let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
@@ -157,7 +179,7 @@ export class SendingCreate2Page implements OnInit {
         }else{
             console.log('diff ok');
         }
-        console.groupEnd();        
+                
     }
 
     adjustPickupTimeTo(e) {
@@ -178,7 +200,7 @@ export class SendingCreate2Page implements OnInit {
         }else{
             console.log('diff ok');
         }
-        console.groupEnd();
+        
     }
 
     populateContactWithUserData() {
@@ -239,7 +261,7 @@ export class SendingCreate2Page implements OnInit {
 
     private goToNextStep() {
         console.info('f2 > go to f3, include params');
-        console.groupEnd();
+        
         this.navCtrl.setRoot(SendingCreate3Page, {
             sending: this.sending
         });
@@ -247,7 +269,7 @@ export class SendingCreate2Page implements OnInit {
 
     private goBacktoStep1() {
         console.info('f2 > go to f1, include params');
-        console.groupEnd();
+        
         this.navCtrl.setRoot(SendingCreatePage, {
             sending: this.sending
         });
@@ -287,6 +309,7 @@ export class SendingCreate2Page implements OnInit {
         // address - aux
         this.sending.pickupAddressLine2 = this.pickupAddressLine2.value;
         // time
+        this.sending.pickupDate = this.pickupDate.value;
         this.sending.pickupTimeFrom = this.pickupTimeFrom.value;
         this.sending.pickupTimeTo = this.pickupTimeTo.value;
         // contact
@@ -374,6 +397,7 @@ export class SendingCreate2Page implements OnInit {
         this.formTwo = this.formBuilder.group({
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
             'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
+            'pickupDate': ['', Validators.compose([Validators.required])],
             'pickupTimeFrom': ['', Validators.compose([Validators.required])],
             'pickupTimeTo': ['', Validators.compose([Validators.required])],
             'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
@@ -382,6 +406,7 @@ export class SendingCreate2Page implements OnInit {
         });
         this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
         this.pickupAddressLine2 = this.formTwo.controls['pickupAddressLine2'];
+        this.pickupDate = this.formTwo.controls['pickupDate'];
         this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
         this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
         this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
@@ -426,6 +451,7 @@ export class SendingCreate2Page implements OnInit {
         this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
         this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
         //datetime
+        this.pickupDate.setValue(this.sending.pickupDate);
         this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
         this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
         this.rangeFrom = this.sending.pickupTimeFrom;

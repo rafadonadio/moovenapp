@@ -26,7 +26,7 @@
             <ion-item no-lines>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="pickupAddressFullText"
-                    (focus)="showAddressSearchModal()"></ion-input>
+                    (ionFocus)="showAddressSearchModal()"></ion-input>
             </ion-item> 
             <ion-item *ngIf="sending.pickupAddressSet==true" no-lines>
                 <ion-icon name="pin" item-left></ion-icon>
@@ -48,6 +48,19 @@
                     ></ion-input>
             </ion-item> 
             <ion-list-header margin-top>Banda horaria de Retiro</ion-list-header>
+            <ion-item no-lines>
+                <ion-label>Fecha</ion-label>
+                <ion-datetime 
+                    formControlName="pickupDate"
+                    [monthNames]="monthNames"
+                    [monthShortNames]="monthShortNames"
+                    [min]="dateLimits.min"
+                    [max]="dateLimits.max"
+                    displayFormat="DD/MMM"
+                    cancelText="Cancelar" doneText="Listo"
+                    [(ngModel)]="rangeDate"
+                    (ionChange)="setDate($event)"></ion-datetime>
+            </ion-item>
             <ion-item no-lines>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 

@@ -36,9 +36,14 @@ export class DateService {
         return moment();
     }
 
+    // outputs the number of milliseconds since the Unix Epoch
     getUnixTimestamp():any {
         return moment().valueOf();
     }    
+
+    getIsoString(utcOffset:string = defaultUTCzone) {
+        return moment().utcOffset(utcOffset).format();
+    }
 
     /**
      *  HELPERS
@@ -75,10 +80,38 @@ export class DateService {
         return date.add(years, 'y').valueOf();
     }
 
+    addDays(date:string, days:number)  {
+        return moment(date).add(days, 'days').format();
+    }
+
     //  ISO 8601 datetime format standard
     readISO8601FromTimestamp(timestamp:number):string {
         let day = moment(timestamp);
         return day.format('YYYY-MM-DD')
     }        
 
+}
+
+export const DATE_DEFAULTS = {
+    PICKUP_TIME_FROM: '09:00',
+    PICKUP_TIME_TO: '11:00',
+    DROP_TIME_FROM: '14:00',
+    DROP_TIME_TO: '16:00',  
+    PICKUP_DIFF_DAYS: 5,
+    PICKUP_DROP_MIN_DIFF_IN_MINUTES: 120,  
+}
+
+export const DATES_NAMES = {
+    monthNames: {
+        'es': ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+    },
+    monthShortNames: { 
+        'es': ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+    },
+    dayNames: {
+        'es': ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+    },
+    dayShortNames: {
+        'es': ['dom', 'lun', 'mar', 'mie', 'jue', 'vie', 'sab'],
+    }
 }
