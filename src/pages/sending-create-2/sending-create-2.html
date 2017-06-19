@@ -28,11 +28,11 @@
                     formControlName="pickupAddressFullText"
                     (ionFocus)="showAddressSearchModal()"></ion-input>
             </ion-item> 
-            <ion-item *ngIf="sending.pickupAddressSet==true" no-lines>
+            <ion-item *ngIf="sending?.pickupAddressSet==true" no-lines>
                 <ion-icon name="pin" item-left></ion-icon>
-                <h2>{{ sending.pickupAddressStreetShort }} {{ sending.pickupAddressNumber }}</h2>
-                <h3>{{ sending.pickupAddressCityShort }}</h3>
-                <p>{{ sending.pickupAddressStateLong }}</p>
+                <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
+                <h3>{{ sending?.pickupAddressCityShort }}</h3>
+                <p>{{ sending?.pickupAddressStateLong }}</p>
                 <button ion-button item-right clear color="sublight"
                     (click)="resetAddress()">
                     <ion-icon name="close-circle"></ion-icon>
@@ -54,8 +54,8 @@
                     formControlName="pickupDate"
                     [monthNames]="monthNames"
                     [monthShortNames]="monthShortNames"
-                    [min]="dateLimits.min"
-                    [max]="dateLimits.max"
+                    [min]="dateLimits?.min"
+                    [max]="dateLimits?.max"
                     displayFormat="DD/MMM"
                     cancelText="Cancelar" doneText="Listo"
                     [(ngModel)]="rangeDate"
@@ -70,21 +70,24 @@
                     displayFormat="HH:mm" 
                     hourValues="04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21"
                     minuteValues="00,30"
-                    [min]="timeLimits.from.min"
+                    [min]="timeLimits?.from.min"
                     cancelText="Cancelar" doneText="Listo" 
                     [(ngModel)]="rangeFrom"
-                    (ionChange)="adjustPickupTimeTo()"></ion-datetime>
+                    (click)="updateTimeLimits()"
+                    (ionChange)="adjustTimeTo()"></ion-datetime>
             </ion-item>
             <ion-item no-lines>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
-                formControlName="pickupTimeTo" 
-                displayFormat="HH:mm" 
-                hourValues="06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23"
-                minuteValues="00,30" 
-                cancelText="Cancelar" doneText="Listo" 
-                [(ngModel)]="rangeTo"
-                (ionChange)="adjustPickupTimeFrom()"></ion-datetime>
+                    formControlName="pickupTimeTo" 
+                    displayFormat="HH:mm" 
+                    hourValues="06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23"
+                    minuteValues="00,30" 
+                    [min]="timeLimits?.to.min"
+                    cancelText="Cancelar" doneText="Listo" 
+                    [(ngModel)]="rangeTo"
+                    (click)="updateTimeLimits()"
+                    (ionChange)="adjustTimeFrom()"></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !pickupTimeFrom.touched && !pickupTimeTo.touched" 
                 class="input-optional"><small>* verifica que el horario de retiro sea correcto</small></div>

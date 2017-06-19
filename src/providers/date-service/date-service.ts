@@ -129,31 +129,37 @@ export class DateService {
         }else{
             isToday = false;
         }
-        console.log('isDateToday', date, today, isToday);
+        // console.log('isDateToday', date, today, isToday);
         return isToday;
     }
+
+    isBeforeThan(date:any, compareWith:any): boolean {
+        return moment(date).isBefore(compareWith);
+    }
+
+
 
 }
 
 export const DATE_DEFAULTS = {
     PICKUP_TIME_FROM: {
-        txt: '09:00',
-        hour: 9,
+        txt: '07:00',
+        hour: 7,
         minute: 0
     },
     PICKUP_TIME_TO: {
-        txt: '11:00',
-        hour: 11,
+        txt: '12:00',
+        hour: 12,
         minute: 0
     },
     DROP_TIME_FROM: {
-        txt: '14:00',
-        hour: 14,
+        txt: '13:00',
+        hour: 13,
         minute: 0
     },
     DROP_TIME_TO: {
-        txt: '16:00',
-        hour: 16,
+        txt: '17:00',
+        hour: 17,
         minute: 0
     },  
     PICKUP_DIFF_DAYS: 5,
