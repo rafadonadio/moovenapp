@@ -11,6 +11,7 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
+import { SendingCreateService } from '../../providers/sending-service/sending-create-service';
 
 const MIN_TIMEDIFF_MINUTES = DATE_DEFAULTS.PICKUP_DROP_MIN_DIFF_IN_MINUTES;
 const DATES_TXT = DATES_NAMES;
@@ -64,7 +65,8 @@ export class SendingCreate2Page implements OnInit {
         public modalCtrl: ModalController,
         public toastCtrl: ToastController,        
         public gmapsService: GoogleMapsService,
-        public dateSrv: DateService) {
+        public dateSrv: DateService,
+        private createSrv: SendingCreateService) {
     }
 
     ngOnInit() {
@@ -184,32 +186,9 @@ export class SendingCreate2Page implements OnInit {
     }    
 
     // set pickupTimeFrom date, to next valid hour
-    private roundUpTimeFrom() {
+    private setNextValidTimeFrom() {
         let from = this.sending.pickupTimeFrom;       
-        this.sending.pickupTimeFrom = this.getNextValidTime(from);
-    }
-
-    private getNextValidTime(date:string) {
-        let minute = this.dateSrv.getMinuteNum(date);
-        let hour = this.dateSrv.getHourNum(date);        
-        let newHour;
-        let newMinute;
-        let newDate;
-        if(minute<20) {
-            newHour = hour+1;
-            newMinute = 0;
-        }else {
-            newHour = hour+1;
-            newMinute = 30;            
-        }
-        if(newHour<21) {
-            newDate = this.dateSrv.setTimeToDate(date, newHour, newMinute); 
-        }else{
-            newDate = this.dateSrv.addDays(date, 1);
-            newDate = this.dateSrv.setTimeToDate(newDate, 9, 0); 
-        }
-        console.log('getNextValidTime', hour, minute, newHour, newMinute, newDate);
-        return newDate;       
+        this.sending.pickupTimeFrom = this.createSrv.getNextValidTime(from);
     }
 
     /**
@@ -392,7 +371,7 @@ export class SendingCreate2Page implements OnInit {
         // PICKUP TIME FROM, if not set, set from pickup date at default time
         if(this.sending.pickupTimeFrom=='') {
             this.sending.pickupTimeFrom = this.sending.pickupDate;
-            this.roundUpTimeFrom();
+            this.setNextValidTimeFrom();
         }
         this.setPickupAndRangeFrom();
         // trigger pickupDate update
@@ -400,8 +379,8 @@ export class SendingCreate2Page implements OnInit {
         //
         // PICKUP TIME TO, if not set, set default
         if(this.sending.pickupTimeTo=='') {
-            let to = this.sending.pickupDate;
-            to = this.dateSrv.setTimeToDate(to, DEFAULTS.PICKUP_TIME_TO.hour, DEFAULTS.PICKUP_TIME_TO.minute); 
+            let from = this.sending.pickupTimeFrom;
+            let to = this.dateSrv.addHours(from, 2);
             this.sending.pickupTimeTo = to;
         }
         this.setPickupAndRangeTo();
