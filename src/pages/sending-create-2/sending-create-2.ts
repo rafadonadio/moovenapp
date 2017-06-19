@@ -167,7 +167,7 @@ export class SendingCreate2Page implements OnInit {
         if(diff < MIN_TIMEDIFF_MINUTES) {
             let newFrom = this.dateSrv.subtractMinutes(this.pickupTimeTo.value, MIN_TIMEDIFF_MINUTES);
             this.pickupTimeFrom.setValue(newFrom);
-            this.showTimeRangeToast('newFrom', newFrom);
+            this.showTimeRangeToast('Desde', this.dateSrv.getTimeFromDate(newFrom));
         }else{
             console.log('__SPTF__ diff OK');
         }   
@@ -189,7 +189,7 @@ export class SendingCreate2Page implements OnInit {
         if(diff < MIN_TIMEDIFF_MINUTES) {
             let newTo = this.dateSrv.addMinutes(this.pickupTimeFrom.value, MIN_TIMEDIFF_MINUTES);
             this.pickupTimeTo.setValue(newTo);
-            this.showTimeRangeToast('newTo', newTo);
+            this.showTimeRangeToast('Hasta', this.dateSrv.getTimeFromDate(newTo));
         }else{
             console.log('__SPTT__ diff OK', diff);
         }        

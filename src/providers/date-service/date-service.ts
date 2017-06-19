@@ -90,6 +90,9 @@ export class DateService {
         let day = moment(momentInput);
         return day.year();
     }        
+    getTimeFromDate(date:any) {
+        return moment(date).format('HH:mm');
+    }
 
     addTsYears(timestamp:number, years:number):number {
         let date = moment(timestamp);
