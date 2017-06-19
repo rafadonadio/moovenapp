@@ -11,12 +11,10 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
-import { SendingCreateService } from '../../providers/sending-service/sending-create-service';
 
 const MIN_TIMEDIFF_MINUTES = DATE_DEFAULTS.PICKUP_DROP_MIN_DIFF_IN_MINUTES;
 const DATES_TXT = DATES_NAMES;
 const PICKUP_DIFF_DAYS = DATE_DEFAULTS.PICKUP_DIFF_DAYS;
-const DEFAULTS = DATE_DEFAULTS;
 
 @Component({
     selector: 'page-sending-create-2',
@@ -65,8 +63,7 @@ export class SendingCreate2Page implements OnInit {
         public modalCtrl: ModalController,
         public toastCtrl: ToastController,        
         public gmapsService: GoogleMapsService,
-        public dateSrv: DateService,
-        private createSrv: SendingCreateService) {
+        public dateSrv: DateService) {
     }
 
     ngOnInit() {
@@ -188,7 +185,25 @@ export class SendingCreate2Page implements OnInit {
     // set pickupTimeFrom date, to next valid hour
     private setNextValidTimeFrom() {
         let from = this.sending.pickupTimeFrom;       
-        this.sending.pickupTimeFrom = this.createSrv.getNextValidTime(from);
+        let minute = this.dateSrv.getMinuteNum(from);
+        let hour = this.dateSrv.getHourNum(from);        
+        let newHour;
+        let newMinute;
+        let newDate;
+        if(minute<20) {
+            newHour = hour+1;
+            newMinute = 0;
+        }else {
+            newHour = hour+1;
+            newMinute = 30;            
+        }
+        if(newHour<21) {
+            newDate = this.dateSrv.setTimeToDate(from, newHour, newMinute); 
+        }else{
+            newDate = this.dateSrv.addDays(from, 1);
+            newDate = this.dateSrv.setTimeToDate(newDate, 9, 0); 
+        }        
+        this.sending.pickupTimeFrom = newDate;
     }
 
     /**
@@ -218,17 +233,6 @@ export class SendingCreate2Page implements OnInit {
     /**
      * DATETIME HELPERS
      */
-
-    private validatePickupData() {
-        let now = this.dateSrv.getIsoString();
-        // is pickupDate older than now?
-        let pickedDataIsOld = this.dateSrv.isBeforeThan(this.sending.pickupDate, now);
-        console.log('validateDate,pickupDate isOld?', pickedDataIsOld, this.sending.pickupDate, now);
-        if(pickedDataIsOld) {
-            // update pickupDate
-
-        }
-    }
 
     private getPickupTimeValuesParsed(FromOrTo:string): {hour:number, minute: number} {
         let date = this.sending[`pickupTime${FromOrTo}`];
@@ -368,16 +372,22 @@ export class SendingCreate2Page implements OnInit {
         }
         this.setPickupAndRangeDate();
         //
-        // PICKUP TIME FROM, if not set, set from pickup date at default time
+        // PICKUP TIME FROM, if not set, set from pickup date at next valid time
         if(this.sending.pickupTimeFrom=='') {
             this.sending.pickupTimeFrom = this.sending.pickupDate;
             this.setNextValidTimeFrom();
+        }else{
+            let now = this.dateSrv.getIsoString();
+            let timeFromIsOld = this.dateSrv.isBeforeThan(this.sending.pickupTimeFrom, now);
+            console.log('timeFromIsOld', timeFromIsOld, this.sending.pickupTimeFrom, now);
+            if(timeFromIsOld) {
+                this.setNextValidTimeFrom();
+            }
         }
         this.setPickupAndRangeFrom();
-        // trigger pickupDate update
         this.updatePickupDateWithFromTime();
         //
-        // PICKUP TIME TO, if not set, set default
+        // PICKUP TIME TO, if not set get TimeFrom plus 2 hours 
         if(this.sending.pickupTimeTo=='') {
             let from = this.sending.pickupTimeFrom;
             let to = this.dateSrv.addHours(from, 2);
@@ -388,8 +398,6 @@ export class SendingCreate2Page implements OnInit {
         console.log('__pop__ pickupDate', this.sending.pickupDate);        
         console.log('__pop__ pickupTimeFrom', this.sending.pickupTimeFrom);        
         console.log('__pop__ pickupTimeTo', this.sending.pickupTimeTo);        
-        // VALIDATE TIME RANGE WITH CURRENT TIME
-        this.validatePickupData();
 
     }
 

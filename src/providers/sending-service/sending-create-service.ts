@@ -3,7 +3,6 @@ import { HashService } from '../hash-service/hash-service';
 import { SendingDbService } from './sending-db-service';
 import { SendingRequest } from '../../models/sending-model';
 import { Injectable } from '@angular/core';
-import { DateService } from '../date-service/date-service';
 
 @Injectable()
 export class SendingCreateService{
@@ -15,8 +14,7 @@ export class SendingCreateService{
 
     constructor(private dbSrv: SendingDbService,
         private hashSrv: HashService,
-        private storageSrv: StorageService,
-        private dateSrv: DateService) {}
+        private storageSrv: StorageService) {}
 
     // create sending
     run(sending:SendingRequest, userId:string): Promise<any> {
@@ -201,33 +199,6 @@ export class SendingCreateService{
         // reset temp
         this.sending.objectImageUrlTemp = '';
     }
-
-    /**
-     *  SENDING DATE METHODS
-     */
-
-    getNextValidTime(date:string) {
-        let minute = this.dateSrv.getMinuteNum(date);
-        let hour = this.dateSrv.getHourNum(date);        
-        let newHour;
-        let newMinute;
-        let newDate;
-        if(minute<20) {
-            newHour = hour+1;
-            newMinute = 0;
-        }else {
-            newHour = hour+1;
-            newMinute = 30;            
-        }
-        if(newHour<21) {
-            newDate = this.dateSrv.setTimeToDate(date, newHour, newMinute); 
-        }else{
-            newDate = this.dateSrv.addDays(date, 1);
-            newDate = this.dateSrv.setTimeToDate(newDate, 9, 0); 
-        }
-        console.log('getNextValidTime', hour, minute, newHour, newMinute, newDate);
-        return newDate;       
-    } 
 
     /**
      *  INIT
