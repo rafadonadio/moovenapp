@@ -8,12 +8,10 @@ import { SendingsPage } from '../sendings/sendings';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
 
-import { DateService, DATE_DEFAULTS } from '../../providers/date-service/date-service';
+import { DateService } from '../../providers/date-service/date-service';
 import { SendingRequest } from '../../models/sending-model';
 
 import { Camera } from '@ionic-native/camera';
-
-const DEFAULTS = DATE_DEFAULTS;
 
 @Component({
     selector: 'page-sending-create',
@@ -229,12 +227,6 @@ export class SendingCreatePage implements OnInit {
         else {
             console.log('f1 > initSending > this.sending initiated');
             this.sending = this.sendingSrv.initObj();
-            // set default date/range
-            this.sending.pickupDate = this.dateSrv.getIsoString();
-            this.sending.pickupTimeFrom = DEFAULTS.PICKUP_TIME_FROM;
-            this.sending.pickupTimeTo = DEFAULTS.PICKUP_TIME_TO;
-            this.sending.dropTimeFrom = DEFAULTS.DROP_TIME_FROM;
-            this.sending.dropTimeTo = DEFAULTS.DROP_TIME_TO;
         }
         console.log('f1 > this.sending > ', this.sending);
     }

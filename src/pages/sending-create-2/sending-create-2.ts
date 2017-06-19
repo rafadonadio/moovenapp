@@ -6,7 +6,7 @@ import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 import { DateService, DATES_NAMES, DATE_DEFAULTS } from '../../providers/date-service/date-service';
-
+import { SendingRequest } from '../../models/sending-model';
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
@@ -15,6 +15,7 @@ import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-sea
 const MIN_TIMEDIFF_MINUTES = DATE_DEFAULTS.PICKUP_DROP_MIN_DIFF_IN_MINUTES;
 const DATES_TXT = DATES_NAMES;
 const PICKUP_DIFF_DAYS = DATE_DEFAULTS.PICKUP_DIFF_DAYS;
+const DEFAULTS = DATE_DEFAULTS;
 
 @Component({
     selector: 'page-sending-create-2',
@@ -23,7 +24,7 @@ const PICKUP_DIFF_DAYS = DATE_DEFAULTS.PICKUP_DIFF_DAYS;
 export class SendingCreate2Page implements OnInit {
 
     // sending model
-    sending: any;
+    sending: SendingRequest;
 
     // user
     user: any;
@@ -49,6 +50,7 @@ export class SendingCreate2Page implements OnInit {
     dayNames: any = DATES_TXT.dayNames.es;
     dayShortNames: any = DATES_TXT.dayShortNames.es;
     dateLimits:any;
+    timeLimits:any;
     // map
     map: any;
     mapMarkers = [];
@@ -77,29 +79,194 @@ export class SendingCreate2Page implements OnInit {
         // set request from param
         this.getSendingFromParams();
         // populate page
-        this.populatePage();
+        this.initAndPopulatePage();
+        // set selector limits
+        this.setTimeLimits();
     }
 
     /**
-     * MAIN ACTIONS
+     *  ACTIONS
      */
 
-    private setDateLimits() {
-        let today = this.dateSrv.getIsoString();
-        this.dateLimits = {
-            min: today,
-            max: this.dateSrv.addDays(today, PICKUP_DIFF_DAYS),
-        }
-        console.log('limits', this.dateLimits);
-    }
-
     goBack() {
-        console.info('f2 > go back to f1');
         this.update();
         this.goBacktoStep1();
     }
 
+    resetAddress() {
+        this.resetAddressElements();
+    }
+
     submit() {
+        this.submitForm();
+    }
+
+    cancel() {
+        this.cancelSending();
+    }
+
+    showAddressSearchModal() {
+        this.openAddressModal();
+    }
+
+    populateContactWithUserData() {
+        this.setPickupPersonData();
+    }
+
+    adjustPickupTimeFrom() {
+        this.setPickupTimeFrom();
+    }
+
+    adjustPickupTimeTo() {
+        this.setPickupTimeTo();
+    }
+
+    updateTimeLimits() {
+        console.log('updateTimeLimits');
+    }
+
+    setDate() {
+        console.log('setDate', this.rangeDate, this.pickupDate.value);
+        // update time limits
+        this.setTimeLimits();
+    }
+
+
+
+    /// PRIVATE METHODS
+
+    /**
+     *  PICKUP DATE
+     */
+
+    private setPickupAndRangeDate() {
+        this.pickupDate.setValue(this.sending.pickupDate);
+        this.rangeDate = this.sending.pickupDate;
+    }
+
+    private updatePickupDateWithRangeTime() {
+        let range = this.getPickupTimeValuesParsed('From');
+        this.sending.pickupDate = this.dateSrv.setTimeToDate(this.sending.pickupDate, range.hour, range.minute);
+    }
+
+
+    /**
+     *  PICKUP TIME-FROM
+     */
+
+    private setPickupAndRangeFrom() {
+        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
+        this.rangeFrom = this.sending.pickupTimeFrom;        
+    }
+
+    private setPickupTimeFrom() {
+        console.log('__SPTF__ setPickupTimeFrom');
+        console.log('__SPTF__ from/to', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let subtract = MIN_TIMEDIFF_MINUTES;
+            let newFrom = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);
+            newFrom.subtract(subtract, "minutes");
+            let newFromString = newFrom.format('HH:mm');
+            console.log('__SPTF__ newFrom/to', newFromString, to.format('HH:mm'));            
+            this.pickupTimeFrom.setValue(newFromString);
+            // show message
+            this.showTimeRangeToast('Desde', newFromString);            
+        }else{
+            console.log('__SPTF__ diff OK');
+        }
+    }    
+
+    /**
+     *  PICKUP TIME-TO
+     */
+
+    private setPickupAndRangeTo() {
+        this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
+        this.rangeTo = this.sending.pickupTimeTo;   
+    }
+
+    private setPickupTimeTo() {
+        console.log('__SPTT__ setPickupTimeTo');
+        console.log('__SPTT__ from/to', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            console.log('__SPTT__ diff', diff);
+            let add = MIN_TIMEDIFF_MINUTES;
+            let newTo = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
+            newTo.add(add, "minutes");
+            let newToString = newTo.format('HH:mm');
+            console.log('__SPTT__ from/newTo', from.format('HH:mm'), newToString);
+            this.pickupTimeTo.setValue(newToString);
+            // show message
+            this.showTimeRangeToast('Hasta', newToString);
+        }else{
+            console.log('__SPTT__ diff OK', diff);
+        }        
+    }
+
+
+    /**
+     * DATETIME HELPERS
+     */
+
+    private getPickupTimeValuesParsed(FromOrTo:string): {hour:number, minute: number} {
+        let date = this.sending[`pickupTime${FromOrTo}`];
+        let range = {
+            hour: this.dateSrv.getHourNum(date),
+            minute: this.dateSrv.getMinuteNum(date)
+        }
+        console.log('range', range);
+        return range;
+    }
+
+    // this is fixed, can be today or X days in the future
+    private setDateLimits() {
+        let now = this.dateSrv.getIsoString();
+        this.dateLimits = {
+            min: now,
+            max: this.dateSrv.addDays(now, PICKUP_DIFF_DAYS),
+        }
+        console.log('limits', this.dateLimits);
+    }
+
+    // depends of pickupDate
+    // if today, set limit from current time
+    // if in the future, set limit default
+    private setTimeLimits() {
+        let now = this.dateSrv.getIsoString();
+        let fromMin;
+        let toMin;
+        // pickupDate == today??
+        let dateIsToday = this.dateSrv.isDateToday(this.sending.pickupDate);
+        if(dateIsToday) {
+            fromMin = now;
+            toMin = this.dateSrv.addHours(now, 2);
+        }else{
+            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 9, 0);
+            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 11, 0);
+        }
+        this.timeLimits = {
+            from: {
+                min: fromMin,
+            },
+            to: {
+                min: toMin,
+            }
+        }
+        console.log('limits', this.timeLimits);
+    }
+
+
+    /**
+     * FORM HELPERS
+     */
+
+    private submitForm() {
         console.info('f2 > submit');
         if(!this.formTwo.valid){
             console.error('f2 > submit > invalid');
@@ -108,14 +275,14 @@ export class SendingCreate2Page implements OnInit {
             console.log('f2 > submit > valid');
             this.update();
             this.goToNextStep();
-        }
+        }        
     }
 
-    cancel() {
+    private cancelSending() {
         console.info('f2 > cancelSending');
         let alert = this.alertCtrl.create({
-            title: '¿Cancelar Envío?',
-            message: 'Se perderán todos los datos ingresados del Nuevo Envío.',
+            title: '¿Cancelar Servicio?',
+            message: 'Se perderán todos los datos ingresados del Nuevo Servicio.',
             buttons: [
                 {
                     text: 'No',
@@ -133,85 +300,91 @@ export class SendingCreate2Page implements OnInit {
                 }
             ]
         });
-        alert.present();
+        alert.present();        
     }
 
-    /**
-     *  FORM HELPERS
-     */
-
-    showAddressSearchModal() {
-        // reset 
-        this.resetAddressElements();
-        // init
-        let param = {
-            'modalTitle': 'Dirección de Retiro'
-        };    
-        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
-        modal.onDidDismiss(data => {
-            console.log('f2 > modal dismissed > data param > ', data);
-            this.processAddressSearchResult(data);
+    private initForm() {
+        this.formTwo = this.formBuilder.group({
+            'pickupAddressFullText': ['', Validators.compose([Validators.required])],
+            'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
+            'pickupDate': ['', Validators.compose([Validators.required])],
+            'pickupTimeFrom': ['', Validators.compose([Validators.required])],
+            'pickupTimeTo': ['', Validators.compose([Validators.required])],
+            'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
+            'pickupPersonPhone': ['', Validators.compose([Validators.required])],
+            'pickupPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
         });
-        modal.present();
-        console.log('f2 > modal present');
+        this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
+        this.pickupAddressLine2 = this.formTwo.controls['pickupAddressLine2'];
+        this.pickupDate = this.formTwo.controls['pickupDate'];
+        this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
+        this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
+        this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
+        this.pickupPersonPhone = this.formTwo.controls['pickupPersonPhone'];
+        this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];         
     }
 
-    setDate(e) {
-        console.log('setDate', this.rangeDate, this.pickupDate.value);
-        console.log('setDate e', e);
-    }
-
-    adjustPickupTimeFrom(e) {
-        console.log('adjustPickupTimeFrom');
-        console.log('from/to > ', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
-        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
-        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
-        let diff = this.dateSrv.getTimeDiff(from, to);
-        if(diff < MIN_TIMEDIFF_MINUTES) {
-            let subtract = MIN_TIMEDIFF_MINUTES;
-            let newFrom = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);
-            newFrom.subtract(subtract, "minutes");
-            let newFromString = newFrom.format('HH:mm');
-            console.log('newFrom/to: ', newFromString, to.format('HH:mm'));            
-            this.pickupTimeFrom.setValue(newFromString);
-            // show message
-            this.showTimeRangeToast('Desde', newFromString);            
-        }else{
-            console.log('diff ok');
+    private initAndPopulatePage() {
+        console.info('f2 > populatePage with this.sending');
+        // map
+        if(this.sending.pickupAddressSet==true) {
+            console.info('f2 > populatePage > set map');
+            var latlng = {
+                lat: this.sending.pickupAddressLat,
+                lng: this.sending.pickupAddressLng,
+            }
+            console.log('f2 > populatePage > latlng > ', latlng);
+            this.setMapCenter(latlng);
+            this.addMapMarker(latlng);
         }
-                
-    }
-
-    adjustPickupTimeTo(e) {
-        console.group('adjustPickupTimeTo');
-        console.log('from/to > ', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
-        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
-        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
-        let diff = this.dateSrv.getTimeDiff(from, to);
-        if(diff < MIN_TIMEDIFF_MINUTES) {
-            let add = MIN_TIMEDIFF_MINUTES;
-            let newTo = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
-            newTo.add(add, "minutes");
-            let newToString = newTo.format('HH:mm');
-            console.log('from/newTo: ', from.format('HH:mm'), newToString);
-            this.pickupTimeTo.setValue(newToString);
-            // show message
-            this.showTimeRangeToast('Hasta', newToString);
-        }else{
-            console.log('diff ok');
+        // address
+        this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
+        this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
+        // contact
+        this.pickupPersonName.setValue(this.sending.pickupPersonName);
+        this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
+        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
+        //
+        // PICKUP DATE, if not set, set today
+        console.log('pickupDate', this.sending.pickupDate);
+        if(this.sending.pickupDate=='') {
+            this.sending.pickupDate = this.dateSrv.getIsoString();
         }
+        console.log('pickupDate', this.sending.pickupDate);
+        this.setPickupAndRangeDate();
+        //
+        // PICKUP TIME FROM, if not set, set from pickup date at default time
+        if(this.sending.pickupTimeFrom=='') {
+            let from = this.sending.pickupDate;
+            from = this.dateSrv.setTimeToDate(from, DEFAULTS.PICKUP_TIME_FROM.hour, DEFAULTS.PICKUP_TIME_FROM.minute); 
+            this.sending.pickupTimeFrom = from;
+        }
+        this.setPickupAndRangeFrom();
+        this.updatePickupDateWithRangeTime();
+        //
+        // PICKUP TIME TO, if not set, set default
+        if(this.sending.pickupTimeTo=='') {
+            let to = this.sending.pickupDate;
+            to = this.dateSrv.setTimeToDate(to, DEFAULTS.PICKUP_TIME_TO.hour, DEFAULTS.PICKUP_TIME_TO.minute); 
+            this.sending.pickupTimeTo = to;
+        }
+        this.setPickupAndRangeTo();
+        //
+        console.log('initAndPopulate', this.sending.pickupDate, this.sending.pickupTimeFrom, this.sending.pickupTimeTo);        
+        // VALIDATE TIME RANGE WITH CURRENT TIME
         
     }
 
-    populateContactWithUserData() {
+    private populateAddressInput(fullAddress:string) {
+        console.log('f2 > populateAddressInput > ', fullAddress);
+        this.pickupAddressFullText.setValue(fullAddress);
+    }
+
+    private setPickupPersonData() {
         console.log('f2 > populate pickupContact with current user');
         this.pickupPersonName.setValue(this.user.displayName);
         this.pickupPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
-        this.pickupPersonEmail.setValue(this.user.email);
-    }
-
-    resetAddress() {
-        this.resetAddressElements();
+        this.pickupPersonEmail.setValue(this.user.email);        
     }
 
     private resetAddressElements() {
@@ -226,8 +399,8 @@ export class SendingCreate2Page implements OnInit {
         this.sending.pickupAddressIsComplete = false;
         this.sending.pickupAddressUserForcedValidation = false;
         this.sending.pickupAddressPlaceId = '';
-        this.sending.pickupAddressLat = '';
-        this.sending.pickupAddressLng = '';            
+        this.sending.pickupAddressLat = 0;
+        this.sending.pickupAddressLng = 0;            
         this.sending.pickupAddressFullText = '';
         this.sending.pickupAddressStreetShort = '';
         this.sending.pickupAddressStreetLong = '';
@@ -242,18 +415,7 @@ export class SendingCreate2Page implements OnInit {
         this.sending.pickupAddressStateShort = '';
         this.sending.pickupAddressStateLong = '';
         this.sending.pickupAddressCountry = '';         
-    }    
-
-    private showTimeRangeToast(input:string, newTime:string) {
-        let toast = this.toastCtrl.create({
-            message: 'Indica al menos 2 hs de margen horario, se ajustó "' + input + '" a "' + newTime + '"',
-            duration: 6000,
-            position: 'bottom',
-            showCloseButton: true,
-            closeButtonText: 'OK'
-        });
-        toast.present();    
-    }
+    }  
 
     /**
      *  NAVIGATION
@@ -275,10 +437,11 @@ export class SendingCreate2Page implements OnInit {
         });
     }
 
-    /**
-     *  SUBMIT HELPERS
-     */
 
+    /**
+     * SUBMIT UPDATES
+     */
+    
     private updateAddressDetails():void {
         console.info('f2 > updateSendingAddressPlaceDetails > save address values in this.sending');           
         this.sending.pickupAddressFullText = this.placeDetails.full_address;
@@ -317,11 +480,31 @@ export class SendingCreate2Page implements OnInit {
         this.sending.pickupPersonPhone = this.pickupPersonPhone.value;
         this.sending.pickupPersonEmail = this.pickupPersonEmail.value;
         console.log('f2 > this.sending > ', this.sending);
-    }
+    }    
+
 
     /**
      *  GOOGLE MAPS HELPERS
      */
+
+    private openAddressModal() {
+        // reset 
+        this.resetAddressElements();          
+        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, {
+                        'modalTitle': 'Dirección de Retiro'
+                    });
+        modal.onDidDismiss(data => {
+            console.log('f2 > modal dismissed > data param > ', data);
+            this.processAddressSearchResult(data);  
+        });
+        modal.present();
+        console.log('f2 > modal present');
+    }
+
+    private initPlaceDetails() {
+        console.info('f2 > initPlaceDetails');
+        this.placeDetails = this.gmapsService.initPlaceDetails();
+    }
 
     private processAddressSearchResult(item:any) {
         console.info('f2 > processAddressSearchResult');
@@ -389,30 +572,10 @@ export class SendingCreate2Page implements OnInit {
         this.map = this.gmapsService.initMap(latlng, divMap);
     }
 
-    /**
-     *  INIT HELPERS
-     */
 
-     private initForm() {
-        this.formTwo = this.formBuilder.group({
-            'pickupAddressFullText': ['', Validators.compose([Validators.required])],
-            'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
-            'pickupDate': ['', Validators.compose([Validators.required])],
-            'pickupTimeFrom': ['', Validators.compose([Validators.required])],
-            'pickupTimeTo': ['', Validators.compose([Validators.required])],
-            'pickupPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-            'pickupPersonPhone': ['', Validators.compose([Validators.required])],
-            'pickupPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
-        });
-        this.pickupAddressFullText = this.formTwo.controls['pickupAddressFullText'];
-        this.pickupAddressLine2 = this.formTwo.controls['pickupAddressLine2'];
-        this.pickupDate = this.formTwo.controls['pickupDate'];
-        this.pickupTimeFrom = this.formTwo.controls['pickupTimeFrom'];
-        this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
-        this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
-        this.pickupPersonPhone = this.formTwo.controls['pickupPersonPhone'];
-        this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];         
-     }
+    /**
+     * AUX HELPERS
+     */
 
     private setUser() {
         this.user = this.users.getUser();
@@ -423,49 +586,21 @@ export class SendingCreate2Page implements OnInit {
             });
     }    
 
-    private initPlaceDetails() {
-        console.info('f2 > initPlaceDetails');
-        this.placeDetails = this.gmapsService.initPlaceDetails();
-    }
- 
     private getSendingFromParams() {
         console.info('f2 > getSendingFromParams');
         console.log('f2 > param > ', this.navParams.get('sending'));
         this.sending = this.navParams.get('sending');
     }
 
-    private populatePage() {
-        console.info('f2 > populatePage with this.sending');
-        // map
-        if(this.sending.pickupAddressSet==true) {
-            console.info('f2 > populatePage > set map');
-            var latlng = {
-                lat: this.sending.pickupAddressLat,
-                lng: this.sending.pickupAddressLng,
-            }
-            console.log('f2 > populatePage > latlng > ', latlng);
-            this.setMapCenter(latlng);
-            this.addMapMarker(latlng);
-        }
-        // address
-        this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
-        this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
-        //datetime
-        this.pickupDate.setValue(this.sending.pickupDate);
-        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
-        this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
-        this.rangeDate = this.sending.pickupDate;
-        this.rangeFrom = this.sending.pickupTimeFrom;
-        this.rangeTo = this.sending.pickupTimeTo;
-        // contact
-        this.pickupPersonName.setValue(this.sending.pickupPersonName);
-        this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
-        this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
-    }
-
-    private populateAddressInput(fullAddress:string) {
-        console.log('f2 > populateAddressInput > ', fullAddress);
-        this.pickupAddressFullText.setValue(fullAddress);
+    private showTimeRangeToast(input:string, newTime:string) {
+        let toast = this.toastCtrl.create({
+            message: 'Debe haber al menos 2 hs de margen horario, se ajustó "' + input + '" a "' + newTime + '"',
+            duration: 6000,
+            position: 'bottom',
+            showCloseButton: true,
+            closeButtonText: 'OK'
+        });
+        toast.present();    
     }
 
 }
