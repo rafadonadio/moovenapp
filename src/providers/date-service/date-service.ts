@@ -18,6 +18,13 @@ export class DateService {
         return diff;
     }
 
+    getDiff(from:any, to:any) {
+        let a = moment(to);
+        let b = moment(from);
+        // diff is greater diff smaller
+        return a.diff(b, 'minutes');
+    }
+
     // set moment from string format > HH:mm
     setTimeMoment(timeString:string): any{
         // console.info('setTimeMoment');
@@ -95,7 +102,15 @@ export class DateService {
 
     addHours(date:string, hours:number)  {
         return moment(date).add(hours, 'hours').format();
+    } 
+
+    addMinutes(date:string, minutes:number)  {
+        return moment(date).add(minutes, 'minutes').format();
     }    
+
+    subtractMinutes(date:string, minutes:number)  {
+        return moment(date).subtract(minutes, 'minutes').format();
+    }            
 
     //  ISO 8601 datetime format standard
     readISO8601FromTimestamp(timestamp:number):string {

@@ -126,7 +126,8 @@ export class SendingCreate2Page implements OnInit {
     }
 
     setDate() {
-        console.log('setDate', this.rangeDate, this.pickupDate.value);
+        console.log('setDate', this.rangeDate);
+        this.sending.pickupDate = this.rangeDate;
         // update time limits
         this.setTimeLimits();
     }
@@ -160,23 +161,16 @@ export class SendingCreate2Page implements OnInit {
     }
 
     private setPickupTimeFrom() {
-        console.log('__SPTF__ setPickupTimeFrom');
-        console.log('__SPTF__ from/to', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
-        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
-        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
-        let diff = this.dateSrv.getTimeDiff(from, to);
+        console.log('__SPTF__ setPickupTimeFrom > from/to', this.pickupTimeFrom.value, this.pickupTimeTo.value); 
+        let diff = this.dateSrv.getDiff(this.pickupTimeFrom.value, this.pickupTimeTo.value);
+        console.log('diff', diff);
         if(diff < MIN_TIMEDIFF_MINUTES) {
-            let subtract = MIN_TIMEDIFF_MINUTES;
-            let newFrom = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);
-            newFrom.subtract(subtract, "minutes");
-            let newFromString = newFrom.format('HH:mm');
-            console.log('__SPTF__ newFrom/to', newFromString, to.format('HH:mm'));            
-            this.pickupTimeFrom.setValue(newFromString);
-            // show message
-            this.showTimeRangeToast('Desde', newFromString);            
+            let newFrom = this.dateSrv.subtractMinutes(this.pickupTimeTo.value, MIN_TIMEDIFF_MINUTES);
+            this.pickupTimeFrom.setValue(newFrom);
+            this.showTimeRangeToast('newFrom', newFrom);
         }else{
             console.log('__SPTF__ diff OK');
-        }
+        }   
     }    
 
     /**
@@ -189,21 +183,13 @@ export class SendingCreate2Page implements OnInit {
     }
 
     private setPickupTimeTo() {
-        console.log('__SPTT__ setPickupTimeTo');
-        console.log('__SPTT__ from/to', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
-        let from = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
-        let to = this.dateSrv.setTimeMoment(this.pickupTimeTo.value);    
-        let diff = this.dateSrv.getTimeDiff(from, to);
+        console.log('__SPTT__ setPickupTimeTo from/to', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
+        let diff = this.dateSrv.getDiff(this.pickupTimeFrom.value, this.pickupTimeTo.value);
+        console.log('diff', diff);
         if(diff < MIN_TIMEDIFF_MINUTES) {
-            console.log('__SPTT__ diff', diff);
-            let add = MIN_TIMEDIFF_MINUTES;
-            let newTo = this.dateSrv.setTimeMoment(this.pickupTimeFrom.value);
-            newTo.add(add, "minutes");
-            let newToString = newTo.format('HH:mm');
-            console.log('__SPTT__ from/newTo', from.format('HH:mm'), newToString);
-            this.pickupTimeTo.setValue(newToString);
-            // show message
-            this.showTimeRangeToast('Hasta', newToString);
+            let newTo = this.dateSrv.addMinutes(this.pickupTimeFrom.value, MIN_TIMEDIFF_MINUTES);
+            this.pickupTimeTo.setValue(newTo);
+            this.showTimeRangeToast('newTo', newTo);
         }else{
             console.log('__SPTT__ diff OK', diff);
         }        
@@ -231,7 +217,7 @@ export class SendingCreate2Page implements OnInit {
             min: now,
             max: this.dateSrv.addDays(now, PICKUP_DIFF_DAYS),
         }
-        console.log('limits', this.dateLimits);
+        console.log('dateLimits', this.dateLimits);
     }
 
     // depends of pickupDate
@@ -247,8 +233,8 @@ export class SendingCreate2Page implements OnInit {
             fromMin = now;
             toMin = this.dateSrv.addHours(now, 2);
         }else{
-            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 9, 0);
-            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 11, 0);
+            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 0, 0);
+            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 2, 0);
         }
         this.timeLimits = {
             from: {
@@ -258,7 +244,7 @@ export class SendingCreate2Page implements OnInit {
                 min: toMin,
             }
         }
-        console.log('limits', this.timeLimits);
+        console.log('timeLimits', this.timeLimits);
     }
 
 
