@@ -695,7 +695,7 @@ export class SendingCreate2Page implements OnInit {
 
     private showTimeRangeToast(input:string, newTime:string) {
         let toast = this.toastCtrl.create({
-            message: 'Debe haber al menos 2 hs de margen horario, se ajustó "' + input + '" a "' + newTime + '"',
+            message: 'Se ajustó horario de "' + input + '" a "' + newTime + '", para mantener 2 horas de margen',
             duration: 6000,
             position: 'bottom',
             showCloseButton: true,
