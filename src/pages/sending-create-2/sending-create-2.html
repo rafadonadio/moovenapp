@@ -57,9 +57,7 @@
                     [min]="dateLimits?.min"
                     [max]="dateLimits?.max"
                     displayFormat="DD/MMM"
-                    cancelText="Cancelar" doneText="Listo"
-                    [(ngModel)]="rangeDate"
-                    (ionChange)="setDate()"></ion-datetime>
+                    cancelText="Cancelar" doneText="Listo"></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !pickupDate.valid" 
                 class="input-error">* Fecha de retiro es requerida</div>            
@@ -71,10 +69,7 @@
                     hourValues="04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21"
                     minuteValues="00,30"
                     [min]="timeLimits?.from.min"
-                    cancelText="Cancelar" doneText="Listo" 
-                    [(ngModel)]="rangeFrom"
-                    (click)="updateTimeLimits()"
-                    (ionChange)="adjustTimeTo()"></ion-datetime>
+                    cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
             <ion-item no-lines>
                 <ion-label>Hasta</ion-label>
@@ -84,10 +79,7 @@
                     hourValues="06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23"
                     minuteValues="00,30" 
                     [min]="timeLimits?.to.min"
-                    cancelText="Cancelar" doneText="Listo" 
-                    [(ngModel)]="rangeTo"
-                    (click)="updateTimeLimits()"
-                    (ionChange)="adjustTimeFrom()"></ion-datetime>
+                    cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !pickupTimeFrom.touched && !pickupTimeTo.touched" 
                 class="input-optional"><small>* verifica que el horario de retiro sea correcto</small></div>

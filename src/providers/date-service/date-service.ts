@@ -69,10 +69,10 @@ export class DateService {
 
     // momentInput: timestamp, ISO8601 string date
     getHourNum(date:any): number {
-        return moment(date).hour();
+        return moment(date).get('hour');
     }    
     getMinuteNum(date:any): number {
-        return moment(date).minute();
+        return moment(date).minutes();
     }        
     getMonthStr(momentInput:any):string{
         let day = moment(momentInput);
@@ -142,26 +142,6 @@ export class DateService {
 }
 
 export const DATE_DEFAULTS = {
-    PICKUP_TIME_FROM: {
-        txt: '07:00',
-        hour: 7,
-        minute: 0
-    },
-    PICKUP_TIME_TO: {
-        txt: '12:00',
-        hour: 12,
-        minute: 0
-    },
-    DROP_TIME_FROM: {
-        txt: '13:00',
-        hour: 13,
-        minute: 0
-    },
-    DROP_TIME_TO: {
-        txt: '17:00',
-        hour: 17,
-        minute: 0
-    },  
     PICKUP_DIFF_DAYS: 5,
     PICKUP_DROP_MIN_DIFF_IN_MINUTES: 120,  
 }

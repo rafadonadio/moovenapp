@@ -40,6 +40,9 @@ export class SendingCreate2Page implements OnInit {
     pickupPersonPhone: any;
     pickupPersonEmail: any;
     // form aux
+    rangeDate: any;
+    rangeFrom: any;
+    rangeTo: any;
     showErrors: boolean = false;
     monthNames: any = DATES_TXT.monthNames.es;
     monthShortNames: any = DATES_TXT.monthShortNames.es;
@@ -109,6 +112,22 @@ export class SendingCreate2Page implements OnInit {
         this.setPickupPersonData();
     }
 
+    adjustTimeFrom() {
+        this.setPickupTimeFrom();
+    }
+
+    adjustTimeTo() {
+        this.setPickupTimeTo();
+    }
+
+    setDate() {
+        this.updatePickupDateRelated();
+    }
+
+    updateTimeLimits() {
+        this.setTimeLimits();
+    }
+
 
 
     /// PRIVATE METHODS
@@ -116,40 +135,57 @@ export class SendingCreate2Page implements OnInit {
     /**
      *  PICKUP DATE
      */
+    
+    // triggered by setDate()
+    private updatePickupDateRelated() {
+        console.log('setDate', this.rangeDate);
+        this.sending.pickupDate = this.rangeDate;
+        // update pickupTimeFrom
+        this.setNextValidTimeFrom();
+        this.setPickupAndRangeFrom();
+        // update pickupTimeTo
+        this.sending.pickupTimeTo = this.dateSrv.addHours(this.sending.pickupTimeFrom, 2);
+        this.setPickupAndRangeTo();
+        // update time limits
+        this.setTimeLimits();
+    }
 
-    private setPickupDate(isoDate: string) {
-        this.sending.pickupDate = isoDate;
-        this.pickupDate.setValue(isoDate);
+    // triggered by initAndPopulate()
+    private updatePickupDateWithFromTime() {
+        this.sending.pickupDate = this.sending.pickupTimeFrom;
+        this.rangeDate = this.sending.pickupTimeFrom;
+        console.log('updatePickupDateWithFromTime', this.sending.pickupDate, this.rangeDate);
     }
 
     /**
      *  PICKUP TIME-FROM
      */
 
-    private setPickupTimeFrom(isoDate: string) {
-        this.sending.pickupTimeFrom = isoDate;
-        this.pickupTimeFrom.setValue(isoDate);
+    private setPickupAndRangeFrom() {
+        this.pickupTimeFrom.setValue(this.sending.pickupTimeFrom);
+        this.rangeFrom = this.sending.pickupTimeFrom;       
+        console.log('setPickupAndRangeFrom', this.sending.pickupTimeFrom); 
     }
 
-
-    /**
-     *  PICKUP TIME-TO
-     */
-
-    private setPickupTimeTo(isoDate: string) {
-        this.sending.pickupTimeTo = isoDate;
-        this.pickupTimeTo.setValue(isoDate);
-    }
-
-    /**
-     * DATETIME HELPERS
-     */
+    private setPickupTimeFrom() {
+        console.log('__setPickupTimeFrom__ from,to', this.pickupTimeFrom.value, this.pickupTimeTo.value); 
+        let diff = this.dateSrv.getDiff(this.pickupTimeFrom.value, this.pickupTimeTo.value);
+        console.log('__setPickupTimeFrom__ diff', diff);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let newFrom = this.dateSrv.subtractMinutes(this.pickupTimeTo.value, MIN_TIMEDIFF_MINUTES);
+            this.pickupTimeFrom.setValue(newFrom);
+            this.showTimeRangeToast('Desde', this.dateSrv.getTimeFromDate(newFrom));
+        }else{
+            console.log('__setPickupTimeFrom__ diff OK');
+        }   
+        this.updatePickupDateWithFromTime();
+    }    
 
     // set pickupTimeFrom date, to next valid hour
-    private resetDateTimeFromTo() {
-        let now = this.dateSrv.getIsoString();
-        let hour = this.dateSrv.getHourNum(now);    
-        let minute = this.dateSrv.getMinuteNum(now);     
+    private setNextValidTimeFrom() {
+        let from = this.sending.pickupTimeFrom;      
+        let hour = this.dateSrv.getHourNum(from);    
+        let minute = this.dateSrv.getMinuteNum(from);     
         let newHour;
         let newMinute;
         let newDate;
@@ -160,25 +196,52 @@ export class SendingCreate2Page implements OnInit {
             newHour = hour+1;
             newMinute = 0;            
         }
-        if(newHour>3 && newHour<=21) {
-            newDate = this.dateSrv.setTimeToDate(now, newHour, newMinute); 
-        }else if(newHour<=3){
-            newDate = this.dateSrv.setTimeToDate(now, 4, 0); 
+        if(newHour<=21) {
+            newDate = this.dateSrv.setTimeToDate(from, newHour, newMinute); 
         }else{
-            newDate = this.dateSrv.addDays(now, 1);
+            newDate = this.dateSrv.addDays(from, 1);
             newDate = this.dateSrv.setTimeToDate(newDate, 9, 0); 
         }        
-        this.setPickupDate(newDate);
-        this.setPickupTimeFrom(newDate);
-        let newTo = this.dateSrv.addHours(newDate, 2);
-        this.setPickupTimeTo(newTo);
-        console.log('resetDateTimeFromTo', now, hour, minute, newHour, newMinute, newDate, newTo);
+        this.sending.pickupTimeFrom = newDate;
+        console.log('setNextValidTimeFrom', from, hour, minute, newHour, newMinute, newDate);
     }
 
-    private isAdateOlderThanBdate(a:any, b:any) {
-        let isOld = this.dateSrv.isBeforeThan(a, b);
-        console.log('isAdateOlderThanBdate', isOld, a, b);
-        return isOld;
+    /**
+     *  PICKUP TIME-TO
+     */
+
+    private setPickupAndRangeTo() {
+        this.pickupTimeTo.setValue(this.sending.pickupTimeTo);
+        this.rangeTo = this.sending.pickupTimeTo;   
+        console.log('pickupTimeTo', this.sending.pickupTimeTo); 
+    }
+
+    private setPickupTimeTo() {
+        console.log('__setPickupTimeTo__ from|to', this.pickupTimeFrom.value, this.pickupTimeTo.value);  
+        let diff = this.dateSrv.getDiff(this.pickupTimeFrom.value, this.pickupTimeTo.value);
+        console.log('__setPickupTimeTo__ diff', diff);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let newTo = this.dateSrv.addMinutes(this.pickupTimeFrom.value, MIN_TIMEDIFF_MINUTES);
+            this.pickupTimeTo.setValue(newTo);
+            this.showTimeRangeToast('Hasta', this.dateSrv.getTimeFromDate(newTo));
+        }else{
+            console.log('__setPickupTimeTo__ diff OK', diff);
+        }        
+    }
+
+
+    /**
+     * DATETIME HELPERS
+     */
+
+    private getPickupTimeValuesParsed(FromOrTo:string): {hour:number, minute: number} {
+        let date = this.sending[`pickupTime${FromOrTo}`];
+        let range = {
+            hour: this.dateSrv.getHourNum(date),
+            minute: this.dateSrv.getMinuteNum(date)
+        }
+        // console.log('range', range);
+        return range;
     }
 
     // this is fixed, can be today or X days in the future
@@ -198,16 +261,15 @@ export class SendingCreate2Page implements OnInit {
         let now = this.dateSrv.getIsoString();
         let fromMin;
         let toMin;
+        // pickupDate == today??
         let dateIsToday = this.dateSrv.isDateToday(this.sending.pickupDate);
         console.log('setTimeLimits is pickupDate today?', dateIsToday);
         if(dateIsToday) {
-            // set limit from current time
             fromMin = now;
             toMin = this.dateSrv.addHours(now, 2);
         }else{
-            // set limit default
-            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 4, 0);
-            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 6, 0);
+            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 0, 0);
+            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 2, 0);
         }
         this.timeLimits = {
             from: {
@@ -303,27 +365,48 @@ export class SendingCreate2Page implements OnInit {
         this.pickupPersonName.setValue(this.sending.pickupPersonName);
         this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
         this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
-
-        // DATE AUX
-        let now = this.dateSrv.getIsoString();        
-
-        // PICKUP DATE
+        //
+        // PICKUP DATE, if not set, set today
         if(this.sending.pickupDate=='') {
-            // not set, set with now
-            this.resetDateTimeFromTo();
+            this.sending.pickupDate = this.dateSrv.getIsoString();
+        }
+        this.pickupDate.setValue(this.sending.pickupDate);
+        this.rangeDate = this.sending.pickupDate;
+        console.log('__PICKUP_DATE__', this.sending.pickupDate, this.rangeDate, this.pickupDate.value);        
+        //
+        // PICKUP TIME FROM, 
+        // if not set, set from pickup date at next valid time
+        if(this.sending.pickupTimeFrom=='') {
+            this.sending.pickupTimeFrom = this.sending.pickupDate;
+            this.setNextValidTimeFrom();
         }else{
-            // is set, old?
-            if(this.isAdateOlderThanBdate(this.sending.pickupDate, now)) {               
-                // is old, reset with now
-                this.resetDateTimeFromTo();
-                // show toast ...
-            }else{
-                // its ok, set from sending
-                this.setPickupDate(this.sending.pickupDate);
-                this.setPickupTimeFrom(this.sending.pickupTimeFrom);
-                this.setPickupTimeTo(this.sending.pickupTimeTo);
+            // is set, check is not old, otherwise fix
+            let now = this.dateSrv.getIsoString();
+            let timeFromIsOld = this.dateSrv.isBeforeThan(this.sending.pickupTimeFrom, now);
+            console.log('timeFromIsOld', timeFromIsOld, this.sending.pickupTimeFrom, now);
+            if(timeFromIsOld) {
+                this.setNextValidTimeFrom();
+                // alert that FROM time has changed
+                let toast = this.toastCtrl.create({
+                    message: `ATENCION: El Horario de Retiro fue ajustado`,
+                    duration: 4000,
+                    position: 'bottom',
+                    showCloseButton: true,
+                    closeButtonText: 'OK'
+                });
+                toast.present();                 
             }
         }
+        this.setPickupAndRangeFrom();
+        this.updatePickupDateWithFromTime();
+        //
+        // PICKUP TIME TO, if not set get TimeFrom plus 2 hours 
+        if(this.sending.pickupTimeTo=='') {
+            let from = this.sending.pickupTimeFrom;
+            let to = this.dateSrv.addHours(from, 2);
+            this.sending.pickupTimeTo = to;
+        }
+        this.setPickupAndRangeTo();
         //
         console.log('__pop__ pickupDate', this.sending.pickupDate);        
         console.log('__pop__ pickupTimeFrom', this.sending.pickupTimeFrom);        
