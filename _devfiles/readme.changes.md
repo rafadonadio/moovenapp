@@ -42,6 +42,10 @@
     - limitar intentos de reenviar email de validación
 
 
+# TO BE DEFINED
+- fecha de servicio
+    - que pasa con feriados?
+    - que pasa con fin de semana?
 
 
 # CHANGELOG

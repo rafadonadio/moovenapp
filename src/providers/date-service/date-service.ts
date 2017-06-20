@@ -142,6 +142,26 @@ export class DateService {
 }
 
 export const DATE_DEFAULTS = {
+    PICKUP_TIME_FROM: {
+        txt: '09:00',
+        hour: 9,
+        minute: 0
+    },
+    PICKUP_TIME_TO: {
+        txt: '12:00',
+        hour: 12,
+        minute: 0
+    },
+    DROP_TIME_FROM: {
+        txt: '13:00',
+        hour: 13,
+        minute: 0
+    },
+    DROP_TIME_TO: {
+        txt: '17:00',
+        hour: 17,
+        minute: 0
+    },  
     PICKUP_DIFF_DAYS: 5,
     PICKUP_DROP_MIN_DIFF_IN_MINUTES: 120,  
 }
