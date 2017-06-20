@@ -56,7 +56,9 @@
                     [monthShortNames]="monthShortNames"
                     [min]="dateLimits?.min"
                     [max]="dateLimits?.max"
+                    (click)="updateDateLimits()"
                     displayFormat="DD/MMM"
+                    (ionChange)="changePickupDate()"
                     cancelText="Cancelar" doneText="Listo"></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !pickupDate.valid" 
@@ -69,6 +71,7 @@
                     hourValues="04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21"
                     minuteValues="00,30"
                     [min]="timeLimits?.from.min"
+                    (click)="updateTimeLimits()"
                     cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
             <ion-item no-lines>

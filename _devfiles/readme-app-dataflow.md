@@ -296,6 +296,33 @@ FIREBASE
         populatePage()
             rellena datos de form
     
+    (Date action flow)
+        init
+            pickupDate empty?
+                yes
+                    resetDateTimeFromTo()
+                no
+                    is TimeFrom older than now?
+                        yes
+                            resetDateTimeFromTo()
+                        no
+                            set form values
+        edit
+            Date
+                limits (from today to today+5)
+                (click)
+                    update DateLimits when Date clicked
+                (ionChange)
+                    update timeLimits()
+                    validate TimeFrom
+                    validate TimeTo
+
+
+
+
+            
+
+
 
     submit()
         form.invalid
