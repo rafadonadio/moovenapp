@@ -7,12 +7,12 @@
 #############
 
 - Nuevo Servicio - Paso 2    
-    - ingresar fecha  
-    - validar horario
-        validar fecha (hasta 5 días en reserva)
-        validar drop time si pickup cambio
-        validar pickup si drop cambio
-        validar pickup/drop si hora cambió
+    <!--- ingresar fecha  -->
+    <!--- validar horario-->
+        <!--validar fecha (hasta 5 días en reserva)-->
+        <!--validar drop time si pickup cambio-->
+        <!--validar pickup si drop cambio-->
+        <!--validar pickup/drop si hora cambió-->
 - Nuevo Servicio - Paso 3  
     - validar horario        
 - Nuevo Servicio - Paso 4  
