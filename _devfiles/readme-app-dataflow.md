@@ -314,15 +314,9 @@ FIREBASE
                     update DateLimits when Date clicked
                 (ionChange)
                     update timeLimits()
+                    validate Date
                     validate TimeFrom
                     validate TimeTo
-
-
-
-
-            
-
-
 
     submit()
         form.invalid
