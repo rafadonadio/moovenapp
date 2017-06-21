@@ -54,9 +54,7 @@
                     displayFormat="HH:mm" 
                     hourValues="00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22"
                     minuteValues="00,30"
-                    cancelText="Cancelar" doneText="Listo" 
-                    [(ngModel)]="rangeFrom" 
-                    (ionChange)="adjustDropTimeTo($event)"></ion-datetime>
+                    cancelText="Cancelar" doneText="Listo"></ion-datetime>
             </ion-item>
             <ion-item no-lines>
                 <ion-label>Hasta</ion-label>
@@ -65,9 +63,7 @@
                 displayFormat="HH:mm" 
                 hourValues="02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,00"
                 minuteValues="00,30" 
-                cancelText="Cancelar" doneText="Listo" 
-                [(ngModel)]="rangeTo" 
-                (ionChange)="adjustDropTimeFrom($event)"></ion-datetime>
+                cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !dropTimeFrom.touched && !dropTimeTo.touched" 
                 class="input-optional"><small>* verifica que el horario de entrega sea correcto</small></div>            

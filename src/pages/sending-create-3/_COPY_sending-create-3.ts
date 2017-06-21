@@ -5,17 +5,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmailValidator } from '../../validators/email.validator';
 import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
-import { DateService, DATE_DEFAULTS, DATES_NAMES } from '../../providers/date-service/date-service';
+import { DateService } from '../../providers/date-service/date-service';
 
 import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
 
-const MIN_TIMEDIFF_MINUTES = DATE_DEFAULTS.PICKUP_DROP_MIN_DIFF_IN_MINUTES;
-const DATES_TXT = DATES_NAMES;
-const DEFAULT_DROP_TIME_FROM_HR = DATE_DEFAULTS.DROP_TIME_FROM.hour;
-const DEFAULT_DROP_TIME_FROM_MIN = DATE_DEFAULTS.DROP_TIME_FROM.minute;
+const MIN_TIMEDIFF_MINUTES = 120;
 
 @Component({
     selector: 'page-sending-create-3',
@@ -25,11 +22,13 @@ export class SendingCreate3Page implements OnInit{
 
     // sending model
     sending: any;
+
     // user
     user: any;
     profile: any;
+
     // form
-    form: FormGroup;
+    formThree: FormGroup;
     dropAddressFullText: any;
     dropAddressLine2: any;    
     dropTimeFrom: any;
@@ -38,13 +37,10 @@ export class SendingCreate3Page implements OnInit{
     dropPersonPhone: any;
     dropPersonEmail: any;
     // form aux
+    rangeFrom: any;
+    rangeTo: any;
     showErrors:boolean = false;
-    monthNames: any = DATES_TXT.monthNames.es;
-    monthShortNames: any = DATES_TXT.monthShortNames.es;
-    dayNames: any = DATES_TXT.dayNames.es;
-    dayShortNames: any = DATES_TXT.dayShortNames.es;
-    dateLimits:any;
-    timeLimits:any;
+
     // map
     map: any;
     mapMarkers = [];
@@ -72,7 +68,7 @@ export class SendingCreate3Page implements OnInit{
         // set sending from param
         this.getSendingFromParams();
         // populate page
-        this.initAndPopulatePage();        
+        this.populatePage();        
     }
 
     /**
@@ -80,94 +76,14 @@ export class SendingCreate3Page implements OnInit{
      */
 
     goBack() {
+        console.log('f3 > go back to f2');
         this.update();
         this.goBacktoStep2();
     }
 
-    resetAddress() {
-        this.resetAddressElements();
-    }
-
     submit() {
-        this.submitForm();
-    }
-
-    cancel() {
-        this.cancelSending();
-    }
-
-    showAddressSearchModal() {
-        this.openAddressModal();
-    }
-
-    populateContactWithUserData() {
-        this.setPickupPersonData();
-    }
-
-
-
-    /// PRIVATE METHODS
-
-    /**
-     *  PICKUP DATE
-     */
-
-    /**
-     *  PICKUP TIME-FROM
-     */
-
-    /**
-     *  PICKUP TIME-TO
-     */
-
-    /**
-     *  DATETIME HELPERS
-     */
-
-    // depends of pickupDate
-    // if today, set limit from current time
-    // if in the future, set limit default
-    private setTimeLimits() {
-        console.group('setTimeLimits');
-        let now = this.dateSrv.getIsoString();
-        let fromMin;
-        let toMin;
-        let dateIsToday = this.dateSrv.isDateToday(this.sending.pickupDate);
-        console.log('is pickupDate today?', dateIsToday);
-        if(dateIsToday) {
-            // set limit from current time, rounded up
-            let minutes = this.dateSrv.getMinuteNum(now);
-            let hour = this.dateSrv.getHourNum(now);
-            if(minutes>30) {
-                fromMin = this.dateSrv.setTimeToDate(now, hour+1, 0);
-            }else{
-                fromMin = this.dateSrv.setTimeToDate(now, hour, 30);
-            }
-            toMin = this.dateSrv.addHours(fromMin, 2);
-        }else{
-            // set limit default
-            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 4, 0);
-            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 6, 0);
-        }
-        this.timeLimits = {
-            from: {
-                min: fromMin,
-            },
-            to: {
-                min: toMin,
-            }
-        }
-        console.log('timeLimits', this.timeLimits);
-        console.groupEnd();
-    }
-
-   /**
-     *  FORM HELPERS
-     */
-
-    private submitForm() {
         console.log('f3 > submit');
-        if(!this.form.valid) {
+        if(!this.formThree.valid) {
             console.log('f3 > submit > invalid');
             this.showErrors = true;
         }else{
@@ -178,7 +94,7 @@ export class SendingCreate3Page implements OnInit{
         }    
     }
 
-    private cancelSending() {
+    cancel() {
         console.info('f3 > cancelSending');        
         let alert = this.alertCtrl.create({
             title: '¿Cancelar Envío?',
@@ -189,6 +105,7 @@ export class SendingCreate3Page implements OnInit{
                     role: 'cancel',
                     handler: () => {
                         console.log('f3 > cancel form > no, continue');
+
                     }
                 },
                 {
@@ -203,60 +120,77 @@ export class SendingCreate3Page implements OnInit{
         alert.present();
     }
 
-    private initForm() {
-        this.form = this.formBuilder.group({
-            'dropAddressFullText': ['', Validators.compose([Validators.required])],
-            'dropAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
-            'dropTimeFrom': ['', Validators.compose([Validators.required])],
-            'dropTimeTo': ['', Validators.compose([Validators.required])],
-            'dropPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-            'dropPersonPhone': ['', Validators.compose([Validators.required])],
-            'dropPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
+   /**
+     *  FORM HELPERS
+     */
+
+    showAddressSearchModal() {
+        // reset 
+        this.resetAddressElements();
+        // init
+        let param = {
+            'modalTitle': 'Dirección de Entrega'
+        };    
+        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
+        modal.onDidDismiss(data => {
+            console.log('f2 > modal dismissed > data param > ', data);
+            this.processAddressSearchResult(data);
         });
-        this.dropAddressFullText = this.form.controls['dropAddressFullText'];
-        this.dropAddressLine2 = this.form.controls['dropAddressLine2'];        
-        this.dropTimeFrom = this.form.controls['dropTimeFrom'];
-        this.dropTimeTo = this.form.controls['dropTimeTo'];
-        this.dropPersonName = this.form.controls['dropPersonName'];
-        this.dropPersonPhone = this.form.controls['dropPersonPhone'];
-        this.dropPersonEmail = this.form.controls['dropPersonEmail'];        
+        modal.present();
+        console.log('f2 > modal present');
     }
 
-    private initAndPopulatePage() {
-        console.log('f3 > populate form with this.sending');
-        // map
-        if(this.sending.dropAddressSet==true) {
-            console.info('f3 > populatePage > set map');
-            var latlng = {
-                lat: this.sending.dropAddressLat,
-                lng: this.sending.dropAddressLng,
-            }
-            console.log('f3 > populatePage > latlng > ', latlng);
-            this.setMapCenter(latlng);
-            this.addMapMarker(latlng);
+    adjustDropTimeFrom(e) {
+        console.group('adjustPickupTimeFrom');
+        console.log('from/to > ', this.dropTimeFrom.value, this.dropTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.dropTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.dropTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let subtract = MIN_TIMEDIFF_MINUTES;
+            let newFrom = this.dateSrv.setTimeMoment(this.dropTimeTo.value);
+            newFrom.subtract(subtract, "minutes");            
+            let newFromString = newFrom.format('HH:mm');            
+            console.log('newFrom/to: ', newFromString, to.format('HH:mm'));      
+            this.dropTimeFrom.setValue(newFrom.format('HH:mm'));
+            // show message
+            this.showTimeRangeToast('Desde', newFromString);               
+        }else{
+            console.log('diff ok');
         }
-        // address
-        this.dropAddressFullText.setValue(this.sending.dropAddressFullText);
-        this.dropAddressLine2.setValue(this.sending.dropAddressLine2);          
-        //datetime
-        this.dropTimeFrom.setValue(this.sending.dropTimeFrom);
-        this.dropTimeTo.setValue(this.sending.dropTimeTo);
-        // contact
-        this.dropPersonName.setValue(this.sending.dropPersonName);
-        this.dropPersonPhone.setValue(this.sending.dropPersonPhone);
-        this.dropPersonEmail.setValue(this.sending.dropPersonEmail);
+        console.groupEnd();        
     }
 
-    private populateAddressInput(fullAddress:string) {
-        console.log('f2 > populateAddressInput > ', fullAddress);
-        this.dropAddressFullText.setValue(fullAddress);
+    adjustDropTimeTo(e) {
+        console.group('adjustPickupTimeTo');
+        console.log('from/to > ', this.dropTimeFrom.value, this.dropTimeTo.value);  
+        let from = this.dateSrv.setTimeMoment(this.dropTimeFrom.value);
+        let to = this.dateSrv.setTimeMoment(this.dropTimeTo.value);    
+        let diff = this.dateSrv.getTimeDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            let add = MIN_TIMEDIFF_MINUTES;
+            let newTo = this.dateSrv.setTimeMoment(this.dropTimeFrom.value);
+            newTo.add(add, "minutes");            
+            let newToString = newTo.format('HH:mm');
+            console.log('from/newTo: ', from.format('HH:mm'), newToString);
+            this.dropTimeTo.setValue(newToString);
+            // show message
+            this.showTimeRangeToast('Hasta', newToString);
+        }else{
+            console.log('diff ok');
+        }
+        console.groupEnd();
     }
 
-    private setPickupPersonData() {
+    populateContactWithUserData() {
         console.log('f3 > populate dropContact with current user');
         this.dropPersonName.setValue(this.user.displayName);
         this.dropPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
         this.dropPersonEmail.setValue(this.user.email);
+    }
+
+    resetAddress() {
+        this.resetAddressElements();
     }
 
     private resetAddressElements() {
@@ -265,6 +199,7 @@ export class SendingCreate3Page implements OnInit{
         this.populateAddressInput('');
         this.dropAddressLine2.setValue('');
         this.initPlaceDetails();
+
         // reset all sending address related
         this.sending.dropAddressSet = false;
         this.sending.dropAddressIsComplete = false;
@@ -286,7 +221,18 @@ export class SendingCreate3Page implements OnInit{
         this.sending.dropAddressStateShort = '';
         this.sending.dropAddressStateLong = '';
         this.sending.dropAddressCountry = '';         
-    } 
+    }  
+
+    private showTimeRangeToast(input:string, newTime:string) {
+        let toast = this.toastCtrl.create({
+            message: 'Indica al menos 2 hs de margen horario, se ajustó "' + input + '" a "' + newTime + '"',
+            duration: 6000,
+            position: 'bottom',
+            showCloseButton: true,
+            closeButtonText: 'OK'
+        });
+        toast.present();    
+    }
 
     /**
      *  NAVIGATION
@@ -309,7 +255,7 @@ export class SendingCreate3Page implements OnInit{
     }
 
     /**
-     * SUBMIT UPDATES
+     *  SUBMIT HELPERS
      */
 
     private updateAddressDetails():void {
@@ -352,27 +298,6 @@ export class SendingCreate3Page implements OnInit{
      *  GOOGLE MAPS HELPERS
      */
 
-    private openAddressModal() {
-        // reset 
-        this.resetAddressElements();
-        // init
-        let param = {
-            'modalTitle': 'Dirección de Entrega'
-        };    
-        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
-        modal.onDidDismiss(data => {
-            console.log('f2 > modal dismissed > data param > ', data);
-            this.processAddressSearchResult(data);
-        });
-        modal.present();
-        console.log('f2 > modal present');
-    }
-
-    private initPlaceDetails() {
-        console.info('f3 > initPlaceDetails');
-        this.placeDetails = this.gmapsService.initPlaceDetails();
-    }
-
     private processAddressSearchResult(item:any) {
         console.info('f3 > processAddressSearchResult');
         if(item){            
@@ -388,15 +313,14 @@ export class SendingCreate3Page implements OnInit{
         console.info('f3 > setPlaceDetails > init');
         this.gmapsService.getPlaceDetails(place_id, this.map)
             .then((place) => {
+                console.log('f3 > setPlaceDetails > success ');
                 let details = this.gmapsService.inspectPlaceDetails(place);
                 console.log('details extracted > ', details);
-                let isComplete:any = this.gmapsService.isPlaceAddressComplete(details);
-                console.log('isComplete', isComplete);
-                if(isComplete.passed) {
+                if(this.gmapsService.isPlaceAddressComplete(details)) {
                     let latlng = this.gmapsService.setlatLng(details.lat, details.lng);
                     this.setMapCenter(latlng);
                     this.addMapMarker(latlng); 
-                    // populate0
+                    // populate
                     this.placeDetails = details;
                     this.placeDetails.set = true;
                     this.placeDetails.complete = true;
@@ -404,14 +328,11 @@ export class SendingCreate3Page implements OnInit{
                     // save
                     this.updateAddressDetails();                           
                 }else{
-                     console.error('f3 > address incomplete ');
+                     console.error('f3 > setPlaceDetails > address incomplete ', details);
                     // alert user
-                    let failedTxt = isComplete.failed.toString();
                     let alert = this.alertCtrl.create({
                         title: 'Dirección incompleta',
-                        subTitle: `Debe indicarse una dirección de retiro exacta,
-                                   que incluya nombre de calle, númeración y ciudad. 
-                                   Vuelve a intentarlo. (Datos faltantes: ${failedTxt})`,
+                        subTitle: 'Debe indicarse una dirección de retiro exacta, que incluya nombre de calle, númeración y ciudad. Vuelve a intentarlo.',
                         buttons: ['Cerrar']
                     });
                     alert.present();                    
@@ -443,9 +364,8 @@ export class SendingCreate3Page implements OnInit{
         this.map = this.gmapsService.initMap(latlng, divMap);
     }    
 
-
     /**
-     * AUX HELPERS
+     *  INIT HELPERS
      */
 
     private setUser(){
@@ -454,8 +374,31 @@ export class SendingCreate3Page implements OnInit{
         this.users.getAccountProfileData()
             .then((snapshot) => {
                 this.profile = snapshot.val();
-            })
-            .catch(error => console.log(error));
+        });
+    }
+
+    private initPlaceDetails() {
+        console.info('f3 > initPlaceDetails');
+        this.placeDetails = this.gmapsService.initPlaceDetails();
+    }
+
+    private initForm() {
+        this.formThree = this.formBuilder.group({
+            'dropAddressFullText': ['', Validators.compose([Validators.required])],
+            'dropAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
+            'dropTimeFrom': ['', Validators.compose([Validators.required])],
+            'dropTimeTo': ['', Validators.compose([Validators.required])],
+            'dropPersonName': ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
+            'dropPersonPhone': ['', Validators.compose([Validators.required])],
+            'dropPersonEmail': ['', Validators.compose([EmailValidator.isValid])],
+        });
+        this.dropAddressFullText = this.formThree.controls['dropAddressFullText'];
+        this.dropAddressLine2 = this.formThree.controls['dropAddressLine2'];        
+        this.dropTimeFrom = this.formThree.controls['dropTimeFrom'];
+        this.dropTimeTo = this.formThree.controls['dropTimeTo'];
+        this.dropPersonName = this.formThree.controls['dropPersonName'];
+        this.dropPersonPhone = this.formThree.controls['dropPersonPhone'];
+        this.dropPersonEmail = this.formThree.controls['dropPersonEmail'];        
     }
 
     private getSendingFromParams() {
@@ -464,15 +407,38 @@ export class SendingCreate3Page implements OnInit{
         this.sending = this.navParams.get('sending');
     }
 
-    private showTimeRangeToast(input:string, newTime:string) {
-        let toast = this.toastCtrl.create({
-            message: 'Indica al menos 2 hs de margen horario, se ajustó "' + input + '" a "' + newTime + '"',
-            duration: 6000,
-            position: 'bottom',
-            showCloseButton: true,
-            closeButtonText: 'OK'
-        });
-        toast.present();    
+    private populatePage() {
+        console.log('f3 > populate form with this.sending');
+        // map
+        if(this.sending.dropAddressSet==true) {
+            console.info('f3 > populatePage > set map');
+            var latlng = {
+                lat: this.sending.dropAddressLat,
+                lng: this.sending.dropAddressLng,
+            }
+            console.log('f3 > populatePage > latlng > ', latlng);
+            this.setMapCenter(latlng);
+            this.addMapMarker(latlng);
+        }
+        // address
+        this.dropAddressFullText.setValue(this.sending.dropAddressFullText);
+        this.dropAddressLine2.setValue(this.sending.dropAddressLine2);          
+        //datetime
+        this.dropTimeFrom.setValue(this.sending.dropTimeFrom);
+        this.dropTimeTo.setValue(this.sending.dropTimeTo);
+        this.rangeFrom = this.sending.dropTimeFrom;
+        this.rangeTo = this.sending.dropTimeTo;
+        // contact
+        this.dropPersonName.setValue(this.sending.dropPersonName);
+        this.dropPersonPhone.setValue(this.sending.dropPersonPhone);
+        this.dropPersonEmail.setValue(this.sending.dropPersonEmail);
     }
+
+    private populateAddressInput(fullAddress:string) {
+        console.log('f2 > populateAddressInput > ', fullAddress);
+        this.dropAddressFullText.setValue(fullAddress);
+    }
+
+
 
 }
