@@ -97,6 +97,7 @@ export class GoogleMapsService {
             placesSrv.getDetails({
                 placeId: place_id
             }, function(place, status) {
+                console.log('getDetails api', place);
                 if(status === 'OK') {
                     resolve(place);
                 }else{
@@ -130,19 +131,41 @@ export class GoogleMapsService {
 
     // Verify minimum data is present in place detail
     isPlaceAddressComplete(details: any) {
-        console.info('gmapService > isPlaceAddressComplete > init');
-        var passed = true;
-        // lat, lng
-        passed = details.lat == '' ? false : passed;
-        passed = details.lng == '' ? false : passed;
-        // street name
-        passed = details.components.route.long == '' ? false : passed;
-        // street number
-        passed = details.components.street_number.long == '' ? false : passed;
-        // locality 
-        passed = details.components.locality.long == '' ? false : passed;
-        console.info('gmapService > isPlaceAddressComplete > result > ', passed);        
-        return passed;
+        console.group('isPlaceAddressComplete');
+        let isComplete = { passed: true, failed: []};
+        let propToCheck = {
+            root: ['full_address','lat','lng','place_id'],
+            components: ['route','street_number'],
+        };
+        let labels = {
+            'full_address':'Descripción',
+            'lat':'Latitud',
+            'lng':'Longitud',
+            'place_id':'ID',
+            'route':'Nombre de Calle',
+            'street_number':'Número de Calle'
+        };
+        // iterate root prop
+        for(let index in propToCheck['root']) {
+            let prop = propToCheck['root'][index];
+            if(!details[prop] || details[prop]=='') {
+                isComplete.failed.push(labels[prop]);
+                isComplete.passed = false;
+            }
+            console.log('root prop, value', prop, `'${details[prop]}'`);
+        }
+        // iterate components prop
+        for(let index in propToCheck['components']) {
+            let prop = propToCheck['components'][index];
+            if(!details.components[prop].long || details.components[prop].long=='') {
+                isComplete.failed.push(labels[prop]);
+                isComplete.passed = false;
+            }
+            console.log('root components, value', prop, `'${details.components[prop].long}'`);
+        }
+        console.log('passed, failed', isComplete);
+        console.groupEnd();        
+        return isComplete;
     }
 
     initPlaceDetails() {
