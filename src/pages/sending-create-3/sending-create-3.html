@@ -9,7 +9,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="sending-create-2">
-    <form [formGroup]="formThree">
+    <form [formGroup]="form">
         <ion-list>
             <ion-item-divider>Datos de la Entrega
                 <ion-note item-right>
@@ -27,11 +27,11 @@
                     formControlName="dropAddressFullText"
                     (ionFocus)="showAddressSearchModal()"></ion-input>
             </ion-item>     
-            <ion-item *ngIf="sending.dropAddressSet==true" no-lines>
+            <ion-item *ngIf="sending?.dropAddressSet==true" no-lines>
                 <ion-icon name="pin" item-left></ion-icon>
-                <h2>{{ sending.dropAddressStreetShort }} {{ sending.dropAddressNumber }}</h2>
-                <h3>{{ sending.dropAddressCityShort }}</h3>
-                <p>{{ sending.dropAddressStateLong }}</p>
+                <h2>{{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</h2>
+                <h3>{{ sending?.dropAddressCityShort }}</h3>
+                <p>{{ sending?.dropAddressStateLong }}</p>
                 <button ion-button item-right clear color="sublight"
                     (click)="resetAddress()">
                     <ion-icon name="close-circle"></ion-icon>
@@ -52,18 +52,22 @@
                 <ion-datetime 
                     formControlName="dropTimeFrom" 
                     displayFormat="HH:mm" 
-                    hourValues="00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22"
+                    hourValues="04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21"
                     minuteValues="00,30"
+                    [min]="timeLimits?.from.min"
+                    (ionChange)="changeDropTimeFrom()"
                     cancelText="Cancelar" doneText="Listo"></ion-datetime>
             </ion-item>
             <ion-item no-lines>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
-                formControlName="dropTimeTo" 
-                displayFormat="HH:mm" 
-                hourValues="02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,00"
-                minuteValues="00,30" 
-                cancelText="Cancelar" doneText="Listo" ></ion-datetime>
+                    formControlName="dropTimeTo" 
+                    displayFormat="HH:mm" 
+                    hourValues="06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23"
+                    minuteValues="00,30" 
+                    [min]="timeLimits?.to.min"
+                    (ionChange)="changeDropTimeTo()"
+                    cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !dropTimeFrom.touched && !dropTimeTo.touched" 
                 class="input-optional"><small>* verifica que el horario de entrega sea correcto</small></div>            

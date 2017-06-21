@@ -43,7 +43,6 @@ export class SendingCreate3Page implements OnInit{
     monthShortNames: any = DATES_TXT.monthShortNames.es;
     dayNames: any = DATES_TXT.dayNames.es;
     dayShortNames: any = DATES_TXT.dayShortNames.es;
-    dateLimits:any;
     timeLimits:any;
     // map
     map: any;
@@ -72,7 +71,8 @@ export class SendingCreate3Page implements OnInit{
         // set sending from param
         this.getSendingFromParams();
         // populate page
-        this.initAndPopulatePage();        
+        this.initAndPopulatePage();
+        this.setTimeLimits();        
     }
 
     /**
@@ -104,51 +104,97 @@ export class SendingCreate3Page implements OnInit{
         this.setPickupPersonData();
     }
 
+    changeDropTimeFrom() {
+        this.runDropTimeFromChange();
+    }
+
+    changeDropTimeTo() {
+        this.runDropTimeToChange();
+    }  
 
 
     /// PRIVATE METHODS
 
     /**
-     *  PICKUP DATE
+     *  DROP DATE
      */
 
     /**
-     *  PICKUP TIME-FROM
+     *  DROP TIME-FROM
      */
 
+    private runDropTimeFromChange() {
+        console.group('runDropTimeFromChange');
+        let newTo;
+        let from = this.dropTimeFrom.value;
+        let to = this.dropTimeTo.value
+        let diff = this.dateSrv.getDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            newTo = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
+            this.setDropTimeTo(newTo);
+            this.showTimeRangeToast('Hasta', this.dateSrv.getTimeFromDate(newTo));
+        }
+        console.log('diff, from, to, newTo', diff, from, to, newTo);              
+        console.groupEnd();
+    }
+
+    private setDropTimeFrom(isoDate: string) {
+        this.setFormDropTimeFrom(isoDate);
+        this.setSendingDropTimeFrom(isoDate);
+    }
+    private setFormDropTimeFrom(isoDate: string) {
+        this.dropTimeFrom.setValue(isoDate);
+    }
+    private setSendingDropTimeFrom(isoDate:string) {
+        this.sending.dropTimeFrom = isoDate;
+    }
+
     /**
-     *  PICKUP TIME-TO
+     *  DROP TIME-TO
      */
+
+    private runDropTimeToChange() {
+        console.group('runDropTimeToChange');
+        let newFrom;
+        let from = this.dropTimeFrom.value;
+        let to = this.dropTimeTo.value
+        let diff = this.dateSrv.getDiff(from, to);
+        if(diff < MIN_TIMEDIFF_MINUTES) {
+            newFrom = this.dateSrv.subtractMinutes(to, MIN_TIMEDIFF_MINUTES);
+            this.setDropTimeFrom(newFrom);
+            this.showTimeRangeToast('Desde', this.dateSrv.getTimeFromDate(newFrom));
+        }
+        console.log('diff, from, to, newFrom', diff, from, to, newFrom);              
+        console.groupEnd();
+    }
+
+    private setDropTimeTo(isoDate: string) {
+        this.setFormDropTimeTo(isoDate);
+        this.setSendingDropTimeTo(isoDate);
+    }
+    private setFormDropTimeTo(isoDate: string) {
+        this.dropTimeTo.setValue(isoDate);
+    }
+    private setSendingDropTimeTo(isoDate:string) {
+        this.sending.dropTimeTo = isoDate;
+    }
 
     /**
      *  DATETIME HELPERS
      */
 
-    // depends of pickupDate
-    // if today, set limit from current time
-    // if in the future, set limit default
+    private isAdateOlderThanBdate(a:any, b:any) {
+        let isOld = this.dateSrv.isBeforeThan(a, b);
+        console.log('isAdateOlderThanBdate', isOld, a, b);
+        return isOld;
+    }
+
+    // set TimeFrom = pickupDate
+    // set TimeTo = TimeFrom+2hr
     private setTimeLimits() {
         console.group('setTimeLimits');
-        let now = this.dateSrv.getIsoString();
-        let fromMin;
-        let toMin;
-        let dateIsToday = this.dateSrv.isDateToday(this.sending.pickupDate);
-        console.log('is pickupDate today?', dateIsToday);
-        if(dateIsToday) {
-            // set limit from current time, rounded up
-            let minutes = this.dateSrv.getMinuteNum(now);
-            let hour = this.dateSrv.getHourNum(now);
-            if(minutes>30) {
-                fromMin = this.dateSrv.setTimeToDate(now, hour+1, 0);
-            }else{
-                fromMin = this.dateSrv.setTimeToDate(now, hour, 30);
-            }
-            toMin = this.dateSrv.addHours(fromMin, 2);
-        }else{
-            // set limit default
-            fromMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 4, 0);
-            toMin = this.dateSrv.setTimeToDate(this.sending.pickupDate, 6, 0);
-        }
+        let fromMin = this.sending.pickupDate;
+        let toMin = this.dateSrv.addMinutes(fromMin, MIN_TIMEDIFF_MINUTES);
         this.timeLimits = {
             from: {
                 min: fromMin,
@@ -245,6 +291,42 @@ export class SendingCreate3Page implements OnInit{
         this.dropPersonName.setValue(this.sending.dropPersonName);
         this.dropPersonPhone.setValue(this.sending.dropPersonPhone);
         this.dropPersonEmail.setValue(this.sending.dropPersonEmail);
+
+        // DATE AUX
+        let from = this.sending.pickupDate;
+        if(this.sending.dropTimeFrom=='') {
+            // not set, set with now
+            this.setDropTimeFrom(from);
+        }else{
+            if(this.isAdateOlderThanBdate(this.sending.dropTimeFrom, from)) {
+                this.setDropTimeFrom(from);
+                let toast = this.toastCtrl.create({
+                    message: 'ATENCIÓN: horario de Entrega fue ajustado',
+                    duration: 3000,
+                    position: 'bottom',
+                    showCloseButton: true,
+                    closeButtonText: 'OK'
+                });
+                toast.present();                
+            }else{
+                this.setDropTimeFrom(this.sending.dropTimeFrom);
+            }
+        }
+        if(this.sending.dropTimeTo=='') {
+            // not set, set with from+2hr
+            let to = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
+            this.setDropTimeTo(to);
+        }else{
+            let to = this.sending.dropTimeTo;
+            let diff = this.dateSrv.getDiff(this.sending.dropTimeFrom, this.sending.dropTimeTo);
+            if(diff<MIN_TIMEDIFF_MINUTES){
+                let to = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
+                this.setDropTimeTo(to);
+            }else{
+                this.setDropTimeTo(this.sending.dropTimeTo);
+            }
+        }        
+
     }
 
     private populateAddressInput(fullAddress:string) {
