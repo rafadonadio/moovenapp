@@ -17,8 +17,6 @@ const DATES_TXT = DATES_NAMES;
 const PICKUP_DIFF_DAYS = DATE_DEFAULTS.PICKUP_DIFF_DAYS;
 const DEFAULT_PICKUP_TIME_FROM_HR = DATE_DEFAULTS.PICKUP_TIME_FROM.hour;
 const DEFAULT_PICKUP_TIME_FROM_MIN = DATE_DEFAULTS.PICKUP_TIME_FROM.minute;
-const DEFAULT_PICKUP_TIME_TO_HR = DATE_DEFAULTS.PICKUP_TIME_TO.hour;
-const DEFAULT_PICKUP_TIME_TO_MIN = DATE_DEFAULTS.PICKUP_TIME_FROM.minute;
 
 @Component({
     selector: 'page-sending-create-2',
@@ -622,10 +620,11 @@ export class SendingCreate2Page implements OnInit {
         console.info('f2 > setPlaceDetails > init');
         this.gmapsService.getPlaceDetails(place_id, this.map)
             .then((place) => {
-                console.log('f2 > setPlaceDetails > success ');
                 let details = this.gmapsService.inspectPlaceDetails(place);
                 console.log('details extracted > ', details);
-                if(this.gmapsService.isPlaceAddressComplete(details)) {
+                let isComplete:any = this.gmapsService.isPlaceAddressComplete(details);
+                console.log('isComplete', isComplete);
+                if(isComplete.passed) {
                     let latlng = this.gmapsService.setlatLng(details.lat, details.lng);
                     this.setMapCenter(latlng);
                     this.addMapMarker(latlng); 
@@ -639,9 +638,12 @@ export class SendingCreate2Page implements OnInit {
                 }else{
                      console.error('f2 > setPlaceDetails > address incomplete ', details);
                     // alert user
+                    let failedTxt = isComplete.failed.toString();
                     let alert = this.alertCtrl.create({
                         title: 'Dirección incompleta',
-                        subTitle: 'Debe indicarse una dirección de retiro exacta, que incluya nombre de calle, númeración y ciudad. Vuelve a intentarlo.',
+                        subTitle: `Debe indicarse una dirección de retiro exacta,
+                                   que incluya nombre de calle, númeración y ciudad. 
+                                   Vuelve a intentarlo. (Datos faltantes: ${failedTxt})`,
                         buttons: ['Cerrar']
                     });
                     alert.present();                    
@@ -684,7 +686,8 @@ export class SendingCreate2Page implements OnInit {
         this.users.getAccountProfileData()
             .then((snapshot) => {
                 this.profile = snapshot.val();
-            });
+            })
+            .catch(error => console.log(error));
     }    
 
     private getSendingFromParams() {
