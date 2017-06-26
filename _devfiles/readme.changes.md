@@ -14,7 +14,7 @@
         <!--validar pickup si drop cambio-->
         <!--validar pickup/drop si hora cambió-->
 - Nuevo Servicio - Paso 3  
-    - validar horario        
+    <!--- validar horario        -->
 - Nuevo Servicio - Paso 4  
     <!--- calculo precio-->
     establecer comision operador
@@ -64,6 +64,7 @@
 - update ionic Native plugins > 3.x
 - update ionic Native plugins > Camera
 - refactor camera plugin component
+- allow create service on schedule
 
 
 
