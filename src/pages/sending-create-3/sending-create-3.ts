@@ -14,8 +14,6 @@ import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-sea
 
 const MIN_TIMEDIFF_MINUTES = DATE_DEFAULTS.PICKUP_DROP_MIN_DIFF_IN_MINUTES;
 const DATES_TXT = DATES_NAMES;
-const DEFAULT_DROP_TIME_FROM_HR = DATE_DEFAULTS.DROP_TIME_FROM.hour;
-const DEFAULT_DROP_TIME_FROM_MIN = DATE_DEFAULTS.DROP_TIME_FROM.minute;
 
 @Component({
     selector: 'page-sending-create-3',
@@ -315,14 +313,13 @@ export class SendingCreate3Page implements OnInit{
         }
         if(this.sending.dropTimeTo=='') {
             // not set, set with from+2hr
-            let to = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
-            this.setDropTimeTo(to);
+            let fromPlus = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
+            this.setDropTimeTo(fromPlus);
         }else{
-            let to = this.sending.dropTimeTo;
             let diff = this.dateSrv.getDiff(this.sending.dropTimeFrom, this.sending.dropTimeTo);
             if(diff<MIN_TIMEDIFF_MINUTES){
-                let to = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
-                this.setDropTimeTo(to);
+                let fromPlus = this.dateSrv.addMinutes(from, MIN_TIMEDIFF_MINUTES);
+                this.setDropTimeTo(fromPlus);
             }else{
                 this.setDropTimeTo(this.sending.dropTimeTo);
             }

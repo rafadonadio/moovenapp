@@ -48,5 +48,16 @@
         alert.present();
     
 --------------------------------------------
+  
+https://github.com/ionic-team/ionic-app-scripts/issues/1001
+- Module not found: Error: Can't resolve 'promise-polyfill' 
 
-    
+Issue:
+    ionic upload
+        Module not found: Error: Can't resolve 'promise-polyfill' in 'C:\ionic\CajaFuerte-app\node_modules\firebase\app'
+        resolve 'promise-polyfill'
+
+Solution:
+    npm install promise-polyfill --save-exact
+
+--------------------------------------------
