@@ -44,6 +44,7 @@ export class SendingCreate3Page implements OnInit{
     dayNames: any = DATES_TXT.dayNames.es;
     dayShortNames: any = DATES_TXT.dayShortNames.es;
     timeLimits:any;
+    addressModal:any;
     // map
     map: any;
     mapMarkers = [];
@@ -436,18 +437,23 @@ export class SendingCreate3Page implements OnInit{
 
     private openAddressModal() {
         // reset 
-        this.resetAddressElements();
-        // init
-        let param = {
-            'modalTitle': 'Dirección de Entrega'
-        };    
-        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, param);
-        modal.onDidDismiss(data => {
-            console.log('f2 > modal dismissed > data param > ', data);
-            this.processAddressSearchResult(data);
-        });
-        modal.present();
-        console.log('f2 > modal present');
+        this.resetAddressElements();          
+        if(!this.addressModal) {
+            // set
+            this.addressModal = this.modalCtrl.create(ModalSearchMapAddressPage, {
+                            'modalTitle': 'Dirección de Retiro'
+                        });                 
+            // open
+            this.addressModal.present();
+            // on close
+            this.addressModal.onDidDismiss(data => {
+                console.log('onDidDismiss() param ', data);
+                this.processAddressSearchResult(data);  
+                this.addressModal = null;
+            });
+        }else{
+            console.error('modal has been call twice, why?');
+        }
     }
 
     private initPlaceDetails() {

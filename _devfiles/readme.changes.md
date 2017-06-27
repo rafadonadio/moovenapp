@@ -64,7 +64,10 @@
 - update ionic Native plugins > 3.x
 - update ionic Native plugins > Camera
 - refactor camera plugin component
-- allow create service on schedule
+- limit time selection to current or later
+- limit drop time selection equal or greater than pickup time
+- allow set pickup time on schedule
+- fix bug: address modal opens twice
 
 
 

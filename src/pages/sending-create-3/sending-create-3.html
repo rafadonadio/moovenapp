@@ -25,7 +25,7 @@
             <ion-item no-lines>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="dropAddressFullText"
-                    (ionFocus)="showAddressSearchModal()"></ion-input>
+                    (focusin)="showAddressSearchModal()"></ion-input>
             </ion-item>     
             <ion-item *ngIf="sending?.dropAddressSet==true" no-lines>
                 <ion-icon name="pin" item-left></ion-icon>
