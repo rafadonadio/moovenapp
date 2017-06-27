@@ -7,6 +7,7 @@ const defaultUTCzone = '-0300';  // Argentina
 export class DateService {
 
     constructor() {
+        moment.locale('es');
     }
 
     getTimeDiff(from:any, to:any) {
@@ -66,6 +67,13 @@ export class DateService {
         let human = moment().utcOffset(utcOffset).format('DD/MM/YYYY HH:mm');
         return human;
     }
+
+    // display moment string in a specific format
+    // ref: https://momentjs.com/docs/#/displaying/format/
+    displayFormat(momentString:string, format:string = 'DD/MM/YYYY') {
+        return moment(momentString).format(format);
+    }
+
 
     // momentInput: timestamp, ISO8601 string date
     getHourNum(date:any): number {

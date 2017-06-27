@@ -74,6 +74,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
+import { FormatDatePipe } from '../pipes/formatdate-pipe';
 // IONIC.IO
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
@@ -128,7 +129,8 @@ export const firebaseConfig = {
         VerifyPhonePage,
         // PIPES
         CapitalizePipe,
-        Ts2DatePipe
+        Ts2DatePipe,
+        FormatDatePipe
     ],
     imports: [
         BrowserModule,
