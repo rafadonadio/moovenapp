@@ -3,29 +3,29 @@
  */
 
 export const MERCADOPAGO_REF = {
-    APP_ID: 'mp-app-17982543',
+    APP_ID: '5819204648142051',
     PUBLIC_KEY: {
         SANDBOX: {
-            PUBLIC_KEY: 'TEST-5200d047-ab92-433d-83eb-f08916707b6f',
-            ACCESS_TOKEN: 'TEST-8475038305735553-012509-434860bc4c55f575402ab81b1cfc7edb__LB_LC__-17982543'
+            PUBLIC_KEY: 'TEST-2ecd894c-f9bd-4824-9ded-55ac094171cb',
+            ACCESS_TOKEN: 'TEST-5819204648142051-062712-77fb3c6d5a6aadcb94c60deb6cdf451f__LC_LD__-131322408'
         },
         PROD: {
-            PUBLIC_KEY: 'APP_USR-46e41c5f-8466-4d53-9539-8300227d8a33',
-            ACCESS_TOKEN: 'APP_USR-8475038305735553-012509-7721ed50a0ffd618e593d148cb075fc6__LB_LD__-17982543'
+            PUBLIC_KEY: 'APP_USR-5fdf1bed-643a-481d-86b3-e1f868a8829c',
+            ACCESS_TOKEN: 'APP_USR-5819204648142051-062712-b191488d9b0734f851afd4abfd69a5c5__LB_LD__-131322408'
         },
     },
     BACKEND_SERVER: {
         LOCAL_URL: {
-            PAYMENT: 'http://be.moovenapp.dev/api/v1/gateway/mp/payments',
+            PAYMENT: '',
         },
         DEV_URL: {
             PAYMENT: 'https://us-central1-moovendev.cloudfunctions.net/createPaymentMP',
         },
         STAGE_URL: {
-            PAYMENT: 'https://be-stage.moovenapp.com/api/v1/gateway/mp/payments',
+            PAYMENT: '',
         },
         PROD_URL: {
-            PAYMENT: 'https://be.moovenapp.com/api/v1/gateway/mp/payments',
+            PAYMENT: '',
         },        
     }
 }
