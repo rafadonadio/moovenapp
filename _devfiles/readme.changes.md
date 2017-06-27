@@ -68,6 +68,7 @@
 - limit drop time selection equal or greater than pickup time
 - allow set pickup time on schedule
 - fix bug: address modal opens twice
+- update Mercadopago App ID and token
 
 
 
