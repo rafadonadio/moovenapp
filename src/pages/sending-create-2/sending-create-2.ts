@@ -49,6 +49,7 @@ export class SendingCreate2Page implements OnInit {
     dayShortNames: any = DATES_TXT.dayShortNames.es;
     dateLimits:any;
     timeLimits:any;
+    addressModal:any;
     // map
     map: any;
     mapMarkers = [];
@@ -140,7 +141,7 @@ export class SendingCreate2Page implements OnInit {
     // triggered by setDate()
     private runPickupDateChange() {
         console.group('runPickupDateChange');
-        console.log('pickupDate', this.pickupDate.value);
+        // console.log('pickupDate', this.pickupDate.value);
         // update PickupDate
         this.setSendingPickupDate(this.pickupDate.value);
         // update pickupTimeFrom
@@ -179,7 +180,7 @@ export class SendingCreate2Page implements OnInit {
             this.setPickupTimeTo(newTo);
             this.showTimeRangeToast('Hasta', this.dateSrv.getTimeFromDate(newTo));
         }
-        console.log('diff, from, to, newTo', diff, from, to, newTo);              
+        // console.log('diff, from, to, newTo', diff, from, to, newTo);              
         console.groupEnd();
     }
 
@@ -219,10 +220,10 @@ export class SendingCreate2Page implements OnInit {
             newDate = this.dateSrv.setTimeToDate(pickupDate, DEFAULT_PICKUP_TIME_FROM_HR, DEFAULT_PICKUP_TIME_FROM_MIN); 
         }
         this.setPickupTimeFrom(newDate);        
-        console.log('__NVF__ dateIsToday', dateIsToday);
-        console.log('__NVF__ hour:minute', hour, minute);
-        console.log('__NVF__ newHour:newMinute', newHour, newMinute);
-        console.log('__NVF__ new TimeFrom', newDate);
+        // console.log('__NVF__ dateIsToday', dateIsToday);
+        // console.log('__NVF__ hour:minute', hour, minute);
+        // console.log('__NVF__ newHour:newMinute', newHour, newMinute);
+        // console.log('__NVF__ new TimeFrom', newDate);
         console.groupEnd();
     }
 
@@ -253,7 +254,7 @@ export class SendingCreate2Page implements OnInit {
             this.setPickupTimeFrom(newFrom);
             this.showTimeRangeToast('Desde', this.dateSrv.getTimeFromDate(newFrom));
         }
-        console.log('diff, from, to, newFrom', diff, from, to, newFrom);              
+        // console.log('diff, from, to, newFrom', diff, from, to, newFrom);              
         console.groupEnd();
     }
 
@@ -299,12 +300,12 @@ export class SendingCreate2Page implements OnInit {
         this.setPickupTimeFrom(newDate);
         let newTo = this.dateSrv.addHours(newDate, 2);
         this.setPickupTimeTo(newTo);
-        console.log('resetDateTimeFromTo', now, hour, minute, newHour, newMinute, newDate, newTo);
+        // console.log('resetDateTimeFromTo', now, hour, minute, newHour, newMinute, newDate, newTo);
     }
 
     private isAdateOlderThanBdate(a:any, b:any) {
         let isOld = this.dateSrv.isBeforeThan(a, b);
-        console.log('isAdateOlderThanBdate', isOld, a, b);
+        // console.log('isAdateOlderThanBdate', isOld, a, b);
         return isOld;
     }
 
@@ -327,7 +328,7 @@ export class SendingCreate2Page implements OnInit {
         let fromMin;
         let toMin;
         let dateIsToday = this.dateSrv.isDateToday(this.sending.pickupDate);
-        console.log('is pickupDate today?', dateIsToday);
+        // console.log('is pickupDate today?', dateIsToday);
         if(dateIsToday) {
             // set limit from current time, rounded up
             let minutes = this.dateSrv.getMinuteNum(now);
@@ -467,9 +468,9 @@ export class SendingCreate2Page implements OnInit {
             }
         }
         //
-        console.log('__pop__ pickupDate', this.sending.pickupDate);        
-        console.log('__pop__ pickupTimeFrom', this.sending.pickupTimeFrom);        
-        console.log('__pop__ pickupTimeTo', this.sending.pickupTimeTo);        
+        // console.log('__pop__ pickupDate', this.sending.pickupDate);        
+        // console.log('__pop__ pickupTimeFrom', this.sending.pickupTimeFrom);        
+        // console.log('__pop__ pickupTimeTo', this.sending.pickupTimeTo);        
 
     }
 
@@ -589,15 +590,22 @@ export class SendingCreate2Page implements OnInit {
     private openAddressModal() {
         // reset 
         this.resetAddressElements();          
-        let modal = this.modalCtrl.create(ModalSearchMapAddressPage, {
-                        'modalTitle': 'Dirección de Retiro'
-                    });
-        modal.onDidDismiss(data => {
-            console.log('f2 > modal dismissed > data param > ', data);
-            this.processAddressSearchResult(data);  
-        });
-        modal.present();
-        console.log('f2 > modal present');
+        if(!this.addressModal) {
+            // set
+            this.addressModal = this.modalCtrl.create(ModalSearchMapAddressPage, {
+                            'modalTitle': 'Dirección de Retiro'
+                        });                 
+            // open
+            this.addressModal.present();
+            // on close
+            this.addressModal.onDidDismiss(data => {
+                console.log('onDidDismiss() param ', data);
+                this.processAddressSearchResult(data);  
+                this.addressModal = null;
+            });
+        }else{
+            console.error('modal has been call twice, why?');
+        }
     }
 
     private initPlaceDetails() {
@@ -606,13 +614,13 @@ export class SendingCreate2Page implements OnInit {
     }
 
     private processAddressSearchResult(item:any) {
-        console.info('f2 > processAddressSearchResult');
+        console.info('processAddressSearchResult');
         if(item){            
             // get place details with place_id
             this.setPlaceDetails(item.place_id);
         }else{
             // item is undefined, cant process
-            console.error('f2 > processAddressSearchResult > item selected in modal is undefined > ', item);
+            console.error('processAddressSearchResult > undefined', item);
         }    
     }
 
@@ -621,7 +629,7 @@ export class SendingCreate2Page implements OnInit {
         this.gmapsService.getPlaceDetails(place_id, this.map)
             .then((place) => {
                 let details = this.gmapsService.inspectPlaceDetails(place);
-                console.log('details extracted > ', details);
+                // console.log('details extracted > ', details);
                 let isComplete:any = this.gmapsService.isPlaceAddressComplete(details);
                 console.log('isComplete', isComplete);
                 if(isComplete.passed) {
