@@ -6,6 +6,7 @@
 # TO_DO
 #############
 
+# MOOVEN APP
 - Nuevo Servicio - Paso 2    
     <!--- ingresar fecha  -->
     <!--- validar horario-->
@@ -18,6 +19,8 @@
 - Nuevo Servicio - Paso 4  
     <!--- calculo precio-->
     establecer comision operador
+- Service actions
+    - cancel before paying
 - Nuevo shipment
      - impedir user tomar propio servicio
      - en vista tomar servicio, listar vacantes en función de center-map + limite mapa, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.    
@@ -40,6 +43,10 @@
     - boton para cerrar aplicación
     - notificaciones (locales/email) - revisar
     - limitar intentos de reenviar email de validación
+
+# ADMIN APP
+-  init
+
 
 
 # TO BE DEFINED
@@ -67,6 +74,7 @@
 - limit time selection to current or later
 - limit drop time selection equal or greater than pickup time
 - allow set pickup time on schedule
+- adjust all date displays format
 - fix bug: address modal opens twice
 - update Mercadopago App ID and token
 

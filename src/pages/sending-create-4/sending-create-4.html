@@ -75,7 +75,7 @@
             <p>Fecha de retiro</p>
             <h2>{{ sending.pickupDate | formatdatePipe:'dddd DD/MMM' }}</h2>
             <p>Banda horaria de retiro</p>
-            <h2>{{ sending.pickupTimeFrom }} a {{ sending.pickupTimeTo }}</h2>
+            <h2>{{ sending.pickupTimeFrom | formatdatePipe:'HH:mm' }} a {{ sending.pickupTimeTo | formatdatePipe:'HH:mm' }}</h2>
         </ion-item>        
         <ion-item no-lines>
             <ion-icon name="person" item-left></ion-icon>
@@ -91,9 +91,9 @@
         <ion-item no-lines>
             <ion-icon name="time" item-left></ion-icon>
             <p>Fecha de entrega</p>
-            <h2>{{ sending.pickupDate }}</h2>
+            <h2>{{ sending.pickupDate | formatdatePipe:'dddd DD/MMM' }}</h2>
             <p>Banda horaria de entrega</p>
-            <h2>{{ sending.dropTimeFrom }} a {{ sending.dropTimeTo }}</h2>
+            <h2>{{ sending.dropTimeFrom | formatdatePipe:'HH:mm' }} a {{ sending.dropTimeTo | formatdatePipe:'HH:mm' }}</h2>
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="pin" item-left></ion-icon>
