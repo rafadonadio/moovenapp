@@ -56,6 +56,7 @@ export class UserAccount {
         history: Array<{ versionId:string, timestamp:any}>
     };
     settings: UserAccountSettings;
+    isOperator?: boolean;
 }
 
 export class UserAccountSettings {

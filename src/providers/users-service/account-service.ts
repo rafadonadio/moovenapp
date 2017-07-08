@@ -211,7 +211,8 @@ export class AccountService {
                 acceptedVersionTag: '',
                 history: [],
             },
-            settings: this.settingsSrv.init()
+            settings: this.settingsSrv.init(),
+            isOperator: false,
         }
         console.log('accountSrv.initData > ', account);
         return account;

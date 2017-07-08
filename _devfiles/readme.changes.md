@@ -32,9 +32,14 @@
     define role data
     refactor data used on shipment
 - Notificaciones
+    notificaciones via email
+    local notifications
 - Historial
+    - historial de servicios
 - Pagos
+    - historial de pagos realizados
 - Ayuda
+    ....
 - Varios  
     - registrar cada acción de usuario  
     - obtener datos marca/modelo del dispositivo del usuario (???)
@@ -46,7 +51,12 @@
 
 # ADMIN APP
 -  init
+- operadores
+    consulta de servicios realizados, monto total de ingresos.
 
+# CF
+- mercado pago
+    habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
 
 
 # TO BE DEFINED
