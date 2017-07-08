@@ -212,7 +212,10 @@ export class AccountService {
                 history: [],
             },
             settings: this.settingsSrv.init(),
-            isOperator: false,
+            operator: {
+                enabled: false,
+                active: false
+            },
         }
         console.log('accountSrv.initData > ', account);
         return account;
