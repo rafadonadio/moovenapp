@@ -44,10 +44,12 @@ export class SettingsPage implements OnInit{
     }
 
     ngOnInit() {
+        console.log('ngOnInit');
         this.setAccount();
     }
 
     ionViewWillUnload() {
+        console.log('unloading ...');
         this.resetData();
     }
 

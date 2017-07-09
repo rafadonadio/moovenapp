@@ -11,12 +11,12 @@ import { ModalUserEditNamePage } from '../modal-user-edit-name/modal-user-edit-n
 })
 export class SettingsPopoverPage {
 
-    profData:UserProfileData;
+    accountData:UserProfileData;
 
     constructor(public viewCtrl: ViewController,
         public modalCtrl: ModalController,
         public params:NavParams) { 
-            this.profData = params.data.profData;
+            this.accountData = params.data.accountData;
         }
 
     close(update:boolean = false) {
@@ -29,7 +29,7 @@ export class SettingsPopoverPage {
 
     presentModalEditEmail() {
         let modal = this.modalCtrl.create(ModalUserEditEmailPage, {
-            profData: this.profData
+            accountData: this.accountData
         });
         modal.present(); 
         modal.onDidDismiss(data => {
@@ -40,7 +40,7 @@ export class SettingsPopoverPage {
 
     presentModalEditPhone() {
         let modal = this.modalCtrl.create(ModalUserEditPhonePage, {
-            profData: this.profData
+            accountData: this.accountData
         });
         modal.present();
         modal.onDidDismiss(data => {
@@ -51,7 +51,7 @@ export class SettingsPopoverPage {
 
     presentModalEditName() {      
         let modal = this.modalCtrl.create(ModalUserEditNamePage, {
-            profData: this.profData
+            accountData: this.accountData
         });
         modal.present();
         modal.onDidDismiss(data => {

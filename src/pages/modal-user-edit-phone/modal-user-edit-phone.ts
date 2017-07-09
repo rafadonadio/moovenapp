@@ -15,7 +15,7 @@ export class ModalUserEditPhonePage implements OnInit{
     phoneMobile: AbstractControl;
     phonePrefix: AbstractControl;
     user: firebase.User;
-    profData: UserProfileData;
+    accountData: UserProfileData;
     changeInProcess: boolean;
 
     constructor(public navCtrl: NavController,
@@ -24,7 +24,7 @@ export class ModalUserEditPhonePage implements OnInit{
         public formBuilder: FormBuilder,
         public users: UsersService,
         public params:NavParams) {
-            this.profData = this.params.get('profData');
+            this.accountData = this.params.get('accountData');
             this.changeInProcess = false;
     }
 

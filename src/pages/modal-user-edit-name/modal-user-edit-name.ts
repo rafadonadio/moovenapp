@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 
 import { UsersService } from '../../providers/users-service/users-service';
 
+import firebase from 'firebase';
+
 @Component({
     selector: 'modal-user-edit-name',
     templateUrl: 'modal-user-edit-name.html'
@@ -15,7 +17,7 @@ export class ModalUserEditNamePage implements OnInit{
     firstName: AbstractControl;
     lastName: AbstractControl;
     user: firebase.User;
-    profData: UserProfileData;
+    accountData: UserProfileData;
 
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
@@ -23,14 +25,16 @@ export class ModalUserEditNamePage implements OnInit{
         public usersSrv: UsersService,
         public alertCtrl: AlertController,
         public params: NavParams) {
-            this.profData = params.data.profData;
     }
 
     ngOnInit() {
+        // console.log('onOnit');
+        // console.log(this.params.data);
+        this.accountData = this.params.data.accountData;
         // form init
         this.editForm = this.formBuilder.group({
-            'firstName':  [this.profData.firstName, Validators.compose([Validators.required, Validators.maxLength(50)])],
-            'lastName':  [this.profData.lastName, Validators.compose([Validators.required, Validators.maxLength(50)])],
+            'firstName':  [this.accountData.firstName, [Validators.required, Validators.maxLength(50)]],
+            'lastName':  [this.accountData.lastName, [Validators.required, Validators.maxLength(50)]],
         });
         this.firstName = this.editForm.controls['firstName'];
         this.lastName = this.editForm.controls['lastName'];

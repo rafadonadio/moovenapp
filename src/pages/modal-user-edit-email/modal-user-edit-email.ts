@@ -16,7 +16,7 @@ export class ModalUserEditEmailPage implements OnInit {
 
     editForm: FormGroup;
     email: AbstractControl;
-    profData: UserProfileData;
+    accountData: UserProfileData;
     changeInProcess: boolean;
 
     constructor(public navCtrl: NavController,
@@ -25,8 +25,8 @@ export class ModalUserEditEmailPage implements OnInit {
         public users: UsersService,
         public formBuilder: FormBuilder,
         public params: NavParams) {
-        this.profData = this.params.get('profData');
-        this.changeInProcess = this.profData.emailOnChange;
+        this.accountData = this.params.get('accountData');
+        this.changeInProcess = this.accountData.emailOnChange;
     }
 
     ngOnInit() {

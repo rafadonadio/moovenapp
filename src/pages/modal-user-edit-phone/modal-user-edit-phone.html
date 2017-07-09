@@ -17,7 +17,7 @@
             <ion-icon name="alert" item-left></ion-icon> ATENCIÓN 
             </ion-card-header>
             <ion-card-content>
-            El número <b>{{ profData.phonePrefix }}{{ profData.phoneMobile }}</b> aún no ha sido validado.
+            El número <b>{{ accountData.phonePrefix }}{{ accountData.phoneMobile }}</b> aún no ha sido validado.
             </ion-card-content>
         </ion-card>
         <ion-card>
@@ -36,7 +36,7 @@
             <ion-row>
                 <ion-col width-25>
                     <ion-item>
-                        <ion-input #input type="text" [formControl]="phonePrefix" disabled></ion-input>
+                        <ion-input #input type="text" [formControl]="phonePrefix" [readonly]="true"></ion-input>
                     </ion-item>
                 </ion-col>
                 <ion-col width-75>
