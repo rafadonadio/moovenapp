@@ -75,7 +75,7 @@ export class AccountSettingsService {
 
     updateNotificationsInDB(userId:string, notifications: any):firebase.Promise<any> {
         let updates = {};
-        updates[ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.SETTINGS.NOTIFICATIONS._NODE] = notifications;
+        updates[`userAccount/${userId}/settings/notifications`] = notifications;
         return this.dbRef.update(updates);
     }
 

@@ -53,7 +53,6 @@ export class SettingsPage implements OnInit{
         this.resetData();
     }
 
-
     presentPopover(myEvent):void {
         this.openPopover(myEvent);
     }
@@ -62,8 +61,8 @@ export class SettingsPage implements OnInit{
         this.confirmReverifyEmail();
     }
 
-    updateNotifications() {
-        // this.updateNotificationSettings();
+    updateSettings() {
+        this.runUpdateSettings();
     }
 
     signOut() {
@@ -155,8 +154,6 @@ export class SettingsPage implements OnInit{
         });    
     }
 
-
-
     private setAccount() {
         // loader
         let loading = this.loadingCtrl.create({
@@ -185,78 +182,15 @@ export class SettingsPage implements OnInit{
         this.settings.localPush = this.accountSettings.notifications.localPush;
     }
 
-    private updateSettings() {
+    private runUpdateSettings() {
+        console.log('updateSettings', this.settings);
         this.userSrv.updateAccountSettingsNotifications(this.settings)
             .then(() => {
                 console.log('updateSettings > success');
             })
             .catch((error) => console.log('error', error));  
     }
-
-    // private setAccountData(){
-    //     let steps = {
-    //         reload: false,
-    //         account: false
-    //     }
-    //     let account: UserAccount;
-    //     //console.group('settings.setAccount');
-    //     // show loader
-    //     let loader = this.loadingCtrl.create({
-    //         content: "Actualizando datos ...",
-    //     });
-    //     loader.present();
-    //     // run      
-    //     this.userSrv.reloadUser()
-    //         .then(() => {
-    //             steps.reload = true;
-    //             this.fbuser = this.userSrv.getUser();
-    //             //console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
-    //             if(this.fbuser){     
-    //                 return this.userSrv.getAccount();
-    //             }
-    //         })
-    //         .then((snapshot) => {
-    //             steps.account = true;
-    //             //console.info('setAccountData > success');
-    //             account = snapshot.val();              
-    //             // profile data
-    //             this.accountData = account.profile.data;
-    //             // profile verifications
-    //             this.accountVerifications = account.profile.verifications;
-    //             // account settings
-    //             this.checkAccountSettings(account);
-    //             // account status
-    //             this.accountStatus = this.userSrv.accountProfilesStatus(account);     
-    //             if(this.accountVerifications.email.verified===false) {
-    //                 //console.info('settings.setAccount > run email verification');
-    //                 this.userSrv.runAuthEmailVerification();
-    //             }  
-    //             loader.dismiss();         
-    //         })
-    //         .catch((error) => {
-    //             //console.log('setAccountData > error ', error, steps);
-    //             loader.dismiss();
-    //         });            
-
-    // }
-
-    // private checkAccountSettings(account: UserAccount):void {
-    //     console.info('check user settings');
-    //     if(this.userSrv.checkAccountSettingsConsistency(account)) {
-    //         console.log('checkAccountSettingsConsistency > true');
-    //     }else{
-    //         this.userSrv.initAccountSettingsMissingParams(account)
-    //             .then(() => {
-    //                 this.setAccountData();
-    //             })
-    //             .catch((error) => {
-    //                 console.log(error);
-    //             });            
-    //     }
-    // }
-
-
-
+  
     /**
      *  IMAGE HELPERS
      */
