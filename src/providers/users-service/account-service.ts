@@ -10,6 +10,7 @@ import {
     UserProfileVerifications
 } from '../../models/user-model';
 import { TOS_CFG } from '../../models/tos-model';
+import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
 
 import firebase from 'firebase';
 
@@ -24,7 +25,8 @@ export class AccountService {
     dbRef = firebase.database().ref();
 
     constructor(public profileSrv:AccountProfileService,
-        public settingsSrv:AccountSettingsService) {
+        public settingsSrv:AccountSettingsService,
+        public afDb: AngularFireDatabase) {
     }
 
     /**
@@ -141,6 +143,13 @@ export class AccountService {
         return this.settingsSrv.getByUid(userId);
     }
 
+    /**
+     *  READ FROM DATABASE WITH ANGULAR FIRE
+     */
+
+    getObsById(accountId:string, snapshot:boolean = false): FirebaseObjectObservable<any> {
+        return this.afDb.object(`/userAccount/${accountId}`, { preserveSnapshot: snapshot });
+    }    
 
     /**
      *  GET DATABASE REFERENCE

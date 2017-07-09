@@ -210,6 +210,10 @@ export class UsersService {
         let user = this.getUser();
         return this.accountSrv.getByUid(user.uid);
     }
+    getAccountObs() {
+        let user = this.getUser();
+        return this.accountSrv.getObsById(user.uid, true);
+    }    
 
     getAccountProfileData(): firebase.Promise<any> {
         let user = this.getUser();

@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
 import { UsersService } from '../../providers/users-service/users-service';
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
+import { FirebaseObjectObservable } from 'angularfire2/database';
 import { Camera } from '@ionic-native/camera';
 
 import firebase from 'firebase';
@@ -17,19 +18,23 @@ const STRG_USER_FILES = 'userFiles/';
 export class SettingsPage implements OnInit{
 
     fbuser: firebase.User;
-    profData: UserProfileData;
-    profVrfs: UserProfileVerifications;
+    accountObs: FirebaseObjectObservable<any>;
+    account: any;
+    accountSub: any;
+    accountData: UserProfileData;
+    accountVerifications: UserProfileVerifications;
     accountStatus: any;
-    profileBgDefault: string = 'assets/img/mooven_avatar.png';
+    accountOperator: any;
     accountSettings: UserAccountSettings;
-    accountSettingsDisabled:boolean;
-    notificationSettings = {
+    profileBgDefault: string = 'assets/img/mooven_avatar.png';
+
+    settings = {
         localPush: false,
-        email: false
+        email: false,
     }
 
     constructor(public navCtrl: NavController,
-        public users: UsersService,
+        public userSrv: UsersService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public popoverCtrl: PopoverController,
@@ -39,17 +44,13 @@ export class SettingsPage implements OnInit{
     }
 
     ngOnInit() {
-        this.accountSettingsDisabled = true;
-        this.setAccountData();
+        this.setAccount();
     }
 
-    doRefresh(refresher):void {
-        this.refreshData(refresher);
+    ionViewWillUnload() {
+        this.resetData();
     }
 
-    updateUserProfileStatus():void {
-        this.updateProfileStatus();
-    }
 
     presentPopover(myEvent):void {
         this.openPopover(myEvent);
@@ -60,7 +61,7 @@ export class SettingsPage implements OnInit{
     }
 
     updateNotifications() {
-        this.updateNotificationSettings();
+        // this.updateNotificationSettings();
     }
 
     signOut() {
@@ -76,6 +77,17 @@ export class SettingsPage implements OnInit{
      * PRIVATE METHODS
      * ----------------
      */
+
+    private resetData() {
+        this.accountObs = null;
+        this.accountSub.unsubscribe();
+        this.account = null;
+        this.accountData = null;
+        this.accountOperator = null;
+        this.accountStatus = null;
+        this.accountVerifications = null;
+        this.accountSettings = null;
+    }
 
     private confirmReverifyEmail() {
         let alert = this.alertCtrl.create({
@@ -101,7 +113,7 @@ export class SettingsPage implements OnInit{
     }
 
     private resendEmailVerification() {
-        this.users.resendEmailVerification()
+        this.userSrv.resendEmailVerification()
             .then((result) => {
                 console.log('resend', result);
             })
@@ -117,7 +129,7 @@ export class SettingsPage implements OnInit{
         });
         loader.present();
         setTimeout(() => {
-            this.users.signOut();
+            this.userSrv.signOut();
             this.navCtrl.setRoot(StartPage);
         }, 1000);
 
@@ -126,50 +138,126 @@ export class SettingsPage implements OnInit{
         }, 3000); 
     }
 
-    private updateNotificationSettings() {
-        this.users.updateAccountSettingsNotifications(this.notificationSettings)
-            .then(() => {
-                console.log('updateAccountSettingsNotifications > success');
-            })
-            .catch((error) => console.log('error', error));  
-    }
-
     private openPopover(myEvent:any):void {
         let popover = this.popoverCtrl.create(SettingsPopoverPage, { 
-            profData: this.profData
+            accountData: this.accountData
         });
         popover.present({
             ev: myEvent
-        }); 
-        let self = this;
-        popover.onDidDismiss(function(data) {
+        });
+        popover.onDidDismiss((data) => {
             // check on popover>dismiss, if account update is required
             if(data) {
                 console.log('popover closed > update ? ', data);
-                if(data.update==true) {
-                    self.setAccountData();
-                }
             }
         });    
     }
 
-    private updateProfileStatus():void {
-        this.users.updateUserProfileStatus()
-            .then(() => {
-                console.log('status updated');
-                this.setAccountData(); 
-            })
-            .catch(error => console.log(error));
+
+
+    private setAccount() {
+        // loader
+        let loading = this.loadingCtrl.create({
+            content: 'Cargando perfil ...'
+        });
+        loading.present();
+        // get
+        this.accountObs = this.userSrv.getAccountObs();
+        this.accountSub = this.accountObs.subscribe(snap => {
+            loading.dismiss();
+            this.account = snap.val();
+            this.accountData = snap.val().profile.data;
+            this.accountOperator = snap.val().operator;
+            this.accountVerifications = snap.val().profile.verifications;
+            this.accountStatus = snap.val().profile.status;
+            this.accountSettings = snap.val().settings;
+            this.setSettings();
+        }, (error) => {
+            console.log(error);
+            loading.dismiss();
+        });         
+    }   
+
+    private setSettings() {
+        this.settings.email = this.accountSettings.notifications.email;
+        this.settings.localPush = this.accountSettings.notifications.localPush;
     }
 
-    private refreshData(refresher):void {
-        console.log('Begin async operation', refresher);
-        this.setAccountData();
-        setTimeout(() => {
-            console.log('Async operation has ended');
-            refresher.complete();
-        }, 2000);
+    private updateSettings() {
+        this.userSrv.updateAccountSettingsNotifications(this.settings)
+            .then(() => {
+                console.log('updateSettings > success');
+            })
+            .catch((error) => console.log('error', error));  
     }
+
+    // private setAccountData(){
+    //     let steps = {
+    //         reload: false,
+    //         account: false
+    //     }
+    //     let account: UserAccount;
+    //     //console.group('settings.setAccount');
+    //     // show loader
+    //     let loader = this.loadingCtrl.create({
+    //         content: "Actualizando datos ...",
+    //     });
+    //     loader.present();
+    //     // run      
+    //     this.userSrv.reloadUser()
+    //         .then(() => {
+    //             steps.reload = true;
+    //             this.fbuser = this.userSrv.getUser();
+    //             //console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
+    //             if(this.fbuser){     
+    //                 return this.userSrv.getAccount();
+    //             }
+    //         })
+    //         .then((snapshot) => {
+    //             steps.account = true;
+    //             //console.info('setAccountData > success');
+    //             account = snapshot.val();              
+    //             // profile data
+    //             this.accountData = account.profile.data;
+    //             // profile verifications
+    //             this.accountVerifications = account.profile.verifications;
+    //             // account settings
+    //             this.checkAccountSettings(account);
+    //             // account status
+    //             this.accountStatus = this.userSrv.accountProfilesStatus(account);     
+    //             if(this.accountVerifications.email.verified===false) {
+    //                 //console.info('settings.setAccount > run email verification');
+    //                 this.userSrv.runAuthEmailVerification();
+    //             }  
+    //             loader.dismiss();         
+    //         })
+    //         .catch((error) => {
+    //             //console.log('setAccountData > error ', error, steps);
+    //             loader.dismiss();
+    //         });            
+
+    // }
+
+    // private checkAccountSettings(account: UserAccount):void {
+    //     console.info('check user settings');
+    //     if(this.userSrv.checkAccountSettingsConsistency(account)) {
+    //         console.log('checkAccountSettingsConsistency > true');
+    //     }else{
+    //         this.userSrv.initAccountSettingsMissingParams(account)
+    //             .then(() => {
+    //                 this.setAccountData();
+    //             })
+    //             .catch((error) => {
+    //                 console.log(error);
+    //             });            
+    //     }
+    // }
+
+
+
+    /**
+     *  IMAGE HELPERS
+     */
 
     private uploadProfileImage(imageData: string): Promise<any> {
         console.group('uploadProfileImage');
@@ -195,78 +283,6 @@ export class SettingsPage implements OnInit{
                 console.groupEnd();                
             });
         });
-    }
-
-    private setAccountData(){
-        let steps = {
-            reload: false,
-            account: false
-        }
-        let account: UserAccount;
-        //console.group('settings.setAccount');
-        // show loader
-        let loader = this.loadingCtrl.create({
-            content: "Actualizando datos ...",
-        });
-        loader.present();
-        // run      
-        this.users.reloadUser()
-            .then(() => {
-                steps.reload = true;
-                this.fbuser = this.users.getUser();
-                //console.log('fb user reloaded (email related) > ', this.fbuser.email, this.fbuser.emailVerified);
-                if(this.fbuser){     
-                    return this.users.getAccount();
-                }
-            })
-            .then((snapshot) => {
-                steps.account = true;
-                //console.info('setAccountData > success');
-                account = snapshot.val();              
-                // profile data
-                this.profData = account.profile.data;
-                // profile verifications
-                this.profVrfs = account.profile.verifications;
-                // account settings
-                this.checkAccountSettings(account);
-                // account status
-                this.accountStatus = this.users.accountProfilesStatus(account);     
-                if(this.profVrfs.email.verified===false) {
-                    //console.info('settings.setAccount > run email verification');
-                    this.users.runAuthEmailVerification();
-                }  
-                loader.dismiss();         
-            })
-            .catch((error) => {
-                //console.log('setAccountData > error ', error, steps);
-                loader.dismiss();
-            });            
-
-    }
-
-    private checkAccountSettings(account: UserAccount):void {
-        console.info('check user settings');
-        if(this.users.checkAccountSettingsConsistency(account)) {
-            console.log('checkAccountSettingsConsistency > true');
-            this.enableAccountSetting(account.settings);
-        }else{
-            this.users.initAccountSettingsMissingParams(account)
-                .then(() => {
-                    this.setAccountData();
-                })
-                .catch((error) => {
-                    console.log(error);
-                });            
-        }
-    }
-
-    private enableAccountSetting(settings:any) {
-        // set
-        this.accountSettings = settings;
-        // copy
-        this.notificationSettings = this.accountSettings.notifications;
-        // enable
-        this.accountSettingsDisabled = false;
     }
 
     private takePictureAndUpdate() {
@@ -299,22 +315,17 @@ export class SettingsPage implements OnInit{
             steps.upload = true;
             let downloadURL = snapshot.downloadURL;
             let fullPath = snapshot.ref.fullPath;
-            return this.users.updateAccountImage(downloadURL, fullPath);
+            return this.userSrv.updateAccountImage(downloadURL, fullPath);
         })        
         .then((result) => {
             steps.update = true;
             console.log('updatePicture > updateAccountImage > success', steps);
             let toast = this.toastCtrl.create({
                 message: 'Tu foto de perfil fue actualizada!',
-                duration: 3000,
+                duration: 1500,
                 position: 'top'
             });
             toast.present();
-            toast.dismiss()
-                .then(() => {
-                    this.setAccountData();
-                })
-                .catch((error) => console.log('error', error));  
         })
         .catch((error) => {
             console.log('updatePicture > error > ' + error, steps);
