@@ -9,6 +9,7 @@ import { HttpModule } from '@angular/http';
 import { Camera } from '@ionic-native/camera';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { LocalNotifications } from "@ionic-native/local-notifications";
 // PAGES
 import { CheckoutPage } from '../pages/checkout/checkout';
 import { HelpPage } from '../pages/help/help';
@@ -207,6 +208,7 @@ export const firebaseConfig = {
         PriceService,
         CheckoutService,
         StorageService,
+        LocalNotifications
     ],
 })
 export class AppModule { }

@@ -28,14 +28,17 @@
         "@ionic/storage": "2.0.1",
         "@types/jasmine": "^2.5.36",
         "angularfire2": "^4.0.0-rc.1",
+        "core-util-is": "^1.0.2",
         "firebase": "^4.1.2",
         "hashids": "^1.1.1",
         "ionic-angular": "3.5.0",
         "ionicons": "3.0.0",
         "moment": "^2.18.1",
+        "process-nextick-args": "^1.0.7",
         "promise-polyfill": "^6.0.2",
         "rxjs": "5.4.0",
         "sw-toolbox": "3.6.0",
+        "util-deprecate": "^1.0.2",
         "zone.js": "0.8.12"
     },
     "devDependencies": {

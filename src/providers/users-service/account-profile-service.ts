@@ -137,14 +137,14 @@ export class AccountProfileService {
             // set false if at least one field is empty
             profileStatus[typeLower].fieldsComplete = true; //
             requiredFields.forEach( function(item, index){
-                    //console.log('foreach > ', item, index);
-                    // if at least one is empty, complete flag stays false
-                    if(profileData[item]==='') {
-                        profileStatus[typeLower].fieldsComplete = false;
-                        notFound.push(item);
-                    }
-                }); 
-           notFilled[typeLower] = notFound;     
+                //console.log('foreach > ', item, index);
+                // if at least one is empty, complete flag stays false
+                if(profileData[item]==='') {
+                    profileStatus[typeLower].fieldsComplete = false;
+                    notFound.push(item);
+                }
+            }); 
+            notFilled[typeLower] = notFound;     
         }
         // console.log('setFieldsCompleteStatus > notFilled > ', notFilled);
         return profileStatus;
