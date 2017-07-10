@@ -46,6 +46,7 @@ export class SettingsPage implements OnInit{
     ngOnInit() {
         console.log('ngOnInit');
         this.setAccount();
+        this.fbuser = this.userSrv.getUser();
     }
 
     ionViewWillUnload() {
@@ -88,6 +89,7 @@ export class SettingsPage implements OnInit{
         this.accountStatus = null;
         this.accountVerifications = null;
         this.accountSettings = null;
+        this.fbuser = null;
     }
 
     private confirmReverifyEmail() {
@@ -196,7 +198,7 @@ export class SettingsPage implements OnInit{
      */
 
     private uploadProfileImage(imageData: string): Promise<any> {
-        console.group('uploadProfileImage');
+        console.log('uploadProfileImage', this.fbuser.uid);
         const storageRef = firebase.storage().ref(STRG_USER_FILES);
         return new Promise((resolve, reject) => {
             // upload 
@@ -211,12 +213,10 @@ export class SettingsPage implements OnInit{
                 // error
                 console.log('failed > ', error.code);
                 reject(error);
-                console.groupEnd();
             }, function() {
                 // success
                 resolve(uploadTask.snapshot);
                 console.log('uploadProfileImage > success');
-                console.groupEnd();                
             });
         });
     }
