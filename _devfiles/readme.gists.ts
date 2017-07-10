@@ -38,3 +38,15 @@
             // eventually
             subscription.unsubscribe();
         });
+
+
+    // firebase database query string    
+    queryStartAt(value:string): FirebaseListObservable<any> {
+        return this.db.list(`/userAccount`, {
+            query: { 
+                orderByChild: 'profile/data/email',
+                startAt: value,
+                endAt: `${value}\uf8ff`
+            }
+        });
+    }
