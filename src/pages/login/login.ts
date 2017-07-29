@@ -1,5 +1,5 @@
 import { AuthService } from '../../providers/auth-service/auth-service';
-import { SendingsPage } from '../sendings/sendings';
+import { HomePage } from '../home/home';
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -54,8 +54,7 @@ export class LoginPage {
                     // close loader
                     this.loader.dismiss()
                         .then(() => {
-                            // go home
-                            this.navCtrl.setRoot(SendingsPage);
+                            // go to HomePage, is triggered bu authState
                         })
                         .catch((error) => console.log('error', error)); 
                 })

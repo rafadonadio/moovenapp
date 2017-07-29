@@ -40,6 +40,7 @@ import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { StartPage } from '../pages/start/start';
 import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone-number';
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
+import { HomePage } from '../pages/home/home';
 // PROVIDERS
 import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
 import { AccountServiceOld } from '../providers/users-service/account-service';
@@ -101,6 +102,7 @@ export const firebaseConfig = {
     declarations: [
         MyApp,
         // PAGES
+        HomePage,
         CheckoutPage,
         HelpPage,
         HistorialPage,
@@ -180,6 +182,7 @@ export const firebaseConfig = {
         StartPage,
         UpdatePhoneNumberPage,
         VerifyPhonePage,
+        HomePage,
     ],
     providers: [
         Camera,

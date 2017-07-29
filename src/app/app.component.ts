@@ -1,9 +1,12 @@
+import { Observable, Subscription } from 'rxjs/Rx';
+import { AccountService } from '../providers/account-service/account-service';
 import { AuthService } from '../providers/auth-service/auth-service';
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StartPage } from '../pages/start/start';
+import { HomePage } from '../pages/home/home';
 import { SettingsPage } from '../pages/settings/settings';
 import { SendingsPage } from '../pages/sendings/sendings';
 import { ShipmentsPage } from '../pages/shipments/shipments';
@@ -14,7 +17,7 @@ import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 
 import { UsersService } from '../providers/users-service/users-service';
-import { USER_CFG } from '../models/user-model';
+import { USER_CFG, UserAccount } from '../models/user-model';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 
@@ -40,19 +43,23 @@ export class MyApp {
     }>;
     loader: any;
     user: firebase.User;
-    userAccount;
+    account: UserAccount;
+    accountSubs: Subscription;
     avatarDefault: string = 'assets/img/mooven_avatar.png';
+    
+    userAccount; // delete
 
     constructor(public platform: Platform,
         private statusBar: StatusBar,
         private splashScreen: SplashScreen,
-        public usersService: UsersService,
         public menu: MenuController,
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
         public afAuth: AngularFireAuth,
-        public authSrv: AuthService) {
+        public usersService: UsersService,
+        public authSrv: AuthService,
+        public accountSrv: AccountService) {
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -73,6 +80,7 @@ export class MyApp {
 
         // used for an example of ngFor and navigation
         this.pages = [
+            { title: 'Mooven', component: HomePage, icon: 'home', navigationType: 'root' },
             { title: 'Servicios', component: SendingsPage, icon: 'send', navigationType: 'root' },
             { title: 'Operador', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
@@ -82,16 +90,7 @@ export class MyApp {
             { title: 'Ajustes', component: SettingsPage, icon: 'settings', navigationType: 'push' }
         ];
 
-        /**
-         *  IS USER ALREADY LOGGED IN? RELOAD AND GO HOME
-         */
-        const authListener = afAuth.authState.subscribe( user => {
-            if (user) {
-                console.log('__LGN__ userIsLoggedIn > setRoot');
-                this.nav.setRoot(SendingsPage);
-            }
-            authListener.unsubscribe();
-        });
+        // subscribe to authentication state
         this.susbcribeAuthState();     
     }
 
@@ -101,20 +100,27 @@ export class MyApp {
      */
     private susbcribeAuthState() {
         this.afAuth.authState.subscribe( user => {
-            console.info('__ASC__ authStateChanged');
-            if (user) {
-                console.log('__ASC__ true');
-                this.user = user;
-                this.usersService.reloadUser()
-                    .then((result) => {
-                        //console.log('__ASC__ reloadUser', this.usersService.getUser().uid);
-                        console.log('__ASC__ reloadUser');
-                        return this.verifyAccount();
-                    })
-                    .then((result) => {
-                        console.log('__ASC__ done');
-                    })
-                    .catch(error => console.log('__ASC__ reloadUser > error'));
+            console.info('_authState_');
+            if(user) {
+                console.log('_authState_', user);
+                this.presentLoader('Inicializando cuenta ...');
+                setTimeout(() => {
+                    this.nav.setRoot(HomePage);
+                    this.initAccount();
+                }, 2000);
+
+                // this.user = user;
+                // this.usersService.reloadUser()
+                //     .then((result) => {
+                //         //console.log('__ASC__ reloadUser', this.usersService.getUser().uid);
+                //         console.log('__ASC__ reloadUser');
+                //         return this.verifyAccount();
+                //     })
+                //     .then((result) => {
+                //         console.log('__ASC__ done');
+                //     })
+                //     .catch(error => console.log('__ASC__ reloadUser > error'));
+
             } else {
                 console.log('__ASC__ NULL');
                 this.user = null;
@@ -122,6 +128,81 @@ export class MyApp {
             }
         });
     }
+
+
+
+    private initAccount() {
+        // check if account exist
+        this.accountSrv.exist()
+            .then(result => {
+                console.log('account', result);
+                if(!result.getId) {    
+                    // no userUid, logout
+                    console.log('no id, no exist');
+                    this.presentToast('El usuario no es válido, por favor vuelve a ingresar', 2500);                
+                    this.authSrv.signOut();                    
+                }else if(!result.exist && result.getId){
+                    // uid ok, no account yet
+                    // set account
+                    this.setAccount();
+                    // show toaster
+                    let toast = this.presentToast('Cuenta aun inicializando ...', 2500);
+                }else{
+                    // uid ok, account ok
+                    this.setAccount();
+                    this.nav.setRoot(HomePage);                          
+                }   
+            })
+            .catch(result => {
+                console.log('error', result);
+                this.presentToast('Ha ocurrido un error en la autenticación, por favor vuelve a ingresar', 2500);                
+                this.authSrv.signOut();
+            });
+    }
+
+    private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe(snap => {
+                                console.log('success snap', snap.val());
+                                this.account = snap.val();
+                                this.checkAccount();
+                            }, error => {
+                                console.log('error', error);
+                                this.presentToast('Ha ocurrido un error recuperando datos de la cuenta, por favor vuelve a ingresar', 2500);                
+                                this.authSrv.signOut();                                
+                            });
+    }
+    private unsubscribeAccount() {
+        if(this.accountSubs) {
+            this.accountSubs.unsubscribe();
+        }
+    }
+
+    private checkAccount() {
+        if(!this.account){
+            console.log('checkAccount, account null');
+            return;
+        }
+        // ### IS ACTIVE?
+        if(!this.accountSrv.isActive(this.account)) {
+            let alertError = this.alertCtrl.create({
+                title: 'Cuenta inhabilitada',
+                subTitle: 'Lo sentimos, esta cuenta esta desactivada',
+                buttons: [{
+                    text: 'Cerrar',
+                    role: 'cancel',
+                    handler: () => {
+                        this.signOut();
+                    }
+                }]
+            });
+            alertError.present();
+        }
+
+        
+    }
+
+
 
     /**
      *  VERIFY USER ACCOUNT
@@ -273,16 +354,20 @@ export class MyApp {
     openPage(page): void {
         // close the menu when clicking a link from the menu
         this.menu.close();
-        // audit if account email is verified
-        this.auditAccountEmailIsVerified();
-        // navigate to the new page if it is not the current page
-        switch (page.navigationType) {
-            case 'root':
-                this.nav.setRoot(page.component);
-                break;
-            case 'push':
-                this.nav.push(page.component);
-                break;
+        if(this.account) {
+            // audit if account email is verified
+            this.auditAccountEmailIsVerified();
+            // navigate to the new page if it is not the current page
+            switch (page.navigationType) {
+                case 'root':
+                    this.nav.setRoot(page.component);
+                    break;
+                case 'push':
+                    this.nav.push(page.component);
+                    break;
+            }
+        }else{
+            this.presentToast('La función aun no esta disponible', 2000); 
         }
     }
 
@@ -295,6 +380,15 @@ export class MyApp {
      *  HELPERS
      */
 
+    presentToast(msg:string, duration:number = 2000) {
+        let toast = this.toastCtrl.create({
+            message: msg,
+            duration: duration
+        });
+        toast.present();        
+        return toast;
+    }
+
     presentLoader(msg: string): void {
         this.loader = this.loadingCtrl.create({
             content: msg,
@@ -303,4 +397,10 @@ export class MyApp {
         this.loader.present();
     }
 
+    signOut() {
+        this.menu.close();
+        this.nav.setRoot(StartPage);
+        this.unsubscribeAccount();
+        this.authSrv.signOut();
+    }
 }

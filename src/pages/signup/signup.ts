@@ -77,28 +77,10 @@ export class SignupPage implements OnInit {
         let email = this.form.get('email').value;
         let password = this.form.get('password').value;           
         this.authSrv.createUserWithEmailAndPassword(email, password)
-
-            // .then((fbuser:firebase.User) => {
-            //     console.log('__1__', fbuser.uid);
-            //     // create account in DB
-            //     console.info('__2__createAccount');
-            //     return this.usersSrv.createAccountStep1(fbuser)
-            // })
-            // .then(() => {
-            //     console.log('__2__ success');
-            //     // send email address verification
-            //     // CLOUD FUNCTIONS TRIGGER
-            //     console.log('CF_Trigger:setUserVerifyEmail|user.onCreate()');
-            //     this.loader.dismiss()
-            //         .then(() => {
-            //             // end
-            //         });
-            // })
-
             .then((fbuser) => {
                 console.log('create user success', fbuser.uid);
                 // CLOUD FUNCTIONS TRIGGER
-                console.log('CF_Trigger:createUserAccount|user.onCreate()');
+                console.log('CF_Trigger:createUserAccount|user().onCreate()');
                 this.loader.dismiss();
             })
             .catch((error:any) => {

@@ -3,14 +3,25 @@
         <ion-list no-lines>
             <ion-item class="item-avatar">
                 <ion-avatar item-left>
-                    <img [src]="user?.photoURL || avatarDefault">
+                    <img [src]="account?.profile.data.photoURL || avatarDefault">
                 </ion-avatar>
                 <h2>{{ user?.displayName }}</h2>
+            </ion-item>
+            <ion-item *ngIf="!account">
+                <ion-icon name="alert" item-start></ion-icon>
+                <h2>Inicializando Cuenta</h2>
+                <p text-wrap>Es posible que algunas funciones no estén disponibles aun.</p>
             </ion-item> 
-            <button ion-item detail-none class="menu-item" *ngFor="let p of pages" (click)="openPage(p)">
-                <ion-icon name="{{p.icon}}" item-left></ion-icon>
-                {{ p.title }}
+            <button ion-item detail-none class="menu-item" 
+                *ngFor="let p of pages" (click)="openPage(p)">
+                    <ion-icon name="{{p.icon}}" item-left></ion-icon>
+                    {{ p.title }}
             </button> 
+            <button ion-item detail-none class="menu-item" 
+                (click)="signOut()">
+                    <ion-icon name="exit" item-left></ion-icon>
+                    Salir
+            </button>                 
         </ion-list>
     </ion-content>
 </ion-menu>
