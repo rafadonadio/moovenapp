@@ -1,3 +1,4 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
@@ -32,7 +33,8 @@ export class SignupMergePage implements OnInit{
         public toastCtrl: ToastController,
         public alertCtrl: AlertController,
         public modalCtrl: ModalController,
-        public cameraPlugin: Camera) {
+        public cameraPlugin: Camera,
+        public authSrv: AuthService) {
     }
 
     ngOnInit() {
@@ -125,7 +127,7 @@ export class SignupMergePage implements OnInit{
                 {
                     text: 'Cerrar sesión',
                     handler: () => {
-                        this.users.signOut();
+                        this.authSrv.signOut();
                         this.navCtrl.push(StartPage);
                     }
                 }

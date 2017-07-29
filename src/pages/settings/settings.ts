@@ -1,3 +1,4 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
@@ -40,7 +41,8 @@ export class SettingsPage implements OnInit{
         public popoverCtrl: PopoverController,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
-        public cameraPlugin: Camera) {
+        public cameraPlugin: Camera,
+        public authSrv: AuthService) {
     }
 
     ngOnInit() {
@@ -132,7 +134,7 @@ export class SettingsPage implements OnInit{
         });
         loader.present();
         setTimeout(() => {
-            this.userSrv.signOut();
+            this.authSrv.signOut();
             this.navCtrl.setRoot(StartPage);
         }, 1000);
 

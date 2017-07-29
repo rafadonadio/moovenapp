@@ -188,18 +188,18 @@ export class UsersService {
      */
 
     // login    
-    signIn(user: UserCredentials): firebase.Promise<any> {
-        return this.authSrv.signInWithEmailAndPassword(user.email, user.password);
-    }
+    // signIn(user: UserCredentials): firebase.Promise<any> {
+    //     return this.authSrv.signInWithEmailAndPassword(user.email, user.password);
+    // }
     // logout
-    signOut() {
-        console.log('______SIGNOUT_______BYE');
-        return this.authSrv.signOutFromFirebase();
-    }
+    // signOut() {
+    //     console.log('______SIGNOUT_______BYE');
+    //     return this.authSrv.signOutFromFirebase();
+    // }
     // password reset
-    resetPassword(email: string): firebase.Promise<void> {
-        return this.authSrv.sendPasswordResetEmail(email);
-    }
+    // resetPassword(email: string): firebase.Promise<void> {
+    //     return this.authSrv.sendPasswordResetEmail(email);
+    // }
 
     /**
      *  ACCOUNT

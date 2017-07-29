@@ -1,3 +1,4 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
@@ -24,7 +25,8 @@ export class ModalUserEditEmailPage implements OnInit {
         public alertCtrl: AlertController,
         public users: UsersService,
         public formBuilder: FormBuilder,
-        public params: NavParams) {
+        public params: NavParams,
+        public authSrv: AuthService) {
         this.accountData = this.params.get('accountData');
         this.changeInProcess = this.accountData.emailOnChange;
     }
@@ -122,7 +124,7 @@ export class ModalUserEditEmailPage implements OnInit {
                     text: 'Reingresar',
                     handler: () => {
                         this.dismiss();
-                        this.users.signOut();
+                        this.authSrv.signOut();
                         this.navCtrl.setRoot(StartPage);
                     }
                 }

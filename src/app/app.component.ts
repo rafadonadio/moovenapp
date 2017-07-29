@@ -1,3 +1,4 @@
+import { AuthService } from '../providers/auth-service/auth-service';
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -50,7 +51,8 @@ export class MyApp {
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public afAuth: AngularFireAuth) {
+        public afAuth: AngularFireAuth,
+        public authSrv: AuthService) {
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -193,7 +195,7 @@ export class MyApp {
                     handler: () => {
                         this.nav.setRoot(StartPage);
                         setTimeout(() => {
-                            this.usersService.signOut();
+                            this.authSrv.signOut();
                         }, 2000);
                     }
                 }]
@@ -219,7 +221,7 @@ export class MyApp {
                     handler: () => {
                         this.nav.setRoot(StartPage);
                         setTimeout(() => {
-                            this.usersService.signOut();
+                            this.authSrv.signOut();
                         }, 2000);
                     }
                 }]

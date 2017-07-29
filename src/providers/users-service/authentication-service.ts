@@ -22,22 +22,22 @@ export class AuthenticationService {
      *  SIGNIN/OUT
      */
 
-    // signin firebase user with email and password
-    signInWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
-        return this.afAuth.auth.signInWithEmailAndPassword(email, password);
-    }
+    // // signin firebase user with email and password
+    // signInWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+    //     return this.afAuth.auth.signInWithEmailAndPassword(email, password);
+    // }
 
     // Signout firebase user
     // AUTH STATE CHANGE WATCHER will send user to start page
-    signOutFromFirebase() {
-        this.fbuser = null;
-        return this.afAuth.auth.signOut();
-    }
+    // signOutFromFirebase() {
+    //     this.fbuser = null;
+    //     return this.afAuth.auth.signOut();
+    // }
 
-    // Sends a password reset email to the given email address.
-    sendPasswordResetEmail(email: string): firebase.Promise<any> {
-        return this.afAuth.auth.sendPasswordResetEmail(email);
-    }
+    // // Sends a password reset email to the given email address.
+    // sendPasswordResetEmail(email: string): firebase.Promise<any> {
+    //     return this.afAuth.auth.sendPasswordResetEmail(email);
+    // }
 
     /**
      *  GETTERS

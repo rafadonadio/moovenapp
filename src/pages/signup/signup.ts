@@ -68,8 +68,7 @@ export class SignupPage implements OnInit {
      *  3- send email verification
      */
     private createUser(newUser: UserCredentials):void {
-        console.info('__CUS__createUser()');
-        console.info('__1__createUser');
+        console.info('_createUser_');
         this.usersSrv.createUser(newUser)
             .then((fbuser:firebase.User) => {
                 console.log('__1__', fbuser.uid);
@@ -87,11 +86,11 @@ export class SignupPage implements OnInit {
                         // end
                     });
             })
-            .catch((error) => {
-                console.error('__CUS__', error.message);
+            .catch((error:any) => {
+                console.error('_createUser_', error);
                 this.loader.dismiss()
                     .then(() => {
-                        this.presentErrorAlert(error.message);
+                        this.presentErrorAlert(error);
                     });
         });
     }
@@ -104,11 +103,11 @@ export class SignupPage implements OnInit {
         this.loader.present();
     }
 
-    private presentErrorAlert(msgCode: string ):void {
+    private presentErrorAlert(error:any):void {
         // set strings
         var msg: string;
         var context: string;
-        switch(msgCode){
+        switch(error.code){
             case 'auth/email-already-in-use':
                 context = 'Dirección en uso';
                 msg = 'La dirección de correo ya esta en uso, vuelve a intentarlo';

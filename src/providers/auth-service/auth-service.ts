@@ -23,14 +23,14 @@ export class AuthService {
 
     // Signout firebase user
     // AUTH STATE CHANGE WATCHER will send user to start page
-    signOutFromFirebase() {
+    signOut() {
         this.fbuser = null;
-        return this.afAuth.auth.signOut();
+        return firebase.auth().signOut();
     }
 
     // Sends a password reset email to the given email address.
     sendPasswordResetEmail(email: string): firebase.Promise<any> {
-        return this.afAuth.auth.sendPasswordResetEmail(email);
+        return firebase.auth().sendPasswordResetEmail(email);
     }
     
 
