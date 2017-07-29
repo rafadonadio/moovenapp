@@ -1,13 +1,34 @@
 
-# **LOGIC/DATA FLOW**
 
-> IONIC APP  
-> Usuario servicio / Operador      
+## **LOGIC / DATA FLOW**
+ 
+&nbsp;  
+&nbsp;  
+
+# **ADMIN APP** 
+
+**Habilitar usuario administrador**  
+El usuario debe estar creado.  
+{user}/{pass} idem app.  
+{key} igual a node userAdmin/{uid}/{key}
+
+            
+FIREBASE
+
+    DATABASE
+        userAdmin
+            uid:{key}
+
+*providers/auth-service/auth-service.ts*
   
 &nbsp;  
 &nbsp;  
 
----
+# **APP**  
+  
+&nbsp;  
+&nbsp;  
+
 ## **# MENU** > SITEMAP
 
     [Menu]
@@ -78,7 +99,7 @@
 ## **# SECCIONES**
 
 &nbsp;  
-> ### **SIGN-UP**
+>  ### **SIGN-UP**
 > ### **Crear Usuario** > Paso 1
 > Form para crear usuario  
 > Datos de registro:
@@ -90,7 +111,7 @@
 
 *pages/signup/signup.ts*  
 
-    
+   
     submit()  
         form.invalid  
             showError
@@ -607,6 +628,7 @@ LIVE | &nbsp; | En vivo
  &nbsp; | inroute | el servicio esta en ruta hacia el destino.
  &nbsp; | dropped | el servicio ha sido entregado en destino.
 CLOSED | &nbsp; | Cerrado
+ &nbsp; | payexpired | el servicio ha sido completado satisfactoriamente.
  &nbsp; | complete | el servicio ha sido completado satisfactoriamente.
  &nbsp; | canceledbysender | el servicio ha sido cancelado por el solicitante.
  &nbsp; | canceledbyoperator | el servicio ha sido cancelado por el operador.
@@ -633,6 +655,8 @@ live_dropped        | LIVE      | dropped       | checkmark-circle | Entregado
 closed_completed    | CLOSED    | completed     | checkmark-circle | Entregado
 closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
+closed_payexpired   | CLOSED | closedpayexpired | alert | -- 
+closed_gotoperatorexpired   | CLOSED | gotoperatorexpired | alert | -- 
 
 &nbsp;  
 &nbsp; 

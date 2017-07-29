@@ -1,5 +1,8 @@
 
-
+### BUILD FOR WEB
+```bash
+npm run ionic:build --prod
+```
 
 
 #############
@@ -18,7 +21,7 @@
     <!--- validar horario        -->
 - Nuevo Servicio - Paso 4  
     <!--- calculo precio-->
-    establecer comision operador
+    establecer comision operador 30%
 - Service actions
     - cancel before paying
 - Nuevo shipment
@@ -44,19 +47,24 @@
     - registrar cada acción de usuario  
     - obtener datos marca/modelo del dispositivo del usuario (???)
     - funcionalidad para cerra cuenta de usuario
+    - network detector
 - Ajustes  
     - boton para cerrar aplicación
     - notificaciones (locales/email) - revisar
     - limitar intentos de reenviar email de validación
 
 # ADMIN APP
--  init
+- init
+    <!-- nueva ionic app -->
 - operadores
+    <!-- crear operadores  -->
+    al crear: indicar datos faltantes que no permiten activar.a
     consulta de servicios realizados, monto total de ingresos.
 
 # CF
 - mercado pago
     habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
+- test data in google gloud datastore
 
 
 # TO BE DEFINED

@@ -14,13 +14,36 @@
             <ion-icon name="add"></ion-icon>
         </button>
     </ion-fab>
+  
+    <ion-list
+        *ngIf="operatorAuth.unchecked && !operatorAuth.enabled">
+        <ion-card>
+            <ion-card-header>Registrate como Operador</ion-card-header>
+            <ion-card-content>Envíanos un email con tus datos a <a mailto="contacto@moovenapp.com">contacto@moovenapp.com</a> y te contamos como unirte.</ion-card-content>
+        </ion-card>
+    </ion-list>
+
+    <ion-list
+        *ngIf="operatorAuth.unchecked && operatorAuth.enabled && !operatorAuth.active">
+        <ion-card>
+            <ion-card-content>
+                Atención: algunas funciones estan deshábilitadas.
+                Si crees que es un error escribinos a <a mailto="contacto@moovenapp.com">contacto@moovenapp.com</a>.
+            </ion-card-content>
+        </ion-card>
+    </ion-list>
+
     <ion-list *ngIf="shipmentsEmpty==true">
         <button ion-item detail-none (click)="goToCreate()">
             <h2 color="green" text-center>No hay servicios activos</h2>
         </button>
     </ion-list>
-    <ion-list *ngFor="let item of shipments">
-        <ion-card (click)="goToDetail(item.data)">
+
+    <ion-list 
+        *ngFor="let item of shipments">
+        <!-- list item only visible if operator.enabled -->
+        <ion-card (click)="goToDetail(item.data)"
+            *ngIf="operatorAuth.enabled">
             <ion-item class="header">
                 <h2>#{{ item.data.publicId }}</h2>
                 <ion-note item-right>{{ item.data.summary.objectShortName }}</ion-note>
