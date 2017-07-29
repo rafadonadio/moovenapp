@@ -23,22 +23,22 @@ export class UsersService {
      */
 
     // create firebase user
-    createUser(user: UserCredentials):firebase.Promise<any> {
-        return this.authSrv.createFirebaseUserWithEmailAndPassword(user.email, user.password);
-    }
+    // createUser(user: UserCredentials):firebase.Promise<any> {
+    //     return this.authSrv.createFirebaseUserWithEmailAndPassword(user.email, user.password);
+    // }
 
     // Create User account and profile in firebase database
-    createAccountStep1(fbuser:firebase.User):firebase.Promise<void> {
-        console.info('userSrv.createAccountStep1');
-        console.group('createAccountStep1');
-        // init account
-        let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
-        let profileStatus = this.accountSrv.initAccountProfileStatus();
-        let profileVerifications = this.accountSrv.initAccountVerifications();
-        let account = this.accountSrv.init(profileData, profileStatus, profileVerifications, fbuser);
-        console.groupEnd();
-        return this.accountSrv.createStep1(fbuser.uid, account);
-    }
+    // createAccountStep1(fbuser:firebase.User):firebase.Promise<void> {
+    //     console.info('userSrv.createAccountStep1');
+    //     console.group('createAccountStep1');
+    //     // init account
+    //     let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
+    //     let profileStatus = this.accountSrv.initAccountProfileStatus();
+    //     let profileVerifications = this.accountSrv.initAccountVerifications();
+    //     let account = this.accountSrv.init(profileData, profileStatus, profileVerifications, fbuser);
+    //     console.groupEnd();
+    //     return this.accountSrv.createStep1(fbuser.uid, account);
+    // }
 
     createAccountStep2(profileData: any): firebase.Promise<any> {
         console.info('createAccountStep2 > start');

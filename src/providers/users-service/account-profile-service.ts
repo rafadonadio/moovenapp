@@ -178,28 +178,28 @@ export class AccountProfileService {
      *  INITIALIZATION OF ACCOUNT STATUS DATA
      */
 
-    initData(email: string):UserProfileData {
-        // console.info('initAccountProfileData');
-        let data:UserProfileData = {
-            email: email,
-            emailOnChange: false,
-            firstName: '',
-            lastName: '',
-            phonePrefix: '',
-            phoneMobile: '',
-            photoURL: '',
-            photoPath: '',
-            dateBirth: '',
-            legalIdentityNumber: '',
-            residenceCountry: '',
-            residenceCity: '',
-            residenceAddress: '',
-            residenceAddressL2: '',
-            lastTosAccepted: ''
-        }
-        // console.log('initAccountProfileData > data ', data);
-        return data;
-    }
+    // initData(email: string):UserProfileData {
+    //     // console.info('initAccountProfileData');
+    //     let data:UserProfileData = {
+    //         email: email,
+    //         emailOnChange: false,
+    //         firstName: '',
+    //         lastName: '',
+    //         phonePrefix: '',
+    //         phoneMobile: '',
+    //         photoURL: '',
+    //         photoPath: '',
+    //         dateBirth: '',
+    //         legalIdentityNumber: '',
+    //         residenceCountry: '',
+    //         residenceCity: '',
+    //         residenceAddress: '',
+    //         residenceAddressL2: '',
+    //         lastTosAccepted: ''
+    //     }
+    //     // console.log('initAccountProfileData > data ', data);
+    //     return data;
+    // }
 
     initStatus():UserProfileStatus {
         // console.info('initAccountProfileStatus');
@@ -222,40 +222,40 @@ export class AccountProfileService {
         return status;
     }
 
-    initVerifications():UserProfileVerifications {
-        // console.info('initAccountVerifications');
-        let verifications:UserProfileVerifications;
-        verifications = {
-            email: {
-                verified: false,
-                verifiedAddress: '',
-                verifiedTimestamp: 0,
-                attemptsIds: [],
-            },
-            phone: {
-                verified: false,
-                verifiedNumber: '',
-                verifiedTimestamp: 0,
-                attemptsIds: [],            
-            },
-            residenceAddress: {
-                verified: false,
-                verifiedAddress: '',
-                verifiedTimestamp: 0,
-                imageUrl: '',
-                verifiedBy: '',
-            },
-            legalIdentityNumber: {
-                verified: false,
-                verifiedNumber: '',
-                verifiedTimestamp: 0,
-                imageUrl: '',
-                verifiedBy: '',
-            } 
-        }
-        // console.log('initAccountVerifications > verifications > ', verifications);
-        return verifications;
-    }    
+    // initVerifications():UserProfileVerifications {
+    //     // console.info('initAccountVerifications');
+    //     let verifications:UserProfileVerifications;
+    //     verifications = {
+    //         email: {
+    //             verified: false,
+    //             verifiedAddress: '',
+    //             verifiedTimestamp: 0,
+    //             attemptsIds: [],
+    //         },
+    //         phone: {
+    //             verified: false,
+    //             verifiedNumber: '',
+    //             verifiedTimestamp: 0,
+    //             attemptsIds: [],            
+    //         },
+    //         residenceAddress: {
+    //             verified: false,
+    //             verifiedAddress: '',
+    //             verifiedTimestamp: 0,
+    //             imageUrl: '',
+    //             verifiedBy: '',
+    //         },
+    //         legalIdentityNumber: {
+    //             verified: false,
+    //             verifiedNumber: '',
+    //             verifiedTimestamp: 0,
+    //             imageUrl: '',
+    //             verifiedBy: '',
+    //         } 
+    //     }
+    //     // console.log('initAccountVerifications > verifications > ', verifications);
+    //     return verifications;
+    // }    
 
 
 

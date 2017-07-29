@@ -12,6 +12,16 @@ export class AuthService {
         this.firebaseAuthSuscribe();
     }    
 
+
+    /**
+     *  CREATE
+     */
+
+    createUserWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+        return firebase.auth().createUserWithEmailAndPassword(email, password);
+    }
+
+
     /**
      *  SIGNIN/OUT
      */

@@ -51,9 +51,9 @@ export class AuthenticationService {
      *  SETTERS
      */
 
-    createFirebaseUserWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
-        return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
-    }
+    // createFirebaseUserWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+    //     return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
+    // }
 
     updateFirebaseUserDisplayName(displayName: string):firebase.Promise<any> {
         let fbuser:firebase.User = this.getFirebaseUser();
