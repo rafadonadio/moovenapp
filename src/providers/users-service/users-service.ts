@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { AuthenticationService } from '../users-service/authentication-service';
-import { AccountService } from '../users-service/account-service';
+import { AccountServiceOld } from '../users-service/account-service';
 import { AccountSettingsService } from '../users-service/account-settings-service';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
@@ -13,7 +13,7 @@ import firebase from 'firebase';
 export class UsersService {
 
     constructor(public authSrv: AuthenticationService,
-        public accountSrv: AccountService,
+        public accountSrv: AccountServiceOld,
         public emailVerification: AccountEmailVerificationService,
         public settingsSrv: AccountSettingsService) {
     }

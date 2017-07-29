@@ -47,7 +47,8 @@ npm run ionic:build --prod
     - registrar cada acción de usuario  
     - obtener datos marca/modelo del dispositivo del usuario (???)
     - funcionalidad para cerra cuenta de usuario
-    - network detector
+    - firebase network detector
+    - email para recuperar contraseña, hacer custom español
 - Ajustes  
     - boton para cerrar aplicación
     - notificaciones (locales/email) - revisar

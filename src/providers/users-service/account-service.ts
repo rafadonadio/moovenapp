@@ -19,7 +19,7 @@ const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
 const PROFILES_LIST = USER_CFG.ACCOUNT.PROFILE.LIST;
 
 @Injectable()
-export class AccountService {
+export class AccountServiceOld {
 
     db = firebase.database();
     dbRef = firebase.database().ref();

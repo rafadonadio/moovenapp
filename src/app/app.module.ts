@@ -42,10 +42,12 @@ import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 // PROVIDERS
 import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
-import { AccountService } from '../providers/users-service/account-service';
+import { AccountServiceOld } from '../providers/users-service/account-service';
+import { AccountService } from '../providers/account-service/account-service';
 import { AccountProfileService } from '../providers/users-service/account-profile-service';
 import { AccountSettingsService } from '../providers/users-service/account-settings-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
+import { AuthService } from '../providers/auth-service/auth-service';
 import { SendingService } from '../providers/sending-service/sending-service';
 import { SendingCreateService } from '../providers/sending-service/sending-create-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
@@ -184,10 +186,12 @@ export const firebaseConfig = {
         SplashScreen,
         StatusBar,
         AccountEmailVerificationService,
+        AccountServiceOld,
         AccountService,
         AccountProfileService,
         AccountSettingsService,
         AuthenticationService,
+        AuthService,
         SendingService,
         SendingDbService,
         SendingNotificationsService,

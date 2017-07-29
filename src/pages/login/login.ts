@@ -1,8 +1,8 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { SendingsPage } from '../sendings/sendings';
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password';
 
@@ -18,12 +18,12 @@ export class LoginPage {
     loader:any;
 
     constructor(private navCtrl: NavController,
-        private users: UsersService,
         private formBuilder: FormBuilder,
         private loadingCtrl: LoadingController,
         private toastCtrl: ToastController,
         private alertCtrl: AlertController,
-        private modalCtrl: ModalController) {
+        private modalCtrl: ModalController,
+        private authSrv: AuthService) {
     }
 
     ngOnInit() {
@@ -31,7 +31,6 @@ export class LoginPage {
             'email':  ['', Validators.compose([Validators.required, EmailValidator.isValid])],
             'password': ['', Validators.compose([Validators.required, Validators.minLength(6)])]
         });
-
         this.email = this.signinForm.controls['email'];
         this.password = this.signinForm.controls['password'];
     }
@@ -39,17 +38,35 @@ export class LoginPage {
     /**
      * Signup Form Submit
      */
-    login(value: any):void {
-        // verify inputs are valid
+    login(form: any):void {
         if(!this.signinForm.valid) {
-            console.log('signinform valid = false')
+            console.log('login, form invalid');
         }else{
-            this.showLoader();
-            this.users.signIn({email:value.email, password:value.password})
-                .then((user) => { 
-                    this.goToHome();
+            // loader
+            this.loader = this.loadingCtrl.create({
+                content: 'Iniciando sesión ...'
+            });
+            this.loader.present();  
+            // signin
+            this.authSrv.signInWithEmailAndPassword(form.email, form.password)
+                .then((user) => {
+                    console.log('login success');
+                    // close loader
+                    this.loader.dismiss()
+                        .then(() => {
+                            // go home
+                            this.navCtrl.setRoot(SendingsPage);
+                        })
+                        .catch((error) => console.log('error', error)); 
                 })
-                .catch((error) => this.showLoginError(error.message));
+                .catch((error:any) => {
+                    console.log('login error', error);
+                    this.loader.dismiss()
+                        .then(() => {
+                            this.presentErrorAlert(error);
+                        })
+                        .catch((error) => console.log('error', error)); 
+                });
         }
     }
 
@@ -61,36 +78,13 @@ export class LoginPage {
     /**
      *  PRIVATE METHODS
      */
-
-    private goToHome() {
-        this.loader.dismiss()
-            .then(() => {
-                this.navCtrl.setRoot(SendingsPage);
-            })
-            .catch((error) => console.log('error', error)); 
-    }
-
-    private showLoginError(errorMsg:string) {
-        this.loader.dismiss()
-            .then(() => {
-                this.presentErrorAlert(errorMsg);
-            })
-            .catch((error) => console.log('error', error)); 
-    }
-
-    private showLoader() {
-        // loader effect
-        this.loader = this.loadingCtrl.create({
-            content: 'Iniciando sesión ...'
-        });
-        this.loader.present();        
-    }
-
-    private presentErrorAlert(msgCode: string ):void {
+    
+    // error:{code:string, message:string}
+    private presentErrorAlert(error:any):void {
         // set strings
         var msg: string;
         var context: string;
-        switch(msgCode){
+        switch(error.code){
             case 'auth/account-exists-with-different-credential':
                 context = 'Atención';
                 msg = 'Prueba ingresar con tu cuenta de Google o Facebook.';
