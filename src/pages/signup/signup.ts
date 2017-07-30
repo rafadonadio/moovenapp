@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController  } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { UserCredentials } from '../../models/user-model';
 import { EmailValidator } from '../../validators/email.validator';
 
 @Component({

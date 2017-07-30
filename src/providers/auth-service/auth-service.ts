@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 
@@ -9,9 +10,27 @@ export class AuthService {
     fbuser: firebase.User;
 
     constructor(public afAuth: AngularFireAuth) {
-        this.firebaseAuthSuscribe();
+        this.subscribeState();
     }    
 
+    subscribeState() {
+        // subscribe to user change
+        this.firebaseAuthObservable().subscribe( user => {
+            if(user) {
+                this.fbuser = user;
+            }
+        });
+    }
+
+    /**
+     *  Firebase Authentication
+     */    
+
+    // AuthState Observable
+    // SHARED: http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-share
+    firebaseAuthObservable(): Observable<firebase.User> {
+        return this.afAuth.authState.share();
+    }
 
     /**
      *  CREATE
@@ -34,8 +53,8 @@ export class AuthService {
     // Signout firebase user
     // AUTH STATE CHANGE WATCHER will send user to start page
     signOut() {
+        firebase.auth().signOut();
         this.fbuser = null;
-        return firebase.auth().signOut();
     }
 
     // Sends a password reset email to the given email address.
@@ -43,19 +62,6 @@ export class AuthService {
         return firebase.auth().sendPasswordResetEmail(email);
     }
     
-
-    /**
-     *  Auth Observable
-     */    
-
-    private firebaseAuthSuscribe() {
-        // subscribe to user change
-        this.afAuth.authState.subscribe( user => {
-            if(user) {
-                this.fbuser = user;
-            }
-        });
-    }
 
 
 }

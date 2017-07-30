@@ -15,11 +15,7 @@ import { HistorialPage } from '../pages/historial/historial';
 import { NotificationsPage } from '../pages/notifications/notifications';
 import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
-
 import { UserAccount } from '../models/user-model';
-
-import { AngularFireAuth } from 'angularfire2/auth';
-
 import firebase from 'firebase';
 
 declare var window: any;
@@ -53,7 +49,6 @@ export class MyApp {
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
         public loadingCtrl: LoadingController,
-        public afAuth: AngularFireAuth,
         public authSrv: AuthService,
         public accountSrv: AccountService) {
 
@@ -107,23 +102,24 @@ export class MyApp {
 
     //FIREBASE AUTH OBSERVER
     private susbcribeAuthState() {
-        this.afAuth.authState.subscribe( user => {
-            console.info('_authState_');
-            if(user) {
-                // user OK
-                console.log('_authState_', user);
-                this.user = user;
-                this.presentLoader('Inicializando cuenta ...');
-                setTimeout(() => {
-                    this.nav.setRoot(HomePage);
-                    this.initAccount();
-                }, 2000);
-            } else {
-                // user is null, bye
-                console.log('__ASC__ NULL');
-                this.signOut();
-            }
-        });
+        this.authSrv.firebaseAuthObservable()
+            .subscribe( user => {
+                console.info('_authState_');
+                if(user) {
+                    // user OK
+                    console.log('_authState_', user);
+                    this.user = user;
+                    this.presentLoader('Inicializando cuenta ...');
+                    setTimeout(() => {
+                        this.nav.setRoot(HomePage);
+                        this.initAccount();
+                    }, 2000);
+                } else {
+                    // user is null, bye
+                    console.log('__ASC__ NULL');
+                    this.signOut();
+                }
+            });
     }
 
     // check if userAccount exists
