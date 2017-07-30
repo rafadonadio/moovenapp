@@ -1,16 +1,15 @@
+import { AccountService } from '../../providers/account-service/account-service';
 import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
 import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';
-
 import { Camera } from '@ionic-native/camera';
-
 import firebase from 'firebase';
+
+import { UsersService } from '../../providers/users-service/users-service';
 
 const STRG_USER_FILES = 'userFiles/';
 
@@ -27,14 +26,15 @@ export class SignupMergePage implements OnInit{
     loader:any;
 
     constructor(public navCtrl: NavController,
-        public users: UsersService,
         public formBuilder: FormBuilder,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public alertCtrl: AlertController,
         public modalCtrl: ModalController,
         public cameraPlugin: Camera,
-        public authSrv: AuthService) {
+        public authSrv: AuthService,
+        public accountSrv: AccountService,
+        public users: UsersService,) {
     }
 
     ngOnInit() {
@@ -225,20 +225,7 @@ export class SignupMergePage implements OnInit{
     }
 
      private setUser() {
-        // show loader
-        let loader = this.loadingCtrl.create({
-            content: "Inicializando cuenta ...",
-        });
-        loader.present();
-        this.users.reloadUser()
-            .then(() => {
-                this.user = this.users.getUser();
-                loader.dismiss(); 
-            })
-            .catch((error) => {
-                console.log('setAccountData > error ', error);
-                loader.dismiss();
-            });                
+        this.user = this.authSrv.fbuser;             
      }
 
 }

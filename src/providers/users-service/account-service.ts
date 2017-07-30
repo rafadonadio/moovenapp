@@ -33,13 +33,6 @@ export class AccountServiceOld {
      *  WRITE TO DATABASE
      */
 
-    // // create database node for user account
-    // createStep1(userId: string, account: UserAccount):firebase.Promise<any> {
-    //     let updates = {};
-    //     updates[ACCOUNT_REF + userId] = account;
-    //     return this.dbRef.update(updates);
-    // }
-
     // Updates account created in step1, with required fields
     createStep2(userId: string, data: any):firebase.Promise<any>  {
         console.info('createStep2 > start');
@@ -190,56 +183,5 @@ export class AccountServiceOld {
     isProfileFieldsComplete(account: UserAccount, profileType: string):boolean {
         return account.profile.status[profileType].fieldsComplete;
     }
-
-
-
-    /**
-     *  INITIALIZATION OF ACCOUNT DATA
-     */
-
-    // init(profileData:UserProfileData, 
-    //     profileStatus:UserProfileStatus, 
-    //     profileVerifications:UserProfileVerifications, 
-    //     fbuser:firebase.User): UserAccount {
-    //     console.info('accountSrv.initData');
-    //     // set
-    //     let account:UserAccount = {
-    //         active: true, 
-    //         createdAt: firebase.database.ServerValue.TIMESTAMP,
-    //         deletedAt: 0,
-    //         providerId: fbuser.providerId,
-    //         profile: {
-    //             data: profileData,
-    //             status: profileStatus,
-    //             verifications: profileVerifications                
-    //         },
-    //         ToS: {
-    //             accepted: false,
-    //             acceptedTimestamp: 0,
-    //             acceptedVersionId: 0,
-    //             acceptedVersionTag: '',
-    //             history: [],
-    //         },
-    //         settings: this.settingsSrv.init(),
-    //         operator: {
-    //             enabled: false,
-    //             active: false
-    //         },
-    //     }
-    //     console.log('accountSrv.initData > ', account);
-    //     return account;
-    // }
-
-    // initAccountProfileData(email: string):UserProfileData {
-    //     return this.profileSrv.initData(email);
-    // }
-
-    // initAccountProfileStatus() {
-    //     return this.profileSrv.initStatus();
-    // }
-
-    // initAccountVerifications():UserProfileVerifications {
-    //     return this.profileSrv.initVerifications();
-    // }
 
 }

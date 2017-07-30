@@ -22,24 +22,6 @@ export class UsersService {
      * USER CRUD
      */
 
-    // create firebase user
-    // createUser(user: UserCredentials):firebase.Promise<any> {
-    //     return this.authSrv.createFirebaseUserWithEmailAndPassword(user.email, user.password);
-    // }
-
-    // Create User account and profile in firebase database
-    // createAccountStep1(fbuser:firebase.User):firebase.Promise<void> {
-    //     console.info('userSrv.createAccountStep1');
-    //     console.group('createAccountStep1');
-    //     // init account
-    //     let profileData = this.accountSrv.initAccountProfileData(fbuser.email);
-    //     let profileStatus = this.accountSrv.initAccountProfileStatus();
-    //     let profileVerifications = this.accountSrv.initAccountVerifications();
-    //     let account = this.accountSrv.init(profileData, profileStatus, profileVerifications, fbuser);
-    //     console.groupEnd();
-    //     return this.accountSrv.createStep1(fbuser.uid, account);
-    // }
-
     createAccountStep2(profileData: any): firebase.Promise<any> {
         console.info('createAccountStep2 > start');
         console.group('createAccountStep2');
@@ -182,24 +164,6 @@ export class UsersService {
                 });
         })
     }
-
-    /**
-     *  AUTHENTICATION
-     */
-
-    // login    
-    // signIn(user: UserCredentials): firebase.Promise<any> {
-    //     return this.authSrv.signInWithEmailAndPassword(user.email, user.password);
-    // }
-    // logout
-    // signOut() {
-    //     console.log('______SIGNOUT_______BYE');
-    //     return this.authSrv.signOutFromFirebase();
-    // }
-    // password reset
-    // resetPassword(email: string): firebase.Promise<void> {
-    //     return this.authSrv.sendPasswordResetEmail(email);
-    // }
 
     /**
      *  ACCOUNT
