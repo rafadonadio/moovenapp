@@ -4,7 +4,6 @@ import { NavController, LoadingController, ToastController, AlertController  } f
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UserCredentials } from '../../models/user-model';
-import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 
 @Component({
@@ -18,7 +17,6 @@ export class SignupPage implements OnInit {
     loader:any;
 
     constructor(public navCtrl: NavController,
-        public usersSrv: UsersService,
         public formBuilder: FormBuilder,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,

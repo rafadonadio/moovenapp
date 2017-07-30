@@ -50,10 +50,18 @@ export class AccountService {
      *  ACCOUNT SIMPLE CHECKERS
      */
 
+    // is Account Active
     isActive(account:UserAccount):boolean {
         return account.active;
     }
-
+    // is Account Basic Profile Complete
+    isBasicProfileComplete(account: UserAccount):boolean {
+        return account.profile.status.basic.fieldsComplete;
+    }
+    // is Account Basic Profile Verified
+    isBasicProfileVerified(account: UserAccount):boolean {
+        return account.profile.status.basic.verificationsComplete;
+    }    
 
 
 }
