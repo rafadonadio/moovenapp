@@ -1,3 +1,5 @@
+import { UserAccount } from '../../models/user-model';
+import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
@@ -24,6 +26,8 @@ export class SignupMergePage implements OnInit{
     showErrors:boolean = false;
     user: firebase.User;
     loader:any;
+    account: UserAccount;
+    accountSubs:Subscription;
 
     constructor(public navCtrl: NavController,
         public formBuilder: FormBuilder,
@@ -39,6 +43,7 @@ export class SignupMergePage implements OnInit{
 
     ngOnInit() {
         this.setUser();
+        this.setAccount();
         this.form = this.formBuilder.group({
             firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
             lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -48,6 +53,9 @@ export class SignupMergePage implements OnInit{
         });
     }
 
+    ionViewWillUnload() {
+        this.unsubscribeAccount();
+    }
 
     submit(): void {
         console.info('__SMF__ SignupMergeForm');
@@ -169,21 +177,18 @@ export class SignupMergePage implements OnInit{
             steps.upload = true;
             let downloadURL = snapshot.downloadURL;
             let fullPath = snapshot.ref.fullPath;
-            return this.users.updateAccountImage(downloadURL, fullPath);
+            return this.accountSrv.updatePhoto(downloadURL, fullPath);
         })        
-        .then((result) => {
+        .then(() => {
             steps.update = true;
             console.log('__UDP__3 ok');
+            this.authSrv.reload();
             let toast = this.toastCtrl.create({
                 message: 'Tu foto de perfil fue actualizada!',
                 duration: 3000,
                 position: 'top'
             });
             toast.present();
-            toast.dismiss()
-                .then(() => {
-                    this.setUser();
-                });
         })
         .catch((error) => {
             console.error('__UDP__', error, steps);
@@ -227,5 +232,20 @@ export class SignupMergePage implements OnInit{
      private setUser() {
         this.user = this.authSrv.fbuser;             
      }
+
+    private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe(snap => {
+                                console.log('success snap', snap.val());
+                                this.account = snap.val();
+                            }, error => {
+                                console.log('error', error);
+                            });
+    }
+    private unsubscribeAccount() {
+        if(this.accountSubs) {
+            this.accountSubs.unsubscribe();
+        }
+    }
 
 }

@@ -12,12 +12,35 @@ export class AccountService {
         private authSrv: AuthService) {}
     
 
+
+    /**
+     *  UPDATE
+     */
+
+    updatePhoto(downloadURL:string, fullPath:string):firebase.Promise<any> {
+        let updates = {};
+        let accountId = this.authSrv.fbuser.uid;
+        updates[`userAccount/${accountId}/profile/data/photoURL`] = downloadURL;
+        updates[`userAccount/${accountId}/profile/data/photoPath`] = fullPath;
+        return firebase.database().ref().update(updates);
+    }
+
+
+    /**
+     *  GET
+     */
+
     // get account Observable
     getObs(snapshot:boolean = false): FirebaseObjectObservable<any> {
         // console.log('uid', this.authSrv.fbuser);
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.object(`/userAccount/${accountId}`, { preserveSnapshot: snapshot });
+        return this.afDb.object(`userAccount/${accountId}`, { preserveSnapshot: snapshot });
     }  
+
+
+    /**
+     *  ACCOUNT SIMPLE CHECKERS
+     */
 
     exist(): Promise<{getId:boolean, exist:boolean}> {
         let result = {
@@ -45,10 +68,6 @@ export class AccountService {
                 });
         });  
     }
-
-    /**
-     *  ACCOUNT SIMPLE CHECKERS
-     */
 
     // is Account Active
     isActive(account:UserAccount):boolean {

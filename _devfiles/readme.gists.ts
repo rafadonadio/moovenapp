@@ -50,3 +50,19 @@
             }
         });
     }
+
+
+    // BIG QUERY TEST
+
+    const bigquery = require('@google-cloud/bigquery')();
+    // LOG
+    console.log('cloud env',functions.config().bigquery.datasetmoovendev, functions.config().bigquery.tabletasks);
+    const dataset = bigquery.dataset(functions.config().bigquery.datasetmoovendev);
+    const table = dataset.table(functions.config().bigquery.tabletasks);
+    let row = {
+        task_name: 'create_account',
+        user_uid: firebaseUser.uid,
+        trigger: 'auth.user().onCreate()',
+        timestamp: timestamp
+    };
+    return table.insert(row);

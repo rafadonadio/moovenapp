@@ -10,7 +10,7 @@
                 (click)="updatePicture()">
                 <ion-icon name="camera"></ion-icon></button>
         </ion-fab>
-        <img [src]="user?.photoURL || profileBgDefault">
+        <img [src]="account?.profile.data.photoURL || profileBgDefault">
     </div>
     <form [formGroup]="form" padding>
         <ion-grid>

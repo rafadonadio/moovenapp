@@ -17,9 +17,20 @@ export class AuthService {
         // subscribe to user change
         this.firebaseAuthObservable().subscribe( user => {
             if(user) {
-                this.fbuser = user;
+                this.setFbuser();
             }
         });
+    }
+
+    reload() {
+        this.fbuser.reload()
+            .then(() => {
+                this.setFbuser();
+            });
+    }
+
+    private setFbuser() {
+        this.fbuser = this.afAuth.auth.currentUser;
     }
 
     /**

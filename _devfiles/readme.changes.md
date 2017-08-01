@@ -4,6 +4,11 @@
 npm run ionic:build --prod
 ```
 
+    In many cases, new features and bug fixes are available only with the latest version of the Firebase CLI and firebase-functions SDK. It's a good practice to frequently update both the Firebase CLI and the SDK with these commands inside the functions folder of your Firebase project:
+
+    npm install firebase-functions@latest --save
+    npm install -g firebase-tools
+
 
 #############
 # TO_DO
@@ -72,6 +77,13 @@ npm run ionic:build --prod
 - fecha de servicio
     - que pasa con feriados?
     - que pasa con fin de semana?
+
+
+# BIG_QUERY
+    Set the bigquery.datasetName and bigquery.tableName 
+    Google Cloud environment variables to match the Dataset name and the Table name 
+    where you want the logs written to. 
+        $ firebase functions:config:set bigquery.datasetmoovendev="moovendev" bigquery.tabletasks="tasks"
 
 
 # CHANGELOG

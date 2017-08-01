@@ -5,7 +5,7 @@ import { AccountServiceOld } from '../users-service/account-service';
 import { AccountSettingsService } from '../users-service/account-settings-service';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 
-import { UserCredentials, UserAccount } from '../../models/user-model';
+import { UserAccount } from '../../models/user-model';
 
 import firebase from 'firebase';
 
