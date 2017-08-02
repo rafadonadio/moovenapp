@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { HomePage } from '../home/home';
+import { Component } from '@angular/core';
 import {
     AlertController,
     LoadingController,
@@ -14,7 +15,7 @@ import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit
     selector: 'page-verify-phone',
     templateUrl: 'verify-phone.html',
 })
-export class VerifyPhonePage implements OnInit {
+export class VerifyPhonePage {
 
     constructor(public navCtrl: NavController,
         public alertCtrl:  AlertController,
@@ -24,12 +25,8 @@ export class VerifyPhonePage implements OnInit {
         public viewCtrl: ViewController) {
         }
 
-        ngOnInit() {
-            this.viewCtrl.willEnter.subscribe(() => {                
-                // THIS COMPONENT IS NOT USED 
-                /// BUT WILL SOON
-                this.navCtrl.setRoot(SendingsPage);
-            });
+        ionViewWillEnter() {
+            this.navCtrl.setRoot(HomePage);
         }
 
         goToUpdatePhoneNumber() {
