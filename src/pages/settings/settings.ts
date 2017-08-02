@@ -1,3 +1,4 @@
+import { AccountService } from '../../providers/account-service/account-service';
 import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerifications } from '../../models/user-model';
@@ -19,7 +20,6 @@ const STRG_USER_FILES = 'userFiles/';
 export class SettingsPage implements OnInit{
 
     fbuser: firebase.User;
-    accountObs: FirebaseObjectObservable<any>;
     account: any;
     accountSub: any;
     accountData: UserProfileData;
@@ -35,20 +35,21 @@ export class SettingsPage implements OnInit{
     }
 
     constructor(public navCtrl: NavController,
-        public userSrv: UsersService,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public popoverCtrl: PopoverController,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         public cameraPlugin: Camera,
-        public authSrv: AuthService) {
-    }
+        public authSrv: AuthService,
+        public userSrv: UsersService,
+        public accountSrv: AccountService) {
+        }
 
     ngOnInit() {
         console.log('ngOnInit');
         this.setAccount();
-        this.fbuser = this.userSrv.getUser();
+        this.fbuser = this.authSrv.fbuser;
     }
 
     ionViewWillUnload() {
@@ -83,7 +84,6 @@ export class SettingsPage implements OnInit{
      */
 
     private resetData() {
-        this.accountObs = null;
         this.accountSub.unsubscribe();
         this.account = null;
         this.accountData = null;
@@ -165,8 +165,8 @@ export class SettingsPage implements OnInit{
         });
         loading.present();
         // get
-        this.accountObs = this.userSrv.getAccountObs();
-        this.accountSub = this.accountObs.subscribe(snap => {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSub = obs.subscribe(snap => {
             loading.dismiss();
             this.account = snap.val();
             this.accountData = snap.val().profile.data;

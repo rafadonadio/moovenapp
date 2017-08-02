@@ -177,6 +177,7 @@ export class SignupMergePage implements OnInit{
         // copy form values
         profileData.firstName = this.form.value.firstName;
         profileData.lastName = this.form.value.lastName;
+        profileData.phonePrefix = this.form.value.phonePrefix;
         profileData.phoneMobile = this.form.value.phoneMobile;
         profileData.lastTosAccepted = this.tosVersion;
         // update
