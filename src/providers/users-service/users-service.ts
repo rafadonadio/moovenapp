@@ -18,54 +18,6 @@ export class UsersService {
         public settingsSrv: AccountSettingsService) {
     }
 
-    /**
-     * USER CRUD
-     */
-
-    // createAccountStep2(profileData: any): firebase.Promise<any> {
-    //     console.info('createAccountStep2 > start');
-    //     console.group('createAccountStep2');
-    //     // aux
-    //     let fbuser = this.getUser();
-    //     let displayName = profileData.firstName + ' ' + profileData.lastName;        
-    //     let steps = {
-    //         create: false,
-    //         status: false,
-    //         displayName: false,
-    //     }
-    //     // run        
-    //     return new Promise((resolve, reject) => {
-    //         this.accountSrv.createStep2(fbuser.uid, profileData)
-    //             .then(() => {
-    //                 console.log('[1] createStep2 > success');
-    //                 steps.create = true;                    
-    //                 // update account profile status                    
-    //                 return this.updateUserProfileStatus();
-    //             })
-    //             .then(() => {
-    //                 console.log('[2] updateProfileStatus > success');
-    //                 steps.status = true
-    //                 // update firebase user displayName
-    //                 return this.authSrv.updateFirebaseUserDisplayName(displayName);                    
-    //             })
-    //             .then(() => {
-    //                 console.log('[3] updateDisplayName > success');
-    //                 steps.displayName = true;
-    //                 console.groupEnd();
-    //                 resolve(steps);
-    //             })
-    //             .catch((error) => {
-    //                 console.log('createAccountStep2 > error', error, steps);
-    //                 if(steps.create==true && steps.status==true) {
-    //                     resolve(steps);
-    //                 }else{
-    //                     reject(error);
-    //                 }
-    //                 console.groupEnd();
-    //             });
-    //     });
-    // }
-
     // get authenticated user
     getUser(): firebase.User {
         return this.authSrv.getFirebaseUser();
@@ -225,55 +177,6 @@ export class UsersService {
     // get profiles status
     accountProfilesStatus(accountData: UserAccount) {
         return this.accountSrv.getProfilesStatus(accountData);
-    }
-
-    /**
-     *  EMAIL VERIFICATION
-     */
-
-    // trigger email verification process
-    resendEmailVerification(): firebase.Promise<any> {
-        let user:firebase.User = this.getUser();
-        return this.emailVerification.resend(user);
-    }
-
-    // run email verification
-    // reload user > check emailVerified value > if true, save success and update account
-    runAuthEmailVerification(): Promise<any> {
-        // relaod user and check
-        let fbuser = this.getUser();
-        let steps = {
-            reload: false,
-            setVerified: false,
-            updateStatus: false
-        };
-        //console.group('runAuthEmailVerification');
-        return new Promise((resolve, reject) => {
-            this.reloadUser()
-                .then((result) => {
-                    //console.log('reloadAuthUser > success');
-                    steps.reload = true;
-                    if(fbuser.emailVerified === true) {
-                        return this.emailVerification.setVerified(fbuser);
-                    }else{
-                        resolve(steps);
-                    }
-                })
-                .then((result) => {
-                    //console.log('setVerified > success');
-                    steps.setVerified = true;
-                    return this.updateUserProfileStatus();
-                })                
-                .then((result) => {
-                    //console.log('updateProfileStatus > success');
-                    steps.updateStatus = true;
-                    resolve(steps);
-                })
-                .catch((error) => {
-                    //console.log('something failed');
-                    reject(steps);
-                });
-        });
     }
 
     // SETTINGS

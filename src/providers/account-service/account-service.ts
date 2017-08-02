@@ -1,3 +1,4 @@
+import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 import { UserAccount, UserProfileData } from '../../models/user-model';
 import { AuthService } from '../auth-service/auth-service';
 import { Injectable } from '@angular/core';
@@ -9,7 +10,8 @@ import firebase from 'firebase';
 export class AccountService {
 
     constructor(public afDb: AngularFireDatabase,
-        private authSrv: AuthService) {}
+        private authSrv: AuthService,
+        private emailVerification: AccountEmailVerificationService) {}
     
     /**
      *  UPDATE
@@ -85,5 +87,15 @@ export class AccountService {
         return account.profile.status.basic.verificationsComplete;
     }    
 
+
+    /**
+     *  EMAIL VERIFICATION
+     */
+
+    // trigger email verification process
+    resendEmailVerification(): firebase.Promise<any> {
+        let fbuser = this.authSrv.fbuser;
+        return this.emailVerification.resend(fbuser);
+    }
 
 }

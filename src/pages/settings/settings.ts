@@ -4,12 +4,12 @@ import { StartPage } from '../start/start';
 import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerifications } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
-import { UsersService } from '../../providers/users-service/users-service';
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
 import { FirebaseObjectObservable } from 'angularfire2/database';
 import { Camera } from '@ionic-native/camera';
-
 import firebase from 'firebase';
+
+import { UsersService } from '../../providers/users-service/users-service'; // delete
 
 const STRG_USER_FILES = 'userFiles/';
 
@@ -118,7 +118,7 @@ export class SettingsPage implements OnInit{
     }
 
     private resendEmailVerification() {
-        this.userSrv.resendEmailVerification()
+        this.accountSrv.resendEmailVerification()
             .then((result) => {
                 console.log('resend', result);
             })
