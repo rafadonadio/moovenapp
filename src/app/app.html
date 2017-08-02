@@ -5,7 +5,7 @@
                 <ion-avatar item-left>
                     <img [src]="account?.profile.data.photoURL || avatarDefault">
                 </ion-avatar>
-                <h2>{{ user?.displayName }}</h2>
+                <h2>{{ account?.profile.data.firstName }} {{ account?.profile.data.lastName }}</h2>
             </ion-item>
             <ion-item *ngIf="!account">
                 <ion-icon name="alert" item-start></ion-icon>
