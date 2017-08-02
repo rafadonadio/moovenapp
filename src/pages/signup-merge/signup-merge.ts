@@ -1,4 +1,5 @@
-import { UserAccount } from '../../models/user-model';
+import { ConfigService } from '../../providers/config-service/config-service';
+import { UserAccount, UserProfileData } from '../../models/user-model';
 import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { AuthService } from '../../providers/auth-service/auth-service';
@@ -6,12 +7,10 @@ import { StartPage } from '../start/start';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';
+import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { Camera } from '@ionic-native/camera';
 import firebase from 'firebase';
-
-import { UsersService } from '../../providers/users-service/users-service';
 
 const STRG_USER_FILES = 'userFiles/';
 
@@ -28,6 +27,7 @@ export class SignupMergePage implements OnInit{
     loader:any;
     account: UserAccount;
     accountSubs:Subscription;
+    tosVersion: any;
 
     constructor(public navCtrl: NavController,
         public formBuilder: FormBuilder,
@@ -38,12 +38,10 @@ export class SignupMergePage implements OnInit{
         public cameraPlugin: Camera,
         public authSrv: AuthService,
         public accountSrv: AccountService,
-        public users: UsersService,) {
+        public configSrv: ConfigService) {
     }
 
     ngOnInit() {
-        this.setUser();
-        this.setAccount();
         this.form = this.formBuilder.group({
             firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
             lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -51,17 +49,17 @@ export class SignupMergePage implements OnInit{
             phoneMobile: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(25)]],
             tosAccept: [false, []]
         });
+        this.setTosVersion();
+        this.setUser();
+        this.setAccount();
     }
 
     ionViewWillUnload() {
         this.unsubscribeAccount();
     }
 
-    submit(): void {
-        console.info('__SMF__ SignupMergeForm');
-        console.log('__SMF__ ',this.form.valid, this.form.get('tosAccept').value);
-        let values = this.form.value;
-        // verify inputs are valid
+    submit() {
+        console.log('submit form, tosAccept', this.form.valid, this.form.get('tosAccept').value);
         if(!this.form.valid || this.form.get('tosAccept').value==false) {
             // something is not good
             this.showErrors = true;
@@ -71,49 +69,8 @@ export class SignupMergePage implements OnInit{
                 buttons: ['Cerrar']
             });
             alert.present();            
-        }else{
-            this.showErrors = false;
-            // loader effect
-            this.loader = this.loadingCtrl.create({
-                content: 'Guardando ...'
-            });
-            this.loader.present();
-            // profile data
-            let profileData = {
-                firstName: values.firstName,
-                lastName: values.lastName,
-                phonePrefix: values.phonePrefix,
-                phoneMobile: values.phoneMobile
-            };
-            // update
-            console.info('__CA2__ createAccountStep2');
-            this.users.createAccountStep2(profileData)
-                .then((result) => {                    
-                    console.log('__CA2__', result);
-                    this.loader.dismiss()
-                        .then(() => {
-                            this.navCtrl.setRoot(VerifyPhonePage);
-                        })
-                        .catch(error => console.log(error));
-                })
-                .catch((error) => {
-                    console.error('__CA2__', error);
-                    this.loader.dismiss()
-                        .then(() => {
-                            let alert = this.alertCtrl.create({
-                                title: 'Atención',
-                                subTitle: 'Ocurrió un error al crear tu cuenta, por favor vuelve a intentarlo',
-                                buttons: [
-                                    {
-                                        text: 'Cerrar',
-                                        role: 'cancel'
-                                    }
-                                ]
-                            });
-                            alert.present();
-                        })
-                        .catch(error => console.log(error));
-                });
+        }else{                 
+            this.updateAccount();
         }
     }
 
@@ -143,6 +100,7 @@ export class SignupMergePage implements OnInit{
         });
         alert.present();
     }
+
 
     /**
      * Take picture and save imageData
@@ -205,6 +163,52 @@ export class SignupMergePage implements OnInit{
      * PRIVATE
      */
 
+
+    private updateAccount(): void {
+        console.log('updateAccount');
+        this.showErrors = false;
+        // loader effect
+        this.loader = this.loadingCtrl.create({
+            content: 'Guardando ...',
+        });
+        this.loader.present();
+        // profile data
+        let profileData: UserProfileData = this.account.profile.data;
+        // copy form values
+        profileData.firstName = this.form.value.firstName;
+        profileData.lastName = this.form.value.lastName;
+        profileData.phoneMobile = this.form.value.phoneMobile;
+        profileData.lastTosAccepted = this.tosVersion;
+        // update
+        this.accountSrv.updateProfileData(profileData)
+            .then(() => {                    
+                console.log('update profile success');
+                this.loader.dismiss()
+                    .then(() => {
+                        this.navCtrl.setRoot(VerifyPhonePage);
+                    })
+                    .catch(error => console.log('dismiss error', error));
+            })
+            .catch((error) => {
+                console.error('update profile success', error);
+                this.loader.dismiss()
+                    .then(() => {
+                        let alert = this.alertCtrl.create({
+                            title: 'Atención',
+                            subTitle: 'Ocurrió un error al completar tu cuenta, por favor vuelve a intentarlo',
+                            buttons: [
+                                {
+                                    text: 'Cerrar',
+                                    role: 'cancel'
+                                }
+                            ]
+                        });
+                        alert.present();
+                    })
+                    .catch(error => console.log(error));
+            });
+    }
+
     private uploadProfileImage(imageData: string): Promise<any> {
         const storageRef = firebase.storage().ref(STRG_USER_FILES);
         return new Promise((resolve, reject) => {
@@ -233,11 +237,26 @@ export class SignupMergePage implements OnInit{
         this.user = this.authSrv.fbuser;             
      }
 
-    private setAccount() {
+    private setTosVersion() {
+        let obs = this.configSrv.getCurrentToS();
+        let subs = obs.subscribe(snap => {
+                        console.log('success tosData', snap.val());
+                        this.tosVersion = snap.val().version;
+                        subs.unsubscribe();
+                    }, error=> {
+                        console.log(error, console.log('tosData error', error));
+                    });   
+    }     
+
+     private setAccount() {
         let obs = this.accountSrv.getObs(true);
         this.accountSubs = obs.subscribe(snap => {
                                 console.log('success snap', snap.val());
                                 this.account = snap.val();
+                                // set form values
+                                this.form.controls['firstName'].setValue(this.account.profile.data.firstName);
+                                this.form.controls['lastName'].setValue(this.account.profile.data.lastName);
+                                this.form.controls['phoneMobile'].setValue(this.account.profile.data.phoneMobile);
                             }, error => {
                                 console.log('error', error);
                             });

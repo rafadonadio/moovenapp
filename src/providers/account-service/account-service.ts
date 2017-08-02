@@ -1,4 +1,4 @@
-import { UserAccount } from '../../models/user-model';
+import { UserAccount, UserProfileData } from '../../models/user-model';
 import { AuthService } from '../auth-service/auth-service';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
@@ -11,20 +11,24 @@ export class AccountService {
     constructor(public afDb: AngularFireDatabase,
         private authSrv: AuthService) {}
     
-
-
     /**
      *  UPDATE
      */
 
     updatePhoto(downloadURL:string, fullPath:string):firebase.Promise<any> {
-        let updates = {};
         let accountId = this.authSrv.fbuser.uid;
+        let updates = {};
         updates[`userAccount/${accountId}/profile/data/photoURL`] = downloadURL;
         updates[`userAccount/${accountId}/profile/data/photoPath`] = fullPath;
         return firebase.database().ref().update(updates);
     }
 
+    updateProfileData(profileData: UserProfileData): firebase.Promise<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        let updates = {};
+        updates[`userAccount/${accountId}/profile/data`] = profileData;
+        return firebase.database().ref().update(updates);
+    }
 
     /**
      *  GET
@@ -36,7 +40,6 @@ export class AccountService {
         let accountId = this.authSrv.fbuser.uid;
         return this.afDb.object(`userAccount/${accountId}`, { preserveSnapshot: snapshot });
     }  
-
 
     /**
      *  ACCOUNT SIMPLE CHECKERS

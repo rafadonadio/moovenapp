@@ -10,7 +10,7 @@
                 (click)="updatePicture()">
                 <ion-icon name="camera"></ion-icon></button>
         </ion-fab>
-        <img [src]="account?.profile.data.photoURL || profileBgDefault">
+        <img style="min-height:240px" [src]="account?.profile.data.photoURL || profileBgDefault">
     </div>
     <form [formGroup]="form" padding>
         <ion-grid>
@@ -68,6 +68,7 @@
         </ion-item>
         <div *ngIf="form.get('tosAccept').value==false && showErrors" class="input-error">&nbsp;* Lee y acepta los términos y condiciones</div>
         <button ion-button color="dark" block margin-bottom margin-top 
+            [disabled]="!tosVersion || !account"
             (click)="submit()">Confirmar y Guardar</button>
         <button ion-button clear block margin-bottom margin-top 
             color="dark"
