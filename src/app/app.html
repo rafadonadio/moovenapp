@@ -1,7 +1,8 @@
 <ion-menu [content]="content">
     <ion-content>
         <ion-list no-lines>
-            <ion-item class="item-avatar">
+            <ion-item class="item-avatar"
+                (click)="pushSettings()">
                 <ion-avatar item-left>
                     <img [src]="account?.profile.data.photoURL || avatarDefault">
                 </ion-avatar>

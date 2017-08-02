@@ -29,11 +29,6 @@ export class SettingsPage implements OnInit{
     accountSettings: UserAccountSettings;
     profileBgDefault: string = 'assets/img/mooven_avatar.png';
 
-    settings = {
-        localPush: false,
-        email: false,
-    }
-
     constructor(public navCtrl: NavController,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
@@ -174,21 +169,15 @@ export class SettingsPage implements OnInit{
             this.accountVerifications = snap.val().profile.verifications;
             this.accountStatus = snap.val().profile.status;
             this.accountSettings = snap.val().settings;
-            this.setSettings();
         }, (error) => {
             console.log(error);
             loading.dismiss();
         });         
     }   
 
-    private setSettings() {
-        this.settings.email = this.accountSettings.notifications.email;
-        this.settings.localPush = this.accountSettings.notifications.localPush;
-    }
-
     private runUpdateSettings() {
-        console.log('updateSettings', this.settings);
-        this.userSrv.updateAccountSettingsNotifications(this.settings)
+        console.log('updateSettings', this.accountSettings);
+        this.accountSrv.updateSettings(this.accountSettings)
             .then(() => {
                 console.log('updateSettings > success');
             })
@@ -242,7 +231,7 @@ export class SettingsPage implements OnInit{
             correctOrientation: true
         })
         .then((imageData) => {
-            console.log('updatePicture > getPicture > success');
+            console.log('getPicture > success');
             steps.get = true;
             let base64Image: string;
             base64Image = "data:image/jpeg;base64," + imageData;
@@ -253,11 +242,11 @@ export class SettingsPage implements OnInit{
             steps.upload = true;
             let downloadURL = snapshot.downloadURL;
             let fullPath = snapshot.ref.fullPath;
-            return this.userSrv.updateAccountImage(downloadURL, fullPath);
+            return this.accountSrv.updatePhoto(downloadURL, fullPath);
         })        
         .then((result) => {
             steps.update = true;
-            console.log('updatePicture > updateAccountImage > success', steps);
+            console.log('updateAccount > success', steps);
             let toast = this.toastCtrl.create({
                 message: 'Tu foto de perfil fue actualizada!',
                 duration: 1500,

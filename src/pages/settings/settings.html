@@ -78,7 +78,7 @@
         </ion-item-divider>
         <ion-item>
             <ion-toggle 
-                [(ngModel)]="settings.localPush" 
+                [(ngModel)]="accountSettings.notifications.localPush" 
                 (ionChange)="updateSettings()" 
                 color="subdark"></ion-toggle>
             <ion-label>
@@ -88,7 +88,7 @@
         </ion-item>
         <ion-item>
             <ion-toggle 
-                [(ngModel)]="settings.email"
+                [(ngModel)]="accountSettings.notifications.email"
                 (ionChange)="updateSettings()" color="subdark"></ion-toggle>
             <ion-label>
                 Via email

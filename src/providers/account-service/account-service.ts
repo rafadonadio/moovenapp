@@ -1,5 +1,5 @@
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
-import { UserAccount, UserProfileData } from '../../models/user-model';
+import { UserAccount, UserAccountSettings, UserProfileData } from '../../models/user-model';
 import { AuthService } from '../auth-service/auth-service';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
@@ -14,6 +14,18 @@ export class AccountService {
         private emailVerification: AccountEmailVerificationService) {}
     
     /**
+     *  GET
+     */
+
+    // get account Observable
+    getObs(snapshot:boolean = false): FirebaseObjectObservable<any> {
+        // console.log('uid', this.authSrv.fbuser);
+        let accountId = this.authSrv.fbuser.uid;
+        return this.afDb.object(`userAccount/${accountId}`, { preserveSnapshot: snapshot });
+    }  
+
+
+        /**
      *  UPDATE
      */
 
@@ -32,16 +44,13 @@ export class AccountService {
         return firebase.database().ref().update(updates);
     }
 
-    /**
-     *  GET
-     */
-
-    // get account Observable
-    getObs(snapshot:boolean = false): FirebaseObjectObservable<any> {
-        // console.log('uid', this.authSrv.fbuser);
+    updateSettings(settings: UserAccountSettings): firebase.Promise<any> {
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.object(`userAccount/${accountId}`, { preserveSnapshot: snapshot });
-    }  
+        let updates = {};
+        updates[`userAccount/${accountId}/settings`] = settings;
+        return firebase.database().ref().update(updates);
+    }
+
 
     /**
      *  ACCOUNT SIMPLE CHECKERS

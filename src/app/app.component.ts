@@ -235,6 +235,11 @@ export class MyApp {
         }
     }
 
+    pushSettings() {
+        this.menu.close();
+        this.nav.push(SettingsPage);
+    }
+
     /**
      *  HELPERS
      */
