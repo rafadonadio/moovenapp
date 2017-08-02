@@ -49,6 +49,7 @@ import { AccountProfileService } from '../providers/users-service/account-profil
 import { AccountSettingsService } from '../providers/users-service/account-settings-service';
 import { AuthenticationService } from '../providers/users-service/authentication-service';
 import { AuthService } from '../providers/auth-service/auth-service';
+import { ConfigService } from '../providers/config-service/config-service';
 import { SendingService } from '../providers/sending-service/sending-service';
 import { SendingCreateService } from '../providers/sending-service/sending-create-service';
 import { SendingDbService } from '../providers/sending-service/sending-db-service';
@@ -195,6 +196,7 @@ export const firebaseConfig = {
         AccountSettingsService,
         AuthenticationService,
         AuthService,
+        ConfigService,
         SendingService,
         SendingDbService,
         SendingNotificationsService,
