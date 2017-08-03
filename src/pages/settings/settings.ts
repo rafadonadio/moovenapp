@@ -49,6 +49,10 @@ export class SettingsPage implements OnInit{
         this.resetData();
     }
 
+    /**
+     *  CLICK METHODS
+     */
+
     presentPopover(myEvent):void {
         this.openPopover(myEvent);
     }

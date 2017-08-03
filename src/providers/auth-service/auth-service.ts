@@ -29,6 +29,10 @@ export class AuthService {
             });
     }
 
+    updateEmail(newEmail: string): firebase.Promise<any>  {
+        return this.fbuser.updateEmail(newEmail);
+    }
+
     private setFbuser() {
         this.fbuser = this.afAuth.auth.currentUser;
     }

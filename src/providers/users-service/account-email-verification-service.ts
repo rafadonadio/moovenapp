@@ -10,13 +10,14 @@ export class AccountEmailVerificationService {
     constructor() {}
 
     // resend email verification
-    // writes to list in DB to trigger CF that runs the email sending
-    resend(user:firebase.User): firebase.Promise<any> {
+    // writes to list in DB 
+    // Trigger CF that runs the email sending
+    resend(userId:string): firebase.Promise<any> {
         console.info('emailVerification:resend');
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         let key = this.dbRef.child('userVerifyEmailResend').push().key;
         let data = {
-            userId: user.uid,
+            userId: userId,
             timestamp: timestamp 
         }
         let updates = {};

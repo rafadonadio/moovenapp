@@ -1,3 +1,4 @@
+import { AccountService } from '../../providers/account-service/account-service';
 import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { UserProfileData } from '../../models/user-model';
@@ -19,6 +20,7 @@ export class ModalUserEditEmailPage implements OnInit {
     email: AbstractControl;
     accountData: UserProfileData;
     changeInProcess: boolean;
+    sameEmailError:boolean;
 
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
@@ -26,23 +28,33 @@ export class ModalUserEditEmailPage implements OnInit {
         public users: UsersService,
         public formBuilder: FormBuilder,
         public params: NavParams,
-        public authSrv: AuthService) {
+        public authSrv: AuthService,
+        private accountSrv: AccountService) {
         this.accountData = this.params.get('accountData');
         this.changeInProcess = this.accountData.emailOnChange;
     }
 
     ngOnInit() {
         // form init
+        this.sameEmailError = false;
         this.editForm = this.formBuilder.group({
             'email':  ['', Validators.compose([Validators.required, EmailValidator.isValid, Validators.maxLength(100)])],
         });
         this.email = this.editForm.controls['email'];
-        this.email.markAsTouched();
     }
 
-    submit(formValue: any) {
-        console.log('email update > init ...');
-        this.users.updateUserEmail(formValue.email)
+    submit() {
+        console.log('submit');
+        this.sameEmailError = false;
+        if(!this.editForm.valid) {
+            return;
+        }
+        if(this.editForm.value.email == this.accountData.email) {
+            console.log('sorry, same email');
+            this.sameEmailError = true;
+            return;
+        }
+        this.accountSrv.changeEmail(this.editForm.value.email)
             .then(() => {
                 console.log('email updated!');
                 let alert = this.alertCtrl.create({

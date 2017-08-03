@@ -54,7 +54,7 @@ export class LoginPage {
                     // close loader
                     this.loader.dismiss()
                         .then(() => {
-                            // go to HomePage, is triggered bu authState
+                            this.navCtrl.setRoot(HomePage);
                         })
                         .catch((error) => console.log('error', error)); 
                 })
