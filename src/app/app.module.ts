@@ -43,7 +43,6 @@ import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 import { HomePage } from '../pages/home/home';
 // PROVIDERS
 import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
-import { AccountServiceOld } from '../providers/users-service/account-service';
 import { AccountService } from '../providers/account-service/account-service';
 import { AccountProfileService } from '../providers/users-service/account-profile-service';
 import { AuthService } from '../providers/auth-service/auth-service';
@@ -188,7 +187,6 @@ export const firebaseConfig = {
         SplashScreen,
         StatusBar,
         AccountEmailVerificationService,
-        AccountServiceOld,
         AccountService,
         AccountProfileService,
         AuthService,

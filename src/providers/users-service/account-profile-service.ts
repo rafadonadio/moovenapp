@@ -15,21 +15,6 @@ export class AccountProfileService {
     constructor() {
     }
 
-    /**
-     *  GET DATABASE REFERENCE
-     */
-
-    // get fireebase REF for user account email verified node
-    getRef_emailVerification(userId: string): firebase.database.Reference {
-        return this.dbRef
-                .child(ACCOUNT_REF + userId)
-                .child(ACCOUNT_REF_CHILDS.PROFILE.VERIFICATIONS.EMAIL.VERIFIED);
-    }
-
-    /**
-     *  READ
-     */
-
     // get account.profile.data from firebase database
     getDataByUid(userId: string): firebase.Promise<any> {
         let child = ACCOUNT_REF + userId + ACCOUNT_REF_CHILDS.PROFILE.DATA._NODE;
@@ -174,33 +159,6 @@ export class AccountProfileService {
         return profileStatus;
     }    
 
-    /**
-     *  INITIALIZATION OF ACCOUNT STATUS DATA
-     */
-
-    // initData(email: string):UserProfileData {
-    //     // console.info('initAccountProfileData');
-    //     let data:UserProfileData = {
-    //         email: email,
-    //         emailOnChange: false,
-    //         firstName: '',
-    //         lastName: '',
-    //         phonePrefix: '',
-    //         phoneMobile: '',
-    //         photoURL: '',
-    //         photoPath: '',
-    //         dateBirth: '',
-    //         legalIdentityNumber: '',
-    //         residenceCountry: '',
-    //         residenceCity: '',
-    //         residenceAddress: '',
-    //         residenceAddressL2: '',
-    //         lastTosAccepted: ''
-    //     }
-    //     // console.log('initAccountProfileData > data ', data);
-    //     return data;
-    // }
-
     initStatus():UserProfileStatus {
         // console.info('initAccountProfileStatus');
         let status:UserProfileStatus;
@@ -221,42 +179,6 @@ export class AccountProfileService {
         // console.log('initAccountProfileStatus > status ', status);
         return status;
     }
-
-    // initVerifications():UserProfileVerifications {
-    //     // console.info('initAccountVerifications');
-    //     let verifications:UserProfileVerifications;
-    //     verifications = {
-    //         email: {
-    //             verified: false,
-    //             verifiedAddress: '',
-    //             verifiedTimestamp: 0,
-    //             attemptsIds: [],
-    //         },
-    //         phone: {
-    //             verified: false,
-    //             verifiedNumber: '',
-    //             verifiedTimestamp: 0,
-    //             attemptsIds: [],            
-    //         },
-    //         residenceAddress: {
-    //             verified: false,
-    //             verifiedAddress: '',
-    //             verifiedTimestamp: 0,
-    //             imageUrl: '',
-    //             verifiedBy: '',
-    //         },
-    //         legalIdentityNumber: {
-    //             verified: false,
-    //             verifiedNumber: '',
-    //             verifiedTimestamp: 0,
-    //             imageUrl: '',
-    //             verifiedBy: '',
-    //         } 
-    //     }
-    //     // console.log('initAccountVerifications > verifications > ', verifications);
-    //     return verifications;
-    // }    
-
 
 
 }
