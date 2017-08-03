@@ -136,8 +136,10 @@ export class ModalUserEditEmailPage implements OnInit {
                     text: 'Reingresar',
                     handler: () => {
                         this.dismiss();
-                        this.authSrv.signOut();
-                        this.navCtrl.setRoot(StartPage);
+                        this.navCtrl.setRoot(StartPage)
+                            .then(() => {
+                                this.authSrv.signOut();                                
+                            });                        
                     }
                 }
             ]

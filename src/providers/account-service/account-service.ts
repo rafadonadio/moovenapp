@@ -51,44 +51,6 @@ export class AccountService {
     }
 
     /**
-     * Update user email, steps:
-     * 1 update auth user email
-     * 2 update account:
-     *    - email and set onChange
-     *    - set validation false
-     * 3 trigger CF
-     */
-    changeEmail(newEmail: string): Promise<any> {
-        let accountId = this.authSrv.fbuser.uid;
-        return new Promise((resolve, reject) => {
-            this.authSrv.updateEmail(newEmail)
-                .then(() => {
-                    console.log('auth updateEmail success');
-                    let updates = {};
-                    // update account verifications
-                    updates[`userAccount/${accountId}/profile/verifications/email/verified`] = false;
-                    updates[`userAccount/${accountId}/profile/verifications/email/verifiedAddress`] = '';
-                    updates[`userAccount/${accountId}/profile/verifications/email/verifiedTimestamp`] = '';                    
-                    // update account data email
-                    updates[`userAccount/${accountId}/profile/data/email`] = newEmail;
-                    updates[`userAccount/${accountId}/profile/data/emailOnChange`] = true;
-                    return firebase.database().ref().update(updates);
-                })
-                .then(() => {
-                    console.log('CF_Trigger: send email verification');
-                    return this.resendEmailVerification();
-                })
-                .then(() => {
-                    resolve();                    
-                })
-                .catch((error:any) => {
-                    console.log('auth updateEmail error', error.code);
-                    reject(error.code);
-                });
-        });
-    }    
-
-    /**
      *  CLOSE ACCOUNT
      */    
 
@@ -157,7 +119,7 @@ export class AccountService {
 
 
     /**
-     *  EMAIL VERIFICATION
+     *  EMAIL
      */
 
     // trigger email verification process
@@ -165,5 +127,44 @@ export class AccountService {
         let accountId = this.authSrv.fbuser.uid;
         return this.emailVerification.resend(accountId);
     }
+
+    /**
+     * Update user email, steps:
+     * 1 update auth user email
+     * 2 update account:
+     *    - email and set onChange
+     *    - set validation false
+     * 3 trigger CF
+     */
+    changeEmail(newEmail: string): Promise<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        return new Promise((resolve, reject) => {
+            this.authSrv.updateEmail(newEmail)
+                .then(() => {
+                    console.log('auth updateEmail success');
+                    let updates = {};
+                    // update account verifications
+                    updates[`userAccount/${accountId}/profile/verifications/email/verified`] = false;
+                    updates[`userAccount/${accountId}/profile/verifications/email/verifiedAddress`] = '';
+                    updates[`userAccount/${accountId}/profile/verifications/email/verifiedTimestamp`] = '';                    
+                    // update account data email
+                    updates[`userAccount/${accountId}/profile/data/email`] = newEmail;
+                    updates[`userAccount/${accountId}/profile/data/emailOnChange`] = true;
+                    return firebase.database().ref().update(updates);
+                })
+                .then(() => {
+                    console.log('CF_Trigger: send email verification');
+                    return this.resendEmailVerification();
+                })
+                .then(() => {
+                    resolve();                    
+                })
+                .catch((error:any) => {
+                    console.log('auth updateEmail error', error.code);
+                    reject(error.code);
+                });
+        });
+    }
+
 
 }
