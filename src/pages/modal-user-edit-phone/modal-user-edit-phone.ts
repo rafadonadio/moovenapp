@@ -1,9 +1,9 @@
+import { AccountService } from '../../providers/account-service/account-service';
 import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NumberValidator } from '../../validators/number.validator';
 
 @Component({
     selector: 'modal-user-edit-phone',
@@ -12,30 +12,28 @@ import { UsersService } from '../../providers/users-service/users-service';
 export class ModalUserEditPhonePage implements OnInit{
 
     editForm: FormGroup;
-    phoneMobile: AbstractControl;
-    phonePrefix: AbstractControl;
     user: firebase.User;
     accountData: UserProfileData;
     changeInProcess: boolean;
+    showError: boolean;
 
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         public formBuilder: FormBuilder,
-        public users: UsersService,
-        public params:NavParams) {
+        public params:NavParams,
+        private accountSrv: AccountService) {
             this.accountData = this.params.get('accountData');
             this.changeInProcess = false;
     }
 
     ngOnInit() {
         // form init
+        this.showError = false;
         this.editForm = this.formBuilder.group({
-            'phonePrefix':  ['+549', Validators.compose([Validators.required, Validators.maxLength(100)])],
-            'phoneMobile':  ['', Validators.compose([Validators.required, Validators.maxLength(100)])],
+            'phonePrefix':  [this.accountData.phonePrefix, Validators.compose([Validators.required, Validators.maxLength(100)])],
+            'phoneMobile':  [this.accountData.phoneMobile, Validators.compose([Validators.required, Validators.maxLength(100), NumberValidator.isNumber])],
         });
-        this.phoneMobile = this.editForm.controls['phoneMobile'];
-        this.phonePrefix = this.editForm.controls['phonePrefix'];
     }
 
     dismiss(updated:boolean = false) {
@@ -43,13 +41,18 @@ export class ModalUserEditPhonePage implements OnInit{
         this.viewCtrl.dismiss(data);
     }
 
-    submit(formValues: any) {
-        console.group('ModalUserEditPhonePage');
-        console.log('form', formValues);
-        this.users.updatePhoneMobile(formValues.phonePrefix, formValues.phoneMobile)
-            .then((result) => {
+    submit() {
+        console.info('modal edit phone');
+        if(!this.editForm.valid) {
+            this.showError = true;
+            return;
+        }
+        this.showError = false;
+        this.accountData.phonePrefix = this.editForm.value.phonePrefix;
+        this.accountData.phoneMobile = this.editForm.value.phoneMobile;
+        this.accountSrv.updateProfileData(this.accountData)
+            .then(() => {
                 console.log('success');
-                console.groupEnd();
                 // show alert
                 let alert = this.alertCtrl.create({
                     title: 'Modificado',
