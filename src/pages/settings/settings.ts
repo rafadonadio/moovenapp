@@ -9,8 +9,6 @@ import { FirebaseObjectObservable } from 'angularfire2/database';
 import { Camera } from '@ionic-native/camera';
 import firebase from 'firebase';
 
-import { UsersService } from '../../providers/users-service/users-service'; // delete
-
 const STRG_USER_FILES = 'userFiles/';
 
 @Component({
@@ -37,7 +35,6 @@ export class SettingsPage implements OnInit{
         public alertCtrl: AlertController,
         public cameraPlugin: Camera,
         public authSrv: AuthService,
-        public userSrv: UsersService,
         public accountSrv: AccountService) {
         }
 
@@ -70,6 +67,10 @@ export class SettingsPage implements OnInit{
 
     updatePicture() {
         this.takePictureAndUpdate();
+    }
+
+    terminateAccount() {
+        this.confirmTerminateAccount();
     }
 
     /**
@@ -184,6 +185,34 @@ export class SettingsPage implements OnInit{
             .catch((error) => console.log('error', error));  
     }
   
+    private confirmTerminateAccount() {
+        let alert = this.alertCtrl.create({
+            title: 'Confirma que deseas terminar tu cuenta',
+            message: 'Estas por iniciar el proceso para cerrar tu cuenta de Mooven, te enviaremos un correo para confirmar el inicio del proceso.',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                    handler: () => {
+                        //console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: 'Cerrar mi Cuenta',
+                    handler: () => {
+                        this.accountSrv.terminateAccount()
+                            .then(() =>  {
+                                console.log('terminated success');
+                            })
+                            .catch(err => console.log(err));
+                    }
+                }
+            ]
+        });
+        alert.present();        
+    }
+
+
     /**
      *  IMAGE HELPERS
      */

@@ -1,10 +1,9 @@
-import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
-import { UserAccount, UserAccountSettings, UserProfileData } from '../../models/user-model';
-import { AuthService } from '../auth-service/auth-service';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
-
 import firebase from 'firebase';
+import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
+import { AuthService } from '../auth-service/auth-service';
+import { UserAccount, UserAccountSettings, UserProfileData } from '../../models/user-model';
 
 @Injectable()
 export class AccountService {
@@ -25,7 +24,7 @@ export class AccountService {
     }  
 
 
-        /**
+    /**
      *  UPDATE
      */
 
@@ -49,6 +48,29 @@ export class AccountService {
         let updates = {};
         updates[`userAccount/${accountId}/settings`] = settings;
         return firebase.database().ref().update(updates);
+    }
+
+
+    /**
+     *  CLOSE ACCOUNT
+     */    
+
+    terminateAccount(): firebase.Promise<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        let updates = {};
+        // update user
+        updates[`userAccount/${accountId}/terminatedAt`] = firebase.database.ServerValue.TIMESTAMP;
+        updates[`userAccount/${accountId}/active`] = false;
+        // set userTask
+        let tKey = firebase.database().ref(`userTask`).push().key;
+        let userTask = {
+            origin: 'app',
+            task: 'terminate_account',
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            userId: accountId
+        };
+        updates[`taskUser/${tKey}`] = userTask;        
+        return firebase.database().ref().update(updates);        
     }
 
 

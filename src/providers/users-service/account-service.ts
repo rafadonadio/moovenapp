@@ -1,21 +1,10 @@
 import { AccountSettingsService } from './account-settings-service';
 import { Injectable } from '@angular/core';
 import { AccountProfileService } from '../users-service/account-profile-service';
-import {
-    USER_CFG,
-    USER_DB_REF,
-    UserAccount,
-    UserProfileData,
-    UserProfileStatus,
-    UserProfileVerifications
-} from '../../models/user-model';
-import { TOS_CFG } from '../../models/tos-model';
-
+import { USER_DB_REF } from '../../models/user-model';
 import firebase from 'firebase';
 
 const ACCOUNT_REF = USER_DB_REF.USER_ACCOUNT;
-const ACCOUNT_REF_CHILDS = USER_DB_REF._CHILDS;
-const PROFILES_LIST = USER_CFG.ACCOUNT.PROFILE.LIST;
 
 @Injectable()
 export class AccountServiceOld {

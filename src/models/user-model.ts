@@ -46,6 +46,7 @@ export class UserAccount {
     active: boolean;
     createdAt: any;
     deletedAt: any;
+    terminatedAt:any;
     providerId: string;
     profile: UserAccountProfile;
     ToS: {
