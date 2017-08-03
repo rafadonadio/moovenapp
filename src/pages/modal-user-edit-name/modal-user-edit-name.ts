@@ -1,10 +1,8 @@
-import { UserProfileData } from '../../models/user-model';
+import { AccountService } from '../../providers/account-service/account-service';
+import { UserAccount, UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import firebase from 'firebase';
 
 @Component({
@@ -13,31 +11,29 @@ import firebase from 'firebase';
 })
 export class ModalUserEditNamePage implements OnInit{
 
-    editForm: FormGroup;
-    firstName: AbstractControl;
-    lastName: AbstractControl;
+    mform: FormGroup;
     user: firebase.User;
     accountData: UserProfileData;
 
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
-        public formBuilder: FormBuilder,
-        public usersSrv: UsersService,
+        public fb: FormBuilder,
         public alertCtrl: AlertController,
-        public params: NavParams) {
+        public params: NavParams,
+        private accountSrv: AccountService) {
     }
 
     ngOnInit() {
-        // console.log('onOnit');
-        // console.log(this.params.data);
+        console.log(this.params.data);
         this.accountData = this.params.data.accountData;
         // form init
-        this.editForm = this.formBuilder.group({
-            'firstName':  [this.accountData.firstName, [Validators.required, Validators.maxLength(50)]],
-            'lastName':  [this.accountData.lastName, [Validators.required, Validators.maxLength(50)]],
+        this.mform = this.fb.group({
+            firstName: ['', [Validators.required, Validators.maxLength(50)]],
+            lastName: ['', [Validators.required, Validators.maxLength(50)]],
         });
-        this.firstName = this.editForm.controls['firstName'];
-        this.lastName = this.editForm.controls['lastName'];
+        // set initial value
+        this.mform.controls['firstName'].setValue(this.accountData.firstName);
+        this.mform.controls['lastName'].setValue(this.accountData.lastName);
     }
 
     dismiss(updated:boolean = false) {
@@ -45,13 +41,13 @@ export class ModalUserEditNamePage implements OnInit{
         this.viewCtrl.dismiss(data);
     }
 
-    submit(formValues: any) {
-        console.group('ModalUserEditNamePage')
-        console.log('form', formValues);
-        this.usersSrv.updateUserNames(formValues.firstName, formValues.lastName)
-            .then((result) => {
+    submit() {
+        console.info('submit')
+        this.accountData.firstName = this.mform.value.firstName;
+        this.accountData.lastName = this.mform.value.lastName;
+        this.accountSrv.updateProfileData(this.accountData)
+            .then(() => {
                 console.log('success');
-                console.groupEnd();
                 // show alert
                 let alert = this.alertCtrl.create({
                     title: 'Modificado',
@@ -67,9 +63,8 @@ export class ModalUserEditNamePage implements OnInit{
                 });
                 alert.present();
             })
-            .catch((error) => {
-                console.log('error', error);
-                console.groupEnd();
+            .catch((err) => {
+                console.log('err', err);
             });
     }
 

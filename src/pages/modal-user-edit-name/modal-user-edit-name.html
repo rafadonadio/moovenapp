@@ -11,24 +11,27 @@
     </ion-toolbar>
 </ion-header>
 <ion-content padding class="modal-user-edit-name">
-    <form [formGroup]="editForm">
+    <form [formGroup]="mform">
         <ion-item margin-bottom>
             <ion-label stacked>Nombre</ion-label>
-            <ion-input #input type="text" [formControl]="firstName"></ion-input>
+            <ion-input type="text" formControlName="firstName"></ion-input>
         </ion-item>
-        <div *ngIf="firstName.hasError('required')" class="input-error"
+        <div *ngIf="mform.get('firstName').hasError('required')" class="input-error"
             >* ingresa tu nombre</div>        
-        <div *ngIf="firstName.hasError('maxlength')" class="input-error"
+        <div *ngIf="mform.get('firstName').hasError('maxlength')" class="input-error"
             >* máximo 50 caracteres</div>        
         <ion-item margin-bottom>
             <ion-label stacked>Apellido</ion-label>
-            <ion-input #input type="text" [formControl]="lastName"></ion-input>
+            <ion-input type="text" formControlName="lastName"></ion-input>
         </ion-item>
-        <div *ngIf="lastName.hasError('required')" class="input-error"
+        <div *ngIf="mform.get('lastName').hasError('required')" class="input-error"
             >* ingresa tu apellido</div>        
-        <div *ngIf="lastName.hasError('maxlength')" class="input-error"
+        <div *ngIf="mform.get('lastName').hasError('maxlength')" class="input-error"
             >* máximo 50 caracteres</div>   
-        <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Modificar</button>
-        <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
+        <button ion-button color="dark" block margin-top 
+            (click)="submit()" 
+            [disabled]="!mform.valid">Modificar</button>
+        <button ion-button color="dark" outline block margin-top 
+            (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>
