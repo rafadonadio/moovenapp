@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
@@ -5,7 +6,6 @@ import { UserAccount, UserAccountSettings, UserProfileData, UserProfileVerificat
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, PopoverController, ViewController, AlertController } from 'ionic-angular';
 import { SettingsPopoverPage } from '../settings-popover/settings-popover';
-import { FirebaseObjectObservable } from 'angularfire2/database';
 import { Camera } from '@ionic-native/camera';
 import firebase from 'firebase';
 
@@ -18,8 +18,8 @@ const STRG_USER_FILES = 'userFiles/';
 export class SettingsPage implements OnInit{
 
     fbuser: firebase.User;
-    account: any;
-    accountSub: any;
+    account: UserAccount;
+    accountSub: Subscription;
     accountData: UserProfileData;
     accountVerifications: UserProfileVerifications;
     accountStatus: any;

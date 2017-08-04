@@ -1,7 +1,7 @@
 import { AuthService } from '../../providers/auth-service/auth-service';
 import { HomePage } from '../home/home';
 import { Component } from '@angular/core';
-import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { EmailValidator } from '../../validators/email.validator';
 import { ModalAuthResetPasswordPage } from '../modal-auth-reset-password/modal-auth-reset-password';
@@ -20,7 +20,6 @@ export class LoginPage {
     constructor(private navCtrl: NavController,
         private formBuilder: FormBuilder,
         private loadingCtrl: LoadingController,
-        private toastCtrl: ToastController,
         private alertCtrl: AlertController,
         private modalCtrl: ModalController,
         private authSrv: AuthService) {

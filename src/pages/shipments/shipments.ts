@@ -30,11 +30,7 @@ export class ShipmentsPage implements OnInit{
 
     ngOnInit() {
         console.info('__shipment__');
-        this.initOperatorAuth();
-        this.viewCtrl.willEnter.subscribe(() => {
-            console.log('__shipment__willEnter()');
-
-        });        
+        this.initOperatorAuth();    
     }
 
 

@@ -4,8 +4,6 @@ import { NavController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 
-declare var window:any;
-
 @Component({
     selector: 'page-start',
     templateUrl: 'start.html',

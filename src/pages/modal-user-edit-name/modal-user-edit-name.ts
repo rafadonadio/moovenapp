@@ -1,5 +1,5 @@
 import { AccountService } from '../../providers/account-service/account-service';
-import { UserAccount, UserProfileData } from '../../models/user-model';
+import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
