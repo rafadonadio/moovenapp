@@ -3,7 +3,7 @@ import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/data
 import firebase from 'firebase';
 import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
 import { AuthService } from '../auth-service/auth-service';
-import { UserAccount, UserAccountSettings, UserProfileData } from '../../models/user-model';
+import { UserAccount, UserAccountOperator, UserAccountSettings, UserProfileData } from '../../models/user-model';
 
 @Injectable()
 export class AccountService {
@@ -165,6 +165,5 @@ export class AccountService {
                 });
         });
     }
-
 
 }

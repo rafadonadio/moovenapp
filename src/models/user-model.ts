@@ -57,10 +57,12 @@ export class UserAccount {
         history: Array<{ versionId:string, timestamp:any}>
     };
     settings: UserAccountSettings;
-    operator: {
-        enabled: boolean,
-        active: boolean,       
-    };
+    operator: UserAccountOperator;
+}
+
+export class UserAccountOperator {
+    enabled: boolean;
+    active: boolean;       
 }
 
 export class UserAccountSettings {

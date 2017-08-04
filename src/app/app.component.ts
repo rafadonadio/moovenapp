@@ -160,7 +160,7 @@ export class MyApp {
     private setAccount() {
         let obs = this.accountSrv.getObs(true);
         this.accountSubs = obs.subscribe(snap => {
-                                console.log('success snap', snap.val());
+                                // console.log('success snap', snap.val());
                                 this.account = snap.val();
                                 this.checkAccount();
                             }, error => {

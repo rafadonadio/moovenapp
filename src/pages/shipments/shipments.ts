@@ -1,5 +1,6 @@
-import { UsersService } from '../../providers/users-service/users-service';
-import { UserAccount } from '../../models/user-model';
+import { Subscription } from 'rxjs/Rx';
+import { AccountService } from '../../providers/account-service/account-service';
+import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { SendingsPage } from '../sendings/sendings';
 import { AlertController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
@@ -15,7 +16,11 @@ import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 export class ShipmentsPage implements OnInit{
 
     // operatorAuth flags
-    operatorAuth:any;
+    operatorAuthUnchecked:any;
+    // account
+    accountSubs: Subscription;
+    account: UserAccount;
+    operator: UserAccountOperator;
     // list
     shipments:any;
     shipmentsEmpty:boolean;
@@ -26,13 +31,21 @@ export class ShipmentsPage implements OnInit{
         public shipmentsSrv:ShipmentsService,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
-        public users: UsersService) {}
+        private accountSrv: AccountService) {}
 
     ngOnInit() {
         console.info('__shipment__');
-        this.initOperatorAuth();    
+        this.operatorAuthUnchecked = true;
+        this.setAccount();  
     }
 
+    ionViewWillLeave() {
+        console.log('shipments leaving ..');
+        if(this.accountSubs) {
+            console.log('unsubscribed');
+            this.accountSubs.unsubscribe();
+        }
+    }
 
 
     /**
@@ -40,16 +53,17 @@ export class ShipmentsPage implements OnInit{
      */
 
 
-    private setOperatorAuth() {
-
-    }
-
-    private initOperatorAuth() {
-        this.operatorAuth = {
-            unchecked: true,
-            enabled: false,
-            active: false
-        }
+    private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe((snap) => {
+            this.account = snap.val();
+            this.operator = this.account.operator;
+            this.operatorAuthUnchecked = false;
+            console.log('set account', this.account, this.operator, this.operatorAuthUnchecked);
+        },
+        err => {
+            console.log(err);
+        });
     }
 
 
