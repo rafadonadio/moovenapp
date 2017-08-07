@@ -14,6 +14,23 @@ npm run ionic:build --prod
 # TO_DO
 #############
 
+# CLOSE (corte)
+
+    app
+        - refactor sending (switch to authService AccountService)
+        - cf de cancelación
+        - visualización pedidos en mapa
+        - notificaciones (email)
+        - network detector
+
+        - ** notificacione (push)
+        - ** replicate datastore
+        - ** log (big query)
+
+    admin
+        - mercado pago
+            habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
+
 # MOOVEN APP
 - Nuevo Servicio - Paso 2    
     <!--- ingresar fecha  -->
@@ -36,9 +53,9 @@ npm run ionic:build --prod
     - crear usuario MP
     - guardar datos tarjeta en MP
 - Operator
-    set role
+    <!-- set role
     define role data
-    refactor data used on shipment
+    refactor data used on shipment -->
 - Notificaciones
     notificaciones via email
     local notifications
@@ -57,7 +74,7 @@ npm run ionic:build --prod
 - Ajustes  
     - boton para cerrar aplicación
     - notificaciones (locales/email) - revisar
-    - limitar intentos de reenviar email de validación
+     - limitar intentos de reenviar email de validación 
 
 # ADMIN APP
 - init
@@ -71,6 +88,7 @@ npm run ionic:build --prod
 - mercado pago
     habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
 - test data in google gloud datastore
+- test data in google gloud bigquery
 
 
 # TO BE DEFINED
