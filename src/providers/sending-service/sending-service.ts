@@ -1,3 +1,5 @@
+import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
+import { AuthService } from '../auth-service/auth-service';
 import { SendingSetDroppedService } from './sending-set-dropped-service';
 import { SendingSetPickedupService } from './sending-set-pickedup-service';
 import { SendingSetGotoperatorService } from './sending-set-gotoperator-service';
@@ -5,10 +7,7 @@ import { SendingCreateService } from './sending-create-service';
 import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
-import { UserAccountSettings } from '../../models/user-model';
 import { Injectable } from '@angular/core';
-
-import { UsersService } from '../users-service/users-service';
 import { SendingDbService } from '../sending-service/sending-db-service';
 import { SendingRequestService } from '../sending-service/sending-request-service';
 import { HashService } from '../hash-service/hash-service';
@@ -19,11 +18,7 @@ import firebase from 'firebase';
 @Injectable()
 export class SendingService {
 
-    user: firebase.User;
-    userSettings: UserAccountSettings;
-
-    constructor(public users: UsersService,
-        public hashSrv: HashService,
+    constructor(public hashSrv: HashService,
         public reqSrv: SendingRequestService,
         public dbSrv: SendingDbService,
         public notificationsSrv:SendingNotificationsService,
@@ -31,41 +26,51 @@ export class SendingService {
         private createSrv: SendingCreateService,
         private setGotoperSrv: SendingSetGotoperatorService,
         private setPickSrv: SendingSetPickedupService,
-        private setDropSrv: SendingSetDroppedService) {
-        this.setUser();
-    }
+        private setDropSrv: SendingSetDroppedService,
+        private authSrv: AuthService,
+        private afDb: AngularFireDatabase) {}
+
 
     /**
-     * Init sending data object
-     * @return {object} [description]
-     */
+     * Create / Update
+    */
+
     initObj() {
         return this.createSrv.new();
     }
 
     create(sending:SendingRequest): Promise<any> {
-        return this.createSrv.run(sending, this.user.uid);
+        return this.createSrv.run(sending, this.authSrv.fbuser.uid);
     }
 
     setOperator(sendingId:string) {
-        return this.setGotoperSrv.run(sendingId, this.user.uid);
+        return this.setGotoperSrv.run(sendingId, this.authSrv.fbuser.uid);
     }
 
     setPickedup(sendingId:string) {
-        return this.setPickSrv.run(sendingId, this.user.uid);
+        return this.setPickSrv.run(sendingId, this.authSrv.fbuser.uid);
     }
 
     setDropped(sendingId:string) {
-        return this.setDropSrv.run(sendingId, this.user.uid);
+        return this.setDropSrv.run(sendingId, this.authSrv.fbuser.uid);
     }    
 
+
     /**
-     * Get REF of All sendings from current user
-     * @return firebase snapshots
+     *  READ
      */
-    getAllMyActiveRef() {
-        return this.getMyLiveSendingsRef();
+
+    // get account active sendings Observable
+    getAllActiveObs(snapshot:boolean = false): FirebaseListObservable<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        return this.afDb.list(`userSendings/${accountId}/active`, { preserveSnapshot: snapshot });
+    } 
+
+    getByIdObs(sendingId:string, snapshot:boolean = false) {
+        return this.afDb.object(`sendings/${sendingId}`,  { preserveSnapshot: snapshot });
     }
+
+
 
     getSending(id:string) {
         return this.getSendingById(id);
@@ -93,7 +98,7 @@ export class SendingService {
 
     // attempt to lock sending before confirm sending to shipper
     private attemptToLockLiveVacantSending(sendingId:string):Promise<any> {
-        let userId = this.user.uid;
+        let userId = this.authSrv.fbuser.uid;
         return this.dbSrv.attemptToLockSendingLiveVacant(sendingId, userId);
     }
 
@@ -105,17 +110,12 @@ export class SendingService {
      *  DATABASE READ
      */
 
-    private getMyLiveSendingsRef():any {
-        //console.log('__SNDSRV__ userId', this.user.uid);
-        return this.dbSrv.getSendingsLiveByUser(this.user.uid);
-    }
-
     private getAllLiveVacantRef():firebase.database.Query  {
         return this.dbSrv.getSendingsLiveVacantRef();
     }      
 
     private getAllLiveVacant():FirebaseListObservable<any>  {
-        return this.dbSrv.getSendingsLiveVacant(this.user.uid);
+        return this.dbSrv.getSendingsLiveVacant(this.authSrv.fbuser.uid);
     }
 
     private getSendingById(sendingId:string) {
@@ -131,18 +131,5 @@ export class SendingService {
         this.notificationsSrv.sendLocalNotification(sendingId, contentLog);
     }
 
-    /**
-     *  HELPERS
-     */
-
-    setUser(){
-        // set user data
-        this.user = this.users.getUser();
-        // set user settings
-        this.users.getAccountSettings()
-            .then((snapshot) => {
-                this.userSettings = snapshot.val();
-            }); 
-    }
 
 }

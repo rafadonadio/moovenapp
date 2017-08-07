@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Rx';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { LoadingController } from 'ionic-angular';
 import { SendingRequest } from '../../models/sending-model';
@@ -15,7 +16,7 @@ export class SendingDetailPage implements OnInit {
     sendingtab:string = "notifications";
     sendingId:string;
     sending:SendingRequest;
-    sendingListener:any;
+    sendingSubs:Subscription;
     notifications:Array<any>;
     private _platform: Platform;
     private _isAndroid: boolean;
@@ -29,7 +30,7 @@ export class SendingDetailPage implements OnInit {
         public actionShCtrl: ActionSheetController,
         public viewCtrl: ViewController,
         public loadingCtrl: LoadingController,
-        public sendingsService: SendingService) {
+        public sendingsSrv: SendingService) {
         this._platform = platform;
         this._isAndroid = platform.is('android');
         this._isiOS = platform.is('ios');
@@ -37,23 +38,29 @@ export class SendingDetailPage implements OnInit {
     }
 
     ngOnInit() {
+        console.log('_onInit');
+        this.getParams();                      
+    }
+
+    ionViewWillEnter() {
+        console.log('_willEnter');
         let loader = this.loadingCtrl.create({ content: "Cargando ..." });
-        loader.present();              
-        this.viewCtrl.willEnter.subscribe( () => {
-            console.info('__SDT__willEnter()');
-            this.getParams();
-            let sending = this.sendingsService.getSending(this.sendingId);
-            this.sendingListener = sending.subscribe(snapshot => {
-                //console.log('sending > ', snapshot.val());
-                this.sending = snapshot.val();
-                this.convertNotificationsToArray();
-                loader.dismiss();
-            });
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.info('__SDT__didLeave()');
-            this.sendingListener.unsubscribe();
-        });                        
+        loader.present();  
+        let obs = this.sendingsSrv.getByIdObs(this.sendingId, true);
+        this.sendingSubs = obs.subscribe((snap) => {
+                                this.sending = snap.val();
+                                this.setNotificationsAsArray();
+                                loader.dismiss();                                
+                            }, err => {
+                                console.log('err', err);
+                            });
+    }
+
+    ionViewWillLeave() {
+        console.log('_willLeave');
+        if(this.sendingSubs) {
+            this.sendingSubs.unsubscribe();
+        }
     }
 
     private getParams() {
@@ -62,7 +69,7 @@ export class SendingDetailPage implements OnInit {
         console.log('__PRM__', this.sendingId);
     }
 
-    private convertNotificationsToArray() {
+    private setNotificationsAsArray() {
         this.notifications = [];
         let notifis = this.sending._notifications;
         for(let key in notifis) {

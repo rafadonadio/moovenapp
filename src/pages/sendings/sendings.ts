@@ -1,3 +1,4 @@
+import { FirebaseListObservable } from 'angularfire2/database/firebase_list_observable';
 import { APP_CFG } from '../../models/app-model';
 import { LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
@@ -14,44 +15,43 @@ import { SendingService } from '../../providers/sending-service/sending-service'
 })
 export class SendingsPage implements OnInit {
 
-    sendings: any;
-    sendingsEmpty = true;
-    sendingsSuscription: any;
+    sendings: FirebaseListObservable<any>;
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
         public navCtrl: NavController,
         public loadingCtrl: LoadingController,
-        public sendingsService: SendingService) {
+        public sendingSrv: SendingService) {
     }
 
     ngOnInit() {
-        console.info('__SND__sendings');
-        this.viewCtrl.willEnter.subscribe( () => {
-            console.log('__SND__willEnter()');
-            this.sendingsService.setUser();
-            this.getAllActive();            
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.log('__SND__didLeave()');
-            this.sendingsSuscription.unsubscribe();
-        });
+        console.info('_sendings_');
+    }
+
+    ionViewWillEnter() {
+        console.log('_willEnter');
+        this.getAllActive();  
+    }
+
+    ionViewWillLeave() {
+        console.log('_willLeave');
+        this.unbind();
     }
 
     goToDetail(key: string) {
-        console.log('__SND__goToDetail()', key);
+        console.log('_goToDetail()', key);
         this.navCtrl.push(SendingDetailPage, { sendingId: key });
     }
 
     goToCheckout(key: string) {
-        console.log('__SND__goToCheckout()', key);
+        console.log('_goToCheckout()', key);
         // loader
         let loader = this.loadingCtrl.create({
             content: "Cargando ...",
         });
         loader.present();        
         // get
-        let service = this.sendingsService.getSending(key);
+        let service = this.sendingSrv.getSending(key);
         let obs = service.subscribe(snapshot => {
             //console.log('getSending > success');
             loader.dismiss();
@@ -62,17 +62,6 @@ export class SendingsPage implements OnInit {
 
     createSending() {
         this.navCtrl.setRoot(SendingCreatePage);
-    }
-
-    doRefresh(refresher) {
-        console.log('Begin async operation', refresher);
-
-        this.getAllActive();
-
-        setTimeout(() => {
-            console.log('Async operation has ended');
-            refresher.complete();
-        }, 2000);
     }
 
     getStatusMessage(currentStageStatus) {
@@ -115,26 +104,12 @@ export class SendingsPage implements OnInit {
      */
 
     private getAllActive() {
-        console.log('__SND__getAllActive()');
-        let listRef = this.sendingsService.getAllMyActiveRef();
-        this.sendingsSuscription = listRef.subscribe(snapshots => {
-            this.sendings = [];
-            if (snapshots) {
-                snapshots.forEach(snapshot => {
-                    let key = snapshot.key;
-                    let item = {
-                        key: key,
-                        data: snapshot.val(),
-                    };
-                    this.sendings.push(item);
-                });
-            }
-            if (this.sendings.length > 0) {
-                this.sendingsEmpty = false;
-            } else {
-                this.sendingsEmpty = true;
-            }
-        });
+        console.log('_getAll');
+        this.sendings = this.sendingSrv.getAllActiveObs();
+    }
+
+    private unbind() {
+        this.sendings = null;
     }
 
 }

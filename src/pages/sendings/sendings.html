@@ -9,9 +9,6 @@
     </ion-navbar>
 </ion-header>
 <ion-content>
-    <ion-refresher (ionRefresh)="doRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
     <!-- flotaing bottom right button -->
     <ion-fab bottom right>
         <button ion-fab color="primary" (click)="createSending()">
@@ -23,49 +20,49 @@
             <h2 ion-text color="primary" text-center>No hay servicios activos</h2>
         </button>
     </ion-list>
-    <ion-list *ngFor="let item of sendings">
+    <ion-list *ngFor="let item of sendings | async">
         <ion-card>
             <ion-item class="header">
-                <h2>{{ item.data.objectShortName | capitalizePipe }}</h2>
-                <ion-note item-right>#{{ item.data.publicId }}</ion-note>
+                <h2>{{ item.objectShortName | capitalizePipe }}</h2>
+                <ion-note item-right>#{{ item.publicId }}</ion-note>
             </ion-item>
-            <ion-item class="content" (click)="goToDetail(item.key)">
-                <p><span>Desde</span> {{ item.data.pickupAddressStreetShort }} {{ item.data.pickupAddressNumber }}, {{ item.data.pickupAddressCityShort }}</p>
-                <p><span>Hasta</span> {{ item.data.dropAddressStreetShort }} {{ item.data.dropAddressNumber }}, {{ item.data.dropAddressCityShort }}</p>
-                <p><span><small> {{ item.data.timestamp | ts2datePipe }}</small></span></p>
+            <ion-item class="content" (click)="goToDetail(item.$key)">
+                <p><span>Desde</span> {{ item.pickupAddressStreetShort }} {{ item.pickupAddressNumber }}, {{ item.pickupAddressCityShort }}</p>
+                <p><span>Hasta</span> {{ item.dropAddressStreetShort }} {{ item.dropAddressNumber }}, {{ item.dropAddressCityShort }}</p>
+                <p><span><small> {{ item.timestamp | ts2datePipe }}</small></span></p>
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>
             <ion-item class="footer">
                 <ion-icon name="time" item-left 
-                    [class.active]="item.data._currentStage_Status=='created_registered'">
+                    [class.active]="item._currentStage_Status=='created_registered'">
                 </ion-icon>
                 <ion-icon name="card" item-left 
-                    [class.active]="item.data._currentStage_Status=='created_paid'">
+                    [class.active]="item._currentStage_Status=='created_paid'">
                 </ion-icon>                    
                 <ion-icon name="send" item-left 
-                    [class.active]="item.data._currentStage_Status=='created_enabled' || item.data._currentStage_Status=='live_waitoperator'">
+                    [class.active]="item._currentStage_Status=='created_enabled' || item._currentStage_Status=='live_waitoperator'">
                 </ion-icon>
                 <ion-icon name="home" item-left 
-                    [class.active]="item.data._currentStage_Status=='live_gotoperator' || item.data._currentStage_Status=='live_waitpickup'">
+                    [class.active]="item._currentStage_Status=='live_gotoperator' || item._currentStage_Status=='live_waitpickup'">
                 </ion-icon>
                 <ion-icon name="pin" item-left 
-                    [class.active]="item.data._currentStage_Status=='live_pickedup' || item.data._currentStage_Status=='live_inroute' ">
+                    [class.active]="item._currentStage_Status=='live_pickedup' || item._currentStage_Status=='live_inroute' ">
                 </ion-icon>
                 <ion-icon name="checkmark-circle" item-left 
-                    [class.active]="item.data._currentStage_Status=='live_dropped' || item.data._currentStage_Status=='closed_complete'">
+                    [class.active]="item._currentStage_Status=='live_dropped' || item._currentStage_Status=='closed_complete'">
                 </ion-icon>
                 <ion-icon name="alert" item-left 
-                    [class.active]="item.data._currentStage_Status=='closed_canceledbysender' || item.data._currentStage_Status=='closed_canceledbyoperator'">
+                    [class.active]="item._currentStage_Status=='closed_canceledbysender' || item._currentStage_Status=='closed_canceledbyoperator'">
                 </ion-icon>
                 <ion-note 
-                    *ngIf="getStatusMessage(item.data._currentStage_Status).mode=='note'"
-                    item-right color="{{ getStatusMessage(item.data._currentStage_Status).color }}"
-                    >{{ getStatusMessage(item.data._currentStage_Status).message }}</ion-note>
+                    *ngIf="getStatusMessage(item._currentStage_Status).mode=='note'"
+                    item-right color="{{ getStatusMessage(item._currentStage_Status).color }}"
+                    >{{ getStatusMessage(item._currentStage_Status).message }}</ion-note>
                 <button ion-button
-                    *ngIf="getStatusMessage(item.data._currentStage_Status).mode=='button'"
-                    item-right color="{{ getStatusMessage(item.data._currentStage_Status).color }}"
-                    (click)="goToCheckout(item.key)"
-                    >{{ getStatusMessage(item.data._currentStage_Status).message }}</button>                    
+                    *ngIf="getStatusMessage(item._currentStage_Status).mode=='button'"
+                    item-right color="{{ getStatusMessage(item._currentStage_Status).color }}"
+                    (click)="goToCheckout(item.$key)"
+                    >{{ getStatusMessage(item._currentStage_Status).message }}</button>                    
             </ion-item>
         </ion-card>
     </ion-list>
