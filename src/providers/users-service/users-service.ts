@@ -18,23 +18,8 @@ export class UsersService {
         public emailVerification: AccountEmailVerificationService) {
     }
 
-    // get authenticated user
     getUser(): firebase.User {
         return this.authSrv.fbuser;
-    }
-
-    // Reload authenticated user data
-    reloadUser(): firebase.Promise<any> {
-        let user = this.getUser();
-        return user.reload();;
-    }
-
-    // get user account data
-    getAccount():firebase.Promise<any> {
-        let user = this.getUser();
-        return this.dbRef
-                .child(ACCOUNT_REF + user.uid)
-                .once('value');;
     }
 
     getAccountProfileData(): firebase.Promise<any> {
@@ -42,16 +27,6 @@ export class UsersService {
         return this.getProfileDataByUid(user.uid);
     }
 
-    getAccountSettings(): firebase.Promise<any> {
-        let user = this.getUser();
-        // return this.accountSrv.getSettingsByUid(user.uid);
-        let child = ACCOUNT_REF + user.uid + ACCOUNT_REF_CHILDS.SETTINGS._NODE;
-        return this.dbRef   
-                .child(child)
-                .once('value');
-    }
-
-    // get user account data
     getAccountProfileDataByUid(uid:string): firebase.Promise<any> {
         return this.getProfileDataByUid(uid);
     }    
@@ -62,4 +37,5 @@ export class UsersService {
                 .child(child)
                 .once('value');        
     }  
+
 }

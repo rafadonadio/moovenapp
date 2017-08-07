@@ -1,5 +1,5 @@
+import { AuthService } from '../auth-service/auth-service';
 import { Injectable } from '@angular/core';
-import { UsersService } from '../users-service/users-service';
 
 import * as hashids from 'Hashids';
 
@@ -7,12 +7,10 @@ import * as hashids from 'Hashids';
 export class HashService {
 
     hashids:any;
-    user:any;
     userSalt:any;
 
-    constructor(public users:UsersService) {
-        this.user = users.getUser();
-        this.userSalt = this.user.uid;
+    constructor(private authSrv: AuthService) {
+        this.userSalt = this.authSrv.fbuser.uid;
     }
 
     /**
