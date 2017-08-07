@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { SendingsPage } from '../sendings/sendings';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
-
 import { DateService } from '../../providers/date-service/date-service';
 import { SendingRequest } from '../../models/sending-model';
-
 import { Camera } from '@ionic-native/camera';
 
 @Component({
@@ -34,7 +30,6 @@ export class SendingCreatePage implements OnInit {
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
-        public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
         public sendingSrv: SendingService,
@@ -80,7 +75,7 @@ export class SendingCreatePage implements OnInit {
         }    
     }
 
-    processForm() {
+    private processForm() {
         console.log('f1 > processForm');
         this.saveSending();
         this.goToNextStep();

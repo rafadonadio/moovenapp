@@ -1,9 +1,11 @@
+import { Subscription } from 'rxjs/Rx';
+import { AccountService } from '../../providers/account-service/account-service';
+import { UserAccount } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
-import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 import { DateService, DATES_NAMES, DATE_DEFAULTS } from '../../providers/date-service/date-service';
 import { SendingRequest } from '../../models/sending-model';
@@ -26,11 +28,9 @@ export class SendingCreate2Page implements OnInit {
 
     // sending model
     sending: SendingRequest;
-
     // user
-    user: any;
-    profile: any;
-
+    account: UserAccount;
+    accountSubs: Subscription;
     // form
     formTwo: FormGroup;
     pickupAddressFullText: any;
@@ -55,21 +55,21 @@ export class SendingCreate2Page implements OnInit {
     mapMarkers = [];
     placeDetails: any;    
 
-    constructor(public navCtrl: NavController,
-        public navParams: NavParams,
-        public users: UsersService,
-        public formBuilder: FormBuilder,
-        public alertCtrl: AlertController,
-        public modalCtrl: ModalController,
-        public toastCtrl: ToastController,        
-        public gmapsService: GoogleMapsService,
-        public dateSrv: DateService) {
+    constructor(private navCtrl: NavController,
+        private navParams: NavParams,
+        private formBuilder: FormBuilder,
+        private alertCtrl: AlertController,
+        private modalCtrl: ModalController,
+        private toastCtrl: ToastController,        
+        private gmapsService: GoogleMapsService,
+        private dateSrv: DateService,
+        private accountSrv: AccountService) {
     }
 
     ngOnInit() {
         console.info('f2 > init');
         // init
-        this.setUser();
+        this.setAccount();
         this.initPlaceDetails();        
         this.initMap();
         // init form
@@ -481,9 +481,12 @@ export class SendingCreate2Page implements OnInit {
 
     private setPickupPersonData() {
         console.log('f2 > populate pickupContact with current user');
-        this.pickupPersonName.setValue(this.user.displayName);
-        this.pickupPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
-        this.pickupPersonEmail.setValue(this.user.email);        
+        let name = `${this.account.profile.data.firstName} ${this.account.profile.data.lastName}`;
+        let phone = `${this.account.profile.data.phonePrefix} ${this.account.profile.data.phoneMobile}`;
+        let email = this.account.profile.data.email;
+        this.pickupPersonName.setValue(name);
+        this.pickupPersonPhone.setValue(phone);
+        this.pickupPersonEmail.setValue(email);        
     }
 
     private resetAddressElements() {
@@ -688,14 +691,13 @@ export class SendingCreate2Page implements OnInit {
      * AUX HELPERS
      */
 
-    private setUser() {
-        this.user = this.users.getUser();
-        // set profile
-        this.users.getAccountProfileData()
-            .then((snapshot) => {
-                this.profile = snapshot.val();
-            })
-            .catch(error => console.log(error));
+    private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe((snap) => {
+                                this.account = snap.val();
+                            }, err => {
+                                console.log('error', err);
+                            });
     }    
 
     private getSendingFromParams() {

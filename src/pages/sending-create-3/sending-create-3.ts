@@ -1,12 +1,13 @@
+import { SendingRequest } from '../../models/sending-model';
+import { Subscription } from 'rxjs/Rx';
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../../providers/account-service/account-service';
+import { UserAccount } from '../../models/user-model';
 import { NavController, AlertController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 import { EmailValidator } from '../../validators/email.validator';
-import { UsersService } from '../../providers/users-service/users-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 import { DateService, DATE_DEFAULTS, DATES_NAMES } from '../../providers/date-service/date-service';
-
 import { SendingsPage} from '../sendings/sendings';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
@@ -22,10 +23,10 @@ const DATES_TXT = DATES_NAMES;
 export class SendingCreate3Page implements OnInit{
 
     // sending model
-    sending: any;
+    sending: SendingRequest;
     // user
-    user: any;
-    profile: any;
+    account: UserAccount;
+    accountSubs: Subscription;
     // form
     form: FormGroup;
     dropAddressFullText: any;
@@ -48,21 +49,21 @@ export class SendingCreate3Page implements OnInit{
     mapMarkers = [];
     placeDetails: any; 
 
-    constructor(public navCtrl: NavController,
-        public navParams: NavParams,
-        public users: UsersService,
-        public formBuilder: FormBuilder,
-        public alertCtrl: AlertController,
-        public modalCtrl: ModalController,
-        public toastCtrl: ToastController,
-        public gmapsService: GoogleMapsService,
-        public dateSrv: DateService) {
+    constructor(private navCtrl: NavController,
+        private navParams: NavParams,
+        private formBuilder: FormBuilder,
+        private alertCtrl: AlertController,
+        private modalCtrl: ModalController,
+        private toastCtrl: ToastController,
+        private gmapsService: GoogleMapsService,
+        private dateSrv: DateService,
+        private accountSrv: AccountService) {
     }
 
     ngOnInit() {
         console.log('f3 > init');
         console.group('f3');        
-        this.setUser();
+        this.setAccount();
         this.initPlaceDetails();
         this.initMap();        
         // init form
@@ -334,9 +335,12 @@ export class SendingCreate3Page implements OnInit{
 
     private setPickupPersonData() {
         console.log('f3 > populate dropContact with current user');
-        this.dropPersonName.setValue(this.user.displayName);
-        this.dropPersonPhone.setValue(this.profile.phonePrefix + this.profile.phoneMobile);
-        this.dropPersonEmail.setValue(this.user.email);
+        let name = `${this.account.profile.data.firstName} ${this.account.profile.data.lastName}`;
+        let phone = `${this.account.profile.data.phonePrefix} ${this.account.profile.data.phoneMobile}`;
+        let email = this.account.profile.data.email;        
+        this.dropPersonName.setValue(name);
+        this.dropPersonPhone.setValue(phone);
+        this.dropPersonEmail.setValue(email);
     }
 
     private resetAddressElements() {
@@ -350,8 +354,8 @@ export class SendingCreate3Page implements OnInit{
         this.sending.dropAddressIsComplete = false;
         this.sending.dropAddressUserForcedValidation = false;
         this.sending.dropAddressPlaceId = '';
-        this.sending.dropAddressLat = '';
-        this.sending.dropAddressLng = '';            
+        this.sending.dropAddressLat = 0;
+        this.sending.dropAddressLng = 0;            
         this.sending.dropAddressFullText = '';
         this.sending.dropAddressStreetShort = '';
         this.sending.dropAddressStreetLong = '';
@@ -533,15 +537,14 @@ export class SendingCreate3Page implements OnInit{
      * AUX HELPERS
      */
 
-    private setUser(){
-        this.user = this.users.getUser();
-        // set profile
-        this.users.getAccountProfileData()
-            .then((snapshot) => {
-                this.profile = snapshot.val();
-            })
-            .catch(error => console.log(error));
-    }
+    private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe((snap) => {
+                                this.account = snap.val();
+                            }, err => {
+                                console.log('error', err);
+                            });
+    }    
 
     private getSendingFromParams() {
         console.log('f3 > get navParams > this.sending');
