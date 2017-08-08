@@ -5,8 +5,6 @@ import { UserProfileData } from '../../models/user-model';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 
 
@@ -25,7 +23,6 @@ export class ModalUserEditEmailPage implements OnInit {
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
-        public users: UsersService,
         public formBuilder: FormBuilder,
         public params: NavParams,
         public authSrv: AuthService,

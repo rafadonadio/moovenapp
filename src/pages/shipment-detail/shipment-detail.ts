@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs/Rx';
+import { AccountService } from '../../providers/account-service/account-service';
 import { LoadingController } from 'ionic-angular';
-import { UsersService } from '../../providers/users-service/users-service';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { SendingRequest } from '../../models/sending-model';
@@ -24,7 +25,7 @@ export class ShipmentDetailPage implements OnInit {
     sender:any;
     shipmentListener:any;
     sendingListener:any;
-    senderListener:any;
+    senderSubs:Subscription;
     notifications:Array<any>;
 
     constructor(public navCtrl: NavController,
@@ -33,9 +34,9 @@ export class ShipmentDetailPage implements OnInit {
         public alertCtrl: AlertController,
         public sendingSrv: SendingService,
         public shipmentSrv: ShipmentsService,
-        public userSrv: UsersService,
         public viewCtrl: ViewController,
-        public loadingCtrl: LoadingController) {
+        public loadingCtrl: LoadingController,
+        private accountSrv: AccountService) {
     }
 
     ngOnInit() {
@@ -54,11 +55,12 @@ export class ShipmentDetailPage implements OnInit {
             this.sendingListener = sending.subscribe(snapshot => {
                 this.sending = snapshot.val();
                 this.filterAndConvertNotificationsToArray();
-                this.userSrv.getAccountProfileDataByUid(this.sending.userUid)
-                    .then((snapshot) => {
-                        this.sender = snapshot.val();
-                    })                
-            })
+                let obs = this.accountSrv.getObs(true);
+                this.senderSubs = obs.subscribe((snap) => {
+                        let account = snap.val();
+                        this.sender = account.profile.data;
+                    });                
+            });
         });
         this.viewCtrl.didLeave.subscribe( () => {
             console.log('__SHD__didLeave()');

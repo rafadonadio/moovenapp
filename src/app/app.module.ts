@@ -55,7 +55,6 @@ import { SendingPaymentService } from '../providers/sending-service/sending-paym
 import { ShipmentsService } from '../providers/shipments-service/shipments-service';
 import { ShipmentsDbService } from '../providers/shipments-service/shipments-db-service';
 import { NotificationsService } from '../providers/notifications-service/notifications-service';
-import { UsersService } from '../providers/users-service/users-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
@@ -201,7 +200,6 @@ export const firebaseConfig = {
         ShipmentsDbService,
         NotificationsService,
         SendingPaymentService,
-        UsersService,
         GoogleMapsService,
         DateService,
         HashService,

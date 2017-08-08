@@ -1,6 +1,9 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
+import { Subscription } from 'rxjs/Rx';
+import { UserAccount } from '../../models/user-model';
+import { AccountService } from '../../providers/account-service/account-service';
 import { CheckoutService } from '../../providers/checkout-service/checkout-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { UsersService } from '../../providers/users-service/users-service';
 import { SendingRequest } from '../../models/sending-model';
 import { CardTokenData, PrepaymentData } from '../../providers/payment-gateways/mercadopago-model';
 import { DateService } from '../../providers/date-service/date-service';
@@ -24,7 +27,8 @@ const CC_IMG = 'assets/img/credit-card-sm.png';
 })
 export class CheckoutPage implements OnInit {
 
-    fbuser: firebase.User;
+    account: UserAccount;
+    accountSubs: Subscription;
     sending: SendingRequest;
     chForm: FormGroup;
     // inputs
@@ -44,26 +48,33 @@ export class CheckoutPage implements OnInit {
     dates:any;
     payLoader:any;
 
-    constructor(public navCtrl: NavController,
-        public navParams: NavParams,
-        public sendingSrv: SendingService,
-        public paySrv: SendingPaymentService,
-        public loadingCtrl: LoadingController,
-        public toastCtrl: ToastController,
-        public alertCtrl: AlertController,
+    constructor(private navCtrl: NavController,
+        private navParams: NavParams,
+        private sendingSrv: SendingService,
+        private paySrv: SendingPaymentService,
+        private loadingCtrl: LoadingController,
+        private toastCtrl: ToastController,
+        private alertCtrl: AlertController,
         private fb: FormBuilder,
         private dateSrv: DateService,
-        private userSrv: UsersService,
-        private chkServ: CheckoutService) { }
+        private chkServ: CheckoutService,
+        private accountSrv: AccountService,
+        private authSrv: AuthService) { }
 
     ngOnInit() {
-        this.setUser();
+        this.setAccount();
         this.setDates();
         this.setCurrentDates();
         this.setDefaultDates();
         this.setSending();
         this.initForm();
         this.setGenericCreditCardImage();
+    }
+
+    ionViewWillLeave() {
+        if(this.accountSubs) {
+            this.accountSubs.unsubscribe();
+        }
     }
 
     triggerPaymentGuess() {
@@ -213,10 +224,10 @@ export class CheckoutPage implements OnInit {
             cardToken: cardTokenId,
             description: 'Servicio Mooven #' + this.sending.publicId,
             paymentMethodId: this.chForm.controls['paymentMethodId'].value,
-            payerEmail: this.fbuser.email,
+            payerEmail: this.account.profile.data.email,
             externalReference: this.sending.publicId,
             suid: this.sending.sendingId,
-            uid: this.fbuser.uid
+            uid: this.authSrv.fbuser.uid
         }
         return prepaymentData;
     }
@@ -374,8 +385,11 @@ export class CheckoutPage implements OnInit {
      *  ONINIT
      */
 
-    private setUser() {
-        this.fbuser = this.userSrv.getUser();
+    private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe((snap) => {
+                            this.account = snap.val();
+                            }, err => console.log('error', err));
     }
 
     private setSending() {

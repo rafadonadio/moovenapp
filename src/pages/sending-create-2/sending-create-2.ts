@@ -83,6 +83,12 @@ export class SendingCreate2Page implements OnInit {
         this.setTimeLimits();
     }
 
+    ionViewWillLeave() {
+        if(this.accountSubs) {
+            this.accountSubs.unsubscribe();
+        }
+    }
+
     /**
      *  ACTIONS
      */

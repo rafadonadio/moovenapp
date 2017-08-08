@@ -75,6 +75,12 @@ export class SendingCreate3Page implements OnInit{
         this.setTimeLimits();        
     }
 
+    ionViewWillLeave() {
+        if(this.accountSubs) {
+            this.accountSubs.unsubscribe();
+        }
+    }
+
     /**
      * MAIN ACTIONS
      */

@@ -1,3 +1,4 @@
+import { AuthService } from '../auth-service/auth-service';
 import { SHIPMENT_DB } from '../../models/shipment-model';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -13,7 +14,8 @@ export class ShipmentsDbService {
     db: any = firebase.database();
     dbRef: firebase.database.Reference = firebase.database().ref();
 
-    constructor(public afDB:AngularFireDatabase) {
+    constructor(public afDB:AngularFireDatabase,
+        private authSrv: AuthService) {
     }
 
     getTimestamp():any {
@@ -24,10 +26,11 @@ export class ShipmentsDbService {
      *  READ
      */
 
-    getShipmentsActiveByUser(userid:string, getSnapshot:boolean = true) {
+    getShipmentsActiveByUser(snapshot:boolean = true) {
+        let userId = this.authSrv.fbuser.uid;
         return this.afDB
-                .list(DB.BYUSER.REF + userid + DB.BYUSER._CHILD.ACTIVE.REF, { 
-                    preserveSnapshot: getSnapshot,
+                .list(DB.BYUSER.REF + userId + DB.BYUSER._CHILD.ACTIVE.REF, { 
+                    preserveSnapshot: snapshot,
                 });
     } 
 

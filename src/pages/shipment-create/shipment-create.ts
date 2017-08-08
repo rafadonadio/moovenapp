@@ -11,7 +11,6 @@ import {
     MapsMapPolylineOptions
 } from '../../providers/google-maps-service/google-maps-service';
 import { DateService } from '../../providers/date-service/date-service';
-import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
     selector: 'page-shipment-create',
@@ -33,7 +32,6 @@ export class ShipmentCreatePage implements OnInit {
     constructor(public navCtrl: NavController,
         public gmapsService: GoogleMapsService,
         public dateSrv: DateService,
-        public users: UsersService,
         public sendingSrv:SendingService,
         public alertCtrl: AlertController,
         public loaderCtrl: LoadingController,
