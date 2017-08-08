@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import firebase from 'firebase';
-import { AccountEmailVerificationService } from '../users-service/account-email-verification-service';
+import { AccountEmailVerificationService } from '../account-email-verification-service/account-email-verification-service';
 import { AuthService } from '../auth-service/auth-service';
-import { UserAccount, UserAccountOperator, UserAccountSettings, UserProfileData } from '../../models/user-model';
+import { UserAccount, UserAccountSettings, UserProfileData } from '../../models/user-model';
 
 @Injectable()
 export class AccountService {

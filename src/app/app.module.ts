@@ -42,7 +42,7 @@ import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
 import { HomePage } from '../pages/home/home';
 // PROVIDERS
-import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
+import { AccountEmailVerificationService } from '../providers/account-email-verification-service/account-email-verification-service';
 import { AccountService } from '../providers/account-service/account-service';
 import { AuthService } from '../providers/auth-service/auth-service';
 import { ConfigService } from '../providers/config-service/config-service';
