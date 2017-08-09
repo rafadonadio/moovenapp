@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
 import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
+import { FirebaseListObservable } from 'angularfire2/database';
 
 @Component({
     selector: 'page-shipments',
@@ -22,13 +23,10 @@ export class ShipmentsPage implements OnInit{
     account: UserAccount;
     operator: UserAccountOperator;
     // list
-    shipments:any;
-    shipmentsEmpty:boolean;
-    // list observer
-    shipmentsSuscription:any;  
+    shipments:FirebaseListObservable<any>;
 
     constructor(private navCtrl: NavController,
-        public shipmentsSrv:ShipmentsService,
+        public shipmentSrv:ShipmentsService,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         private accountSrv: AccountService,
@@ -37,11 +35,12 @@ export class ShipmentsPage implements OnInit{
     ngOnInit() {
         console.info('__shipment__');
         this.operatorAuthUnchecked = true;
-        this.setAccount();  
+        this.init();  
     }
 
     ionViewWillLeave() {
         console.log('shipments leaving ..');
+        this.shipments = null;
         if(this.accountSubs) {
             console.log('unsubscribed');
             this.accountSubs.unsubscribe();
@@ -87,39 +86,31 @@ export class ShipmentsPage implements OnInit{
      *  PRIVATE
      */  
 
-    private getAllActive() {
-        let listRef = this.shipmentsSrv.getAllMyActiveRef();
-        this.shipmentsSuscription = listRef.subscribe(snapshots => {
-                console.log('__SHP__ getAllActive');                
-                this.shipments = [];
-                if(snapshots) {
-                    snapshots.forEach(snapshot => {
-                        let key = snapshot.key;
-                        let item = {
-                            key: key,
-                            data: snapshot.val(),
-                        };
-                        this.shipments.push(item); 
-                    });
-                }
-                if(this.shipments.length > 0) {
-                    this.shipmentsEmpty = false;
-                }else{
-                    this.shipmentsEmpty = true;
-                }
+    private init() {
+        this.setAccount()
+            .then(() => {
+                this.getAllActive();
             });
+    }
+
+    private getAllActive() {
+        this.shipments = this.shipmentSrv.getAllActiveObs();
     }     
 
-    private setAccount() {
-        let obs = this.accountSrv.getObs(true);
-        this.accountSubs = obs.subscribe((snap) => {
-            this.account = snap.val();
-            this.operator = this.account.operator;
-            this.operatorAuthUnchecked = false;
-            console.log('set account', this.account, this.operator, this.operatorAuthUnchecked);
-        },
-        err => {
-            console.log(err);
+    private setAccount(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let obs = this.accountSrv.getObs(true);
+            this.accountSubs = obs.subscribe((snap) => {
+                this.account = snap.val();
+                this.operator = this.account.operator;
+                this.operatorAuthUnchecked = false;
+                console.log('set account', this.account, this.operator, this.operatorAuthUnchecked);
+                resolve();
+            },
+            err => {
+                console.log(err);
+                reject();
+            });
         });
     }
 

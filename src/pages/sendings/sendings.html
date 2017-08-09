@@ -15,7 +15,7 @@
             <ion-icon name="add"></ion-icon>
         </button>
     </ion-fab>
-    <ion-list *ngIf="sendingsEmpty==true">
+    <ion-list *ngIf="(sendings | async)?.length==0">
         <button ion-item detail-none (click)="createSending()">
             <h2 ion-text color="primary" text-center>No hay servicios activos</h2>
         </button>

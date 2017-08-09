@@ -33,14 +33,14 @@
         </ion-card>
     </ion-list>
 
-    <ion-list *ngIf="shipmentsEmpty==true">
+    <ion-list *ngIf="(shipments | async)?.length==0">
         <button ion-item detail-none (click)="goToCreate()">
             <h2 color="green" text-center>No hay servicios activos</h2>
         </button>
     </ion-list>
-
+ 
     <ion-list 
-        *ngFor="let item of shipments">
+        *ngFor="let item of shipments | async">
         <!-- list item only visible if operator?.enabled -->
         <ion-card (click)="goToDetail(item.data)"
             *ngIf="operator?.enabled">
