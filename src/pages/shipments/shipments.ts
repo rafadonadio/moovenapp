@@ -1,7 +1,6 @@
 import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
-import { SendingsPage } from '../sendings/sendings';
 import { AlertController, ToastController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component, OnInit } from '@angular/core';
