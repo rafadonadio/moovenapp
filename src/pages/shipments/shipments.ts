@@ -33,6 +33,9 @@ export class ShipmentsPage implements OnInit{
 
     ngOnInit() {
         console.info('__shipment__');
+    }
+
+    ionViewWillEnter() {
         this.operatorAuthUnchecked = true;
         this.init();  
     }

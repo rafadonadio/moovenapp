@@ -16,20 +16,20 @@ npm run ionic:build --prod
 
 # CLOSE (corte)
 
-    app
-        - refactor sending (switch to authService AccountService)
-        - cf de cancelación
-        - visualización pedidos en mapa
-        - notificaciones (email)
-        - network detector
+- app
+    <!-- - refactor sending (switch to authService AccountService) -->
+    - cf de cancelación
+    - visualización pedidos en mapa
+    - notificaciones (email)
+    - network detector
 
-        - ** notificacione (push)
-        - ** replicate datastore
-        - ** log (big query)
+    - ** notificacione (push)
+    - ** replicate datastore
+    - ** log (big query)
 
-    admin
-        - mercado pago
-            habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
+- admin
+    - mercado pago
+        habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
 
 # MOOVEN APP
 - Nuevo Servicio - Paso 2    
