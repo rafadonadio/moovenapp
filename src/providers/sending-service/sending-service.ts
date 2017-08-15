@@ -65,33 +65,42 @@ export class SendingService {
         return this.afDb.object(`sendings/${sendingId}`,  { preserveSnapshot: snapshot });
     }
 
-     // get account active sendings Observable
+    // get account active sendings Observable
     getAllActiveObs(snapshot:boolean = false): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
         return this.afDb.list(`userSendings/${accountId}/active`, { preserveSnapshot: snapshot });
     } 
 
-
+    // get all sendings Vacants, in "waitoperator" status
+    getLiveVacantObs(snapshot:boolean = false) {
+        return this.afDb.list('_sendingsLive/', {
+            query: {
+                orderByChild: '_currentStatus',
+                equalTo: 'waitoperator'
+            }, 
+            preserveSnapshot: snapshot,
+        });         
+    }
 
 
     // .... refactor:  ...
 
 
     getSending(id:string) {
-        return this.getSendingById(id);
+        return this.dbSrv.getSendingById(id);
     }
 
     /**
      *  SendingLiveVacants
      */
 
-    getLiveVacantRef():firebase.database.Query {
-        return this.getAllLiveVacantRef();
-    }
+    // getLiveVacantRef():firebase.database.Query {
+    //     return this.getAllLiveVacantRef();
+    // }
 
-    getLiveVacant():FirebaseListObservable<any> {
-        return this.getAllLiveVacant();
-    }
+    // getLiveVacant():FirebaseListObservable<any> {
+    //     return this.getAllLiveVacant();
+    // }
 
     attemptToLockVacant(sendingId:string):Promise<any> {
         return this.attemptToLockLiveVacantSending(sendingId);
@@ -115,17 +124,17 @@ export class SendingService {
      *  DATABASE READ
      */
 
-    private getAllLiveVacantRef():firebase.database.Query  {
-        return this.dbSrv.getSendingsLiveVacantRef();
-    }      
+    // private getAllLiveVacantRef():firebase.database.Query  {
+    //     return this.dbSrv.getSendingsLiveVacantRef();
+    // }      
 
-    private getAllLiveVacant():FirebaseListObservable<any>  {
-        return this.dbSrv.getSendingsLiveVacant(this.authSrv.fbuser.uid);
-    }
+    // private getAllLiveVacant():FirebaseListObservable<any>  {
+    //     return this.dbSrv.getSendingsLiveVacant(this.authSrv.fbuser.uid);
+    // }
 
-    private getSendingById(sendingId:string) {
-        return this.dbSrv.getSendingById(sendingId);
-    }
+    // private getSendingById(sendingId:string) {
+    //     return this.dbSrv.getSendingById(sendingId);
+    // }
 
      /**
      *  NOTIFICATIONS

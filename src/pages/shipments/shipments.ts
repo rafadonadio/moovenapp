@@ -1,3 +1,4 @@
+import { DateService } from '../../providers/date-service/date-service';
 import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
@@ -29,7 +30,8 @@ export class ShipmentsPage implements OnInit{
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         private accountSrv: AccountService,
-        private toastCtrl: ToastController) {}
+        private toastCtrl: ToastController,
+        private dateSrv: DateService) {}
 
     ngOnInit() {
         console.info('__shipment__');

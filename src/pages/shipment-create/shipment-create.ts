@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Rx';
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
@@ -19,7 +20,7 @@ import { DateService } from '../../providers/date-service/date-service';
 export class ShipmentCreatePage implements OnInit {
 
     vacants;
-    vacantSubs:any;
+    vacantSubs:Subscription;
     // map
     map: any;
     mapMarkers = {
@@ -40,17 +41,18 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ngOnInit() {
-        console.info('__SCT__ shipmentCreate');
-        // MANAGE SUSCRIPTIONS
-        this.viewCtrl.didEnter.subscribe( () => {
-            console.log('__SCT__willEnter()');
-            this.initMap();
-            this.getVacants();            
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.log('__SCT__didLeave()');
+        this.initMap();         
+    }
+
+    ionViewWillEnter() {      
+        this.getVacants(); 
+    }
+
+    ionViewWillLeave() {
+        if(this.vacantSubs) {
             this.vacantSubs.unsubscribe();
-        });
+        }
+        this.vacants = null;
     }
 
     select(sendingVacantId:string, sendingVacantData:any) {
@@ -145,13 +147,13 @@ export class ShipmentCreatePage implements OnInit {
      */
 
     private getVacants() {
-        let vacantsObs = this.sendingSrv.getLiveVacant();
-        this.vacantSubs = vacantsObs.subscribe(snapshots => {
+        let obs = this.sendingSrv.getLiveVacantObs(true);
+        this.vacantSubs = obs.subscribe(snaps => {
             this.vacants = [];
-            if(snapshots) {
-                snapshots.forEach(snapshot => {
-                    let key = snapshot.key;
-                    let value = snapshot.val();
+            if(snaps) {
+                snaps.forEach(snap => {
+                    let key = snap.key;
+                    let value = snap.val();
                     //console.log('vacants', key, value);
                     let item = {
                         key: key,
