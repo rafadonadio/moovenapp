@@ -51,12 +51,11 @@ export class SendingsPage implements OnInit {
         });
         loader.present();        
         // get
-        let service = this.sendingSrv.getSending(key);
-        let obs = service.subscribe(snapshot => {
-            //console.log('getSending > success');
+        let obs = this.sendingSrv.getSendingObs(key, true);
+        let subsc = obs.subscribe(snap => {
             loader.dismiss();
-            obs.unsubscribe();
-            this.navCtrl.push(CheckoutPage, { sending: snapshot.val() });
+            subsc.unsubscribe();
+            this.navCtrl.push(CheckoutPage, { sending: snap.val() });
         });
     }    
 

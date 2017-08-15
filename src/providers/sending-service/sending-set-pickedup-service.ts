@@ -1,4 +1,3 @@
-import { SendingDbService } from './sending-db-service';
 import { Injectable } from '@angular/core';
 
 import firebase from 'firebase';
@@ -11,10 +10,10 @@ export class SendingSetPickedupService{
     private taskCF:any;
     private dbRef: firebase.database.Reference;
 
-    constructor(private dbSrv: SendingDbService) {}
+    constructor() {}
 
     run(sendingId:string, userId:string): Promise<any> {
-        this.setDbRef();
+        this.dbRef = firebase.database().ref();
         this.sendingId = sendingId;
         this.userId = userId;
         return this.write();   
@@ -25,7 +24,7 @@ export class SendingSetPickedupService{
         return new Promise((resolve, reject) => {
             // write cf task
             let updates = {};        
-            let taskKey = this.dbSrv.newSendingTaskKey();
+            let taskKey = this.dbRef.child('sendingsTask/').push().key;
             // create task
             updates[`sendingsTask/${taskKey}`] = this.taskCF;
             // write
@@ -45,14 +44,9 @@ export class SendingSetPickedupService{
             sendingId: this.sendingId,
             userId: this.userId,
             task: 'set_pickedup',
-            timestamp: this.dbSrv.getTimestamp(),
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
             origin: 'app'
         }
-    }
-
-    private setDbRef() {
-        this.dbRef = this.dbSrv.getDatabaseRef();
-        console.log('init dbRef', this.dbRef);
     }
 
 }

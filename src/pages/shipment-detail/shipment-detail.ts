@@ -23,8 +23,8 @@ export class ShipmentDetailPage implements OnInit {
     sending:SendingRequest;
     shipment:any;
     sender:any;
-    shipmentListener:any;
-    sendingListener:any;
+    shipmentSubs:any;
+    sendingSubs:Subscription;
     senderSubs:Subscription;
     notifications:Array<any>;
 
@@ -40,39 +40,42 @@ export class ShipmentDetailPage implements OnInit {
     }
 
     ngOnInit() {
-        console.info('__SHD__shipmentDetail');
-        let loader = this.loadingCtrl.create({ content: "Cargando ..." });
-        loader.present();           
-        this.viewCtrl.willEnter.subscribe( () => {
-            console.log('__SHD__willEnter()');
-            this.getParams();
-            let shipment = this.shipmentSrv.getShipment(this.shipmentId);
-            this.shipmentListener = shipment.subscribe(snapshot => {
-                this.shipment = snapshot.val();
-                loader.dismiss();
-            })
-            let sending = this.sendingSrv.getSending(this.sendingId);
-            this.sendingListener = sending.subscribe(snapshot => {
-                this.sending = snapshot.val();
-                this.filterAndConvertNotificationsToArray();
-                let obs = this.accountSrv.getObs(true);
-                this.senderSubs = obs.subscribe((snap) => {
-                        let account = snap.val();
-                        this.sender = account.profile.data;
-                    });                
-            });
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.log('__SHD__didLeave()');
-            this.shipmentListener.unsubscribe();
-            this.sendingListener.unsubscribe();
-        });  
+
     }
 
-    private getParams() {
-        console.info('__PRM__  getParams');
+    ionViewWillEnter() {
+        console.info('get params');
         this.shipmentId = this.navParams.get('shipmentId');
         this.sendingId = this.navParams.get('sendingId');
+        // get shipment/sending 
+        let loader = this.loadingCtrl.create({ content: "Cargando ..." });     
+        let shObs = this.shipmentSrv.getShipment(this.shipmentId);
+        this.shipmentSubs = shObs.subscribe(snapshot => {
+            this.shipment = snapshot.val();
+            loader.dismiss();
+        })
+        let obs = this.sendingSrv.getSendingObs(this.sendingId, true);
+        this.sendingSubs = obs.subscribe(snapshot => {
+            this.sending = snapshot.val();
+            this.filterAndConvertNotificationsToArray();
+            let obs = this.accountSrv.getObs(true);
+            this.senderSubs = obs.subscribe((snap) => {
+                    let account = snap.val();
+                    this.sender = account.profile.data;
+                });                
+        });           
+    }    
+
+    ionViewWillLeave() {
+        console.log('__SHD__didLeave()');
+        if(this.shipmentSubs){
+            this.shipmentSubs.unsubscribe();
+        }
+        if(this.sendingSubs) {
+            this.sendingSubs.unsubscribe();
+        }
+        this.sending = null;
+        this.shipment = null;
     }
 
     goToTab(tab: string) {

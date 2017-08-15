@@ -1,4 +1,3 @@
-import { SendingDbService } from './sending-db-service';
 import { Injectable } from '@angular/core';
 
 import firebase from 'firebase';
@@ -12,10 +11,10 @@ export class SendingSetGotoperatorService{
     private lockNode:any;
     private dbRef: firebase.database.Reference;
 
-    constructor(private dbSrv: SendingDbService) {}
+    constructor() {}
 
     run(sendingId:string, userId:string): Promise<any> {
-        this.setDbRef();
+        this.dbRef = firebase.database().ref();
         this.sendingId = sendingId;
         this.userId = userId;
         return this.write();        
@@ -27,7 +26,7 @@ export class SendingSetGotoperatorService{
         return new Promise((resolve, reject) => {
             // write cf task
             let updates = {};        
-            let taskKey = this.dbSrv.newSendingTaskKey();
+            let taskKey = this.dbRef.child('sendingsTask/').push().key;
             // update lockNode
             updates[`_sendingsLive/${this.sendingId}/_locked`] = this.lockNode;
             // create task
@@ -49,7 +48,7 @@ export class SendingSetGotoperatorService{
             sendingId: this.sendingId,
             userId: this.userId,
             task: 'set_gotoperator',
-            timestamp: this.dbSrv.getTimestamp(),
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
             origin: 'app'
         }
     }
@@ -60,11 +59,6 @@ export class SendingSetGotoperatorService{
             userId: this.userId,
             taken: true
         }
-    }
-
-    private setDbRef() {
-        this.dbRef = this.dbSrv.getDatabaseRef();
-        console.log('init dbRef', this.dbRef);
     }
 
 }

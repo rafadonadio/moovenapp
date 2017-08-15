@@ -1,3 +1,4 @@
+import { DateService } from '../date-service/date-service';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthService } from '../auth-service/auth-service';
 import { SendingSetDroppedService } from './sending-set-dropped-service';
@@ -8,19 +9,23 @@ import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { Injectable } from '@angular/core';
-import { SendingDbService } from '../sending-service/sending-db-service';
 import { SendingRequestService } from '../sending-service/sending-request-service';
 import { HashService } from '../hash-service/hash-service';
 import { SendingRequest } from '../../models/sending-model';
+import { SHIPMENT_CFG } from '../../models/shipment-model';
 
 import firebase from 'firebase';
+
+const VACANT_LOCK_TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT + SHIPMENT_CFG.WAIT_AFTER_UNLOCK; // ADDED SECONDS TO AVOID COLISSIONS
+
 
 @Injectable()
 export class SendingService {
 
+    dbRef = firebase.database().ref();
+
     constructor(public hashSrv: HashService,
         public reqSrv: SendingRequestService,
-        public dbSrv: SendingDbService,
         public notificationsSrv:SendingNotificationsService,
         public paySrv: SendingPaymentService,
         private createSrv: SendingCreateService,
@@ -28,7 +33,8 @@ export class SendingService {
         private setPickSrv: SendingSetPickedupService,
         private setDropSrv: SendingSetDroppedService,
         private authSrv: AuthService,
-        private afDb: AngularFireDatabase) {}
+        private afDb: AngularFireDatabase,
+        private dateSrv: DateService) {}
 
 
     /**
@@ -71,6 +77,16 @@ export class SendingService {
         return this.afDb.list(`userSendings/${accountId}/active`, { preserveSnapshot: snapshot });
     } 
 
+    getSendingObs(sendingId:string, snapshot:boolean = false): FirebaseObjectObservable<any> {
+        return this.afDb.object(`sendings/${sendingId}`, { 
+                preserveSnapshot: snapshot,
+            });  
+    }
+
+    /**
+     *  SendingLiveVacants
+     */
+
     // get all sendings Vacants, in "waitoperator" status
     getLiveVacantObs(snapshot:boolean = false) {
         return this.afDb.list('_sendingsLive/', {
@@ -82,67 +98,94 @@ export class SendingService {
         });         
     }
 
-
-    // .... refactor:  ...
-
-
-    getSending(id:string) {
-        return this.dbSrv.getSendingById(id);
-    }
-
-    /**
-     *  SendingLiveVacants
-     */
-
-    // getLiveVacantRef():firebase.database.Query {
-    //     return this.getAllLiveVacantRef();
-    // }
-
-    // getLiveVacant():FirebaseListObservable<any> {
-    //     return this.getAllLiveVacant();
-    // }
-
     attemptToLockVacant(sendingId:string):Promise<any> {
-        return this.attemptToLockLiveVacantSending(sendingId);
+        let userId = this.authSrv.fbuser.uid;
+        return this.writeAttemptToLockVacant(sendingId, userId);
     }
 
     unlockVacant(sendingId:string): firebase.Promise<any> {
-        return this.dbSrv.unlockSendingLiveVacant(sendingId);
+        return this.writeUnlockVacant(sendingId);
     }
-
-    // attempt to lock sending before confirm sending to shipper
-    private attemptToLockLiveVacantSending(sendingId:string):Promise<any> {
-        let userId = this.authSrv.fbuser.uid;
-        return this.dbSrv.attemptToLockSendingLiveVacant(sendingId, userId);
-    }
-
-    // **********
-
-
 
     /**
-     *  DATABASE READ
-     */
-
-    // private getAllLiveVacantRef():firebase.database.Query  {
-    //     return this.dbSrv.getSendingsLiveVacantRef();
-    // }      
-
-    // private getAllLiveVacant():FirebaseListObservable<any>  {
-    //     return this.dbSrv.getSendingsLiveVacant(this.authSrv.fbuser.uid);
-    // }
-
-    // private getSendingById(sendingId:string) {
-    //     return this.dbSrv.getSendingById(sendingId);
-    // }
-
-     /**
      *  NOTIFICATIONS
      */
 
     // send notifications to user, based on setttings
     sendNotifications(sendingId:string, contentLog:any):void {
         this.notificationsSrv.sendLocalNotification(sendingId, contentLog);
+    }
+
+
+    /**
+     *  VACANT WRITES
+     */
+
+    private writeUnlockVacant(sendingId:string):firebase.Promise<any> {
+        let updates = {};
+        updates[`_sendingsLive/${sendingId}/_locked`] = null;
+        return this.dbRef.update(updates); 
+    }
+
+    private writeAttemptToLockVacant(sendingId:string, userId:string):Promise<any> {
+        console.info('writeAttemptToLockVacant > init');
+        let result = {
+            didLock: false,
+            hadError: false,
+            lockTimeLeft: 0,
+            isTaken: false,
+            snapshot: {},
+            error: {}            
+        };
+        let lockNode = {
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            userId: userId,
+            taken: false
+        };
+        let ref = this.dbRef.child(`_sendingsLive/${sendingId}/_locked`);
+        return new Promise((resolve, reject)=> {
+            ref.transaction(currentData => {
+                console.log('currentData', currentData);
+                if(currentData === null) {
+                    return lockNode;
+                }else{
+                    console.log('lockNode already exists, is it taken?');                    
+                    if(currentData.taken==true) {
+                        console.log('has been taken');
+                        result.isTaken = true;
+                        return;
+                    }
+                    console.log('lockNode already exists, has expired?');                    
+                    let lockTimestamp = currentData.timestamp;
+                    let nowTimestamp = this.dateSrv.getUnixTimestamp();
+                    let diff = (nowTimestamp - lockTimestamp) / 1000;
+                    if(diff > VACANT_LOCK_TIMEOUT) {
+                        console.log('it has expired, update');
+                        return lockNode;
+                    }else{
+                        console.log('did not expired, diff ', diff);
+                        result.lockTimeLeft = VACANT_LOCK_TIMEOUT - diff;
+                        return;
+                    }
+                }
+            }, (error, committed, snapshot) => {
+                result.snapshot = snapshot.val();                
+                if(error) {
+                    console.error('transaction failed > ', error);
+                    result.hadError = true;
+                    result.error = error;
+                    reject(result);
+                } else if (!committed) {
+                    console.log('transaction aborted, lockNode exists');
+                    result.didLock = false;
+                } else {
+                    console.log('transaction success');
+                    result.didLock = true;
+                }
+                console.log('lockNode data > ', snapshot.val());
+                resolve(result);                
+            });
+        });
     }
 
 

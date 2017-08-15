@@ -1,8 +1,9 @@
 import { StorageService } from '../storage-service/storage-service';
 import { HashService } from '../hash-service/hash-service';
-import { SendingDbService } from './sending-db-service';
 import { SendingRequest } from '../../models/sending-model';
 import { Injectable } from '@angular/core';
+
+import firebase from 'firebase';
 
 @Injectable()
 export class SendingCreateService{
@@ -12,8 +13,7 @@ export class SendingCreateService{
     userId: string;
     dbRef: firebase.database.Reference;
 
-    constructor(private dbSrv: SendingDbService,
-        private hashSrv: HashService,
+    constructor(private hashSrv: HashService,
         private storageSrv: StorageService) {}
 
     // create sending
@@ -134,8 +134,7 @@ export class SendingCreateService{
      */
     
     private setDbRef() {
-        this.dbRef = this.dbSrv.getDatabaseRef();
-        console.log('init dbRef', this.dbRef);
+        this.dbRef = firebase.database().ref();
     }
 
     private writeToDb() {
@@ -144,8 +143,8 @@ export class SendingCreateService{
         // write sending
         updates[`sendings/${this.sending.sendingId}`] = this.sending;
         // write cf task
-        let taskKey = this.dbSrv.newSendingTaskKey();
-        updates[`sendingsTask/${taskKey}`] = this.taskCF;
+        let key = this.dbRef.child('sendingsTask/').push().key;
+        updates[`sendingsTask/${key}`] = this.taskCF;
         return this.dbRef.update(updates);
     }
 
@@ -158,7 +157,7 @@ export class SendingCreateService{
         this.taskCF = {
             sendingId: this.sending.sendingId,
             task: 'set_registered',
-            timestamp: this.dbSrv.getTimestamp(),
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
             origin: 'app'
         }
     }
@@ -173,7 +172,7 @@ export class SendingCreateService{
     }
 
     private setTimestamp() {
-        this.sending.timestamp = this.dbSrv.getTimestamp();
+        this.sending.timestamp = firebase.database.ServerValue.TIMESTAMP;
     }
 
     private setUserId() {
@@ -189,7 +188,7 @@ export class SendingCreateService{
     }
 
     private setSendingId() {
-        this.sending.sendingId = this.dbSrv.newSendingKey();
+        this.sending.sendingId = this.dbRef.child('sendings/').push().key;
     }
 
     private setSendingImageUploadedData(uploadResult) {      

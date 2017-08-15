@@ -389,7 +389,7 @@ export class SendingRequestLiveSummary {
 export class SendingRequest {
     sendingId: string;
     publicId: string;
-    timestamp: number;
+    timestamp: any;
     userUid: string;
     price: number;   
     priceMinFareApplied: boolean;  

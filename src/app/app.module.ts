@@ -48,7 +48,6 @@ import { AuthService } from '../providers/auth-service/auth-service';
 import { ConfigService } from '../providers/config-service/config-service';
 import { SendingService } from '../providers/sending-service/sending-service';
 import { SendingCreateService } from '../providers/sending-service/sending-create-service';
-import { SendingDbService } from '../providers/sending-service/sending-db-service';
 import { SendingNotificationsService } from '../providers/sending-service/sending-notifications-service';
 import { SendingRequestService } from '../providers/sending-service/sending-request-service';
 import { SendingPaymentService } from '../providers/sending-service/sending-payment-service';
@@ -189,7 +188,6 @@ export const firebaseConfig = {
         AuthService,
         ConfigService,
         SendingService,
-        SendingDbService,
         SendingNotificationsService,
         SendingRequestService,
         SendingCreateService,

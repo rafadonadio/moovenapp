@@ -2,14 +2,12 @@ import { Observable } from 'rxjs';
 import { CardTokenData, PrepaymentData } from '../payment-gateways/mercadopago-model';
 import { MercadopagoService } from '../payment-gateways/mercadopago-service';
 import { Injectable } from '@angular/core';
-import { SendingDbService } from '../sending-service/sending-db-service';
 
 
 @Injectable()
 export class SendingPaymentService {
 
-    constructor(public dbSrv: SendingDbService,
-        public mpagoSrv: MercadopagoService) {}
+    constructor(public mpagoSrv: MercadopagoService) {}
 
 
     /**
