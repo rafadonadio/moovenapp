@@ -90,7 +90,12 @@ export class ShipmentDetailPage implements OnInit {
                     text: 'Interrumpir servicio',
                     icon: 'close',
                     handler: () => {
-                        this.showAlertNotifyAction('cancel');
+                        actionSh.dismiss()
+                            .then(() => {
+                                this.showAlertNotifyAction('cancelService');
+                            })
+                            .catch(err => console.log(err));
+                            return false;
                     }
                 }
             ]
@@ -126,18 +131,18 @@ export class ShipmentDetailPage implements OnInit {
         switch(action) {
             case 'pickupDone':
                     content.set = true;
-                    content.title = 'Retirado';
+                    content.title = 'Servicio Retirado';
                     content.message = 'Confirmo que he retirado el servicio';        
                 break;
             case 'dropDone':
                     content.set = true;
-                    content.title = 'Entregado';
+                    content.title = 'Servicio Entregado';
                     content.message = 'Confirmo que he entregado el servicio';                
                 break;
-            case 'cancel':
+            case 'cancelService':
                     content.set = true;
-                    content.title = 'Servicio interrumpido';
-                    content.message = 'Confirmo que interrumpo la continuidad del servicio, dejando el mismo inconcluso.';                
+                    content.title = 'Seguro deseas interrumpir el Servicio?';
+                    content.message = 'El Servicio se registrará como interrumpido e inconcluso, es posible que se envien notificaciones a las partes.';                
                 break;                
         }
         if(content.set) {
@@ -146,14 +151,14 @@ export class ShipmentDetailPage implements OnInit {
                 message: content.message,
                 buttons: [
                     {
-                        text: 'Cancelar',
+                        text: 'No',
                         role: 'cancel',
                         handler: () => {
-                        console.log('Cancel clicked');
+                            console.log('Cancel clicked');
                         }
                     },
                     {
-                        text: 'Confirmo',
+                        text: 'Sí, confirmo',
                         handler: () => {
                             this.runNotifyAction(action);
                         }
@@ -190,8 +195,35 @@ export class ShipmentDetailPage implements OnInit {
                     });
                 break;
 
-            case 'cancel':
-                //this.sendingSrv.updateLiveStatusToCanceled(this.shipment.shipmentId, this.sending.sendingId);    
+            case 'cancelService':
+                let loading = this.loadingCtrl.create({ content: 'cancelando ...'});
+                this.sendingSrv.setCanceledbyoperator(this.sending.sendingId)
+                    .then(() => {
+                        console.log('service canceled ok');
+                        let alert = this.alertCtrl.create({
+                            title: 'Servicio Cancelado',
+                            subTitle: 'La cancelación del servicio se ha iniciado correctamente.',
+                            buttons: ['Cerrar']
+                        });
+                        loading.dismiss()
+                            .then(() => {
+                                alert.present();
+                            })
+                            .catch(err => console.log(err));
+                    })
+                    .catch(err => {
+                        console.log('sending canceled error', err.error);
+                        let alert = this.alertCtrl.create({
+                            title: 'Error',
+                            subTitle: 'Ocurrió un error, no se pudo iniciar la cancelación del servicio, vuelve a intentarlo.',
+                            buttons: ['Cerrar']
+                        });
+                        loading.dismiss()
+                            .then(() => {
+                                alert.present();
+                            })
+                            .catch(err => console.log(err));
+                    });                
                 break;
         }
 

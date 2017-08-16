@@ -98,8 +98,9 @@ export class SendingDetailPage implements OnInit {
                     handler: () => {
                         actionSh.dismiss()
                             .then(() => {
-                                this.showAlertNotifyAction('cancel_service');
-                            });
+                                this.showAlertNotifyAction('cancelService');
+                            })
+                            .catch(err => console.log(err));
                             return false;
                     }
                 }
@@ -115,7 +116,7 @@ export class SendingDetailPage implements OnInit {
             message: '',
         }
         switch(action) {
-            case 'cancel_service':
+            case 'cancelService':
                     content.set = true;
                     content.title = 'Seguro deseas cancelar el Servicio?';
                     content.message = 'El servicio será cancelado y ya no estará disponible';                
