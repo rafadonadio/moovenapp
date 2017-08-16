@@ -49,7 +49,7 @@ export class ShipmentDetailPage implements OnInit {
         this.sendingId = this.navParams.get('sendingId');
         // get shipment/sending 
         let loader = this.loadingCtrl.create({ content: "Cargando ..." });     
-        let shObs = this.shipmentSrv.getShipment(this.shipmentId);
+        let shObs = this.shipmentSrv.getObs(this.shipmentId);
         this.shipmentSubs = shObs.subscribe(snapshot => {
             this.shipment = snapshot.val();
             loader.dismiss();

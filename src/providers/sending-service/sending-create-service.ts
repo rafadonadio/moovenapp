@@ -24,6 +24,9 @@ export class SendingCreateService{
         return this.create();
     }
 
+    new() {
+        return this.getNew();
+    }
 
     /**
      *  METHODS
@@ -203,7 +206,7 @@ export class SendingCreateService{
      *  INIT
      */
 
-    new():SendingRequest {
+    private getNew():SendingRequest {
         let data:SendingRequest = {
             sendingId: '',
             publicId: '',

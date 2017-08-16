@@ -51,7 +51,6 @@ import { SendingCreateService } from '../providers/sending-service/sending-creat
 import { SendingNotificationsService } from '../providers/sending-service/sending-notifications-service';
 import { SendingPaymentService } from '../providers/sending-service/sending-payment-service';
 import { ShipmentsService } from '../providers/shipments-service/shipments-service';
-import { ShipmentsDbService } from '../providers/shipments-service/shipments-db-service';
 import { NotificationsService } from '../providers/notifications-service/notifications-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
@@ -197,7 +196,6 @@ export const firebaseConfig = {
         SendingSetCanceledbysenderService,
         SendingSetCanceledbyoperatorService,
         ShipmentsService,
-        ShipmentsDbService,
         NotificationsService,
         SendingPaymentService,
         GoogleMapsService,
