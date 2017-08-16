@@ -49,7 +49,6 @@ import { ConfigService } from '../providers/config-service/config-service';
 import { SendingService } from '../providers/sending-service/sending-service';
 import { SendingCreateService } from '../providers/sending-service/sending-create-service';
 import { SendingNotificationsService } from '../providers/sending-service/sending-notifications-service';
-import { SendingRequestService } from '../providers/sending-service/sending-request-service';
 import { SendingPaymentService } from '../providers/sending-service/sending-payment-service';
 import { ShipmentsService } from '../providers/shipments-service/shipments-service';
 import { ShipmentsDbService } from '../providers/shipments-service/shipments-db-service';
@@ -64,6 +63,8 @@ import { StorageService } from '../providers/storage-service/storage-service';
 import { SendingSetGotoperatorService } from '../providers/sending-service/sending-set-gotoperator-service';
 import { SendingSetPickedupService } from '../providers/sending-service/sending-set-pickedup-service';
 import { SendingSetDroppedService } from '../providers/sending-service/sending-set-dropped-service';
+import { SendingSetCanceledbysenderService } from '../providers/sending-service/sending-set-canceledbysender-service';
+import { SendingSetCanceledbyoperatorService } from '../providers/sending-service/sending-set-canceledbyoperator-service';
 
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
@@ -189,11 +190,12 @@ export const firebaseConfig = {
         ConfigService,
         SendingService,
         SendingNotificationsService,
-        SendingRequestService,
         SendingCreateService,
         SendingSetGotoperatorService,
         SendingSetPickedupService,
         SendingSetDroppedService,
+        SendingSetCanceledbysenderService,
+        SendingSetCanceledbyoperatorService,
         ShipmentsService,
         ShipmentsDbService,
         NotificationsService,

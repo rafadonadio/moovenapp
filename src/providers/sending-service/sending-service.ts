@@ -1,3 +1,5 @@
+import { SendingSetCanceledbyoperatorService } from './sending-set-canceledbyoperator-service';
+import { SendingSetCanceledbysenderService } from './sending-set-canceledbysender-service';
 import { DateService } from '../date-service/date-service';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthService } from '../auth-service/auth-service';
@@ -9,7 +11,6 @@ import { FirebaseListObservable } from 'angularfire2/database';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { Injectable } from '@angular/core';
-import { SendingRequestService } from '../sending-service/sending-request-service';
 import { HashService } from '../hash-service/hash-service';
 import { SendingRequest } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
@@ -25,13 +26,14 @@ export class SendingService {
     dbRef = firebase.database().ref();
 
     constructor(public hashSrv: HashService,
-        public reqSrv: SendingRequestService,
         public notificationsSrv:SendingNotificationsService,
         public paySrv: SendingPaymentService,
         private createSrv: SendingCreateService,
         private setGotoperSrv: SendingSetGotoperatorService,
         private setPickSrv: SendingSetPickedupService,
         private setDropSrv: SendingSetDroppedService,
+        private setCanceledUsr: SendingSetCanceledbysenderService,
+        private setCanceledOpr: SendingSetCanceledbyoperatorService,
         private authSrv: AuthService,
         private afDb: AngularFireDatabase,
         private dateSrv: DateService) {}
@@ -61,6 +63,13 @@ export class SendingService {
         return this.setDropSrv.run(sendingId, this.authSrv.fbuser.uid);
     }    
 
+    setCanceledbysender(sendingId:string) {
+        return this.setCanceledUsr.run(sendingId, this.authSrv.fbuser.uid);
+    }
+
+    setCanceledbyoperator(sendingId:string) {
+        return this.setCanceledOpr.run(sendingId, this.authSrv.fbuser.uid);
+    }    
 
     /**
      *  READ

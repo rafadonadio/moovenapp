@@ -90,13 +90,17 @@ export class SendingDetailPage implements OnInit {
 
     openActionSh() {
         let actionSh = this.actionShCtrl.create({
-            title: 'Notificaciones ',
+            title: 'Acciones ',
             buttons: [
                 {
                     text: 'Cancelar servicio',
                     icon: 'close',
                     handler: () => {
-                        this.showAlertNotifyAction('cancel');
+                        actionSh.dismiss()
+                            .then(() => {
+                                this.showAlertNotifyAction('cancel_service');
+                            });
+                            return false;
                     }
                 }
             ]
@@ -111,7 +115,7 @@ export class SendingDetailPage implements OnInit {
             message: '',
         }
         switch(action) {
-            case 'cancel':
+            case 'cancel_service':
                     content.set = true;
                     content.title = 'Cancelar Servicio';
                     content.message = 'Confirmo que cancelo el servicio, dejando el mismo inconcluso.';                
@@ -126,7 +130,7 @@ export class SendingDetailPage implements OnInit {
                         text: 'Cancelar',
                         role: 'cancel',
                         handler: () => {
-                        console.log('Cancel clicked');
+                            console.log('Cancel clicked');
                         }
                     },
                     {
