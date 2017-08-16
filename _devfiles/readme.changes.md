@@ -19,11 +19,21 @@ npm run ionic:build --prod
 - app
     <!-- - refactor sending (switch to authService AccountService) -->
     - cf de cancelación
+        app: cancelar servicio (usuario)
+            *closed_canceledbysender*
+        app: cancelar servicio (operador)
+            *closed_canceledbyoperator*
+        cron: cancelar servicio no pagado
+            *closed_payexpired*
+        cron: cancelar servicio no tomado
+            *closed_gotoperatorexpired*
+        cron: cerrar servicio con notificaciones no enviadas
+            *closed_notificationsexpired*
     - visualización pedidos en mapa
     - notificaciones (email)
     - network detector
 
-    - ** notificacione (push)
+    - ** notificaciones (push)
     - ** replicate datastore
     - ** log (big query)
 

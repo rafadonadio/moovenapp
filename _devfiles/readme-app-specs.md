@@ -657,6 +657,7 @@ closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
 closed_payexpired   | CLOSED | closedpayexpired | alert | -- 
 closed_gotoperatorexpired   | CLOSED | gotoperatorexpired | alert | -- 
+clsoed_notificationsexpired | CLOSED | notificationsexpired | help | --
 
 &nbsp;  
 &nbsp; 
