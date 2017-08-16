@@ -63,11 +63,11 @@ export class SendingService {
         return this.setDropSrv.run(sendingId, this.authSrv.fbuser.uid);
     }    
 
-    setCanceledbysender(sendingId:string) {
+    setCanceledbysender(sendingId:string): Promise<any> {
         return this.setCanceledUsr.run(sendingId, this.authSrv.fbuser.uid);
     }
 
-    setCanceledbyoperator(sendingId:string) {
+    setCanceledbyoperator(sendingId:string): Promise<any> {
         return this.setCanceledOpr.run(sendingId, this.authSrv.fbuser.uid);
     }    
 

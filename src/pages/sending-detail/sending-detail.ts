@@ -117,8 +117,8 @@ export class SendingDetailPage implements OnInit {
         switch(action) {
             case 'cancel_service':
                     content.set = true;
-                    content.title = 'Cancelar Servicio';
-                    content.message = 'Confirmo que cancelo el servicio, dejando el mismo inconcluso.';                
+                    content.title = 'Seguro deseas cancelar el Servicio?';
+                    content.message = 'El servicio será cancelado y ya no estará disponible';                
                 break;                
         }
         if(content.set) {
@@ -127,16 +127,17 @@ export class SendingDetailPage implements OnInit {
                 message: content.message,
                 buttons: [
                     {
-                        text: 'Cancelar',
+                        text: 'No',
                         role: 'cancel',
                         handler: () => {
                             console.log('Cancel clicked');
                         }
                     },
                     {
-                        text: 'Confirmo',
+                        text: 'Sí, cancelarlo',
                         handler: () => {
-                        console.log('Buy clicked');
+                            console.log('confirmed');
+                            this.runSendingCancelation();
                         }
                     }
                 ]
@@ -148,4 +149,35 @@ export class SendingDetailPage implements OnInit {
 
     }
 
+
+    private runSendingCancelation() {
+        let loading = this.loadingCtrl.create({ content: 'cancelando ...'});
+        this.sendingsSrv.setCanceledbysender(this.sendingId)
+            .then(() => {
+                console.log('sending canceled ok');
+                let alert = this.alertCtrl.create({
+                    title: 'Servicio Cancelado',
+                    subTitle: 'La cancelación del servicio se ha iniciado correctamente.',
+                    buttons: ['Cerrar']
+                });
+                loading.dismiss()
+                    .then(() => {
+                        alert.present();
+                    })
+                    .catch(err => console.log(err));
+            })
+            .catch(err => {
+                console.log('sending canceled error', err.error);
+                let alert = this.alertCtrl.create({
+                    title: 'Error',
+                    subTitle: 'Ocurrió un error, no se pudo iniciar la cancelación del servicio, vuelve a intentarlo.',
+                    buttons: ['Cerrar']
+                });
+                loading.dismiss()
+                    .then(() => {
+                        alert.present();
+                    })
+                    .catch(err => console.log(err));
+            });
+    }
 }
