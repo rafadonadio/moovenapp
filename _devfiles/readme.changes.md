@@ -27,8 +27,9 @@ npm run ionic:build --prod
             *closed_payexpired*
         cron: cancelar servicio no tomado
             *closed_gotoperatorexpired*
-        cron: cerrar servicio con notificaciones no enviadas
-            *closed_notificationsexpired*
+        cron: cerrar servicio con hora de entrega pasada y notificaciones no enviadas
+            *closed_autocompleted*
+    - set shipment notifications
     - visualización pedidos en mapa
     - notificaciones (email)
     - network detector
@@ -101,11 +102,18 @@ npm run ionic:build --prod
 - test data in google gloud bigquery
 
 
-# TO BE DEFINED
+
+#---------------
+# TO BE DEFINED 
+#---------------
 - fecha de servicio
     - que pasa con feriados?
     - que pasa con fin de semana?
-
+- situaciónes de conflicto a preveer:
+    - operador dice que lo entrega
+    - usuario dice que no lo recibió
+    - solución: ???
+    
 
 # BIG_QUERY
     Set the bigquery.datasetName and bigquery.tableName 

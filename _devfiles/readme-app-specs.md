@@ -629,7 +629,7 @@ LIVE | &nbsp; | En vivo
  &nbsp; | dropped | el servicio ha sido entregado en destino.
 CLOSED | &nbsp; | Cerrado
  &nbsp; | payexpired | el servicio ha sido completado satisfactoriamente.
- &nbsp; | complete | el servicio ha sido completado satisfactoriamente.
+ &nbsp; | completed | el servicio ha sido completado satisfactoriamente.
  &nbsp; | canceledbysender | el servicio ha sido cancelado por el solicitante.
  &nbsp; | canceledbyoperator | el servicio ha sido cancelado por el operador.
  &nbsp; | gotoperatorexpired | el servicio ha expirado antes de ser tomado por un operador.
@@ -653,11 +653,11 @@ live_pickedup       | LIVE      | pickedup      | pin | En transito
 live_inroute        | LIVE      | inroute       | pin | En transito
 live_dropped        | LIVE      | dropped       | checkmark-circle | Entregado 
 closed_completed    | CLOSED    | completed     | checkmark-circle | Entregado
+closed_autocompleted  | CLOSED    | autocompleted     | checkbox | Entregado
 closed_canceledbysender | CLOSED | canceledbysender | alert | --
 closed_canceledbyoperator | CLOSED | canceledbyoperator | alert | -- 
 closed_payexpired   | CLOSED | closedpayexpired | alert | -- 
 closed_gotoperatorexpired   | CLOSED | gotoperatorexpired | alert | -- 
-clsoed_notificationsexpired | CLOSED | notificationsexpired | help | --
 
 &nbsp;  
 &nbsp; 
