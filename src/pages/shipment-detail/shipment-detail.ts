@@ -4,11 +4,9 @@ import { LoadingController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { SendingRequest } from '../../models/sending-model';
-import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
 import { ActionSheetController, AlertController, NavController, NavParams, ViewController } from 'ionic-angular';
 
-const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 
 @Component({
     selector: 'page-shipment-detail',  
@@ -57,7 +55,7 @@ export class ShipmentDetailPage implements OnInit {
         let obs = this.sendingSrv.getSendingObs(this.sendingId, true);
         this.sendingSubs = obs.subscribe(snapshot => {
             this.sending = snapshot.val();
-            this.filterAndConvertNotificationsToArray();
+            this.setNotificationsAsArray();
             let obs = this.accountSrv.getObs(true);
             this.senderSubs = obs.subscribe((snap) => {
                     let account = snap.val();
@@ -103,21 +101,17 @@ export class ShipmentDetailPage implements OnInit {
         actionSh.present();
     }
 
-    private filterAndConvertNotificationsToArray() {
+
+    private setNotificationsAsArray() {
         this.notifications = [];
-        let notifis = this.sending._notifications;
-        let stageStatus:string;
+        let notifis = this.shipment._notifications || [];
         for(let key in notifis) {
             //console.log(key, notifis[key]);
-            stageStatus = notifis[key].currentStage_Status;
-            if(NOTIFICATIONS_LIST[stageStatus]===true) {
-                //console.log('show notifis > ', stageStatus);
-                let item = {
-                    key: key,
-                    data: notifis[key]
-                };
-                this.notifications.push(item);
-            }
+            let item = {
+                key: key,
+                data: notifis[key]
+            };
+            this.notifications.push(item);
         }
         //console.log(this.notifications);
     }
