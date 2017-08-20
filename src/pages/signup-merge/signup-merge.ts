@@ -218,7 +218,7 @@ export class SignupMergePage implements OnInit{
                     .child(this.user.uid)
                     .child('profileImage.jpg')
                     .putString(imageData, firebase.storage.StringFormat.DATA_URL, {contentType: 'image/jpeg'});
-            uploadTask.on('state_changed', function(snapshot) {
+            uploadTask.on('state_changed', function(snapshot:any) {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.info('Upload is ' + progress + '% done');
                 }, function (error:any) {
