@@ -1,9 +1,9 @@
 import { Subscription } from 'rxjs/Rx';
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { LoadingController } from 'ionic-angular';
+import { Alert, LoadingController } from 'ionic-angular';
 import { SendingRequest } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
-import { ViewController, NavController, NavParams, Platform, AlertController, ActionSheetController } from 'ionic-angular';
+import { ViewController, NavController, NavParams, Platform, ToastController, AlertController, ActionSheetController } from 'ionic-angular';
 
 import { CheckoutPage } from '../checkout/checkout';
 
@@ -30,7 +30,8 @@ export class SendingDetailPage implements OnInit {
         public actionShCtrl: ActionSheetController,
         public viewCtrl: ViewController,
         public loadingCtrl: LoadingController,
-        public sendingsSrv: SendingService) {
+        public sendingsSrv: SendingService,
+        public toastCtrl: ToastController) {
         this._platform = platform;
         this._isAndroid = platform.is('android');
         this._isiOS = platform.is('ios');
@@ -114,40 +115,47 @@ export class SendingDetailPage implements OnInit {
             set: false,
             title: '',
             message: '',
+            cancelBtnTxt: '',
+            confirmBtnTxt: ''
         }
         switch(action) {
             case 'cancelService':
                     content.set = true;
                     content.title = 'Seguro deseas cancelar el Servicio?';
-                    content.message = 'El servicio será cancelado y ya no estará disponible';                
+                    content.message = 'El servicio será cancelado y ya no estará disponible';  
+                    content.cancelBtnTxt = 'No';
+                    content.confirmBtnTxt = 'Sí, cancelarlo';
                 break;                
         }
-        if(content.set) {
-            let alert = this.alertCtrl.create({
-                title: content.title,
-                message: content.message,
-                buttons: [
-                    {
-                        text: 'No',
-                        role: 'cancel',
-                        handler: () => {
-                            console.log('Cancel clicked');
-                        }
-                    },
-                    {
-                        text: 'Sí, cancelarlo',
-                        handler: () => {
-                            console.log('confirmed');
-                            this.runSendingCancelation();
+        if(!content.set) {
+            console.error('AlertController action param invalid');
+            return;
+        }
+        let alert = this.alertCtrl.create({
+            title: content.title,
+            message: content.message,
+            buttons: [
+                {
+                    text: content.cancelBtnTxt,
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('Cancel clicked');
+                    }
+                },
+                {
+                    text: content.confirmBtnTxt,
+                    handler: () => {
+                        console.log('confirmed');
+                        switch(action) {
+                            case 'cancelService':
+                                this.runSendingCancelation();           
+                            break;
                         }
                     }
-                ]
-            });
-            alert.present();
-        }else{
-            console.error('AlertController action param invalid');
-        }
-
+                }
+            ]
+        });
+        alert.present();
     }
 
 
@@ -156,14 +164,19 @@ export class SendingDetailPage implements OnInit {
         this.sendingsSrv.setCanceledbysender(this.sendingId)
             .then(() => {
                 console.log('sending canceled ok');
-                let alert = this.alertCtrl.create({
-                    title: 'Servicio Cancelado',
+                let alert:Alert = this.alertCtrl.create({
+                    title: 'Cancelación en proceso',
                     subTitle: 'La cancelación del servicio se ha iniciado correctamente.',
                     buttons: ['Cerrar']
                 });
                 loading.dismiss()
                     .then(() => {
+                        console.log('loading dismissed');
                         alert.present();
+                        return alert.onDidDismiss(() => {
+                            console.log('alert dismissed');
+                            this.navCtrl.pop();
+                        });
                     })
                     .catch(err => console.log(err));
             })
@@ -181,4 +194,5 @@ export class SendingDetailPage implements OnInit {
                     .catch(err => console.log(err));
             });
     }
+
 }
