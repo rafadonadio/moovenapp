@@ -1,8 +1,8 @@
 import { FirebaseListObservable } from 'angularfire2/database/firebase_list_observable';
 import { APP_CFG } from '../../models/app-model';
-import { LoadingController } from 'ionic-angular';
+import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
-import { NavController, ViewController } from 'ionic-angular';
+import { ViewController } from 'ionic-angular';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
@@ -17,9 +17,9 @@ export class SendingsClosedPage implements OnInit {
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
-        public navCtrl: NavController,
         public loadingCtrl: LoadingController,
-        public sendingSrv: SendingService) {
+        public sendingSrv: SendingService,
+        private app: App) {
     }
 
     ngOnInit() {
@@ -38,7 +38,7 @@ export class SendingsClosedPage implements OnInit {
 
     goToDetail(key: string) {
         console.log('_goToDetail()', key);
-        this.navCtrl.push(SendingDetailPage, { sendingId: key });
+        this.app.getRootNav().push(SendingDetailPage, { sendingId: key });
     }
 
     getStatusMessage(currentStageStatus) {

@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmailValidator } from '../../validators/email.validator';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 import { DateService, DATE_DEFAULTS, DATES_NAMES } from '../../providers/date-service/date-service';
-import { SendingsActivePage } from '../sendings-active/sendings-active';
+import { SendingsTabsPage } from '../sendings-tabs/sendings-tabs';
 import { SendingCreate2Page} from '../sending-create-2/sending-create-2';
 import { SendingCreate4Page} from '../sending-create-4/sending-create-4';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
@@ -247,7 +247,7 @@ export class SendingCreate3Page implements OnInit{
                     text: 'Si',
                     handler: () => {
                         console.log('f3 > cancel form > yes, cancel');
-                        this.navCtrl.setRoot(SendingsActivePage);
+                        this.navCtrl.setRoot(SendingsTabsPage);
                     }
                 }
             ]
