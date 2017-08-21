@@ -4,14 +4,14 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>
-            <h4>Historial de Servicios</h4>
+            <h4>Historial</h4>
         </ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content>
     <ion-list *ngIf="(sendings | async)?.length==0">
         <button ion-item detail-none (click)="createSending()">
-            <h2 ion-text color="primary" text-center>No hay servicios activos</h2>
+            <h2 ion-text color="primary" text-center>No hay servicios cerrados</h2>
         </button>
     </ion-list>
     <ion-list *ngFor="let item of sendings | async">
@@ -51,12 +51,7 @@
                 <ion-note 
                     *ngIf="getStatusMessage(item._currentStage_Status).mode=='note'"
                     item-right color="{{ getStatusMessage(item._currentStage_Status).color }}"
-                    >{{ getStatusMessage(item._currentStage_Status).message }}</ion-note>
-                <button ion-button
-                    *ngIf="getStatusMessage(item._currentStage_Status).mode=='button'"
-                    item-right color="{{ getStatusMessage(item._currentStage_Status).color }}"
-                    (click)="goToCheckout(item.$key)"
-                    >{{ getStatusMessage(item._currentStage_Status).message }}</button>                    
+                    >{{ getStatusMessage(item._currentStage_Status).message }}</ion-note>                   
             </ion-item>
         </ion-card>
     </ion-list>

@@ -21,7 +21,7 @@ import { ModalUserEditEmailPage } from '../pages/modal-user-edit-email/modal-use
 import { ModalUserEditNamePage } from '../pages/modal-user-edit-name/modal-user-edit-name';
 import { ModalUserEditPhonePage } from '../pages/modal-user-edit-phone/modal-user-edit-phone';
 import { ModalSearchMapAddressPage } from '../pages/modal-search-map-address/modal-search-map-address';
-import { NotificationsPage } from '../pages/notifications/notifications';
+import { SendingsNotificationsPage } from '../pages/sendings-notifications/sendings-notifications';
 import { PaymentPage } from '../pages/payment/payment';
 import { SendingCreatePage } from '../pages/sending-create/sending-create';
 import { SendingCreate2Page } from '../pages/sending-create-2/sending-create-2';
@@ -110,7 +110,7 @@ export const firebaseConfig = {
         ModalUserEditEmailPage,
         ModalUserEditNamePage,
         ModalUserEditPhonePage,
-        NotificationsPage,
+        SendingsNotificationsPage,
         PaymentPage,
         SendingCreatePage,
         SendingCreate2Page,
@@ -162,7 +162,7 @@ export const firebaseConfig = {
         ModalUserEditEmailPage,
         ModalUserEditNamePage,
         ModalUserEditPhonePage,
-        NotificationsPage,
+        SendingsNotificationsPage,
         PaymentPage,
         SendingCreatePage,
         SendingCreate2Page,

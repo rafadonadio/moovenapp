@@ -3,9 +3,7 @@ import { APP_CFG } from '../../models/app-model';
 import { LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
-import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
-import { CheckoutPage } from '../checkout/checkout';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
 
@@ -30,7 +28,7 @@ export class SendingsClosedPage implements OnInit {
 
     ionViewWillEnter() {
         console.log('_willEnter');
-        this.getAllActive();  
+        this.getAllClosed();  
     }
 
     ionViewWillLeave() {
@@ -41,26 +39,6 @@ export class SendingsClosedPage implements OnInit {
     goToDetail(key: string) {
         console.log('_goToDetail()', key);
         this.navCtrl.push(SendingDetailPage, { sendingId: key });
-    }
-
-    goToCheckout(key: string) {
-        console.log('_goToCheckout()', key);
-        // loader
-        let loader = this.loadingCtrl.create({
-            content: "Cargando ...",
-        });
-        loader.present();        
-        // get
-        let obs = this.sendingSrv.getByIdObs(key, true);
-        let subsc = obs.subscribe(snap => {
-            loader.dismiss();
-            subsc.unsubscribe();
-            this.navCtrl.push(CheckoutPage, { sending: snap.val() });
-        });
-    }    
-
-    createSending() {
-        this.navCtrl.setRoot(SendingCreatePage);
     }
 
     getStatusMessage(currentStageStatus) {
@@ -102,9 +80,9 @@ export class SendingsClosedPage implements OnInit {
      *  PRIVATE
      */
 
-    private getAllActive() {
+    private getAllClosed() {
         console.log('_getAll');
-        this.sendings = this.sendingSrv.getAllActiveObs();
+        this.sendings = this.sendingSrv.getAllClosedObs();
     }
 
     private unbind() {

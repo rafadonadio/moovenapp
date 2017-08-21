@@ -11,8 +11,6 @@ import { SettingsPage } from '../pages/settings/settings';
 import { SendingsTabsPage } from '../pages/sendings-tabs/sendings-tabs';
 import { ShipmentsPage } from '../pages/shipments/shipments';
 import { PaymentPage } from '../pages/payment/payment';
-import { HistorialPage } from '../pages/historial/historial';
-import { NotificationsPage } from '../pages/notifications/notifications';
 import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { UserAccount } from '../models/user-model';
@@ -75,8 +73,6 @@ export class MyApp {
             { title: 'Servicios', component: SendingsTabsPage, icon: 'send', navigationType: 'root' },
             { title: 'Operador', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
-            { title: 'Historial', component: HistorialPage, icon: 'time', navigationType: 'push' },
-            { title: 'Notificaciones', component: NotificationsPage, icon: 'notifications', navigationType: 'push' },
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' },
             { title: 'Ajustes', component: SettingsPage, icon: 'settings', navigationType: 'push' }
         ];
