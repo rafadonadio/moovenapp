@@ -8,7 +8,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StartPage } from '../pages/start/start';
 import { HomePage } from '../pages/home/home';
 import { SettingsPage } from '../pages/settings/settings';
-import { SendingsPage } from '../pages/sendings/sendings';
+import { SendingsTabsPage } from '../pages/sendings-tabs/sendings-tabs';
 import { ShipmentsPage } from '../pages/shipments/shipments';
 import { PaymentPage } from '../pages/payment/payment';
 import { HistorialPage } from '../pages/historial/historial';
@@ -72,7 +72,7 @@ export class MyApp {
         // used for an example of ngFor and navigation
         this.pages = [
             { title: 'Mooven', component: HomePage, icon: 'home', navigationType: 'root' },
-            { title: 'Servicios', component: SendingsPage, icon: 'send', navigationType: 'root' },
+            { title: 'Servicios', component: SendingsTabsPage, icon: 'send', navigationType: 'root' },
             { title: 'Operador', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
             { title: 'Historial', component: HistorialPage, icon: 'time', navigationType: 'push' },

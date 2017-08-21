@@ -10,10 +10,10 @@ import { CheckoutPage } from '../checkout/checkout';
 import { SendingService } from '../../providers/sending-service/sending-service';
 
 @Component({
-    selector: 'page-sendings',
-    templateUrl: 'sendings.html',
+    selector: 'page-sendings-closed',
+    templateUrl: 'sendings-closed.html',
 })
-export class SendingsPage implements OnInit {
+export class SendingsClosedPage implements OnInit {
 
     sendings: FirebaseListObservable<any>;
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;

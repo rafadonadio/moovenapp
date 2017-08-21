@@ -17,7 +17,7 @@ import { NumberValidator } from '../../validators/number.validator';
 
 import { SendingPaymentService } from '../../providers/sending-service/sending-payment-service';
 
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsActivePage } from '../sendings-active/sendings-active';
 
 const CC_IMG = 'assets/img/credit-card-sm.png';
 
@@ -151,7 +151,7 @@ export class CheckoutPage implements OnInit {
                     handler: () => {
                         if (closePage) {
                             console.log('checkout > goToSendings');
-                            this.navCtrl.setRoot(SendingsPage);
+                            this.navCtrl.setRoot(SendingsActivePage);
                         } else {
                             console.log('checkout > stay');
                         }
@@ -372,7 +372,7 @@ export class CheckoutPage implements OnInit {
                     text: 'Volver al listado',
                     handler: () => {
                         console.log('checkout, exit');
-                        this.navCtrl.setRoot(SendingsPage);
+                        this.navCtrl.setRoot(SendingsActivePage);
                     }
                 }
             ]

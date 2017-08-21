@@ -9,7 +9,7 @@ import { EmailValidator } from '../../validators/email.validator';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 import { DateService, DATES_NAMES, DATE_DEFAULTS } from '../../providers/date-service/date-service';
 import { SendingRequest } from '../../models/sending-model';
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsActivePage } from '../sendings-active/sendings-active';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
 import { ModalSearchMapAddressPage } from '../modal-search-map-address/modal-search-map-address';
@@ -396,7 +396,7 @@ export class SendingCreate2Page implements OnInit {
                     text: 'Si',
                     handler: () => {
                         console.log('f2 > cancel form > yes, cancel');
-                        this.navCtrl.setRoot(SendingsPage);
+                        this.navCtrl.setRoot(SendingsActivePage);
                     }
                 }
             ]

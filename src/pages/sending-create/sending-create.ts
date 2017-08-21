@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsActivePage } from '../sendings-active/sendings-active';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
 import { DateService } from '../../providers/date-service/date-service';
@@ -99,7 +99,7 @@ export class SendingCreatePage implements OnInit {
                         console.log('f1 > cancel > yes, cancel');
                         alert.dismiss()
                             .then(() => {
-                                this.navCtrl.setRoot(SendingsPage);
+                                this.navCtrl.setRoot(SendingsActivePage);
                             })
                             .catch((error) => console.log(error));     
                         return false;                   

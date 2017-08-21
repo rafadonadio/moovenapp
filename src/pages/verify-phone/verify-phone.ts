@@ -8,7 +8,7 @@ import {
     ToastController,
     ViewController
 } from 'ionic-angular';
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsActivePage } from '../sendings-active/sendings-active';
 import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit-phone';
 
 @Component({
@@ -44,7 +44,7 @@ export class VerifyPhonePage {
         }
 
         goToHome() {
-            this.navCtrl.setRoot(SendingsPage);
+            this.navCtrl.setRoot(SendingsActivePage);
         }
 
         goToApp() {
@@ -55,7 +55,7 @@ export class VerifyPhonePage {
             loading.present();
 
             setTimeout(() => {
-                this.navCtrl.setRoot(SendingsPage);
+                this.navCtrl.setRoot(SendingsActivePage);
             }, 2000);
 
             setTimeout(() => {
@@ -72,7 +72,7 @@ export class VerifyPhonePage {
             loading.present();
 
             setTimeout(() => {
-                this.navCtrl.setRoot(SendingsPage);
+                this.navCtrl.setRoot(SendingsActivePage);
             }, 3000);
 
             setTimeout(() => {

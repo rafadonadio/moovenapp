@@ -6,7 +6,7 @@ import { NavController, NavParams, LoadingController, AlertController, ToastCont
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsActivePage } from '../sendings-active/sendings-active';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../sending-create-3/sending-create-3';
@@ -249,7 +249,7 @@ export class SendingCreate4Page implements OnInit {
     }
 
     private goToSendings() {
-        this.navCtrl.setRoot(SendingsPage);        
+        this.navCtrl.setRoot(SendingsActivePage);
     }
 
     /**
