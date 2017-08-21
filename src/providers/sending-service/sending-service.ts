@@ -77,7 +77,9 @@ export class SendingService {
 
     // get sending Observable
     getByIdObs(sendingId:string, snapshot:boolean = false): FirebaseObjectObservable<any> {
-        return this.afDb.object(`sendings/${sendingId}`,  { preserveSnapshot: snapshot });
+        return this.afDb.object(`sendings/${sendingId}`,  { 
+                preserveSnapshot: snapshot 
+            });
     }
 
     // get account active sendings Observable
@@ -85,12 +87,6 @@ export class SendingService {
         let accountId = this.authSrv.fbuser.uid;
         return this.afDb.list(`userSendings/${accountId}/active`, { preserveSnapshot: snapshot });
     } 
-
-    getSendingObs(sendingId:string, snapshot:boolean = false): FirebaseObjectObservable<any> {
-        return this.afDb.object(`sendings/${sendingId}`, { 
-                preserveSnapshot: snapshot,
-            });  
-    }
 
     /**
      *  SendingLiveVacants

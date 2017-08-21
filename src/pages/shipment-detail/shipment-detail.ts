@@ -52,7 +52,7 @@ export class ShipmentDetailPage implements OnInit {
             this.shipment = snapshot.val();
             loader.dismiss();
         })
-        let obs = this.sendingSrv.getSendingObs(this.sendingId, true);
+        let obs = this.sendingSrv.getByIdObs(this.sendingId, true);
         this.sendingSubs = obs.subscribe(snapshot => {
             this.sending = snapshot.val();
             this.setNotificationsAsArray();
@@ -195,13 +195,18 @@ export class ShipmentDetailPage implements OnInit {
                     .then(() => {
                         console.log('service canceled ok');
                         let alert = this.alertCtrl.create({
-                            title: 'Servicio Cancelado',
+                            title: 'Cancelación en proceso',
                             subTitle: 'La cancelación del servicio se ha iniciado correctamente.',
                             buttons: ['Cerrar']
                         });
                         loading.dismiss()
                             .then(() => {
+                                console.log('loading dismissed');
                                 alert.present();
+                                return alert.onDidDismiss(() => {
+                                    console.log('alert dismissed');
+                                    this.navCtrl.pop();
+                                });
                             })
                             .catch(err => console.log(err));
                     })

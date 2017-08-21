@@ -51,7 +51,7 @@ export class SendingsPage implements OnInit {
         });
         loader.present();        
         // get
-        let obs = this.sendingSrv.getSendingObs(key, true);
+        let obs = this.sendingSrv.getByIdObs(key, true);
         let subsc = obs.subscribe(snap => {
             loader.dismiss();
             subsc.unsubscribe();
