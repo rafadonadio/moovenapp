@@ -2,11 +2,10 @@ import { FirebaseListObservable } from 'angularfire2/database/firebase_list_obse
 import { APP_CFG } from '../../models/app-model';
 import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
-import { NavController, ViewController } from 'ionic-angular';
+import { ViewController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
 import { SendingDetailPage } from '../sending-detail/sending-detail';
 import { CheckoutPage } from '../checkout/checkout';
-
 import { SendingService } from '../../providers/sending-service/sending-service';
 
 @Component({
@@ -19,7 +18,6 @@ export class SendingsActivePage implements OnInit {
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
-        public navCtrl: NavController,
         public loadingCtrl: LoadingController,
         public sendingSrv: SendingService,
         private app: App) {
@@ -41,7 +39,8 @@ export class SendingsActivePage implements OnInit {
 
     goToDetail(key: string) {
         console.log('_goToDetail()', key);
-        this.app.getRootNav().push(SendingDetailPage, { sendingId: key });
+        // console.log('using getRootNavs()', this.app.getRootNavs());
+        this.app.getRootNavs()[0].push(SendingDetailPage, { sendingId: key });
     }
 
     goToCheckout(key: string) {
@@ -56,12 +55,12 @@ export class SendingsActivePage implements OnInit {
         let subsc = obs.subscribe(snap => {
             loader.dismiss();
             subsc.unsubscribe();
-            this.app.getRootNav().push(CheckoutPage, { sending: snap.val() });
+            this.app.getRootNavs()[0].push(CheckoutPage, { sending: snap.val() });
         });
     }    
 
     createSending() {
-        this.app.getRootNav().setRoot(SendingCreatePage);
+        this.app.getRootNavs()[0].setRoot(SendingCreatePage);
     }
 
     getStatusMessage(currentStageStatus) {

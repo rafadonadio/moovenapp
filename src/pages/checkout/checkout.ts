@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs/Rx';
 import { UserAccount } from '../../models/user-model';
 import { AccountService } from '../../providers/account-service/account-service';
 import { CheckoutService } from '../../providers/checkout-service/checkout-service';
-import { SendingService } from '../../providers/sending-service/sending-service';
 import { SendingRequest } from '../../models/sending-model';
 import { CardTokenData, PrepaymentData } from '../../providers/payment-gateways/mercadopago-model';
 import { DateService } from '../../providers/date-service/date-service';
@@ -17,7 +16,7 @@ import { NumberValidator } from '../../validators/number.validator';
 
 import { SendingPaymentService } from '../../providers/sending-service/sending-payment-service';
 
-import { SendingsActivePage } from '../sendings-active/sendings-active';
+import { SendingsTabsPage } from '../sendings-tabs/sendings-tabs';
 
 const CC_IMG = 'assets/img/credit-card-sm.png';
 
@@ -50,7 +49,6 @@ export class CheckoutPage implements OnInit {
 
     constructor(private navCtrl: NavController,
         private navParams: NavParams,
-        private sendingSrv: SendingService,
         private paySrv: SendingPaymentService,
         private loadingCtrl: LoadingController,
         private toastCtrl: ToastController,
@@ -119,9 +117,9 @@ export class CheckoutPage implements OnInit {
      *  8. SHOW MESSAGE
      */
     private runCheckout() {
-        console.info('__[CKT-0]__runCheckout');        
-        this.showPayLoader('Procesando pago ...');        
+        console.info('__[CKT-0]__runCheckout');              
         if(this.isFormValid()) {
+            this.showPayLoader('Procesando pago ...');             
             this.setTokenData();
             this.createCardToken()
                 .then((response) => this.validateCardTokenAndPay(response))
@@ -151,7 +149,7 @@ export class CheckoutPage implements OnInit {
                     handler: () => {
                         if (closePage) {
                             console.log('checkout > goToSendings');
-                            this.navCtrl.setRoot(SendingsActivePage);
+                            this.navCtrl.setRoot(SendingsTabsPage);
                         } else {
                             console.log('checkout > stay');
                         }
@@ -372,7 +370,7 @@ export class CheckoutPage implements OnInit {
                     text: 'Volver al listado',
                     handler: () => {
                         console.log('checkout, exit');
-                        this.navCtrl.setRoot(SendingsActivePage);
+                        this.navCtrl.setRoot(SendingsTabsPage);
                     }
                 }
             ]

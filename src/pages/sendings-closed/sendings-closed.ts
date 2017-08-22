@@ -38,7 +38,7 @@ export class SendingsClosedPage implements OnInit {
 
     goToDetail(key: string) {
         console.log('_goToDetail()', key);
-        this.app.getRootNav().push(SendingDetailPage, { sendingId: key });
+        this.app.getRootNavs()[0].push(SendingDetailPage, { sendingId: key });
     }
 
     getStatusMessage(currentStageStatus) {

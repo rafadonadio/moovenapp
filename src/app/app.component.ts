@@ -78,7 +78,7 @@ export class MyApp {
         ];
 
         // subscribe to authentication state
-        this.susbcribeAuthState();     
+        this.susbcribeAuthState();           
     }
 
     // VIEW ACTIONS
