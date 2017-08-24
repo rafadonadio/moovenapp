@@ -2,16 +2,12 @@ import { Observable } from 'rxjs';
 import { CardTokenData, PrepaymentData } from '../payment-gateways/mercadopago-model';
 import { MercadopagoService } from '../payment-gateways/mercadopago-service';
 import { Injectable } from '@angular/core';
-import { SendingDbService } from '../sending-service/sending-db-service';
-import { SendingStagesService } from '../sending-service/sending-stages-service';
 
 
 @Injectable()
 export class SendingPaymentService {
 
-    constructor(public dbSrv: SendingDbService,
-        public stagesSrv: SendingStagesService,
-        public mpagoSrv: MercadopagoService) {}
+    constructor(public mpagoSrv: MercadopagoService) {}
 
 
     /**
@@ -37,14 +33,6 @@ export class SendingPaymentService {
     clearSessionMP() {
         return this.mpagoSrv.clearSession();
     }
-
-    /**
-     *  DB METHODS
-     */
-
-     saveCheckoutResultToDB(userId:string, sendingId:string, paymentResult:any) {   
-        return this.dbSrv.writePaymentResult(userId, sendingId, paymentResult);
-     }
 
 }
 

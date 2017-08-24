@@ -1,9 +1,9 @@
+import { Subscription } from 'rxjs/Rx';
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
 import { ShipmentsPage } from '../shipments/shipments';
 import { ShipmentCreate2Page } from '../shipment-create-2/shipment-create-2';
-import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import {
     GMAP_CFG,
@@ -12,7 +12,6 @@ import {
     MapsMapPolylineOptions
 } from '../../providers/google-maps-service/google-maps-service';
 import { DateService } from '../../providers/date-service/date-service';
-import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
     selector: 'page-shipment-create',
@@ -20,8 +19,8 @@ import { UsersService } from '../../providers/users-service/users-service';
 })
 export class ShipmentCreatePage implements OnInit {
 
-    vacants = [];
-    vacantListener:any;
+    vacants;
+    vacantSubs:Subscription;
     // map
     map: any;
     mapMarkers = {
@@ -34,8 +33,6 @@ export class ShipmentCreatePage implements OnInit {
     constructor(public navCtrl: NavController,
         public gmapsService: GoogleMapsService,
         public dateSrv: DateService,
-        public users: UsersService,
-        public shipSrv:ShipmentsService,
         public sendingSrv:SendingService,
         public alertCtrl: AlertController,
         public loaderCtrl: LoadingController,
@@ -44,16 +41,18 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ngOnInit() {
-        console.info('__SCT__ shipmentCreate');
-        this.viewCtrl.didEnter.subscribe( () => {
-            console.log('__SCT__willEnter()');
-            this.initMap();
-            this.getVacants();            
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.log('__SCT__didLeave()');
-            this.vacantListener.unsubscribe();
-        });
+        this.initMap();         
+    }
+
+    ionViewWillEnter() {      
+        this.getVacants(); 
+    }
+
+    ionViewWillLeave() {
+        if(this.vacantSubs) {
+            this.vacantSubs.unsubscribe();
+        }
+        this.vacants = null;
     }
 
     select(sendingVacantId:string, sendingVacantData:any) {
@@ -71,6 +70,13 @@ export class ShipmentCreatePage implements OnInit {
                         .then(() => {
                             this.goToConfirm(sendingVacantId, sendingVacantData);
                         });
+                }else if(result.isTaken===true) {
+                    let title = 'Servicio tomado';
+                    let message = `El servicio ya ha sido tomado y esta siendo procesado. Por favor selecciona otro servicio.`;
+                    loader.dismiss()
+                        .then(() => {
+                            this.showAlertAndCancel(title, message);
+                        });                    
                 }else if(result.didLock===false) {
                     let timeLeft = Math.round(result.lockTimeLeft);
                     let title = 'No disponible';
@@ -141,12 +147,13 @@ export class ShipmentCreatePage implements OnInit {
      */
 
     private getVacants() {
-        let vacants = this.sendingSrv.getLiveVacant();
-        this.vacantListener = vacants.subscribe(snapshots => {
-            if(snapshots) {
-                snapshots.forEach(snapshot => {
-                    let key = snapshot.key;
-                    let value = snapshot.val();
+        let obs = this.sendingSrv.getLiveVacantObs(true);
+        this.vacantSubs = obs.subscribe(snaps => {
+            this.vacants = [];
+            if(snaps) {
+                snaps.forEach(snap => {
+                    let key = snap.key;
+                    let value = snap.val();
                     //console.log('vacants', key, value);
                     let item = {
                         key: key,

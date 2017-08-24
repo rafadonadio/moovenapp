@@ -1,9 +1,9 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController, AlertController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { EmailValidator } from '../../validators/email.validator';
-import { UsersService } from '../../providers/users-service/users-service';
 
 @Component({
     selector: 'modal-auth-reset-password',
@@ -17,8 +17,8 @@ export class ModalAuthResetPasswordPage implements OnInit{
     constructor(public navCtrl: NavController,
         public viewCtrl: ViewController,
         public formBuilder: FormBuilder,
-        public users: UsersService,
-        public alertCtrl: AlertController) {
+        public alertCtrl: AlertController,
+        public authSrv: AuthService) {
 
     }
 
@@ -36,12 +36,12 @@ export class ModalAuthResetPasswordPage implements OnInit{
 
     submit(formValue: any) {
         console.log('reset password > ' + formValue.email + ' > init ...');
-        this.users.resetPassword(formValue.email)
+        this.authSrv.sendPasswordResetEmail(formValue.email)
             .then(() => {
                 console.log('password reset > ok');
                 let alert = this.alertCtrl.create({
                     title: 'Reseteo de clave iniciado',
-                    message: 'Te hemos enviado un email con los pasos para resetear la clave. por favor revisa tu correo.',
+                    message: 'Te hemos enviado un email con los pasos para resetear la clave, por favor revisa tu correo.',
                     buttons: [
                         {
                             text: 'Cerrar',
@@ -54,9 +54,10 @@ export class ModalAuthResetPasswordPage implements OnInit{
                 });
                 alert.present();
             })
-            .catch((error) => {
-                console.log('reset password error > ', error.code);
-                this.showAlert(error.code);
+            .catch((error:any) => {
+                console.log('reset password error > ', error);
+                this.editForm.get('email').setValue('');
+                this.showAlert(error);
             });
     }
 
@@ -65,22 +66,22 @@ export class ModalAuthResetPasswordPage implements OnInit{
      *  PRIVATE
      */
 
-    private showAlert(code: string): void {
+    private showAlert(error:any): void {
         // init
         let title: string;
         let msg: string;
         // switch
-        switch(code) {
+        switch(error.code) {
 
             case 'auth/invalid-email':
                 title = 'Dirección inválida';
-                msg = 'La dirección de correo es inválida, ingrese una dirección válida y vuelva a intentar.';
+                msg = 'La dirección de correo es inválida, ingrese una dirección de correo válida y vuelva a intentar.';
                 this.presentAlert(title, msg);
                 break;
 
             case 'auth/user-not-found':
-                title = 'No encontrado';
-                msg = 'Es posible que la dirección ingresada no corresponda con un usuario registrado, vuelve a intentarlo.';
+                title = 'Solicitud recibida';
+                msg = 'Si la dirección ingresada corresponde a un usuario registrado, se enviará un correo con los datos para la recuperación de contraseña.';
                 this.presentAlert(title, msg);
                 break;
 

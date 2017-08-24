@@ -5,9 +5,8 @@ import {
     SendingNotifications,
     SendingRequest
 } from '../../models/sending-model';
-import { AngularFire } from 'angularfire2';
 import { Injectable } from '@angular/core';
-import { LocalNotifications } from 'ionic-native';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 const CFG = NOTIFICATIONS_CFG;
 const DB = SENDING_DB;
@@ -21,8 +20,8 @@ export class SendingNotificationsService {
     db: any = firebase.database();
     dbRef: firebase.database.Reference = firebase.database().ref();
 
-    constructor(public af:AngularFire,
-        public dateSrv: DateService) {
+    constructor(public dateSrv: DateService,
+        private localNotifications: LocalNotifications) {
     }
 
     // check if currentStage_Status exist in CFG object with notification settings
@@ -57,7 +56,7 @@ export class SendingNotificationsService {
     }
 
     sendLocalNotification(sendingId:string, contentLog:any) {
-        LocalNotifications.schedule({
+        this.localNotifications.schedule({
             title: contentLog.title,
             text: contentLog.msg,
             at: new Date(new Date().getTime() + 5 * 1000),

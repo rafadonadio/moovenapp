@@ -1,28 +1,28 @@
 <ion-header>
     <ion-navbar color="dark">
-        <ion-title>Confirmar cuenta</ion-title>
+        <ion-title>Completa tus Datos</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content class="signup-merge">
     <div class="profile">
         <ion-fab top right>
-            <button ion-fab color="light"
+            <button ion-fab color="dark"
                 (click)="updatePicture()">
-                <ion-icon name=camera color="dark"></ion-icon></button>
+                <ion-icon name="camera"></ion-icon></button>
         </ion-fab>
-        <img [src]="user?.photoURL || profileBgDefault">
+        <img style="min-height:240px" [src]="account?.profile.data.photoURL || profileBgDefault">
     </div>
     <form [formGroup]="form" padding>
         <ion-grid>
             <ion-row>
-                <ion-col width-50>
+                <ion-col>
                     <ion-item class="item-input">
                         <ion-label stacked>NOMBRE</ion-label>
                         <ion-input type="text" formControlName="firstName" placeholder="Ingresa tu nombre"></ion-input>
                     </ion-item>
                     <div *ngIf="form.get('firstName').hasError('required') && (form.get('firstName').touched || showErrors)" class="input-error">* Ingresa tu nombre</div>
                 </ion-col>
-                <ion-col width-50>
+                <ion-col>
                     <ion-item class="item-input">
                         <ion-label stacked>APELLIDO</ion-label>
                         <ion-input type="text" formControlName="lastName" placeholder="Ingresa tu apellido"></ion-input>
@@ -68,7 +68,8 @@
         </ion-item>
         <div *ngIf="form.get('tosAccept').value==false && showErrors" class="input-error">&nbsp;* Lee y acepta los términos y condiciones</div>
         <button ion-button color="dark" block margin-bottom margin-top 
-            (click)="submitSignupMergeForm(form.value)">Confirmar y Guardar</button>
+            [disabled]="!tosVersion || !account"
+            (click)="submit()">Confirmar y Guardar</button>
         <button ion-button clear block margin-bottom margin-top 
             color="dark"
             (click)="signOut()">Salir</button>

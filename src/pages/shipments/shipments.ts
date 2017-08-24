@@ -1,12 +1,14 @@
-import { UsersService } from '../../providers/users-service/users-service';
-import { UserAccount } from '../../models/user-model';
-import { SendingsPage } from '../sendings/sendings';
-import { AlertController } from 'ionic-angular/components/alert/alert';
+import { DateService } from '../../providers/date-service/date-service';
+import { Subscription } from 'rxjs/Rx';
+import { AccountService } from '../../providers/account-service/account-service';
+import { UserAccount, UserAccountOperator } from '../../models/user-model';
+import { AlertController, ToastController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
 import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
+import { FirebaseListObservable } from 'angularfire2/database';
 
 @Component({
     selector: 'page-shipments',
@@ -14,80 +16,39 @@ import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 })
 export class ShipmentsPage implements OnInit{
 
-    sectionEnabled:boolean;
-    shipments:any;
-    shipmentsEmpty:boolean;
-    shipmentsSuscription:any;   
-    accountStatus: any;
+    // operatorAuth flags
+    operatorAuthUnchecked:any;
+    // account
+    accountSubs: Subscription;
+    account: UserAccount;
+    operator: UserAccountOperator;
+    // list
+    shipments:FirebaseListObservable<any>;
 
     constructor(private navCtrl: NavController,
-        public shipmentsSrv:ShipmentsService,
+        public shipmentSrv:ShipmentsService,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
-        public users: UsersService) {}
+        private accountSrv: AccountService,
+        private toastCtrl: ToastController,
+        private dateSrv: DateService) {}
 
     ngOnInit() {
-        console.info('__SHP__shipments');
-        this.viewCtrl.willEnter.subscribe( () => {
-            console.log('__SHP__willEnter()');
-            this.isUserGranted()
-                .then((result:any) => {
-                    console.log('result', result);
-                    if(result.enabled == true) {
-                        this.sectionEnabled = true;
-                        this.getAllActive();            
-                    }else{
-                        this.showBlockMessage();
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.log('__SHP__didLeave()');
-            if(this.sectionEnabled) {
-                this.shipmentsSuscription.unsubscribe();
-            }
-        });                
+        console.info('__shipment__');
     }
 
-    private isUserGranted() {
-        // init
-        this.sectionEnabled = false;
-        let steps = {
-            reload: false,
-            account: false,
-            enabled: false,
-            error: false,
-            errorCode: ''
+    ionViewWillEnter() {
+        this.operatorAuthUnchecked = true;
+        this.init();  
+    }
+
+    ionViewWillLeave() {
+        console.log('shipments leaving ..');
+        this.shipments = null;
+        if(this.accountSubs) {
+            console.log('unsubscribed');
+            this.accountSubs.unsubscribe();
         }
-        let account: UserAccount;        
-        // get data
-        return new Promise((resolve, reject) => {
-            this.users.reloadUser()
-                .then(() => {
-                    steps.reload = true;
-                    return this.users.getAccount();
-                })
-                .then((snapshot) => {
-                    steps.account = true;
-                    account = snapshot.val();              
-                    this.accountStatus = this.users.accountProfilesStatus(account); 
-                    if(this.accountStatus.hasOwnProperty('operator') && this.accountStatus.operator == true) {
-                        steps.enabled = true;
-                    }else{
-                        steps.error = true;
-                        steps.errorCode = 'operator_property_false_or_not_found';
-                    }
-                    resolve(steps);         
-                })
-                .catch((error) => {
-                    steps.error = true;
-                    steps.errorCode = 'get_account_failed';
-                    resolve(steps);
-                }); 
-        });
     }
 
     goToDetail(data:any) {
@@ -99,7 +60,11 @@ export class ShipmentsPage implements OnInit{
     }
 
     goToCreate() {
-        this.navCtrl.setRoot(ShipmentCreatePage);
+        if(this.operator.active) {
+            this.navCtrl.setRoot(ShipmentCreatePage);
+        }else{
+            this.toastNotAvailable();
+        }
     }
 
     getStatusMessage(currentStageStatus) {
@@ -119,47 +84,47 @@ export class ShipmentsPage implements OnInit{
                 break;                             
         }
         return message;
-    }
+    }    
 
     /**
      *  PRIVATE
-     */
+     */  
+
+    private init() {
+        this.setAccount()
+            .then(() => {
+                this.getAllActive();
+            });
+    }
 
     private getAllActive() {
-        let listRef = this.shipmentsSrv.getAllMyActiveRef();
-        this.shipmentsSuscription = listRef.subscribe(snapshots => {
-                console.log('__SHP__ getAllActive');                
-                this.shipments = [];
-                if(snapshots) {
-                    snapshots.forEach(snapshot => {
-                        let key = snapshot.key;
-                        let item = {
-                            key: key,
-                            data: snapshot.val(),
-                        };
-                        this.shipments.push(item); 
-                    });
-                }
-                if(this.shipments.length > 0) {
-                    this.shipmentsEmpty = false;
-                }else{
-                    this.shipmentsEmpty = true;
-                }
+        this.shipments = this.shipmentSrv.getAllActiveObs();
+    }     
+
+    private setAccount(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let obs = this.accountSrv.getObs(true);
+            this.accountSubs = obs.subscribe((snap) => {
+                this.account = snap.val();
+                this.operator = this.account.operator;
+                this.operatorAuthUnchecked = false;
+                console.log('set account', this.account, this.operator, this.operatorAuthUnchecked);
+                resolve();
+            },
+            err => {
+                console.log(err);
+                reject();
             });
+        });
     }
 
-    private showBlockMessage() {
-        let alert = this.alertCtrl.create({
-            title: '¿Querés registrarte como Operador?',
-                message: 'Envíanos un email con tus datos a contacto@moovenapp.com y te contamos como unirte.',
-                buttons: [{ 
-                    text: 'Volver',
-                    role: 'cancel',
-                    handler: () => {
-                        this.navCtrl.setRoot(SendingsPage);
-                    }
-                }]
+    private toastNotAvailable() {
+        let toast = this.toastCtrl.create({
+                message: 'Función no disponible',
+                duration: 2000
             });
-        alert.present();        
+        toast.present();
     }
+
+
 }

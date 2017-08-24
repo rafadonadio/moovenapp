@@ -11,7 +11,7 @@ export const SENDING_CFG = {
                 _LIST: ['registered', 'paid', 'enabled'],
                 REGISTERED: 'registered',
                 PAID: 'paid', // paid done, not yet confirmed
-                ENABLED: 'enabled', // payment confirmed 
+                ENABLED: 'enabled', // payment confirmed
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
@@ -35,13 +35,14 @@ export const SENDING_CFG = {
         LIVE: {
             ID: 'live',
             STATUS: {
-                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped'],
+                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped','notificationsexpired'],
                 WAITOPERATOR: 'waitoperator',
                 GOTOPERATOR: 'gotoperator',
                 WAITPICKUP: 'waitpickup',
                 PICKEDUP: 'pickedup',
                 INROUTE: 'inroute',
-                DROPPED: 'dropped'
+                DROPPED: 'dropped',
+                NOTIFICATIONSEXPIRED: 'notificationsexpired'
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
@@ -74,14 +75,27 @@ export const SENDING_CFG = {
         CLOSED: {
             ID: 'closed',
             STATUS: {
-                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'gotoperatorexpired'],
+                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'gotoperatorexpired','payexpired'],
                 COMPLETE: 'complete',
                 CANCELEDBYSENDER: 'canceledbysender',
                 CANCELEDBYOPERATOR: 'canceledbyoperator',
-                GOTOPERATOREXPIRED: 'gotoperatorexpired'
+                GOTOPERATOREXPIRED: 'gotoperatorexpired',
+                PAYEXPIRED: 'payexpired' 
             }
         }
     },
+    PRICE_LIST: {
+        BASIC: {
+            MIN_FARE: {
+                VALUE: 100
+            },
+            PER_DISTANCE: [
+                { ID:'0-25', GRTR_THAN:0, SMLR_OR_EQUAL:25, VALUE_PER_KM: 10 },
+                { ID:'25-50', GRTR_THAN:25, SMLR_OR_EQUAL:50, VALUE_PER_KM: 8 },
+                { ID:'50-10000', GRTR_THAN:50, SMLR_OR_EQUAL:10000, VALUE_PER_KM: 5 },
+            ]                 
+        }
+    }
 }
 
 export const NOTIFICATIONS_CFG = {
@@ -255,9 +269,9 @@ export const SENDING_DB = {
             PAYMENTS: '/_payments/'
         }
     },
-    HASHID: {
-        REF: 'sendingsHashid/',
-        _NODE: 'sendingsHashid',
+    PUBLICID: {
+        REF: 'sendingsByPublicid/',
+        _NODE: 'sendingsByPublicid',
     },
     BYUSER: {
         REF: 'userSendings/',
@@ -375,10 +389,11 @@ export class SendingRequestLiveSummary {
 export class SendingRequest {
     sendingId: string;
     publicId: string;
-    timestamp: number;
+    timestamp: any;
     userUid: string;
     price: number;   
-    priceMinFareApplied: boolean;               
+    priceMinFareApplied: boolean;  
+    priceItems: Array<any>;             
     routeDistanceMt: number;
     routeDistanceKm: number;
     routeDistanceTxt: string;
@@ -389,6 +404,7 @@ export class SendingRequest {
     _currentStatus?: string;
     _currentStage_Status?: string;  
     _operator?: SendingOperator;
+    _shipmentId?: string;
     _notifications?: Array<SendingNotifications>;
     _payments?: any;
     objectShortName: string;
@@ -523,7 +539,11 @@ export class StageLiveNode {
         dropped: {
             set: boolean,
             timestamp: number,
-        },                    
+        },        
+        notificationsexpired: {
+            set: boolean,
+            timestamp: number,
+        },                  
     } 
 }
 
@@ -546,7 +566,11 @@ export class StageClosedNode {
         gotoperatorexpired: {
             set: boolean,
             timestamp: number,
-        },                    
+        },      
+        payexpired: {
+            set: boolean,
+            timestamp: number,
+        },                   
     } 
 }
 

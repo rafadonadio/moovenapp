@@ -1,19 +1,18 @@
-import { LoadingController } from 'ionic-angular/components/loading/loading';
-import { UsersService } from '../../providers/users-service/users-service';
+import { Subscription } from 'rxjs/Rx';
+import { AccountService } from '../../providers/account-service/account-service';
+import { LoadingController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { SendingRequest } from '../../models/sending-model';
-import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
 import { ActionSheetController, AlertController, NavController, NavParams, ViewController } from 'ionic-angular';
 
-const NOTIFICATIONS_LIST = SHIPMENT_CFG.NOTIFICATIONS_TO_SHOW;
 
 @Component({
     selector: 'page-shipment-detail',  
     templateUrl: 'shipment-detail.html',
 })
-export class ShipmentDetailPage implements OnInit{
+export class ShipmentDetailPage implements OnInit {
 
     shipmenttab: string = "notifications";
     shipmentId:string;
@@ -22,9 +21,9 @@ export class ShipmentDetailPage implements OnInit{
     sending:SendingRequest;
     shipment:any;
     sender:any;
-    shipmentListener:any;
-    sendingListener:any;
-    senderListener:any;
+    shipmentSubs:any;
+    sendingSubs:Subscription;
+    senderSubs:Subscription;
     notifications:Array<any>;
 
     constructor(public navCtrl: NavController,
@@ -33,44 +32,48 @@ export class ShipmentDetailPage implements OnInit{
         public alertCtrl: AlertController,
         public sendingSrv: SendingService,
         public shipmentSrv: ShipmentsService,
-        public userSrv: UsersService,
         public viewCtrl: ViewController,
-        public loadingCtrl: LoadingController) {
+        public loadingCtrl: LoadingController,
+        private accountSrv: AccountService) {
     }
 
     ngOnInit() {
-        console.info('__SHD__shipmentDetail');
-        let loader = this.loadingCtrl.create({ content: "Cargando ..." });
-        loader.present();           
-        this.viewCtrl.willEnter.subscribe( () => {
-            console.log('__SHD__willEnter()');
-            this.getParams();
-            let shipment = this.shipmentSrv.getShipment(this.shipmentId);
-            this.shipmentListener = shipment.subscribe(snapshot => {
-                this.shipment = snapshot.val();
-                loader.dismiss();
-            })
-            let sending = this.sendingSrv.getSending(this.sendingId);
-            this.sendingListener = sending.subscribe(snapshot => {
-                this.sending = snapshot.val();
-                this.filterAndConvertNotificationsToArray();
-                this.userSrv.getAccountProfileDataByUid(this.sending.userUid)
-                    .then((snapshot) => {
-                        this.sender = snapshot.val();
-                    })                
-            })
-        });
-        this.viewCtrl.didLeave.subscribe( () => {
-            console.log('__SHD__didLeave()');
-            this.shipmentListener.unsubscribe();
-            this.sendingListener.unsubscribe();
-        });  
+
     }
 
-    private getParams() {
-        console.info('__PRM__  getParams');
+    ionViewWillEnter() {
+        console.info('get params');
         this.shipmentId = this.navParams.get('shipmentId');
         this.sendingId = this.navParams.get('sendingId');
+        // get shipment/sending 
+        let loader = this.loadingCtrl.create({ content: "Cargando ..." });     
+        let shObs = this.shipmentSrv.getObs(this.shipmentId);
+        this.shipmentSubs = shObs.subscribe(snapshot => {
+            this.shipment = snapshot.val();
+            loader.dismiss();
+        })
+        let obs = this.sendingSrv.getByIdObs(this.sendingId, true);
+        this.sendingSubs = obs.subscribe(snapshot => {
+            this.sending = snapshot.val();
+            this.setNotificationsAsArray();
+            let obs = this.accountSrv.getObs(true);
+            this.senderSubs = obs.subscribe((snap) => {
+                    let account = snap.val();
+                    this.sender = account.profile.data;
+                });                
+        });           
+    }    
+
+    ionViewWillLeave() {
+        console.log('__SHD__didLeave()');
+        if(this.shipmentSubs){
+            this.shipmentSubs.unsubscribe();
+        }
+        if(this.sendingSubs) {
+            this.sendingSubs.unsubscribe();
+        }
+        this.sending = null;
+        this.shipment = null;
     }
 
     goToTab(tab: string) {
@@ -85,7 +88,12 @@ export class ShipmentDetailPage implements OnInit{
                     text: 'Interrumpir servicio',
                     icon: 'close',
                     handler: () => {
-                        this.showAlertNotifyAction('cancel');
+                        actionSh.dismiss()
+                            .then(() => {
+                                this.showAlertNotifyAction('cancelService');
+                            })
+                            .catch(err => console.log(err));
+                            return false;
                     }
                 }
             ]
@@ -93,21 +101,17 @@ export class ShipmentDetailPage implements OnInit{
         actionSh.present();
     }
 
-    private filterAndConvertNotificationsToArray() {
+
+    private setNotificationsAsArray() {
         this.notifications = [];
-        let notifis = this.sending._notifications;
-        let stageStatus:string;
+        let notifis = this.shipment._notifications || [];
         for(let key in notifis) {
             //console.log(key, notifis[key]);
-            stageStatus = notifis[key].currentStage_Status;
-            if(NOTIFICATIONS_LIST[stageStatus]===true) {
-                //console.log('show notifis > ', stageStatus);
-                let item = {
-                    key: key,
-                    data: notifis[key]
-                };
-                this.notifications.push(item);
-            }
+            let item = {
+                key: key,
+                data: notifis[key]
+            };
+            this.notifications.push(item);
         }
         //console.log(this.notifications);
     }
@@ -121,18 +125,18 @@ export class ShipmentDetailPage implements OnInit{
         switch(action) {
             case 'pickupDone':
                     content.set = true;
-                    content.title = 'Retirado';
+                    content.title = 'Servicio Retirado';
                     content.message = 'Confirmo que he retirado el servicio';        
                 break;
             case 'dropDone':
                     content.set = true;
-                    content.title = 'Entregado';
+                    content.title = 'Servicio Entregado';
                     content.message = 'Confirmo que he entregado el servicio';                
                 break;
-            case 'cancel':
+            case 'cancelService':
                     content.set = true;
-                    content.title = 'Servicio interrumpido';
-                    content.message = 'Confirmo que interrumpo la continuidad del servicio, dejando el mismo inconcluso.';                
+                    content.title = 'Seguro deseas interrumpir el Servicio?';
+                    content.message = 'El Servicio se registrará como interrumpido e inconcluso, es posible que se envien notificaciones a las partes.';                
                 break;                
         }
         if(content.set) {
@@ -141,14 +145,14 @@ export class ShipmentDetailPage implements OnInit{
                 message: content.message,
                 buttons: [
                     {
-                        text: 'Cancelar',
+                        text: 'No',
                         role: 'cancel',
                         handler: () => {
-                        console.log('Cancel clicked');
+                            console.log('Cancel clicked');
                         }
                     },
                     {
-                        text: 'Confirmo',
+                        text: 'Sí, confirmo',
                         handler: () => {
                             this.runNotifyAction(action);
                         }
@@ -163,21 +167,65 @@ export class ShipmentDetailPage implements OnInit{
     }
 
     private runNotifyAction(action:string):void {      
-        if(action=='pickupDone') {
-            this.sendingSrv.updateLiveStatusToPickedup(
-                                            this.shipment.shipmentId, 
-                                            this.sending.sendingId)
-                .then((result) => {
-                    console.log('runNotifyAction > success', result);
-                })
-                .catch((error) => {
-                    console.error('runNotifyAction > failed', error);
-                });
-        }else if(action=='dropDone') {
-            this.sendingSrv.updateLiveStatusToDroppedAndComplete(this.shipment.shipmentId, this.sending.sendingId);    
-        }else if(action=='cancel') {
-            //this.sendingSrv.updateLiveStatusToCanceled(this.shipment.shipmentId, this.sending.sendingId);    
-        } 
+        switch(action) {
+
+            case 'pickupDone':
+                this.sendingSrv.setPickedup(this.sending.sendingId)
+                    .then((result) => {
+                        console.log('runNotifyAction > success', result);
+                    })
+                    .catch((error) => {
+                        console.error('runNotifyAction > failed', error);
+                    });
+                break;
+
+            case 'dropDone':
+                this.sendingSrv.setDropped(this.sending.sendingId)
+                    .then((result) => {
+                        console.log('runNotifyAction > success', result);
+                    })
+                    .catch((error) => {
+                        console.error('runNotifyAction > failed', error);
+                    });
+                break;
+
+            case 'cancelService':
+                let loading = this.loadingCtrl.create({ content: 'cancelando ...'});
+                this.sendingSrv.setCanceledbyoperator(this.sending.sendingId)
+                    .then(() => {
+                        console.log('service canceled ok');
+                        let alert = this.alertCtrl.create({
+                            title: 'Cancelación en proceso',
+                            subTitle: 'La cancelación del servicio se ha iniciado correctamente.',
+                            buttons: ['Cerrar']
+                        });
+                        loading.dismiss()
+                            .then(() => {
+                                console.log('loading dismissed');
+                                alert.present();
+                                return alert.onDidDismiss(() => {
+                                    console.log('alert dismissed');
+                                    this.navCtrl.pop();
+                                });
+                            })
+                            .catch(err => console.log(err));
+                    })
+                    .catch(err => {
+                        console.log('sending canceled error', err.error);
+                        let alert = this.alertCtrl.create({
+                            title: 'Error',
+                            subTitle: 'Ocurrió un error, no se pudo iniciar la cancelación del servicio, vuelve a intentarlo.',
+                            buttons: ['Cerrar']
+                        });
+                        loading.dismiss()
+                            .then(() => {
+                                alert.present();
+                            })
+                            .catch(err => console.log(err));
+                    });                
+                break;
+        }
+
     }
 
 }

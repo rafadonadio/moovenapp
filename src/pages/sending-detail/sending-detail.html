@@ -81,7 +81,7 @@
             <ion-item text-wrap no-lines *ngIf="sending?._stages.live.status.pickedup.set==false">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retiro</h3>
-                <p>A retirarse entre {{ sending?.pickupTimeFrom }} y {{ sending?.pickupTimeTo }}</p>
+                <p>A retirarse el {{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo | formatdatePipe:'HH:mm' }}</p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending?._stages.live.status.pickedup.set==true">
@@ -96,7 +96,7 @@
             <ion-item text-wrap *ngIf="sending?._stages.live.status.dropped.set==false">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entrega</h3>
-                <p>A entregarse entre {{ sending?.dropTimeFrom }} y {{ sending?.dropTimeTo }}</p>
+                <p>A entregarse el {{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.dropTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo | formatdatePipe:'HH:mm' }}</p>
                 <ion-icon name="time" item-right></ion-icon>
             </ion-item>
             <ion-item text-wrap *ngIf="sending?._stages.live.status.dropped.set==true">
@@ -183,8 +183,8 @@
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
-                    <p>Banda horaria para el retiro.</p>
-                    <h2>{{ sending?.pickupTimeFrom }}:{{ sending?.pickupTimeTo }}</h2>
+                    <p>Fecha y horario para el retiro.</p>
+                    <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo | formatdatePipe:'HH:mm' }}</h2>
                 </ion-item>
             </ion-item-group>
             <ion-item-divider>Persona que entrega
@@ -232,8 +232,8 @@
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
                     <ion-icon name="time" item-left></ion-icon>
-                    <p>Banda horaria para hacer la entrega.</p>
-                    <h3>{{ sending?.dropTimeFrom }}:{{ sending?.dropTimeTo }}</h3>
+                    <p>Fecha y horario para hacer la entrega.</p>
+                    <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.dropTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo | formatdatePipe:'HH:mm' }}</h2>
                 </ion-item>
                 <ion-item-divider>Persona que recibe
                     <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending?.dropPersonPhone }}" target="_system">

@@ -11,23 +11,24 @@
 <ion-content>  
     <form
         [formGroup]="chForm"
-        (ngSubmit)="runCheckout()"> 
+        (ngSubmit)="checkout()"> 
     <ion-list>
         <ion-item no-lines>
             <h2>Mi Servicio: <b>{{ sending.objectShortName }}</b></h2>
             <p>#{{ sending.publicId }}</p>        
         </ion-item>           
         <ion-list-header>Pagar con Tarjeta de Crédito</ion-list-header>        
-
         <ion-item no-lines>
             <div class="input-item-left" item-left>
                 <img [src]="cardThumbnail">
-            </div>            
+            </div>  
+        </ion-item>
+        <ion-item no-lines>
             <ion-label color="primary" stacked>Número de la tarjeta</ion-label>
             <ion-input type="text" data-checkout="cardNumber"
                 placeholder="Número de tarjeta"
                 formControlName="cardNumber"
-                (keyup)="guessPaymentMethod($event)"></ion-input>
+                (keyup)="triggerPaymentGuess()"></ion-input>
         </ion-item>
         <div class="error"
             *ngIf="chForm.get('cardNumber').hasError('required') && (chForm.get('cardNumber').touched || showRequired)"
@@ -42,9 +43,7 @@
             *ngIf="invalidCardNumber"
             >Número de tarjeta inválido para pagos</div>                                    
 
-        <ion-item no-lines>
-            <div class="input-item-left" item-left>
-            </div>             
+        <ion-item no-lines>     
             <ion-label color="primary" stacked>Código de seguridad</ion-label>
             <ion-input type="password" data-checkout="securityCode" 
                 formControlName="securityCode"
@@ -60,9 +59,7 @@
             *ngIf="chForm.get('securityCode').hasError('isNumber') && !chForm.get('securityCode').hasError('required')"
             >Solo números</div>    
 
-        <ion-item no-lines>
-            <div class="input-item-left" item-left>
-            </div>                         
+        <ion-item no-lines>                
             <ion-label color="primary" stacked>Vencimiento de la tarjeta</ion-label>            
             <ion-datetime cancelText="Cancelar" doneText="Listo" 
                 displayFormat="MM YYYY"
@@ -73,9 +70,7 @@
                 [(ngModel)]="cardExpiration"></ion-datetime>
         </ion-item> 
 
-        <ion-item no-lines>
-            <div class="input-item-left" item-left>
-            </div>                         
+        <ion-item no-lines>                  
             <ion-label color="primary" stacked>Nombre titular de la tarjeta</ion-label>
             <ion-input type="text" data-checkout="cardHolderName" 
                 formControlName="cardHolderName"
@@ -85,9 +80,7 @@
             *ngIf="chForm.get('cardHolderName').hasError('required') && (chForm.get('cardHolderName').touched || showRequired)"
             >Ingresa el nombre del titular de la tarjeta</div>        
 
-        <ion-item no-lines margin-bottom>
-            <div class="input-item-left" item-left>
-            </div>                         
+        <ion-item no-lines margin-bottom>                      
             <ion-label color="primary" stacked>DNI</ion-label>
             <ion-input type="text" data-checkout="docNumber" 
                 formControlName="docNumber"

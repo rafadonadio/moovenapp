@@ -44,15 +44,16 @@
             </button>
 
             <!-- IF -->
-            <ion-item no-lines *ngIf="sending?._stages.live.status.pickedup.set==false">
+            <ion-item no-lines *ngIf="sending?._stages.live.status.pickedup.set==false" text-wrap>
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retirar</h3>
-                <p>Retirar entre {{ sending?.pickupTimeFrom }} y {{ sending?.pickupTimeTo }}</p>
+                <p>Retirar el {{ sending?.pickupDate| formatdatePipe:'dddd DD/MMMM' }} entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo| formatdatePipe:'HH:mm' }} hs</p>
                 <button ion-button small item-right color="green" (click)="showAlertNotifyAction('pickupDone')">
                     Notificar
                 </button>
             </ion-item>
-            <button class="active" ion-item no-lines *ngIf="sending?._stages.live.status.pickedup.set==true" (click)="goToTab('pickup')">
+            <button class="active" ion-item no-lines text-wrap
+                *ngIf="sending?._stages.live.status.pickedup.set==true" (click)="goToTab('pickup')">
                 <ion-icon name="home" item-left></ion-icon>
                 <h3>Retirado</h3>
                 <p>Retirado de {{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</p>
@@ -61,17 +62,19 @@
             <!-- ENDIF -->
 
             <!-- IF -->
-            <ion-item *ngIf="sending?._stages.live.status.dropped.set==false">
+            <ion-item *ngIf="sending?._stages.live.status.dropped.set==false" text-wrap>
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entregar</h3>
-                <p>Entregar entre {{ sending?.dropTimeFrom }} y {{ sending?.dropTimeTo }}</p>
+                <p>Entregar el {{ sending?.dropTimeFrom | formatdatePipe:'dddd DD/MMMM' }} entre {{ sending?.dropTimeFrom | formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo | formatdatePipe:'HH:mm' }}</p>
                 <button ion-button small item-right color="green" 
                     (click)="showAlertNotifyAction('dropDone')" 
                     [disabled]="sending?._stages.live.status.pickedup.set==false">
                     Notificar
                 </button>
             </ion-item>
-            <button *ngIf="sending?._stages.live.status.dropped.set==true" class="active" ion-item no-lines (click)="goToTab('drop')">
+            <button class="active" ion-item no-lines text-wrap
+                *ngIf="sending?._stages.live.status.dropped.set==true" 
+                (click)="goToTab('drop')">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h3>Entregado</h3>
                 <p>Entregado en {{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</p>
@@ -145,10 +148,10 @@
                     <h3>{{ sending?.pickupAddressCityShort }}, {{ sending?.pickupAddressStateShort }}</h3>
                 </ion-item>
                 <ion-item-divider>Horario</ion-item-divider>
-                <ion-item no-lines>
+                <ion-item no-lines text-wrap>
                     <ion-icon name="time" item-left></ion-icon>
                     <p>Banda horaria para el retiro</p>
-                    <h2>{{ sending?.pickupTimeFrom }} a {{ sending?.pickupTimeTo }}</h2>
+                    <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMMM' }} entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo| formatdatePipe:'HH:mm' }} hs</h2>
                 </ion-item>
                 <ion-item-divider>Persona que entrega
                     <button ion-button outline item-right icon-left color="green">
@@ -183,10 +186,10 @@
                     <h3>{{ sending?.dropAddressCityShort }}, {{ sending?.dropAddressStateShort }}</h3>
                 </ion-item>
                 <ion-item-divider>Horario</ion-item-divider>
-                <ion-item no-lines>
+                <ion-item no-lines text-wrap>
                     <ion-icon name="time" item-left></ion-icon>
                     <p>Banda horaria para la entrega</p>
-                    <h2>{{ sending?.dropTimeFrom }} a {{ sending?.dropTimeTo }}</h2>
+                    <h2>{{ sending?.dropTimeFrom| formatdatePipe:'dddd DD/MMMM' }} entre {{ sending?.dropTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo| formatdatePipe:'HH:mm' }} hs</h2>
                 </ion-item>
                 <ion-item-divider>Persona que recibe
                     <button ion-button outline item-right icon-left color="green">

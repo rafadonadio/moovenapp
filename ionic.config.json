@@ -1,6 +1,8 @@
 {
-  "name": "moovenAppDev",
-  "app_id": "4557e0f5",
-  "typescript": true,
-  "v2": true
+  "name": "MoovenAppDev",
+  "app_id": "631fc735",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
 }

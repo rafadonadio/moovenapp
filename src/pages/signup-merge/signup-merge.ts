@@ -1,14 +1,15 @@
+import { ConfigService } from '../../providers/config-service/config-service';
+import { UserAccount, UserProfileData } from '../../models/user-model';
+import { Subscription } from 'rxjs/Rx';
+import { AccountService } from '../../providers/account-service/account-service';
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { StartPage } from '../start/start';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
-import { VerifyPhonePage } from '../verify-phone/verify-phone';
 import { ModalTosPage } from '../modal-tos/modal-tos';
-
-import { Camera } from 'ionic-native';
-
+import { VerifyPhonePage } from '../verify-phone/verify-phone';
+import { Camera } from '@ionic-native/camera';
 import firebase from 'firebase';
 
 const STRG_USER_FILES = 'userFiles/';
@@ -24,18 +25,23 @@ export class SignupMergePage implements OnInit{
     showErrors:boolean = false;
     user: firebase.User;
     loader:any;
+    account: UserAccount;
+    accountSubs:Subscription;
+    tosVersion: any;
 
     constructor(public navCtrl: NavController,
-        public users: UsersService,
         public formBuilder: FormBuilder,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
         public alertCtrl: AlertController,
-        public modalCtrl: ModalController) {
+        public modalCtrl: ModalController,
+        public cameraPlugin: Camera,
+        public authSrv: AuthService,
+        public accountSrv: AccountService,
+        public configSrv: ConfigService) {
     }
 
     ngOnInit() {
-        this.setUser();
         this.form = this.formBuilder.group({
             firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
             lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -43,13 +49,17 @@ export class SignupMergePage implements OnInit{
             phoneMobile: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(25)]],
             tosAccept: [false, []]
         });
+        this.setTosVersion();
+        this.setUser();
+        this.setAccount();
     }
 
+    ionViewWillUnload() {
+        this.unsubscribeAccount();
+    }
 
-    submitSignupMergeForm(value: any): void {
-        console.info('__SMF__ SignupMergeForm');
-        console.log('__SMF__ ',this.form.valid, this.form.get('tosAccept').value);
-        // verify inputs are valid
+    submit() {
+        console.log('submit form, tosAccept', this.form.valid, this.form.get('tosAccept').value);
         if(!this.form.valid || this.form.get('tosAccept').value==false) {
             // something is not good
             this.showErrors = true;
@@ -59,49 +69,8 @@ export class SignupMergePage implements OnInit{
                 buttons: ['Cerrar']
             });
             alert.present();            
-        }else{
-            this.showErrors = false;
-            // loader effect
-            this.loader = this.loadingCtrl.create({
-                content: 'Guardando ...'
-            });
-            this.loader.present();
-            // profile data
-            let profileData = {
-                firstName: value.firstName,
-                lastName: value.lastName,
-                phonePrefix: value.phonePrefix,
-                phoneMobile: value.phoneMobile
-            };
-            // update
-            console.info('__CA2__ createAccountStep2');
-            this.users.createAccountStep2(profileData)
-                .then((result) => {                    
-                    console.log('__CA2__', result);
-                    this.loader.dismiss()
-                        .then(() => {
-                            this.navCtrl.setRoot(VerifyPhonePage);
-                        })
-                        .catch(error => console.log(error));
-                })
-                .catch((error) => {
-                    console.error('__CA2__', error);
-                    this.loader.dismiss()
-                        .then(() => {
-                            let alert = this.alertCtrl.create({
-                                title: 'Atención',
-                                subTitle: 'Ocurrió un error al crear tu cuenta, por favor vuelve a intentarlo',
-                                buttons: [
-                                    {
-                                        text: 'Cerrar',
-                                        role: 'cancel'
-                                    }
-                                ]
-                            });
-                            alert.present();
-                        })
-                        .catch(error => console.log(error));
-                });
+        }else{                 
+            this.updateAccount();
         }
     }
 
@@ -123,7 +92,7 @@ export class SignupMergePage implements OnInit{
                 {
                     text: 'Cerrar sesión',
                     handler: () => {
-                        this.users.signOut();
+                        this.authSrv.signOut();
                         this.navCtrl.push(StartPage);
                     }
                 }
@@ -131,6 +100,7 @@ export class SignupMergePage implements OnInit{
         });
         alert.present();
     }
+
 
     /**
      * Take picture and save imageData
@@ -142,12 +112,12 @@ export class SignupMergePage implements OnInit{
             upload: false,
             update: false
         }
-        Camera.getPicture({
+        this.cameraPlugin.getPicture({
             quality: 95,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: Camera.PictureSourceType.CAMERA,
+            destinationType: this.cameraPlugin.DestinationType.DATA_URL,
+            sourceType: this.cameraPlugin.PictureSourceType.CAMERA,
             allowEdit: true,
-            encodingType: Camera.EncodingType.JPEG,
+            encodingType: this.cameraPlugin.EncodingType.JPEG,
             targetWidth: 900,
             targetHeight: 900,
             saveToPhotoAlbum: true,
@@ -165,21 +135,18 @@ export class SignupMergePage implements OnInit{
             steps.upload = true;
             let downloadURL = snapshot.downloadURL;
             let fullPath = snapshot.ref.fullPath;
-            return this.users.updateAccountImage(downloadURL, fullPath);
+            return this.accountSrv.updatePhoto(downloadURL, fullPath);
         })        
-        .then((result) => {
+        .then(() => {
             steps.update = true;
             console.log('__UDP__3 ok');
+            this.authSrv.reload();
             let toast = this.toastCtrl.create({
                 message: 'Tu foto de perfil fue actualizada!',
                 duration: 3000,
                 position: 'top'
             });
             toast.present();
-            toast.dismiss()
-                .then(() => {
-                    this.setUser();
-                });
         })
         .catch((error) => {
             console.error('__UDP__', error, steps);
@@ -196,6 +163,53 @@ export class SignupMergePage implements OnInit{
      * PRIVATE
      */
 
+
+    private updateAccount(): void {
+        console.log('updateAccount');
+        this.showErrors = false;
+        // loader effect
+        this.loader = this.loadingCtrl.create({
+            content: 'Guardando ...',
+        });
+        this.loader.present();
+        // profile data
+        let profileData: UserProfileData = this.account.profile.data;
+        // copy form values
+        profileData.firstName = this.form.value.firstName;
+        profileData.lastName = this.form.value.lastName;
+        profileData.phonePrefix = this.form.value.phonePrefix;
+        profileData.phoneMobile = this.form.value.phoneMobile;
+        profileData.lastTosAccepted = this.tosVersion;
+        // update
+        this.accountSrv.updateProfileData(profileData)
+            .then(() => {                    
+                console.log('update profile success');
+                this.loader.dismiss()
+                    .then(() => {
+                        this.navCtrl.setRoot(VerifyPhonePage);
+                    })
+                    .catch(error => console.log('dismiss error', error));
+            })
+            .catch((error) => {
+                console.error('update profile success', error);
+                this.loader.dismiss()
+                    .then(() => {
+                        let alert = this.alertCtrl.create({
+                            title: 'Atención',
+                            subTitle: 'Ocurrió un error al completar tu cuenta, por favor vuelve a intentarlo',
+                            buttons: [
+                                {
+                                    text: 'Cerrar',
+                                    role: 'cancel'
+                                }
+                            ]
+                        });
+                        alert.present();
+                    })
+                    .catch(error => console.log(error));
+            });
+    }
+
     private uploadProfileImage(imageData: string): Promise<any> {
         const storageRef = firebase.storage().ref(STRG_USER_FILES);
         return new Promise((resolve, reject) => {
@@ -204,7 +218,7 @@ export class SignupMergePage implements OnInit{
                     .child(this.user.uid)
                     .child('profileImage.jpg')
                     .putString(imageData, firebase.storage.StringFormat.DATA_URL, {contentType: 'image/jpeg'});
-            uploadTask.on('state_changed', function(snapshot) {
+            uploadTask.on('state_changed', function(snapshot:any) {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.info('Upload is ' + progress + '% done');
                 }, function (error:any) {
@@ -221,20 +235,37 @@ export class SignupMergePage implements OnInit{
     }
 
      private setUser() {
-        // show loader
-        let loader = this.loadingCtrl.create({
-            content: "Inicializando cuenta ...",
-        });
-        loader.present();
-        this.users.reloadUser()
-            .then(() => {
-                this.user = this.users.getUser();
-                loader.dismiss(); 
-            })
-            .catch((error) => {
-                console.log('setAccountData > error ', error);
-                loader.dismiss();
-            });                
+        this.user = this.authSrv.fbuser;             
      }
+
+    private setTosVersion() {
+        let obs = this.configSrv.getCurrentToS();
+        let subs = obs.subscribe(snap => {
+                        console.log('success tosData', snap.val());
+                        this.tosVersion = snap.val().version;
+                        subs.unsubscribe();
+                    }, error=> {
+                        console.log(error, console.log('tosData error', error));
+                    });   
+    }     
+
+     private setAccount() {
+        let obs = this.accountSrv.getObs(true);
+        this.accountSubs = obs.subscribe(snap => {
+                                console.log('success snap', snap.val());
+                                this.account = snap.val();
+                                // set form values
+                                this.form.controls['firstName'].setValue(this.account.profile.data.firstName);
+                                this.form.controls['lastName'].setValue(this.account.profile.data.lastName);
+                                this.form.controls['phoneMobile'].setValue(this.account.profile.data.phoneMobile);
+                            }, error => {
+                                console.log('error', error);
+                            });
+    }
+    private unsubscribeAccount() {
+        if(this.accountSubs) {
+            this.accountSubs.unsubscribe();
+        }
+    }
 
 }

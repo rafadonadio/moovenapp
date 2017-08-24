@@ -17,7 +17,7 @@
         <ion-icon name="alert" item-left></ion-icon> ATENCIÓN 
         </ion-card-header>
         <ion-card-content>
-        La dirección de email <b>{{ profData.email }}</b> aún no ha sido validada.
+        La dirección de email <b>{{ accountData.email }}</b> aún no ha sido validada.
         </ion-card-content>
     </ion-card>
     <ion-card>
@@ -35,9 +35,10 @@
             <ion-label stacked>NUEVA DIRECCIÓN DE EMAIL</ion-label>
             <ion-input #input type="email" [formControl]="email"></ion-input>
         </ion-item>
-        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && email.touched" class="input-error">* Ingresa un email válido</div>
-
-        <button ion-button color="dark" block margin-top (click)="submit(editForm.value)" [disabled]="!editForm.valid">Modificar</button>
+        <div *ngIf="(email.hasError('required') || email.hasError('isValid')) && (email.touched || showErrors)" class="input-error">* Ingresa un email válido</div>
+        <div *ngIf="sameEmailError" class="input-error">* La nueva dirección de email coincide con la actual</div>        
+        <button ion-button color="dark" block margin-top 
+            (click)="submit()">Modificar</button>
         <button ion-button color="dark" outline block margin-top (click)="dismiss()">Cancelar</button>
     </form>
 </ion-content>

@@ -1,4 +1,3 @@
-
 /**
  * MODEL CONFIGURATIONS
  */
@@ -33,6 +32,7 @@ export const USER_CFG = {
     }
 }
 
+
 /**
  *  USERS MODELS
  */
@@ -46,6 +46,7 @@ export class UserAccount {
     active: boolean;
     createdAt: any;
     deletedAt: any;
+    terminatedAt:any;
     providerId: string;
     profile: UserAccountProfile;
     ToS: {
@@ -56,6 +57,12 @@ export class UserAccount {
         history: Array<{ versionId:string, timestamp:any}>
     };
     settings: UserAccountSettings;
+    operator: UserAccountOperator;
+}
+
+export class UserAccountOperator {
+    enabled: boolean;
+    active: boolean;       
 }
 
 export class UserAccountSettings {

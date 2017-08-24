@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { HomePage } from '../home/home';
+import { Component } from '@angular/core';
 import {
     AlertController,
     LoadingController,
@@ -7,14 +8,14 @@ import {
     ToastController,
     ViewController
 } from 'ionic-angular';
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsActivePage } from '../sendings-active/sendings-active';
 import { ModalUserEditPhonePage } from '../modal-user-edit-phone/modal-user-edit-phone';
 
 @Component({
     selector: 'page-verify-phone',
     templateUrl: 'verify-phone.html',
 })
-export class VerifyPhonePage implements OnInit {
+export class VerifyPhonePage {
 
     constructor(public navCtrl: NavController,
         public alertCtrl:  AlertController,
@@ -24,12 +25,8 @@ export class VerifyPhonePage implements OnInit {
         public viewCtrl: ViewController) {
         }
 
-        ngOnInit() {
-            this.viewCtrl.willEnter.subscribe(() => {                
-                // THIS COMPONENT IS NOT USED 
-                /// BUT WILL SOON
-                this.navCtrl.setRoot(SendingsPage);
-            });
+        ionViewWillEnter() {
+            this.navCtrl.setRoot(HomePage);
         }
 
         goToUpdatePhoneNumber() {
@@ -47,7 +44,7 @@ export class VerifyPhonePage implements OnInit {
         }
 
         goToHome() {
-            this.navCtrl.setRoot(SendingsPage);
+            this.navCtrl.setRoot(SendingsActivePage);
         }
 
         goToApp() {
@@ -58,7 +55,7 @@ export class VerifyPhonePage implements OnInit {
             loading.present();
 
             setTimeout(() => {
-                this.navCtrl.setRoot(SendingsPage);
+                this.navCtrl.setRoot(SendingsActivePage);
             }, 2000);
 
             setTimeout(() => {
@@ -75,7 +72,7 @@ export class VerifyPhonePage implements OnInit {
             loading.present();
 
             setTimeout(() => {
-                this.navCtrl.setRoot(SendingsPage);
+                this.navCtrl.setRoot(SendingsActivePage);
             }, 3000);
 
             setTimeout(() => {

@@ -22,7 +22,7 @@
             <div id="mapf4"></div>
         </div>        
         <ion-list-header>
-            Envío
+            ENVÍO
         </ion-list-header>
         <ion-item no-lines>
             <ion-icon name="pin" item-left></ion-icon>
@@ -33,7 +33,7 @@
             <h2>{{ sending.routeDurationTxt }}</h2>            
         </ion-item>
         <ion-list-header>
-            Objeto
+            OBJETO
             <button ion-button outline item-right (click)="goBack(1)">Modificar</button>
         </ion-list-header>
          <ion-item no-lines
@@ -58,7 +58,7 @@
             <h2 *ngIf="sending.objectDeclaredValue == 0">sin valor</h2>
         </ion-item>
         <ion-list-header>
-            Retiro
+            RETIRO
             <button ion-button outline item-right (click)="goBack(2)">Modificar</button>
         </ion-list-header>
         <ion-item no-lines>
@@ -72,9 +72,11 @@
         </ion-item>
         <ion-item no-lines>
             <ion-icon name="time" item-left></ion-icon>
+            <p>Fecha de retiro</p>
+            <h2>{{ sending.pickupDate | formatdatePipe:'dddd DD/MMM' }}</h2>
             <p>Banda horaria de retiro</p>
-            <h2>{{ sending.pickupTimeFrom }} a {{ sending.pickupTimeTo }}</h2>
-        </ion-item>
+            <h2>{{ sending.pickupTimeFrom | formatdatePipe:'HH:mm' }} a {{ sending.pickupTimeTo | formatdatePipe:'HH:mm' }}</h2>
+        </ion-item>        
         <ion-item no-lines>
             <ion-icon name="person" item-left></ion-icon>
             <p>Persona que entrega</p>
@@ -83,9 +85,16 @@
             <h2>{{ sending.pickupPersonEmail }}</h2>
         </ion-item>
         <ion-list-header>
-            Entrega
+            ENTREGA
             <button ion-button outline item-right (click)="goBack(3)">Modificar</button>
         </ion-list-header>
+        <ion-item no-lines>
+            <ion-icon name="time" item-left></ion-icon>
+            <p>Fecha de entrega</p>
+            <h2>{{ sending.pickupDate | formatdatePipe:'dddd DD/MMM' }}</h2>
+            <p>Banda horaria de entrega</p>
+            <h2>{{ sending.dropTimeFrom | formatdatePipe:'HH:mm' }} a {{ sending.dropTimeTo | formatdatePipe:'HH:mm' }}</h2>
+        </ion-item>
         <ion-item no-lines>
             <ion-icon name="pin" item-left></ion-icon>
             <p>Dirección</p>
@@ -96,21 +105,16 @@
             <h2>{{ sending.dropAddressStateLong }}</h2> 
         </ion-item>
         <ion-item no-lines>
-            <ion-icon name="time" item-left></ion-icon>
-            <p>Banda horaria de retiro</p>
-            <h2>{{ sending.dropTimeFrom }} a {{ sending.dropTimeTo }}</h2>
-        </ion-item>
-        <ion-item no-lines>
             <ion-icon name="person" item-left></ion-icon>
             <p>Persona que recibe</p>
             <h2>{{ sending.dropPersonName }}</h2>
             <h2>{{ sending.dropPersonPhone }}</h2>
             <h2>{{ sending.dropPersonEmail }}</h2>
         </ion-item>
-        <ion-list-header>Precio</ion-list-header>
+        <ion-list-header>PRECIO</ion-list-header>
         <ion-item no-lines>
             <ion-icon name="card" item-left></ion-icon>
-            <p>Costo del envío</p>
+            <p>Costo del Servicio</p>
             <h2>$ {{ sending.price }}</h2>
             <p *ngIf="sending.priceMinFareApplied">* tarifa mínima aplicada</p>
         </ion-item>
@@ -129,6 +133,6 @@
         <button ion-button block color="primary" 
             (click)="runPayment()" *ngIf="sendingCreated && !sendingPayed">Pagar Servicio</button>            
         <button ion-button block color="primary" outline margin-top 
-            (click)="goToSendings()" *ngIf="sendingCreated && !sendingPayed">Volver a Servicios</button>     
+            (click)="goToListing()" *ngIf="sendingCreated && !sendingPayed">Volver a Servicios</button>     
     </div>
 </ion-content>

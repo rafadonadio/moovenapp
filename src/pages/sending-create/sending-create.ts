@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { UsersService } from '../../providers/users-service/users-service';
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { SendingsPage } from '../sendings/sendings';
+import { SendingsTabsPage } from '../sendings-tabs/sendings-tabs';
 import { SendingCreate2Page } from '../sending-create-2/sending-create-2';
 import { NumberValidator } from '../../validators/number.validator';
-
-import { Camera } from 'ionic-native';
+import { DateService } from '../../providers/date-service/date-service';
+import { SendingRequest } from '../../models/sending-model';
+import { Camera } from '@ionic-native/camera';
 
 @Component({
     selector: 'page-sending-create',
@@ -16,13 +15,14 @@ import { Camera } from 'ionic-native';
 })
 export class SendingCreatePage implements OnInit {
 
-    sending: any;
+    sending: SendingRequest;
     formOne: FormGroup;
     objectImageUrlTemp: any;
     objectShortName: any;
     objectType: any;
     objectNoValueDeclared: any;
     objectDeclaredValue: any;
+    noValueToggle:any;
     //aux
     showErrors:boolean = false;
     rangeValue: any = 0;
@@ -30,10 +30,11 @@ export class SendingCreatePage implements OnInit {
 
     constructor(public navCtrl: NavController,
         public navParams: NavParams,
-        public users: UsersService,
         public formBuilder: FormBuilder,
         public alertCtrl: AlertController,
-        public sendingSrv: SendingService) {
+        public sendingSrv: SendingService,
+        public cameraPlugin: Camera,
+        public dateSrv: DateService) {
     }
 
     ngOnInit() {
@@ -51,7 +52,7 @@ export class SendingCreatePage implements OnInit {
         this.objectType = this.formOne.controls['objectType'];
         this.objectNoValueDeclared = this.formOne.controls['objectNoValueDeclared'];
         this.objectDeclaredValue = this.formOne.controls['objectDeclaredValue'];
-
+        this.noValueToggle = false;
         // init data
         this.initSending();
     }
@@ -74,7 +75,7 @@ export class SendingCreatePage implements OnInit {
         }    
     }
 
-    processForm() {
+    private processForm() {
         console.log('f1 > processForm');
         this.saveSending();
         this.goToNextStep();
@@ -90,15 +91,18 @@ export class SendingCreatePage implements OnInit {
                     role: 'cancel',
                     handler: () => {
                         console.log('f1 > cancel > no, continue');
-
                     }
                 },
                 {
                     text: 'Si',
                     handler: () => {
                         console.log('f1 > cancel > yes, cancel');
-                        alert.dismiss();
-                        this.navCtrl.setRoot(SendingsPage);
+                        alert.dismiss()
+                            .then(() => {
+                                this.navCtrl.setRoot(SendingsTabsPage);
+                            })
+                            .catch((error) => console.log(error));     
+                        return false;                   
                     }
                 }
             ]
@@ -109,9 +113,14 @@ export class SendingCreatePage implements OnInit {
     /**
      * Reset value of range input
      */
-    resetObjectDeclaredValue(e) {
-        console.log('f1 > objectDeclaredValue > reseted');
-        this.rangeValue = 0;
+    resetObjectDeclaredValue() {
+        console.log('f1 > no value toggle', this.noValueToggle);
+        if(this.noValueToggle == true) {
+            this.rangeValue = 0;    
+            this.formOne.controls['objectDeclaredValue'].disable();
+        }else{
+            this.formOne.controls['objectDeclaredValue'].enable();
+        }
     }
 
     /**
@@ -119,12 +128,12 @@ export class SendingCreatePage implements OnInit {
      */
     takePicture() {
         console.log('f1 > takePicture');
-        Camera.getPicture({
+        this.cameraPlugin.getPicture({
             quality: 95,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: Camera.PictureSourceType.CAMERA,
+            destinationType: this.cameraPlugin.DestinationType.DATA_URL,
+            sourceType: this.cameraPlugin.PictureSourceType.CAMERA,
             allowEdit: true,
-            encodingType: Camera.EncodingType.JPEG,
+            encodingType: this.cameraPlugin.EncodingType.JPEG,
             targetWidth: 900,
             targetHeight: 900,
             saveToPhotoAlbum: true,

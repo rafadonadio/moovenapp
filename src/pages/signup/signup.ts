@@ -1,9 +1,8 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController  } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { UserCredentials } from '../../models/user-model';
-import { UsersService } from '../../providers/users-service/users-service';
 import { EmailValidator } from '../../validators/email.validator';
 
 @Component({
@@ -17,11 +16,11 @@ export class SignupPage implements OnInit {
     loader:any;
 
     constructor(public navCtrl: NavController,
-        public usersSrv: UsersService,
         public formBuilder: FormBuilder,
         public loadingCtrl: LoadingController,
         public toastCtrl: ToastController,
-        public alertCtrl: AlertController) {
+        public alertCtrl: AlertController,
+        public authSrv: AuthService) {
     }
 
     ngOnInit() {
@@ -50,10 +49,7 @@ export class SignupPage implements OnInit {
             });
             alertError.present();            
         }else{
-            let email = this.form.get('email').value;
-            let password = this.form.get('password').value;
-            this.setLoader();
-            this.createUser({ email: email, password: password });
+            this.createUser();
         }
     }
 
@@ -67,48 +63,37 @@ export class SignupPage implements OnInit {
      *  2- create account in database, with user id and email
      *  3- send email verification
      */
-    private createUser(newUser: UserCredentials):void {
-        console.info('__CUS__createUser()');
-        console.info('__1__createUser');
-        this.usersSrv.createUser(newUser)
-            .then((fbuser:firebase.User) => {
-                console.log('__1__', fbuser.uid);
-                // create account in DB
-                console.info('__2__createAccount');
-                return this.usersSrv.createAccountStep1(fbuser)
-            })
-            .then(() => {
-                console.log('__2__ success');
-                // send email address verification
-                // CLOUD FUNCTIONS TRIGGER
-                console.log('CF_Trigger:setUserVerifyEmail|user.onCreate()');
-                this.loader.dismiss()
-                    .then(() => {
-                        // end
-                    });
-            })
-            .catch((error) => {
-                console.error('__CUS__', error);
-                this.loader.dismiss()
-                    .then(() => {
-                        this.presentErrorAlert(error.code);
-                    });
-        });
-    }
-
-    private setLoader() {
+    private createUser(): void {
+        console.info('_createUser_');           
         // loader effect
         this.loader = this.loadingCtrl.create({
             content: 'Registrando tu cuenta ...'
         });
-        this.loader.present();
+        this.loader.present();   
+        // form
+        let email = this.form.get('email').value;
+        let password = this.form.get('password').value;           
+        this.authSrv.createUserWithEmailAndPassword(email, password)
+            .then((fbuser) => {
+                console.log('create user success', fbuser.uid);
+                // CLOUD FUNCTIONS TRIGGER
+                console.log('CF_Trigger:createUserAccount|user().onCreate()');
+                this.loader.dismiss();
+            })
+            .catch((error:any) => {
+                console.error('create user error', error);
+                this.loader.dismiss()
+                    .then(() => {
+                        this.presentErrorAlert(error);
+                    });
+        });
     }
 
-    private presentErrorAlert(msgCode: string ):void {
+    private presentErrorAlert(error:any):void {
         // set strings
         var msg: string;
         var context: string;
-        switch(msgCode){
+        switch(error.code){
             case 'auth/email-already-in-use':
                 context = 'Dirección en uso';
                 msg = 'La dirección de correo ya esta en uso, vuelve a intentarlo';

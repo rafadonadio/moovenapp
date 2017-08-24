@@ -58,12 +58,12 @@ export const SHIPMENT_DB = {
         }
     },
     HASHID: {
-        REF: 'shipmentsHashid/',
-        _NODE: 'shipmentsHashid',
+        REF: 'shipmentsByPublicid/',
+        _NODE: 'shipmentsByPublicid',
     },
     BYUSER: {
-        REF: 'operatorShipments/',
-        _NODE: 'operatorShipments',
+        REF: 'userShipments/',
+        _NODE: 'userShipments',
         _CHILD: {
             ACTIVE: {
                 REF: '/active/',

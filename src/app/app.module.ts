@@ -3,6 +3,13 @@ import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { IonicStorageModule } from '@ionic/storage';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
+// NATIVE
+import { Camera } from '@ionic-native/camera';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
+import { LocalNotifications } from "@ionic-native/local-notifications";
 // PAGES
 import { CheckoutPage } from '../pages/checkout/checkout';
 import { HelpPage } from '../pages/help/help';
@@ -14,14 +21,16 @@ import { ModalUserEditEmailPage } from '../pages/modal-user-edit-email/modal-use
 import { ModalUserEditNamePage } from '../pages/modal-user-edit-name/modal-user-edit-name';
 import { ModalUserEditPhonePage } from '../pages/modal-user-edit-phone/modal-user-edit-phone';
 import { ModalSearchMapAddressPage } from '../pages/modal-search-map-address/modal-search-map-address';
-import { NotificationsPage } from '../pages/notifications/notifications';
+import { SendingsNotificationsPage } from '../pages/sendings-notifications/sendings-notifications';
 import { PaymentPage } from '../pages/payment/payment';
 import { SendingCreatePage } from '../pages/sending-create/sending-create';
 import { SendingCreate2Page } from '../pages/sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../pages/sending-create-3/sending-create-3';
 import { SendingCreate4Page } from '../pages/sending-create-4/sending-create-4';
 import { SendingDetailPage } from '../pages/sending-detail/sending-detail';
-import { SendingsPage } from '../pages/sendings/sendings';
+import { SendingsTabsPage } from '../pages/sendings-tabs/sendings-tabs';
+import { SendingsActivePage } from '../pages/sendings-active/sendings-active';
+import { SendingsClosedPage } from '../pages/sendings-closed/sendings-closed';
 import { SettingsPage } from '../pages/settings/settings';
 import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover';
 import { ShipmentCreatePage } from '../pages/shipment-create/shipment-create';
@@ -33,161 +42,176 @@ import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { StartPage } from '../pages/start/start';
 import { UpdatePhoneNumberPage } from '../pages/update-phone-number/update-phone-number';
 import { VerifyPhonePage } from '../pages/verify-phone/verify-phone';
+import { HomePage } from '../pages/home/home';
 // PROVIDERS
-import { AccountEmailVerificationService } from '../providers/users-service/account-email-verification-service';
-import { AccountService } from '../providers/users-service/account-service';
-import { AccountProfileService } from '../providers/users-service/account-profile-service';
-import { AccountSettingsService } from '../providers/users-service/account-settings-service';
-import { AccountVerificationsService } from '../providers/users-service/account-verifications-service';
-import { AuthenticationService } from '../providers/users-service/authentication-service';
-import { SendingService } from  '../providers/sending-service/sending-service';
-import { SendingStageCreatedService } from  '../providers/sending-service/sending-stage-created-service';
-import { SendingStageLiveService } from  '../providers/sending-service/sending-stage-live-service';
-import { SendingStageClosedService } from  '../providers/sending-service/sending-stage-closed-service';
-import { SendingDbService } from '../providers/sending-service/sending-db-service';
-import { SendingStagesService } from  '../providers/sending-service/sending-stages-service';
-import { SendingNotificationsService } from  '../providers/sending-service/sending-notifications-service';
-import { SendingRequestService } from  '../providers/sending-service/sending-request-service';
-import { SendingPaymentService } from  '../providers/sending-service/sending-payment-service';
-import { ShipmentsService } from  '../providers/shipments-service/shipments-service';
-import { ShipmentsDbService } from  '../providers/shipments-service/shipments-db-service';
-import { NotificationsService } from  '../providers/notifications-service/notifications-service';
-import { UsersService } from '../providers/users-service/users-service';
+import { AccountEmailVerificationService } from '../providers/account-email-verification-service/account-email-verification-service';
+import { AccountService } from '../providers/account-service/account-service';
+import { AuthService } from '../providers/auth-service/auth-service';
+import { ConfigService } from '../providers/config-service/config-service';
+import { SendingService } from '../providers/sending-service/sending-service';
+import { SendingCreateService } from '../providers/sending-service/sending-create-service';
+import { SendingNotificationsService } from '../providers/sending-service/sending-notifications-service';
+import { SendingPaymentService } from '../providers/sending-service/sending-payment-service';
+import { ShipmentsService } from '../providers/shipments-service/shipments-service';
+import { NotificationsService } from '../providers/notifications-service/notifications-service';
 import { GoogleMapsService } from '../providers/google-maps-service/google-maps-service';
 import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
+import { PriceService } from '../providers/price-service/price-service';
 import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
+import { CheckoutService } from '../providers/checkout-service/checkout-service';
+import { StorageService } from '../providers/storage-service/storage-service';
+import { SendingSetGotoperatorService } from '../providers/sending-service/sending-set-gotoperator-service';
+import { SendingSetPickedupService } from '../providers/sending-service/sending-set-pickedup-service';
+import { SendingSetDroppedService } from '../providers/sending-service/sending-set-dropped-service';
+import { SendingSetCanceledbysenderService } from '../providers/sending-service/sending-set-canceledbysender-service';
+import { SendingSetCanceledbyoperatorService } from '../providers/sending-service/sending-set-canceledbyoperator-service';
+
+// AngularFire
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
+import { FormatDatePipe } from '../pipes/formatdate-pipe';
 // IONIC.IO
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
-
+const ENV = APP_CFG.CURRENT_ENV;
 const cloudSettings: CloudSettings = {
-  'core': {
-    'app_id': '226f3be4'
-  }
+    'core': {
+        'app_id': APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
+    }
 };
 
-// AngularFire
-import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
 // AF2 Settings
 export const firebaseConfig = {
-    apiKey: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.apiKey,
-    authDomain: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.authDomain,
-    databaseURL: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.databaseURL,
-    storageBucket: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.storageBucket,
-    messagingSenderId: APP_CFG.ENVIRONMENTS.DEV.FIREBASE.messagingSenderId
+    apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
+    authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
+    databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
+    storageBucket: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.storageBucket,
+    messagingSenderId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.messagingSenderId
 };
-const myFirebaseAuthConfig = {
-    provider: AuthProviders.Password,
-    method: AuthMethods.Password
-}
 
 @NgModule({
-  declarations: [
-    MyApp,
-    // PAGES
-    CheckoutPage,
-    HelpPage,
-    HistorialPage,
-    LoginPage,
-    ModalAuthResetPasswordPage,
-    ModalTosPage,
-    ModalSearchMapAddressPage,
-    ModalUserEditEmailPage,
-    ModalUserEditNamePage,
-    ModalUserEditPhonePage,
-    NotificationsPage,
-    PaymentPage,
-    SendingCreatePage,
-    SendingCreate2Page,
-    SendingCreate3Page,
-    SendingCreate4Page,
-    SendingDetailPage,
-    SendingsPage,
-    SettingsPage,
-    SettingsPopoverPage,
-    ShipmentCreatePage,
-    ShipmentCreate2Page,
-    ShipmentDetailPage,
-    ShipmentsPage,
-    SignupPage,
-    SignupMergePage,
-    StartPage,
-    UpdatePhoneNumberPage,
-    VerifyPhonePage,
-    // PIPES
-    CapitalizePipe,
-    Ts2DatePipe
-  ],
-  imports: [
-    IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseConfig, myFirebaseAuthConfig),
-    CloudModule.forRoot(cloudSettings),
-    IonicStorageModule.forRoot({
-      name: APP_CFG.ENVIRONMENTS.DEV.LOCALSTORAGE.name,
-         driverOrder: ['localstorage','indexeddb', 'sqlite', 'websql']
-    })
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    CheckoutPage,
-    HelpPage,
-    HistorialPage,
-    LoginPage,
-    ModalAuthResetPasswordPage,
-    ModalTosPage,
-    ModalSearchMapAddressPage,
-    ModalUserEditEmailPage,
-    ModalUserEditNamePage,
-    ModalUserEditPhonePage,
-    NotificationsPage,
-    PaymentPage,
-    SendingCreatePage,
-    SendingCreate2Page,
-    SendingCreate3Page,
-    SendingCreate4Page,
-    SendingDetailPage,
-    SendingsPage,
-    SettingsPage,
-    SettingsPopoverPage,
-    ShipmentCreatePage,
-    ShipmentCreate2Page,
-    ShipmentDetailPage,
-    ShipmentsPage,
-    SignupPage,
-    SignupMergePage,
-    StartPage,
-    UpdatePhoneNumberPage,
-    VerifyPhonePage,       
-  ],
-  providers: [
-    AccountEmailVerificationService,
-    AccountService,
-    AccountProfileService,
-    AccountSettingsService,
-    AccountVerificationsService,
-    AuthenticationService,
-    SendingService,
-    SendingStageCreatedService,
-    SendingStageLiveService,
-    SendingStageClosedService,
-    SendingDbService,
-    SendingNotificationsService,
-    SendingRequestService,  
-    SendingStagesService,
-    ShipmentsService,
-    ShipmentsDbService, 
-    NotificationsService,
-    SendingPaymentService,           
-    UsersService,
-    GoogleMapsService,
-    DateService,
-    HashService,
-    MercadopagoService
-  ],
+    declarations: [
+        MyApp,
+        // PAGES
+        HomePage,
+        CheckoutPage,
+        HelpPage,
+        HistorialPage,
+        LoginPage,
+        ModalAuthResetPasswordPage,
+        ModalTosPage,
+        ModalSearchMapAddressPage,
+        ModalUserEditEmailPage,
+        ModalUserEditNamePage,
+        ModalUserEditPhonePage,
+        SendingsNotificationsPage,
+        PaymentPage,
+        SendingCreatePage,
+        SendingCreate2Page,
+        SendingCreate3Page,
+        SendingCreate4Page,
+        SendingDetailPage,
+        SendingsActivePage,
+        SendingsClosedPage,
+        SendingsTabsPage,
+        SettingsPage,
+        SettingsPopoverPage,
+        ShipmentCreatePage,
+        ShipmentCreate2Page,
+        ShipmentDetailPage,
+        ShipmentsPage,
+        SignupPage,
+        SignupMergePage,
+        StartPage,
+        UpdatePhoneNumberPage,
+        VerifyPhonePage,
+        // PIPES
+        CapitalizePipe,
+        Ts2DatePipe,
+        FormatDatePipe
+    ],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot(MyApp),
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireAuthModule,
+        AngularFireDatabaseModule,
+        HttpModule,
+        CloudModule.forRoot(cloudSettings),
+        IonicStorageModule.forRoot({
+            name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
+            driverOrder: ['localstorage', 'indexeddb', 'sqlite', 'websql']
+        })
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+        MyApp,
+        CheckoutPage,
+        HelpPage,
+        HistorialPage,
+        LoginPage,
+        ModalAuthResetPasswordPage,
+        ModalTosPage,
+        ModalSearchMapAddressPage,
+        ModalUserEditEmailPage,
+        ModalUserEditNamePage,
+        ModalUserEditPhonePage,
+        SendingsNotificationsPage,
+        PaymentPage,
+        SendingCreatePage,
+        SendingCreate2Page,
+        SendingCreate3Page,
+        SendingCreate4Page,
+        SendingDetailPage,
+        SendingsActivePage,
+        SendingsClosedPage,
+        SendingsTabsPage,
+        SettingsPage,
+        SettingsPopoverPage,
+        ShipmentCreatePage,
+        ShipmentCreate2Page,
+        ShipmentDetailPage,
+        ShipmentsPage,
+        SignupPage,
+        SignupMergePage,
+        StartPage,
+        UpdatePhoneNumberPage,
+        VerifyPhonePage,
+        HomePage,
+    ],
+    providers: [
+        Camera,
+        SplashScreen,
+        StatusBar,
+        AccountEmailVerificationService,
+        AccountService,
+        AuthService,
+        ConfigService,
+        SendingService,
+        SendingNotificationsService,
+        SendingCreateService,
+        SendingSetGotoperatorService,
+        SendingSetPickedupService,
+        SendingSetDroppedService,
+        SendingSetCanceledbysenderService,
+        SendingSetCanceledbyoperatorService,
+        ShipmentsService,
+        NotificationsService,
+        SendingPaymentService,
+        GoogleMapsService,
+        DateService,
+        HashService,
+        MercadopagoService,
+        PriceService,
+        CheckoutService,
+        StorageService,
+        LocalNotifications
+    ],
 })
-export class AppModule {}
+export class AppModule { }
