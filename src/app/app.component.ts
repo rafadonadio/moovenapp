@@ -70,7 +70,7 @@ export class MyApp {
         // used for an example of ngFor and navigation
         this.pages = [
             { title: 'Mooven', component: HomePage, icon: 'home', navigationType: 'root' },
-            { title: 'Servicios', component: SendingsTabsPage, icon: 'send', navigationType: 'root' },
+            { title: 'Servicios', component: SendingsTabsPage, icon: 'paper-plane', navigationType: 'root' },
             { title: 'Operador', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' },
