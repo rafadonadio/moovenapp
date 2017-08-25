@@ -45,7 +45,7 @@ export class SendingSetCanceledbysenderService{
             origin: 'app',
             setBy: 'sender',
             sendingId: this.sendingId,
-            userId: this.userId,
+            sendingUserid: this.userId,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
         }
     }

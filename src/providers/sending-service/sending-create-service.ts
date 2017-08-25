@@ -158,11 +158,12 @@ export class SendingCreateService{
     // set task for Cloud Functions
     private setTaskCF() {
         this.taskCF = {
-            sendingId: this.sending.sendingId,
             task: 'set_registered',
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
             origin: 'app',
             setBy: 'sender',
+            sendingId: this.sending.sendingId,
+            sendingUserid: this.userId,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
         }
     }
 
