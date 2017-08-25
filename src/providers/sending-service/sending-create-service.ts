@@ -161,7 +161,8 @@ export class SendingCreateService{
             sendingId: this.sending.sendingId,
             task: 'set_registered',
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            origin: 'app'
+            origin: 'app',
+            setBy: 'sender',
         }
     }
 

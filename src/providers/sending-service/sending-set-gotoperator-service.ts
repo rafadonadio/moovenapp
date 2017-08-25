@@ -46,10 +46,11 @@ export class SendingSetGotoperatorService{
     private setTaskCF() {
         this.taskCF = {
             sendingId: this.sendingId,
-            userId: this.userId,
+            operatorId: this.userId,
             task: 'set_gotoperator',
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            origin: 'app'
+            origin: 'app',
+            setBy: 'operator',
         }
     }
 
