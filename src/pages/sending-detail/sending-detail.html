@@ -55,7 +55,6 @@
                     <em>** En proceso de aprobación</em>
                 </p>
                 <ion-icon name="timer" item-right
-                
                     *ngIf="sending?._stages.created.status.enabled.set==false"></ion-icon>
                 <ion-icon name="checkmark" item-right
                     *ngIf="sending?._stages.created.status.enabled.set==true"></ion-icon>                
@@ -113,6 +112,21 @@
                 <h2>{{ notif.data.title }}</h2>
                 <p>{{ notif.data.msg }}</p>
             </ion-item>
+
+            <ion-item-divider dark>
+                    <button ion-button item-end clear color="dark-gray"
+                        (click)="toggleDisplayTasks()">Mas registros</button></ion-item-divider>
+            <ion-list *ngIf="displayTasks">
+                <ion-item *ngFor="let task of tasks" text-wrap no-lines>
+                    <ion-icon *ngIf="task.success" name="checkmark" item-left></ion-icon>
+                    <ion-icon *ngIf="!task.success" name="close" item-left></ion-icon>
+                    <h3>{{ getTaskTitle(task.task) }}</h3>
+                    <p>Creado: {{ task.createdAt | formatdatePipe:'DD/MM/YYYY HH:mm:ss' }}</p>
+                    <p>Procesado: {{ task.runAt | formatdatePipe:'DD/MM/YYYY HH:mm:ss' }}</p>
+                    <p style="color:#ccc">o:{{ task.origin }} | by:{{ task.setBy }}</p>
+                </ion-item>
+            </ion-list>
+            
         </ion-list>
 
         <ion-list *ngSwitchCase="'shipment'">
@@ -255,6 +269,5 @@
                 </ion-item>
             </ion-item-group>
         </ion-list>
-
     </div>
 </ion-content>
