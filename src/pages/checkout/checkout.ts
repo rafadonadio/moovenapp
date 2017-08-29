@@ -19,6 +19,7 @@ import { SendingPaymentService } from '../../providers/sending-service/sending-p
 import { SendingsTabsPage } from '../sendings-tabs/sendings-tabs';
 
 const CC_IMG = 'assets/img/credit-card-sm.png';
+const TIMEOUT = 60;
 
 @Component({
     selector: 'page-checkout',
@@ -48,10 +49,13 @@ export class CheckoutPage implements OnInit {
     payLoader:any;
     // EXPIRATION
     // sending expiration
+    secondsLeftToPay:number;
+    humanizeLeftToPay:string;
     sendingExpired:boolean;
     checkoutTimer:any;
     checkoutTimeout:number;
     checkoutTimesup:boolean;
+    paymentInProcess:boolean;   
 
     constructor(private navCtrl: NavController,
         private navParams: NavParams,
@@ -66,19 +70,42 @@ export class CheckoutPage implements OnInit {
         private authSrv: AuthService) { }
 
     ngOnInit() {
-        this.setAccount();
         this.setDates();
         this.setCurrentDates();
         this.setDefaultDates();
-        this.setSending();
         this.initForm();
+        this.setAccount();
         this.setGenericCreditCardImage();
+        this.setSending();
+        this.setSendingExpired();
+        this.checkoutTimesup = false;
+        this.paymentInProcess = false;
+        if(this.sendingExpired) {
+            console.log('sending expired, show alert and bye');
+            this.chForm.disable();
+            let alert = this.alertCtrl.create({
+                title: 'Servicio vencido',
+                message: 'El Servicio ha vencido porque la hora de Retiro ha pasado. Debes crear el Servicio nuevamente para proceder con el pago.',
+                buttons: [{
+                            text: 'Volver',
+                            handler: () => {
+                                console.log('checkout, exit');
+                                this.navCtrl.setRoot(SendingsTabsPage);
+                            }
+                        }]
+            });
+            alert.present();            
+            return;
+        }
+        // not expired, init timer
+        this.initTimer()
     }
 
     ionViewWillLeave() {
         if(this.accountSubs) {
             this.accountSubs.unsubscribe();
         }
+        this.stopTimer();
     }
 
     triggerPaymentGuess() {
@@ -348,8 +375,15 @@ export class CheckoutPage implements OnInit {
      */
 
     private showPayLoader(text:string) {
+        this.paymentInProcess = true;
         this.payLoader = this.loadingCtrl.create({ content: text });
         this.payLoader.present();    
+        this.payLoader.onDidDismiss(() => {
+            console.log('payloader dismissed');
+        })
+    }
+    private dismissPayloader() {
+
     }
 
     private resetCardNumberFlag() {
@@ -361,19 +395,23 @@ export class CheckoutPage implements OnInit {
      */
 
     goToSendings() {
+        if(this.sendingExpired || this.checkoutTimesup) {
+            this.navCtrl.setRoot(SendingsTabsPage);
+            return;
+        }
         let alert = this.alertCtrl.create({
             title: 'Pago incompleto',
-            message: 'El servicio queda habilitado al confirmarse el pago. Puedes finalizar el pago hasta una hora antes del horario establecido para el retiro.',
+            message: 'El Servicio queda habilitado al confirmarse el pago.',
             buttons: [
                 {
-                    text: 'Continuar con el Pago',
+                    text: 'Pagar ahora',
                     role: 'cancel',
                     handler: () => {
                         console.log('checkout > cancel exit');
                     }
                 },
                 {
-                    text: 'Volver al listado',
+                    text: 'Pagar luego',
                     handler: () => {
                         console.log('checkout, exit');
                         this.navCtrl.setRoot(SendingsTabsPage);
@@ -394,6 +432,18 @@ export class CheckoutPage implements OnInit {
         this.accountSubs = obs.subscribe((snap) => {
                             this.account = snap.val();
                             }, err => console.log('error', err));
+    }
+
+    private setSendingExpired() {
+        let current = this.dateSrv.getCurrent();
+        this.secondsLeftToPay = this.dateSrv.getDiff(current, this.sending.pickupTimeFrom);
+        this.humanizeLeftToPay = this.dateSrv.humanizeSecondsDuration(this.secondsLeftToPay);
+        this.sendingExpired = this.secondsLeftToPay>0 ? false : true;
+        console.log('current time', current);
+        console.log('pickupTimeFrom', this.sending.pickupTimeFrom);
+        console.log('secondsLeftToPay', this.secondsLeftToPay);
+        console.log('humanizeLeftToPay', this.humanizeLeftToPay);
+        console.log('expired', this.sendingExpired);
     }
 
     private setSending() {
@@ -445,5 +495,58 @@ export class CheckoutPage implements OnInit {
         this.cardThumbnail = CC_IMG;
     }
 
+
+    /**
+     *  TIMER
+     */
+
+    private initTimer() {
+        console.info('initTimer');
+        // init 
+        this.checkoutTimesup = false;
+        let counter = 0;
+        this.checkoutTimer = setInterval(() => {
+            counter++;
+            console.log(counter);
+            this.checkoutTimeout = TIMEOUT - counter;
+            if(this.checkoutTimeout<=0) {
+                this.stopTimer();
+                this.checkoutTimesup = true;
+                console.log('tiempo concluido');
+                this.presentTimerToast();
+                this.chForm.disable();
+            } 
+        }, 1000);
+        this.presentTimerToast();
+    }
+
+    private stopTimer() {
+        console.info('timer stopped');
+        clearInterval(this.checkoutTimer);
+        
+    }
+
+    private presentTimerToast() {
+        let secs = this.checkoutTimeout ? this.checkoutTimeout : TIMEOUT;
+        let message;
+        if(secs > 0 && this.checkoutTimesup==false) {
+            message = 'Por favor procede con el pago';
+        }else{
+            message = 'El tiempo para confirmar el pago ha terminado';
+        }
+        let toast = this.toastCtrl.create({
+            message: message,
+            duration: 2000,
+            position: 'bottom',
+            showCloseButton: true,
+            closeButtonText: 'Ok'
+        });
+
+        toast.onDidDismiss(() => {
+            console.log('Dismissed toast');
+        });
+
+        toast.present();
+    }  
 
 }

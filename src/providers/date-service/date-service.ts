@@ -19,11 +19,11 @@ export class DateService {
         return diff;
     }
 
-    getDiff(from:any, to:any) {
+    getDiff(from:any, to:any, returnFormat:any = 'seconds') {
         let a = moment(to);
         let b = moment(from);
         // diff is greater diff smaller
-        return a.diff(b, 'minutes');
+        return a.diff(b, returnFormat);
     }
 
     // set moment from string format > HH:mm
@@ -56,6 +56,10 @@ export class DateService {
         return moment().utcOffset(utcOffset).format();
     }
 
+    getCurrent(format:string = '', utcOffset:string = defaultUTCzone) {
+        return moment().utcOffset(utcOffset).format(format);        
+    }
+
     /**
      *  HELPERS
      */
@@ -74,6 +78,9 @@ export class DateService {
         return moment(momentString).format(format);
     }
 
+    humanizeSecondsDuration(seconds) {
+        return moment.duration(seconds, 'seconds').humanize();
+    }
 
     // momentInput: timestamp, ISO8601 string date
     getHourNum(date:any): number {
