@@ -107,20 +107,20 @@ export class DateService {
         return date.add(years, 'y').valueOf();
     }
 
-    addDays(date:string, days:number)  {
-        return moment(date).add(days, 'days').format();
+    addDays(date:string, days:number, returnFormat='')  {
+        return moment(date).add(days, 'days').format(returnFormat);
     }
 
-    addHours(date:string, hours:number)  {
-        return moment(date).add(hours, 'hours').format();
+    addHours(date:string, hours:number, returnFormat='')  {
+        return moment(date).add(hours, 'hours').format(returnFormat);
     } 
 
-    addMinutes(date:string, minutes:number)  {
-        return moment(date).add(minutes, 'minutes').format();
+    addMinutes(date:string, minutes:number, returnFormat='')  {
+        return moment(date).add(minutes, 'minutes').format(returnFormat);
     }    
 
-    subtractMinutes(date:string, minutes:number)  {
-        return moment(date).subtract(minutes, 'minutes').format();
+    subtractMinutes(date:string, minutes:number, returnFormat='')  {
+        return moment(date).subtract(minutes, 'minutes').format(returnFormat);
     }            
 
     //  ISO 8601 datetime format standard
@@ -170,7 +170,7 @@ export const DATE_DEFAULTS = {
         hour: 17,
         minute: 0
     },  
-    PICKUP_DIFF_DAYS: 5,
+    PICKUP_DIFF_DAYS: 30, // 30 days
     PICKUP_DROP_MIN_DIFF_IN_MINUTES: 120,  
 }
 

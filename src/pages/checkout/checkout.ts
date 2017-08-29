@@ -46,6 +46,12 @@ export class CheckoutPage implements OnInit {
     // aux
     dates:any;
     payLoader:any;
+    // EXPIRATION
+    // sending expiration
+    sendingExpired:boolean;
+    checkoutTimer:any;
+    checkoutTimeout:number;
+    checkoutTimesup:boolean;
 
     constructor(private navCtrl: NavController,
         private navParams: NavParams,
