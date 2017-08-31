@@ -19,7 +19,7 @@ import { SendingPaymentService } from '../../providers/sending-service/sending-p
 import { SendingsTabsPage } from '../sendings-tabs/sendings-tabs';
 
 const CC_IMG = 'assets/img/credit-card-sm.png';
-const TIMEOUT = 60;
+const TIMEOUT = 300;
 
 @Component({
     selector: 'page-checkout',
