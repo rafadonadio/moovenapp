@@ -33,6 +33,7 @@ npm run ionic:build --prod
     - ** notificaciones (push)
     - ** replicate datastore
     - ** log (big query)
+    - ** cron para listar servicios (pagados) a vencer en 30 minutos
 
 - admin
     - mercado pago
