@@ -21,11 +21,14 @@ npm run ionic:build --prod
     - cf de cancelación
         <!-- app: cancelar servicio (usuario) *closed_canceledbysender* -->
         <!-- app: cancelar servicio (operador) *closed_canceledbyoperator* -->
-        cron: cancelar servicio no pagado *closed_payexpired*
+        <!-- cron: cancelar servicio no pagado *closed_payexpired* -->
         cron: cancelar servicio no tomado *closed_gotoperatorexpired*
         cron: cerrar servicio con hora de entrega pasada y notificaciones no enviadas *closed_autocompleted*
     <!-- - set shipment notifications -->
-    - visualización pedidos en mapa
+    - ajuste visualización items en tab sending, a vencer en menos de 30 minutos - sending
+    - ajuste visualización items en tab history - sending
+    - ajuste visualización items en tab history - shipment
+    - visualización pedidos en mapa - shipment new
     - notificaciones (email)
     - network detector
     - operatorWallet 
