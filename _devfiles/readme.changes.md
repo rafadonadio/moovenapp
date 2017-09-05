@@ -32,6 +32,9 @@ npm run ionic:build --prod
     - notificaciones (email)
     - network detector
     - operatorWallet 
+    - BUG: 
+        - al cambiar horario pickup 12, 12.30 no suma 2 hs a drop
+        - permitir tomarlo desde YA
 
     - ** notificaciones (push)
     - ** replicate datastore

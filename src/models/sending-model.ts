@@ -447,7 +447,8 @@ export class SendingRequest {
     userUid: string;
     price: number;   
     priceMinFareApplied: boolean;  
-    priceItems: Array<any>;             
+    priceItems: Array<any>;
+    priceCurrencyId: string;             
     routeDistanceMt: number;
     routeDistanceKm: number;
     routeDistanceTxt: string;
