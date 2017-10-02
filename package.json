@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "^2.1.4",
-    "ionic": "3.9.2",
+    "ionic": "3.12.0",
     "typescript": "2.3.4"
   },
   "description": "moovenAppDev: An Ionic project",

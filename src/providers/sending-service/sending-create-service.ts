@@ -47,7 +47,7 @@ export class SendingCreateService{
         // write sending to db
         // CF >> set task, init stage status, log notification (CF)
         return new Promise((resolve, reject) => {
-            this.uploadImage()
+            this.uploadImageIfSet()
                 .then(result => {
                     console.log('uploadImage result', result);
                     // if image uploaded, update sending
@@ -85,7 +85,7 @@ export class SendingCreateService{
         return this.sending.objectImageSet;
     }
 
-    private uploadImage():  Promise<any> {
+    private uploadImageIfSet():  Promise<any> {
         //console.info('uploadImage');
         let result = {
             imageSet: null,
