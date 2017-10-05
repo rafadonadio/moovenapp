@@ -136,7 +136,7 @@ export class ShipmentDetailPage implements OnInit {
             case 'cancelService':
                     content.set = true;
                     content.title = 'Seguro deseas interrumpir el Servicio?';
-                    content.message = 'El Servicio se registrará como interrumpido e inconcluso, es posible que se envien notificaciones a las partes.';                
+                    content.message = 'El Servicio se registrará como interrumpido e inconcluso. Por favor comunicate directamente con el usuario del Servicio para notificarlo.';                
                 break;                
         }
         if(content.set) {

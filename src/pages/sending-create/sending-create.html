@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content class="sending-create">
     <form [formGroup]="formOne">
-        <ion-list>
+        <ion-list padding-bottom>
             <ion-item-divider>
                 <ion-note item-right>
                     <ion-icon name="radio-button-on"></ion-icon>
@@ -18,20 +18,9 @@
                     <ion-icon name="radio-button-off"></ion-icon>
                     <ion-icon name="radio-button-off"></ion-icon>
                 </ion-note>
-            </ion-item-divider>         
-            <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
-            <ion-card>
-                <div>
-                    <img [src]="objectImageUrlTemp.value || cameraDefaultBg" />
-                </div>
-                <ion-item>
-                    <button ion-button clear item-right
-                        (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
-                </ion-item>
-            </ion-card>
-            <div *ngIf="showErrors && objectImageUrlTemp.value==''" 
-                class="input-optional">* incluye una foto (opcional)</div>            
-            <ion-list-header>Descripción corta</ion-list-header>
+            </ion-item-divider>             
+
+            <ion-list-header style="margin-bottom:0;">Etiqueta<ion-note item-right>Para tu referencia</ion-note></ion-list-header>
             <ion-item>
                 <ion-input type="text" clearInput
                     placeholder="Ej: folletos, imanes" 
@@ -80,6 +69,21 @@
             </ion-item>
             <div *ngIf="showErrors && objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" 
                 class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
+        </ion-list>
+        <ion-list>              
+            <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
+            <ion-card>
+                <div>
+                    <img [src]="objectImageUrlTemp.value || cameraDefaultBg" />
+                </div>
+                <ion-item>
+                    <button ion-button clear item-right
+                        (click)="takePicture()"><ion-icon name="camera"></ion-icon></button>
+                </ion-item>
+            </ion-card>
+            <div *ngIf="showErrors && objectImageUrlTemp.value==''" 
+                class="input-optional">* incluye una foto (opcional)</div>  
+
         </ion-list>
         <div margin>
             <button ion-button block color="primary" 

@@ -21,6 +21,25 @@ page-checkout {
         font-size:1.6rem;
         text-transform: none;
     }
+    ion-list.list-md ion-list-header.expires-soon,
+    ion-list.list-ios ion-list-header.expires-soon{
+        background: #fafafa;
+        color: color($colors, warn);
+        font-weight: 300;
+        font-size:1.4rem;
+        text-transform: none;
+        border-top-color: #ededed;
+        border-bottom-color: #ededed;
+    }   
+    ion-list.list-md ion-list-header.expired,
+    ion-list.list-ios ion-list-header.expired{
+        background: #ededed;
+        color: color($colors, danger);
+        font-weight: 500;
+        font-size:1.6rem;
+        text-transform: none;
+        border-top-color: #ddd;        
+    }        
     ion-list.list-md ion-item-divider,
     ion-list.list-ios ion-item-divider{
         color: color($colors, primary);

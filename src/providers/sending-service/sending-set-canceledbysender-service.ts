@@ -41,11 +41,12 @@ export class SendingSetCanceledbysenderService{
     // set task for Cloud Functions
     private setTaskCF() {
         this.taskCF = {
-            sendingId: this.sendingId,
-            userId: this.userId,
             task: 'set_canceledbysender',
+            origin: 'app',
+            setBy: 'sender',
+            sendingId: this.sendingId,
+            sendingUserid: this.userId,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            origin: 'app'
         }
     }
 

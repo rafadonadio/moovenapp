@@ -355,6 +355,60 @@ export const SENDING_DB = {
 }
 
 /**
+ *  CLOUD FUNCTIONS TASKS
+ */
+
+export const CF_TASKS = {
+    set_registered: {
+        TITLE: 'Registrado'
+    },
+    set_paid: {
+        TITLE: 'Pagado'
+    },
+    set_enabled: {
+        TITLE: 'Habilitado'
+    },
+    set_waitoperator: {
+        TITLE: 'Aguardando Operador'
+    },
+    set_gotoperator: {
+        TITLE: 'Operador confirmado'
+    },
+    set_waitpickup: {
+        TITLE: 'Aguardando Retiro'
+    },
+    set_pickedup: {
+        TITLE: 'Retiro confirmado'
+    },
+    set_inroute: {
+        TITLE: 'En tránsito'
+    },
+    set_dropped: {
+        TITLE: 'Entregado'
+    },
+    set_completed: {
+        TITLE: 'Completado'
+    },
+    set_canceledbysender: {
+        TITLE: 'Cancelado por el Usuario'
+    },
+    set_canceledbyoperator: {
+        TITLE: 'Cancelado por el Operador'
+    },
+    set_autocompleted: {
+        TITLE: 'Cerrado automáticamente'
+    },
+    set_payexpired: {
+        TITLE: 'Servicio ha vencido (pago no registrado)'
+    },
+    set_gotoperatorexpired: {
+        TITLE: 'Servicio ha vencido (operador no confirmado)'
+    },            
+}
+
+
+
+/**
  *  SENDING MODELS
  */
 
@@ -393,7 +447,8 @@ export class SendingRequest {
     userUid: string;
     price: number;   
     priceMinFareApplied: boolean;  
-    priceItems: Array<any>;             
+    priceItems: Array<any>;
+    priceCurrencyId: string;             
     routeDistanceMt: number;
     routeDistanceKm: number;
     routeDistanceTxt: string;
@@ -407,6 +462,7 @@ export class SendingRequest {
     _shipmentId?: string;
     _notifications?: Array<SendingNotifications>;
     _payments?: any;
+    _tasks?: Array<SendingTask>;
     objectShortName: string;
     objectImageSet: boolean;
     objectImageUrlTemp: string;  // deleted once uploaded
@@ -582,3 +638,14 @@ export class SendingOperator {
     email:string;
 }
 
+export class SendingTask {
+    task: string;
+    taskId:string;
+    origin: string;
+    setBy: string;
+    sendingId: string;
+    createdAt: any;
+    runAt?: any;
+    success?: boolean;
+    errorcode?: string;
+}

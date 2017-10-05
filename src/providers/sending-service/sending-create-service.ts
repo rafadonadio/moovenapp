@@ -47,15 +47,14 @@ export class SendingCreateService{
         // write sending to db
         // CF >> set task, init stage status, log notification (CF)
         return new Promise((resolve, reject) => {
-            this.uploadImage()
+            this.uploadImageIfSet()
                 .then(result => {
                     console.log('uploadImage result', result);
                     // if image uploaded, update sending
                     if(result.imageSet && result.uploaded) {
                         this.setSendingImageUploadedData(result);
                     }
-                    this.setTaskCF();
-                    return this.writeToDb();
+                    return this.setTasksAndWrite();
                 })
                 .then(result => {
                     console.log('writeToDb success', result);
@@ -86,7 +85,7 @@ export class SendingCreateService{
         return this.sending.objectImageSet;
     }
 
-    private uploadImage():  Promise<any> {
+    private uploadImageIfSet():  Promise<any> {
         //console.info('uploadImage');
         let result = {
             imageSet: null,
@@ -140,31 +139,29 @@ export class SendingCreateService{
         this.dbRef = firebase.database().ref();
     }
 
-    private writeToDb() {
+    private setTasksAndWrite() {
+        let task = 'set_registered';
+        let origin = 'app';
+        let setBy = 'sender';
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        let taskKey = this.dbRef.child('sendingsTask/').push().key;
+        this.taskCF = {
+            task: task,
+            origin: origin,
+            setBy: setBy,
+            sendingId: this.sending.sendingId,
+            sendingUserid: this.userId,
+            timestamp: timestamp,
+        }
         //console.info('writeToDb');
         let updates = {};
         // write sending
         updates[`sendings/${this.sending.sendingId}`] = this.sending;
         // write cf task
-        let key = this.dbRef.child('sendingsTask/').push().key;
-        updates[`sendingsTask/${key}`] = this.taskCF;
+        updates[`sendingsTask/${taskKey}`] = this.taskCF;
+        // write task to sending
         return this.dbRef.update(updates);
     }
-
-    /**
-     *  CLOUD FUNCTION TASK
-     */
-    
-    // set task for Cloud Functions
-    private setTaskCF() {
-        this.taskCF = {
-            sendingId: this.sending.sendingId,
-            task: 'set_registered',
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            origin: 'app'
-        }
-    }
-
 
     /**
      *  HELPERS
@@ -212,7 +209,8 @@ export class SendingCreateService{
             publicId: '',
             timestamp: 0,
             userUid: '',         
-            price: 0,   
+            price: 0,
+            priceCurrencyId: 'ARS',   
             priceMinFareApplied: false,
             priceItems: [],               
             routeDistanceMt: 0,

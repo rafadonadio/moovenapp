@@ -43,10 +43,11 @@ export class SendingSetDroppedService{
     private setTaskCF() {
         this.taskCF = {
             sendingId: this.sendingId,
-            userId: this.userId,
+            operatorId: this.userId,
             task: 'set_dropped',
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            origin: 'app'
+            origin: 'app',
+            setBy: 'operator',
         }
     }
 
