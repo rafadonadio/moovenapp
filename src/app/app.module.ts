@@ -69,22 +69,16 @@ import { SendingSetCanceledbyoperatorService } from '../providers/sending-servic
 
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
 import { FormatDatePipe } from '../pipes/formatdate-pipe';
-// IONIC.IO
-import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
 const ENV = APP_CFG.CURRENT_ENV;
-const cloudSettings: CloudSettings = {
-    'core': {
-        'app_id': APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
-    }
-};
+
 
 // AF2 Settings
 export const firebaseConfig = {
@@ -143,7 +137,6 @@ export const firebaseConfig = {
         AngularFireAuthModule,
         AngularFireDatabaseModule,
         HttpModule,
-        CloudModule.forRoot(cloudSettings),
         IonicStorageModule.forRoot({
             name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
             driverOrder: ['localstorage', 'indexeddb', 'sqlite', 'websql']

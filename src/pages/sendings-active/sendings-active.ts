@@ -1,4 +1,3 @@
-import { FirebaseListObservable } from 'angularfire2/database/firebase_list_observable';
 import { APP_CFG } from '../../models/app-model';
 import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
@@ -14,7 +13,7 @@ import { SendingService } from '../../providers/sending-service/sending-service'
 })
 export class SendingsActivePage implements OnInit {
 
-    sendings: FirebaseListObservable<any>;
+    sendings: any;
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,

@@ -30,7 +30,7 @@
     "@ionic/storage": "2.0.1",
     "@types/hashids": "^1.0.30",
     "@types/jasmine": "^2.5.36",
-    "angularfire2": "^4.0.0-rc.1",
+    "angularfire2": "5.0.0-rc.0",
     "cordova-android": "^6.2.3",
     "cordova-browser": "~4.1.0",
     "cordova-plugin-add-swift-support": "^1.6.1",

@@ -382,9 +382,6 @@ export class CheckoutPage implements OnInit {
             console.log('payloader dismissed');
         })
     }
-    private dismissPayloader() {
-
-    }
 
     private resetCardNumberFlag() {
         this.invalidCardNumber = false;        

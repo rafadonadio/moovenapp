@@ -1,13 +1,13 @@
 import { SendingSetCanceledbyoperatorService } from './sending-set-canceledbyoperator-service';
 import { SendingSetCanceledbysenderService } from './sending-set-canceledbysender-service';
 import { DateService } from '../date-service/date-service';
-import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
+import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { AuthService } from '../auth-service/auth-service';
 import { SendingSetDroppedService } from './sending-set-dropped-service';
 import { SendingSetPickedupService } from './sending-set-pickedup-service';
 import { SendingSetGotoperatorService } from './sending-set-gotoperator-service';
 import { SendingCreateService } from './sending-create-service';
-import { FirebaseListObservable } from 'angularfire2/database';
+import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { Injectable } from '@angular/core';
@@ -114,7 +114,7 @@ export class SendingService {
         return this.writeAttemptToLockVacant(sendingId, userId);
     }
 
-    unlockVacant(sendingId:string): firebase.Promise<any> {
+    unlockVacant(sendingId:string): Promise<any> {
         return this.writeUnlockVacant(sendingId);
     }
 
@@ -131,7 +131,7 @@ export class SendingService {
      *  VACANT WRITES
      */
 
-    private writeUnlockVacant(sendingId:string):firebase.Promise<any> {
+    private writeUnlockVacant(sendingId:string):Promise<any> {
         let updates = {};
         updates[`_sendingsLive/${sendingId}/_locked`] = null;
         return this.dbRef.update(updates); 

@@ -136,7 +136,7 @@ export class MyApp {
                     // set account
                     this.setAccount();
                     // show toaster
-                    let toast = this.presentToast('Cuenta aun inicializando ...', 2500);
+                    this.presentToast('Cuenta aun inicializando ...', 2500);
                 }else{
                     // uid ok, account ok
                     this.setAccount();
