@@ -150,7 +150,7 @@ export class ShipmentCreate2Page implements OnInit {
             });
     }
 
-    private unlockSending():firebase.Promise<any> {
+    private unlockSending():Promise<any> {
         return this.sendingSrv.unlockVacant(this.sendingId);
     }
 

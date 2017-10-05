@@ -1,4 +1,4 @@
-import { FirebaseListObservable } from 'angularfire2/database/firebase_list_observable';
+import { FirebaseListObservable } from 'angularfire2/database-deprecated/firebase_list_observable';
 import { APP_CFG } from '../../models/app-model';
 import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';

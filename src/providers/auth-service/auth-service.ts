@@ -29,7 +29,7 @@ export class AuthService {
             });
     }
 
-    updateEmail(newEmail: string): firebase.Promise<any>  {
+    updateEmail(newEmail: string): Promise<any>  {
         return this.fbuser.updateEmail(newEmail);
     }
 
@@ -51,7 +51,7 @@ export class AuthService {
      *  CREATE
      */
 
-    createUserWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+    createUserWithEmailAndPassword(email: string, password: string): Promise<any> {
         return firebase.auth().createUserWithEmailAndPassword(email, password);
     }
 
@@ -61,7 +61,7 @@ export class AuthService {
      */
 
     // signin firebase user with email and password
-    signInWithEmailAndPassword(email: string, password: string): firebase.Promise<any> {
+    signInWithEmailAndPassword(email: string, password: string): Promise<any> {
         return firebase.auth().signInWithEmailAndPassword(email, password);
     }
 
@@ -73,7 +73,7 @@ export class AuthService {
     }
 
     // Sends a password reset email to the given email address.
-    sendPasswordResetEmail(email: string): firebase.Promise<any> {
+    sendPasswordResetEmail(email: string): Promise<any> {
         return firebase.auth().sendPasswordResetEmail(email);
     }
     

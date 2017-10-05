@@ -45,7 +45,7 @@ export class SendingNotificationsService {
         return this.dbRef.child(DB.ALL.REF + sendingId + DB.ALL._CHILD.NOTIFICATIONS).push().key;
     }
 
-    logToDB(sendingId:string, contentLog:any):firebase.Promise<any> {
+    logToDB(sendingId:string, contentLog:any):Promise<any> {
         // key for new item in array
         let newKey = this.newKey(sendingId);
         // set paths

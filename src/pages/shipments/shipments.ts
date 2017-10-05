@@ -1,4 +1,3 @@
-import { DateService } from '../../providers/date-service/date-service';
 import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
@@ -8,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
 import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
-import { FirebaseListObservable } from 'angularfire2/database';
+import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 
 @Component({
     selector: 'page-shipments',
@@ -30,8 +29,7 @@ export class ShipmentsPage implements OnInit{
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         private accountSrv: AccountService,
-        private toastCtrl: ToastController,
-        private dateSrv: DateService) {}
+        private toastCtrl: ToastController) {}
 
     ngOnInit() {
         console.info('__shipment__');
