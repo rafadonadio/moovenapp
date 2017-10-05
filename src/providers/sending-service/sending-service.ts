@@ -127,7 +127,6 @@ export class SendingService {
         this.notificationsSrv.sendLocalNotification(sendingId, contentLog);
     }
 
-
     /**
      *  VACANT WRITES
      */

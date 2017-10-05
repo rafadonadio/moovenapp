@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs/Rx';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { Alert, LoadingController } from 'ionic-angular';
-import { SendingRequest } from '../../models/sending-model';
+import { SendingRequest, SendingTask , CF_TASKS } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { ViewController, NavController, NavParams, Platform, ToastController, AlertController, ActionSheetController } from 'ionic-angular';
 
@@ -18,6 +18,8 @@ export class SendingDetailPage implements OnInit {
     sending:SendingRequest;
     sendingSubs:Subscription;
     notifications:Array<any>;
+    tasks:Array<SendingTask>;
+    displayTasks:boolean;
     private _platform: Platform;
     private _isAndroid: boolean;
     private _isiOS: boolean;
@@ -45,12 +47,14 @@ export class SendingDetailPage implements OnInit {
 
     ionViewWillEnter() {
         console.log('_willEnter');
+        this.displayTasks = false;
         let loader = this.loadingCtrl.create({ content: "Cargando ..." });
         loader.present();  
         let obs = this.sendingsSrv.getByIdObs(this.sendingId, true);
         this.sendingSubs = obs.subscribe((snap) => {
                                 this.sending = snap.val();
                                 this.setNotificationsAsArray();
+                                this.setTasksAsArray();
                                 loader.dismiss();                                
                             }, err => {
                                 console.log('err', err);
@@ -82,6 +86,28 @@ export class SendingDetailPage implements OnInit {
             this.notifications.push(item);
         }
         //console.log(this.notifications);
+    }
+
+    private setTasksAsArray() {
+        this.tasks = [];
+        let tasks = this.sending.hasOwnProperty('_tasks') ? this.sending._tasks : [];
+        for(let key in tasks) {
+            //console.log(key, tasks[key]);
+            this.tasks.push(tasks[key]);
+        }
+        //console.log(this.notifications);
+    }    
+
+    toggleDisplayTasks() {
+        if(this.displayTasks) {
+            this.displayTasks = false;
+        }else{
+            this.displayTasks = true;
+        }
+    }
+
+    getTaskTitle(taskslug) {
+        return CF_TASKS.hasOwnProperty(taskslug) ? CF_TASKS[taskslug].TITLE : '--';
     }
 
     goToCheckout() {

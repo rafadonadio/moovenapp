@@ -19,24 +19,27 @@ npm run ionic:build --prod
 - app
     <!-- - refactor sending (switch to authService AccountService) -->
     - cf de cancelación
-        app: cancelar servicio (usuario)
-            *closed_canceledbysender*
-        app: cancelar servicio (operador)
-            *closed_canceledbyoperator*
-        cron: cancelar servicio no pagado
-            *closed_payexpired*
-        cron: cancelar servicio no tomado
-            *closed_gotoperatorexpired*
-        cron: cerrar servicio con hora de entrega pasada y notificaciones no enviadas
-            *closed_autocompleted*
-    - set shipment notifications
-    - visualización pedidos en mapa
+        <!-- app: cancelar servicio (usuario) *closed_canceledbysender* -->
+        <!-- app: cancelar servicio (operador) *closed_canceledbyoperator* -->
+        <!-- cron: cancelar servicio no pagado *closed_payexpired* -->
+        cron: cancelar servicio no tomado *closed_gotoperatorexpired*
+        cron: cerrar servicio con hora de entrega pasada y notificaciones no enviadas *closed_autocompleted*
+    <!-- - set shipment notifications -->
+    - ajuste visualización items en tab sending, a vencer en menos de 30 minutos - sending
+    - ajuste visualización items en tab history - sending
+    - ajuste visualización items en tab history - shipment
+    - visualización pedidos en mapa - shipment new
     - notificaciones (email)
     - network detector
+    - operatorWallet 
+    - BUG: 
+        - al cambiar horario pickup 12, 12.30 no suma 2 hs a drop
+        - permitir tomarlo desde YA
 
     - ** notificaciones (push)
     - ** replicate datastore
     - ** log (big query)
+    - ** cron para listar servicios (pagados) a vencer en 30 minutos
 
 - admin
     - mercado pago
