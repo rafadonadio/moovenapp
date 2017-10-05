@@ -25,7 +25,7 @@ export class HashService {
      * - random(10)
      */
     genId():string {
-        this.hashids = new hashids(this.userSalt, 6, '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        this.hashids = this.hashids(this.userSalt, 6, '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ');
         let date = Date.now()/1000;
         let random1 = Math.round(date);
         let random2 = Math.floor((Math.random() * 10) + 1);          
@@ -34,7 +34,7 @@ export class HashService {
     }
 
     genSecurityCode():string {
-        this.hashids = new hashids(this.userSalt, 4, '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        this.hashids = this.hashids(this.userSalt, 4, '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ');
         let random = Math.floor((Math.random() * 10) + 1);           
         let hashid:string = this.hashids.encode(random);      
         return hashid;        
