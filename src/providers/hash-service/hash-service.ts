@@ -10,7 +10,7 @@ export class HashService {
     userSalt:any;
 
     constructor(private authSrv: AuthService) {
-        // this.userSalt = this.authSrv.fbuser.uid;
+        this.userSalt = this.authSrv.fbuser.uid;
     }   
 
     /**
