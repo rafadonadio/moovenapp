@@ -30,7 +30,7 @@
             </ion-item>
             <ion-item no-lines>
                 <ion-label color="primary" stacked>Número de la tarjeta</ion-label>
-                <ion-input type="text" data-checkout="cardNumber" placeholder="Número de tarjeta" formControlName="cardNumber" (keyup)="triggerPaymentGuess()"></ion-input>
+                <ion-input type="number" data-checkout="cardNumber" placeholder="Número de tarjeta" formControlName="cardNumber" (keyup)="triggerPaymentGuess()"></ion-input>
             </ion-item>
             <div class="error" *ngIf="chForm.get('cardNumber').hasError('required') && (chForm.get('cardNumber').touched || showRequired)">Ingresa el nro de la tarjeta</div>
             <div class="error" *ngIf="chForm.get('cardNumber').hasError('maxlength')">Máximo 16 dígitos</div>
@@ -39,7 +39,7 @@
 
             <ion-item no-lines>
                 <ion-label color="primary" stacked>Código de seguridad</ion-label>
-                <ion-input type="password" data-checkout="securityCode" formControlName="securityCode" placeholder="Pin de seguridad"></ion-input>
+                <ion-input type="number" data-checkout="securityCode" formControlName="securityCode" placeholder="Pin de seguridad"></ion-input>
             </ion-item>
             <div class="error" *ngIf="chForm.get('securityCode').hasError('required') && (chForm.get('securityCode').touched || showRequired)">Ingresa el código de seguridad</div>
             <div class="error" *ngIf="chForm.get('securityCode').hasError('maxlength')">Máximo 4 dígitos</div>
@@ -58,7 +58,7 @@
 
             <ion-item no-lines margin-bottom>
                 <ion-label color="primary" stacked>DNI</ion-label>
-                <ion-input type="text" data-checkout="docNumber" formControlName="docNumber" placeholder="DNI sin puntos"></ion-input>
+                <ion-input type="number" data-checkout="docNumber" formControlName="docNumber" placeholder="DNI sin puntos"></ion-input>
             </ion-item>
             <div class="error" *ngIf="chForm.get('docNumber').hasError('required') && (chForm.get('docNumber').touched || showRequired)">Ingresa el dni</div>
             <div class="error" *ngIf="chForm.get('docNumber').hasError('isNumber') && !chForm.get('docNumber').hasError('required')">Solo números, sin punto ni espacios</div>
