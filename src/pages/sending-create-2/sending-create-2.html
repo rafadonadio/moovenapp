@@ -32,6 +32,7 @@
                 <ion-icon name="pin" item-left></ion-icon>
                 <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
                 <h3>{{ sending?.pickupAddressCityLong }}</h3>
+                <p *ngIf="sending?.pickupAddressCityAreaLong!=''">({{ sending?.pickupAddressCityAreaLong }})</p>
                 <p>{{ sending?.pickupAddressStateLong }}</p>
                 <button ion-button item-right clear color="sublight"
                     (click)="resetAddress()">

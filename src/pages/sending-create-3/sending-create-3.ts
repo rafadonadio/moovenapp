@@ -419,6 +419,16 @@ export class SendingCreate3Page implements OnInit{
         this.sending.dropAddressCityAreaLong = this.placeDetails.components.sublocality_level_1.long;
         this.sending.dropAddressCityShort = this.placeDetails.components.locality.short;
         this.sending.dropAddressCityLong = this.placeDetails.components.locality.long;
+        // city name hack
+        // if city empty, set state short
+        if(this.placeDetails.components.locality.short!='') {
+            this.sending.dropAddressCityShort = this.placeDetails.components.locality.short;
+            this.sending.dropAddressCityLong = this.placeDetails.components.locality.long;
+        }else{
+            console.log('pickup address city: set state name');
+            this.sending.dropAddressCityShort = this.placeDetails.components.administrative_area_level_1.short;
+            this.sending.dropAddressCityLong = this.placeDetails.components.administrative_area_level_1.short;
+        }        
         this.sending.dropAddressStateAreaShort = this.placeDetails.components.administrative_area_level_2.short;
         this.sending.dropAddressStateAreaLong = this.placeDetails.components.administrative_area_level_2.long;        
         this.sending.dropAddressStateShort = this.placeDetails.components.administrative_area_level_1.short;
