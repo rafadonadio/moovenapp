@@ -425,7 +425,7 @@ export class SendingCreate3Page implements OnInit{
             this.sending.dropAddressCityShort = this.placeDetails.components.locality.short;
             this.sending.dropAddressCityLong = this.placeDetails.components.locality.long;
         }else{
-            console.log('pickup address city: set state name');
+            console.log('drop address city: set state name');
             this.sending.dropAddressCityShort = this.placeDetails.components.administrative_area_level_1.short;
             this.sending.dropAddressCityLong = this.placeDetails.components.administrative_area_level_1.short;
         }        
