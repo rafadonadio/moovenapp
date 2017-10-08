@@ -42,6 +42,13 @@ npm run ionic:build --prod
     - ** cron para listar servicios (pagados) a vencer en 30 minutos
 
 - admin
+    - contadores
+        servicios por stage, status
+        servicios por fecha
+        usuarios
+        operadores
+    - dashboard
+        - mostrar contadores
     - mercado pago
         habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
 
