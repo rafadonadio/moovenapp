@@ -31,6 +31,7 @@
                 <ion-icon name="pin" item-left></ion-icon>
                 <h2>{{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</h2>
                 <h3>{{ sending?.dropAddressCityShort }}</h3>
+                <p *ngIf="sending?.dropAddressCityAreaLong!=''">({{ sending?.dropAddressCityAreaLong }})</p>
                 <p>{{ sending?.dropAddressStateLong }}</p>
                 <button ion-button item-right clear color="sublight"
                     (click)="resetAddress()">

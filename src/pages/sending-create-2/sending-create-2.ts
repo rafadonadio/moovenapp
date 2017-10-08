@@ -551,7 +551,7 @@ export class SendingCreate2Page implements OnInit {
      */
     
     private updateAddressDetails():void {
-        console.info('f2 > updateSendingAddressPlaceDetails > save address values in this.sending');           
+        console.info('f2 > updateSendingAddressPlaceDetails > save address values in this.sending');          
         this.sending.pickupAddressFullText = this.placeDetails.full_address;
         this.sending.pickupAddressSet = this.placeDetails.set;
         this.sending.pickupAddressIsComplete = this.placeDetails.complete;
@@ -565,8 +565,16 @@ export class SendingCreate2Page implements OnInit {
         this.sending.pickupAddressPostalCode = this.placeDetails.components.postal_code.long + this.placeDetails.components.postal_code_suffix.long;            
         this.sending.pickupAddressCityAreaShort = this.placeDetails.components.sublocality_level_1.short;
         this.sending.pickupAddressCityAreaLong = this.placeDetails.components.sublocality_level_1.long;
-        this.sending.pickupAddressCityShort = this.placeDetails.components.locality.short;
-        this.sending.pickupAddressCityLong = this.placeDetails.components.locality.long;
+        // city name hack
+        // if city empty, set state short
+        if(this.placeDetails.components.locality.short!='') {
+            this.sending.pickupAddressCityShort = this.placeDetails.components.locality.short;
+            this.sending.pickupAddressCityLong = this.placeDetails.components.locality.long;
+        }else{
+            console.log('pickup address city: set state name');
+            this.sending.pickupAddressCityShort = this.placeDetails.components.administrative_area_level_1.short;
+            this.sending.pickupAddressCityLong = this.placeDetails.components.administrative_area_level_1.short;
+        }
         this.sending.pickupAddressStateAreaShort = this.placeDetails.components.administrative_area_level_2.short;
         this.sending.pickupAddressStateAreaLong = this.placeDetails.components.administrative_area_level_2.long;        
         this.sending.pickupAddressStateShort = this.placeDetails.components.administrative_area_level_1.short;
