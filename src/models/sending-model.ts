@@ -35,14 +35,13 @@ export const SENDING_CFG = {
         LIVE: {
             ID: 'live',
             STATUS: {
-                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped','notificationsexpired'],
+                _LIST: ['waitoperator', 'gotoperator', 'waitpickup', 'pickedup', 'inroute', 'dropped'],
                 WAITOPERATOR: 'waitoperator',
                 GOTOPERATOR: 'gotoperator',
                 WAITPICKUP: 'waitpickup',
                 PICKEDUP: 'pickedup',
                 INROUTE: 'inroute',
-                DROPPED: 'dropped',
-                NOTIFICATIONSEXPIRED: 'notificationsexpired'
+                DROPPED: 'dropped'
             },
             SUMMARY_FIELDS: [
                 'pickupAddressStreetShort',
@@ -75,8 +74,9 @@ export const SENDING_CFG = {
         CLOSED: {
             ID: 'closed',
             STATUS: {
-                _LIST: ['complete', 'canceledbysender', 'canceledbyoperator', 'gotoperatorexpired','payexpired'],
+                _LIST: ['complete', 'autocomplete', 'canceledbysender', 'canceledbyoperator', 'waitoperatorexpired','payexpired'],
                 COMPLETE: 'complete',
+                AUTOCOMPLETE: 'autocomplete',
                 CANCELEDBYSENDER: 'canceledbysender',
                 CANCELEDBYOPERATOR: 'canceledbyoperator',
                 GOTOPERATOREXPIRED: 'gotoperatorexpired',
@@ -107,7 +107,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Registrado con ID #{PUBLICID}, el {DATE}',
             },
-            ICON: 'checkmark'
+            ICON: 'create'
         },
         'created_paid': {
             NOTIFY: true,
@@ -127,7 +127,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Servicio habilitado para ser tomado por un operador',
             },
-            ICON: 'send'
+            ICON: 'radio-button-on'
         },
         'live_waitoperator': {
             NOTIFY: false,
@@ -157,7 +157,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'El operador debe informar: {CODE}',
             },
-            ICON: 'time'
+            ICON: 'home'
         },
         'live_pickedup': {
             NOTIFY: true,
@@ -167,7 +167,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Retiro informado el {DATE}',
             },
-            ICON: 'checkmark'
+            ICON: 'ios-cloud-upload-outline'
         },
         'live_inroute': {
             NOTIFY: true,
@@ -177,7 +177,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Informar al operador: {CODE}',
             },
-            ICON: 'time'
+            ICON: 'send'
         },
         'live_dropped': {
             NOTIFY: true,
@@ -187,7 +187,7 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'Entrega informada el {DATE}',
             },
-            ICON: 'checkmark'
+            ICON: 'pin'
         },
         'closed_complete': {
             NOTIFY: false,
@@ -197,8 +197,18 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'El servicio ha sido completado el {DATE}',
             },
-            ICON: 'checkmark'
+            ICON: 'md-done-all'
         },
+        'closed_autocomplete': {
+            NOTIFY: false,
+            TITLE: {
+                'es': 'Servicio completado automáticamente',
+            },
+            MSG: {
+                'es': 'El servicio ha sido autocompletado el {DATE}',
+            },
+            ICON: 'md-checkbox-outline'
+        },        
         'closed_canceledbysender': {
             NOTIFY: true,
             TITLE: {
@@ -227,8 +237,18 @@ export const NOTIFICATIONS_CFG = {
             MSG: {
                 'es': 'El servicio no fue tomado y expiró el {DATE}',
             },
-            ICON: 'close'
+            ICON: 'alert'
         },
+        'closed_payexpired': {
+            NOTIFY: true,
+            TITLE: {
+                'es': 'Servicio expiró',
+            },
+            MSG: {
+                'es': 'El servicio no fue pagado y expiró el {DATE}',
+            },
+            ICON: 'alert'
+        },        
     };
 
 /**
