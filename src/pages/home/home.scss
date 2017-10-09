@@ -1,17 +1,45 @@
 page-home {
 
     
+    .col button span div{
+        font-weight: 400;
+    }
     .card.sendings .item h3{
-        color: color($colors, primary);
+        color: #333;
+        font-weight: 300;
     }
     .card.shipments .item h3{
-        color: color($colors, green);
+        color: #333;
+        font-weight: 300;
     }    
-    .col{
-        background-color: #efefef;
-    }
     .icon{
         color: #ddd;
+    }
+
+    .card-background-page {
+        
+        ion-card {
+        position: relative;
+        text-align: center;
+        }
+    
+        .card-title {
+        position: absolute;
+        top: 36%;
+        font-size: 2.0em;
+        width: 100%;
+        font-weight: bold;
+        color: #fff;
+        }
+    
+        .card-subtitle {
+        font-size: 1.0em;
+        position: absolute;
+        top: 52%;
+        width: 100%;
+        color: #fff;
+        }
+    
     }
 
 }

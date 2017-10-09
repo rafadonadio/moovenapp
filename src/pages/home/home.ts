@@ -20,9 +20,10 @@ export class HomePage {
         private sendingSrv: SendingService) {
     }
 
-    ionViewDidLoad() {
+    ionViewWillLoad() {
         console.log('ionViewDidLoad HomePage');
         this.getActiveSendings();
+        this.getActiveShipments();
     }
 
     goToSendings() {

@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar color="primary">
-        <ion-title>{{ sending?.objectShortName }}</ion-title>
+        <ion-title>{{ sending?.objectShortName | capitalizePipe }}</ion-title>
         <ion-buttons end>
             <button ion-button (click)="openActionSh()">
                 <ion-icon name="more"></ion-icon>
