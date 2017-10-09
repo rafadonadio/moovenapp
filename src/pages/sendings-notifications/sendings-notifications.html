@@ -9,4 +9,16 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
+    <ion-card *ngFor="let obj of notifications">
+        <ion-card-header>
+            Servicio <span>#{{ obj.publicId }}</span><ion-badge color="secondary" item-right>{{ obj.notifs.length }}</ion-badge>
+        </ion-card-header>
+        <ion-list *ngFor="let notif of obj.notifs">
+            <ion-item text-wrap>
+                <ion-icon name="{{ notif.icon }}" item-start></ion-icon>
+                <p><b>{{ notif.title }}</b></p>
+                <p>{{ notif.msg }}</p>
+            </ion-item>            
+        </ion-list>
+    </ion-card>
 </ion-content>

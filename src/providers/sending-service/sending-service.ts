@@ -94,6 +94,11 @@ export class SendingService {
         return this.afDb.list(`userSendings/${accountId}/closed`, { preserveSnapshot: snapshot });
     }     
 
+    getAllNotifications(snapshot:boolean = false): FirebaseListObservable<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        return this.afDb.list(`userNotificationsBySendingid/${accountId}`, { preserveSnapshot: snapshot });
+    }
+
     /**
      *  SendingLiveVacants
      */
