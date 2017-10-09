@@ -9,15 +9,22 @@
     </ion-navbar>
 </ion-header>
 <ion-content>
-    <ion-card>
-    <img src="http://placehold.it/500x250?text=Servicios"/>
-    <ion-card-content>
-        <ion-card-title>
-        Servicios
-        </ion-card-title>
-        <p>
-        Accede a tus servicios o crea uno nuevo
-        </p>
-    </ion-card-content>
+    <ion-card (click)="goToSendings()">
+        <ion-row>
+            <ion-col>
+                <button ion-button icon-right clear>
+                    <div>Servicios activos</div>
+                    <ion-icon name="md-arrow-forward"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-list>
+            <ion-item *ngFor="let item of sendings | async">
+                <ion-icon item-start name="send"></ion-icon>
+                <h3>{{ item?.objectShortName | capitalizePipe }}</h3>
+                <ion-note item-end>#{{ item?.publicId }}</ion-note>
+                <p>{{ getStatusMessage(item?._currentStage_Status).message }}</p>
+            </ion-item>
+        </ion-list>
     </ion-card>
 </ion-content>

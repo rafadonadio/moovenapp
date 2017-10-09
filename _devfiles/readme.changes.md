@@ -26,7 +26,7 @@ npm run ionic:build --prod
         <!-- cron: cerrar servicio con hora de entrega pasada y notificaciones no enviadas *closed_autocompleted* -->
     <!-- - set shipment notifications -->
     - ajuste visualización items en tab sending, a vencer en menos de 30 minutos - sending
-    - ajuste visualización items en tab history - sending
+    <!-- - ajuste visualización items en tab history - sending -->
     - ajuste visualización items en tab history - shipment
     - visualización pedidos en mapa - shipment new
     - notificaciones (email)
