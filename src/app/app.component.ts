@@ -69,12 +69,12 @@ export class MyApp {
 
         // used for an example of ngFor and navigation
         this.pages = [
-            { title: 'Mooven', component: HomePage, icon: 'home', navigationType: 'root' },
-            { title: 'Servicios', component: SendingsTabsPage, icon: 'paper-plane', navigationType: 'root' },
-            { title: 'Operador', component: ShipmentsTabsPage, icon: 'cube', navigationType: 'root' },
-            { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
-            { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' },
-            { title: 'Ajustes', component: SettingsPage, icon: 'settings', navigationType: 'push' }
+            { title: 'Mooven', component: HomePage, icon: 'ios-home-outline', navigationType: 'root' },
+            { title: 'Servicios', component: SendingsTabsPage, icon: 'ios-paper-plane-outline', navigationType: 'root' },
+            { title: 'Operador', component: ShipmentsTabsPage, icon: 'ios-cube-outline', navigationType: 'root' },
+            { title: 'Pagos', component: PaymentPage, icon: 'ios-card-outline', navigationType: 'push' },
+            { title: 'Ayuda', component: HelpPage, icon: 'ios-help-circle-outline', navigationType: 'push' },
+            { title: 'Ajustes', component: SettingsPage, icon: 'ios-settings-outline', navigationType: 'push' }
         ];
 
         // subscribe to authentication state

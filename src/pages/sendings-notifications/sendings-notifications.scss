@@ -7,10 +7,16 @@ page-sendings-notifications {
     .card-header span{
         color: #333;
     }
-    .card-header .badge{
+    .card-header .icon{
         float: right;
     }
     .item .icon{
         color: #ccc;
+    }
+    .item h5{
+        line-height: 1.5;
+    }
+    .item p{
+        color: #999;
     }
 }

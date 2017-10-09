@@ -21,7 +21,7 @@
         </ion-row>
         <ion-list>
             <ion-item *ngFor="let item of sendings | async">
-                <ion-icon item-start name="send"></ion-icon>
+                <ion-icon item-start name="ios-send-outline"></ion-icon>
                 <h3>{{ item?.objectShortName | capitalizePipe }}</h3>
                 <ion-note item-end>#{{ item?.publicId }}</ion-note>
                 <p>{{ getStatusMessage(item?._currentStage_Status).message }}</p>
@@ -40,7 +40,7 @@
         </ion-row>
         <ion-list>
             <ion-item *ngFor="let item of shipments">
-                <ion-icon item-start name="send"></ion-icon>
+                <ion-icon item-start name="ios-send-outline"></ion-icon>
                 <h3>{{ item?.objectShortName | capitalizePipe }}</h3>
                 <ion-note item-end>#{{ item?.publicId }}</ion-note>
                 <p>{{ getStatusMessage(item?._currentStage_Status).message }}</p>

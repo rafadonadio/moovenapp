@@ -85,18 +85,34 @@ export class SendingService {
     // get account active sendings Observable
     getAllActiveObs(snapshot:boolean = false): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.list(`userSendings/${accountId}/active`, { preserveSnapshot: snapshot });
+        return this.afDb.list(`userSendings/${accountId}/active`, { 
+            preserveSnapshot: snapshot,
+            query: {
+                orderByChild: 'timestamp',
+            } 
+        });
     } 
 
     // get account closedd sendings Observable
-    getAllClosedObs(snapshot:boolean = false): FirebaseListObservable<any> {
+    getAllClosedObs(snapshot:boolean = false, limitToLast:number = 100): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.list(`userSendings/${accountId}/closed`, { preserveSnapshot: snapshot });
+        return this.afDb.list(`userSendings/${accountId}/closed`, { 
+            preserveSnapshot: snapshot, 
+            query: {
+                orderByChild: 'timestamp',
+                limitToLast: limitToLast
+            }
+        });
     }     
 
-    getAllNotifications(snapshot:boolean = false): FirebaseListObservable<any> {
+    getAllNotifications(snapshot:boolean = false, limitToLast:number = 100): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.list(`userNotificationsBySendingid/${accountId}`, { preserveSnapshot: snapshot });
+        return this.afDb.list(`userNotificationsBySendingid/${accountId}`, { 
+            preserveSnapshot: snapshot,
+            query: {
+                limitToLast: limitToLast
+            } 
+        });
     }
 
     /**

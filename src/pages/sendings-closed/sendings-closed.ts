@@ -13,7 +13,7 @@ import { SendingService } from '../../providers/sending-service/sending-service'
 })
 export class SendingsClosedPage implements OnInit {
 
-    sendings: FirebaseListObservable<any>;
+    sendings: any[];
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
@@ -76,7 +76,18 @@ export class SendingsClosedPage implements OnInit {
 
     private getAllClosed() {
         console.log('_getAll');
-        this.sendings = this.sendingSrv.getAllClosedObs();
+        let obs = this.sendingSrv.getAllClosedObs(true, 50);
+        obs.subscribe(snap => {
+            this.sendings = [];
+            snap.forEach(childsnap => {
+                let key = {
+                    $key: childsnap.key 
+                }
+                let obj = childsnap.val();
+                obj = Object.assign(obj, key);
+                this.sendings.unshift(obj);
+            });
+        });
     }
 
     private unbind() {
