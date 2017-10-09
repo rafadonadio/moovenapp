@@ -9,7 +9,7 @@ import { StartPage } from '../pages/start/start';
 import { HomePage } from '../pages/home/home';
 import { SettingsPage } from '../pages/settings/settings';
 import { SendingsTabsPage } from '../pages/sendings-tabs/sendings-tabs';
-import { ShipmentsPage } from '../pages/shipments/shipments';
+import { ShipmentsTabsPage } from '../pages/shipments-tabs/shipments-tabs';
 import { PaymentPage } from '../pages/payment/payment';
 import { HelpPage } from '../pages/help/help';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
@@ -71,7 +71,7 @@ export class MyApp {
         this.pages = [
             { title: 'Mooven', component: HomePage, icon: 'home', navigationType: 'root' },
             { title: 'Servicios', component: SendingsTabsPage, icon: 'paper-plane', navigationType: 'root' },
-            { title: 'Operador', component: ShipmentsPage, icon: 'cube', navigationType: 'root' },
+            { title: 'Operador', component: ShipmentsTabsPage, icon: 'cube', navigationType: 'root' },
             { title: 'Pagos', component: PaymentPage, icon: 'card', navigationType: 'push' },
             { title: 'Ayuda', component: HelpPage, icon: 'help-circle', navigationType: 'push' },
             { title: 'Ajustes', component: SettingsPage, icon: 'settings', navigationType: 'push' }

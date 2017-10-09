@@ -37,7 +37,10 @@ import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover'
 import { ShipmentCreatePage } from '../pages/shipment-create/shipment-create';
 import { ShipmentCreate2Page } from '../pages/shipment-create-2/shipment-create-2';
 import { ShipmentDetailPage } from '../pages/shipment-detail/shipment-detail';
-import { ShipmentsPage } from '../pages/shipments/shipments';
+import { ShipmentsActivePage } from '../pages/shipments-active/shipments-active';
+import { ShipmentsClosedPage } from '../pages/shipments-closed/shipments-closed';
+import { ShipmentsTabsPage } from '../pages/shipments-tabs/shipments-tabs';
+import { ShipmentsNotificationsPage } from '../pages/shipments-notifications/shipments-notifications';
 import { SignupPage } from '../pages/signup/signup';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { StartPage } from '../pages/start/start';
@@ -121,7 +124,10 @@ export const firebaseConfig = {
         ShipmentCreatePage,
         ShipmentCreate2Page,
         ShipmentDetailPage,
-        ShipmentsPage,
+        ShipmentsTabsPage,
+        ShipmentsActivePage,
+        ShipmentsClosedPage,
+        ShipmentsNotificationsPage,
         SignupPage,
         SignupMergePage,
         StartPage,
@@ -173,7 +179,10 @@ export const firebaseConfig = {
         ShipmentCreatePage,
         ShipmentCreate2Page,
         ShipmentDetailPage,
-        ShipmentsPage,
+        ShipmentsTabsPage,
+        ShipmentsActivePage,
+        ShipmentsClosedPage,
+        ShipmentsNotificationsPage,
         SignupPage,
         SignupMergePage,
         StartPage,

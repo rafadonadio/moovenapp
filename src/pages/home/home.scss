@@ -1,13 +1,17 @@
 page-home {
 
+    
+    .card.sendings .item h3{
+        color: color($colors, primary);
+    }
+    .card.shipments .item h3{
+        color: color($colors, green);
+    }    
     .col{
         background-color: #efefef;
-    }
-    .item h3{
-        color: color($colors, primary);
-
     }
     .icon{
         color: #ddd;
     }
+
 }
