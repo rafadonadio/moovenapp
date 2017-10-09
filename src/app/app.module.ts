@@ -27,7 +27,8 @@ import { SendingCreatePage } from '../pages/sending-create/sending-create';
 import { SendingCreate2Page } from '../pages/sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../pages/sending-create-3/sending-create-3';
 import { SendingCreate4Page } from '../pages/sending-create-4/sending-create-4';
-import { SendingDetailPage } from '../pages/sending-detail/sending-detail';
+import { SendingActiveDetailPage } from '../pages/sending-active-detail/sending-active-detail';
+import { SendingClosedDetailPage } from '../pages/sending-closed-detail/sending-closed-detail';
 import { SendingsTabsPage } from '../pages/sendings-tabs/sendings-tabs';
 import { SendingsActivePage } from '../pages/sendings-active/sendings-active';
 import { SendingsClosedPage } from '../pages/sendings-closed/sendings-closed';
@@ -110,7 +111,8 @@ export const firebaseConfig = {
         SendingCreate2Page,
         SendingCreate3Page,
         SendingCreate4Page,
-        SendingDetailPage,
+        SendingActiveDetailPage,
+        SendingClosedDetailPage,
         SendingsActivePage,
         SendingsClosedPage,
         SendingsTabsPage,
@@ -161,7 +163,8 @@ export const firebaseConfig = {
         SendingCreate2Page,
         SendingCreate3Page,
         SendingCreate4Page,
-        SendingDetailPage,
+        SendingActiveDetailPage,
+        SendingClosedDetailPage,
         SendingsActivePage,
         SendingsClosedPage,
         SendingsTabsPage,

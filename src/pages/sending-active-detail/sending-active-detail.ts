@@ -8,10 +8,10 @@ import { ViewController, NavController, NavParams, Platform, ToastController, Al
 import { CheckoutPage } from '../checkout/checkout';
 
 @Component({
-    selector: 'page-sending-detail',
-    templateUrl: 'sending-detail.html',
+    selector: 'page-sending-active-detail',
+    templateUrl: 'sending-active-detail.html',
 })
-export class SendingDetailPage implements OnInit {
+export class SendingActiveDetailPage implements OnInit {
 
     sendingtab:string = "notifications";
     sendingId:string;

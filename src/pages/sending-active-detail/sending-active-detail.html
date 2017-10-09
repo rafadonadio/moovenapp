@@ -34,9 +34,9 @@
             <ion-list-header>Estado y Notificaciones</ion-list-header>
             <ion-item-divider dark>Estado</ion-item-divider>
             <ion-item text-wrap no-lines>
-                <ion-icon name="send" item-left></ion-icon>
+                <ion-icon name="create" item-left></ion-icon>
                 <h3>#{{ sending?.publicId }}</h3>
-                <p>Registrado el {{ sending?.timestamp | ts2datePipe }}</p>
+                <p>Registrado el {{ sending?.timestamp |  formatdatePipe:'DD-MM-Y, HH:mm' }}</p>
                 <ion-icon name="checkmark" item-right></ion-icon>
             </ion-item>
 

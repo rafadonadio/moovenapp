@@ -54,4 +54,13 @@ page-sendings-closed {
     .scroll-content {
         overflow-y:auto;
     }    
+    .footer .icon.active{
+        color: lime;
+    }
+    .footer .icon.activealert{
+        color: red;
+    }
+    .footer .icon.activewarn{
+        color: orange;
+    }    
 }
