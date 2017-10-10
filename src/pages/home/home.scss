@@ -1,13 +1,13 @@
 page-home {
-  
-    .card-background-page {
-        
-        ion-card {
+    
+        ion-card.card-background {
             position: relative;
             text-align: center;
         }
-    
-        .card-title {
+        ion-card.card-background.with-list{
+            margin-bottom: 0;
+        }
+        ion-card.card-background .card-title {
             position: absolute;
             top: 30%;
             font-size: 2em;
@@ -15,15 +15,36 @@ page-home {
             font-weight: 300;
             color: #fff;
         }
-    
-        .card-subtitle {
+        ion-card.card-background .card-subtitle {
             font-size: 1.0em;
             position: absolute;
             top: 55%;
             width: 100%;
             color: #fff;
         }
-    
-    }
 
+        ion-card.card-list .card-content {
+            padding: 7px 5px;
+        }
+        ion-card.card-list .card-content .item.item-block{
+            min-height: 2.4rem;
+        }        
+        ion-card.card-list .card-content .item .label {
+            margin: 0 8px 0 0;
+        }
+        ion-card.card-list .card-content .item .icon {
+            margin: 0;
+        }        
+        ion-card.card-list .card-content .item span {
+            margin: 0 8px 0 0;
+            font-weight: 400;
+            font-size:1.4rem;
+            color: #999;
+        }
+        ion-card.card-list .card-content .item span.sending-label {
+            color: color($colors, primary);
+        }  
+        ion-card.card-list .card-content .item span.shipment-label {
+            color: color($colors, green);
+        }                
 }

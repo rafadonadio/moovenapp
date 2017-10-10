@@ -8,18 +8,27 @@
         </ion-title>
     </ion-navbar>
 </ion-header>
-<ion-content class="card-background-page">
+<ion-content>
     <!-- Active sendings -->
 
-    <ion-card (click)="goToSendings()">
+    <ion-card class="card-background with-list" (click)="goToSendings()">
         <img src="assets/img/home-sendings.png" />
         <div class="card-title">SERVICIOS</div>
         <div class="card-subtitle" *ngIf="(sendings | async)?.length==0">No tienes servicios activos</div>
         <div class="card-subtitle" *ngIf="(sendings | async)?.length==1">{{ (sendings | async)?.length }} servicio activo</div>
         <div class="card-subtitle" *ngIf="(sendings | async)?.length>1">{{ (sendings | async)?.length }} servicios activos</div>
     </ion-card>
+    <ion-card class="card-list">
+        <ion-card-content>
+            <ion-item *ngFor="let item of sendings | async">
+                <ion-icon name="ios-send-outline" color="primary" item-start></ion-icon>
+                <span class="sending-label">{{ item.objectShortName | capitalizePipe }}</span><span item-end>#{{ item.publicId }}</span>
+            </ion-item> 
+            <ion-item *ngIf="(sendings | async)?.length==0"><span>No tienes servicios activos</span></ion-item>                
+        </ion-card-content>
+    </ion-card>
 
-    <ion-card 
+    <ion-card class="card-background with-list" 
         *ngIf="!operatorAuthUnchecked && operator?.enabled"
         (click)="goToShipments()">
         <img src="assets/img/home-shipments.png" />
@@ -28,14 +37,23 @@
         <div class="card-subtitle" *ngIf="shipments?.length==1">{{ shipments?.length }} servicio activo</div>
         <div class="card-subtitle" *ngIf="shipments?.length>1">{{ shipments?.length }} servicios activos</div>
     </ion-card>
+    <ion-card class="card-list">
+        <ion-card-content>
+            <ion-item *ngFor="let item of shipments">
+                <ion-icon name="ios-cube-outline" color="green" item-start></ion-icon>
+                <span class="shipment-label">{{ item.objectShortName | capitalizePipe }}</span><span item-end>#{{ item.publicId }}</span>
+            </ion-item>
+            <ion-item *ngIf="shipments?.length==0"><span>No tienes servicios activos</span></ion-item>            
+        </ion-card-content>
+    </ion-card>
 
-    <ion-card (click)="goToHelp()">
+    <ion-card class="card-background" (click)="goToHelp()">
         <img src="assets/img/home-help.png" />
         <div class="card-title">AYUDA</div>
         <div class="card-subtitle">Preguntas frecuentes</div>
     </ion-card>    
 
-    <ion-card (click)="goToSettings()">
+    <ion-card class="card-background" (click)="goToSettings()">
         <img src="assets/img/home-settings.png" />
         <div class="card-title">AJUSTES</div>
         <div class="card-subtitle">Configuración de tu cuenta</div>
