@@ -44,13 +44,13 @@
             <ion-item text-wrap no-lines *ngIf="sending?._stages.created.status.paid.set==false">
                 <ion-icon name="ios-card-outline" item-left></ion-icon>
                 <h3>Pago</h3>
-                <p>Se debitará ${{ sending?.price }} de tu cuenta</p>
+                <p>Se solicita realizar el pago de ${{ sending?.price }}.</p>
                 <button ion-button item-right color="danger" (click)="goToCheckout()">Pagar</button>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending?._stages.created.status.paid.set==true">
                 <ion-icon name="ios-card-outline" item-left></ion-icon>
                 <h3>Pago</h3>
-                <p>Se debitó ${{ sending?.price }} de tu cuenta</p>
+                <p>Se recibió correctamente el pago de ${{ sending?.price }}.</p>
                 <p *ngIf="sending?._stages.created.status.enabled.set==false">
                     <em>** En proceso de aprobación</em>
                 </p>

@@ -46,7 +46,7 @@
                 <span class="shipment-label">{{ item.summary.objectShortName | capitalizePipe }}</span>
                 <span item-end>{{ getShipmentStatusMessage(item._currentStage_Status) }}</span>
             </ion-item>
-            <ion-item *ngIf="shipments?.length==0"><span>No tienes servicios activos</span></ion-item>            
+            <ion-item *ngIf="(shipments | async)?.length==0"><span>No tienes servicios activos</span></ion-item>            
         </ion-card-content>
     </ion-card>
 

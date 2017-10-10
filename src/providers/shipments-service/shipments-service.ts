@@ -14,6 +14,17 @@ export class ShipmentsService {
         return this.afDb.list(`userShipments/${accountId}/active`, { preserveSnapshot: snapshot });
     }
 
+    getAllClosedObs(snapshot: boolean = false, limitToLast:number = 100): FirebaseListObservable<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        return this.afDb.list(`userShipments/${accountId}/closed`, { 
+            preserveSnapshot: snapshot,
+            query: {
+                orderByChild: 'timestamp',
+                limitToLast: limitToLast
+            }
+        });
+    }    
+
     getObs(shipmentId:string, snapshot:boolean = true): FirebaseObjectObservable<any> {
         return this.afDb.object(`shipments/${shipmentId}`, {
             preserveSnapshot: snapshot,
