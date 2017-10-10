@@ -84,6 +84,7 @@ export class PrepaymentData {
     externalReference:string;
     suid:string;
     uid:string;
+    puid:string;
 }
 
 export class PaymentData {

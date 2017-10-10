@@ -63,6 +63,7 @@ import { DateService } from '../providers/date-service/date-service';
 import { HashService } from '../providers/hash-service/hash-service';
 import { PriceService } from '../providers/price-service/price-service';
 import { MercadopagoService } from '../providers/payment-gateways/mercadopago-service';
+import { PaymentService } from '../providers/payment-service/payment-service';
 import { CheckoutService } from '../providers/checkout-service/checkout-service';
 import { StorageService } from '../providers/storage-service/storage-service';
 import { SendingSetGotoperatorService } from '../providers/sending-service/sending-set-gotoperator-service';
@@ -213,6 +214,7 @@ export const firebaseConfig = {
         DateService,
         HashService,
         MercadopagoService,
+        PaymentService,
         PriceService,
         CheckoutService,
         StorageService,

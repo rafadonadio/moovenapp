@@ -258,6 +258,7 @@ export class CheckoutPage implements OnInit {
             payerEmail: this.account.profile.data.email,
             externalReference: this.sending.publicId,
             suid: this.sending.sendingId,
+            puid: this.sending.publicId,
             uid: this.authSrv.fbuser.uid
         }
         return prepaymentData;

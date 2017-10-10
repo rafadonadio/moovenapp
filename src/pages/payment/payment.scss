@@ -1,3 +1,17 @@
 page-payment {
 
+    .item div span{
+        float: right;
+        color: #999;
+    }
+    .item p{
+        color: #999;
+    }
+    .item p.message{
+        padding: 5px 0;
+    }
+    .item p.date{
+        margin-top: 3px;
+        font-size: 1.2rem; 
+    }
 }

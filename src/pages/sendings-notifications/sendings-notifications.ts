@@ -63,7 +63,6 @@ export class SendingsNotificationsPage {
                 this.toggler[childsnap.key] = false;
             }, err => console.log('error', err));
         });
-
     }
 
     toggleDetail(id:string) {
