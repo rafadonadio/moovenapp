@@ -9,10 +9,10 @@ import { ActionSheetController, AlertController, NavController, NavParams, ViewC
 
 
 @Component({
-    selector: 'page-shipment-detail',  
-    templateUrl: 'shipment-detail.html',
+    selector: 'page-shipment-closed-detail',  
+    templateUrl: 'shipment-closed-detail.html',
 })
-export class ShipmentDetailPage implements OnInit {
+export class ShipmentClosedDetailPage implements OnInit {
 
     shipmenttab: string = "notifications";
     shipmentId:string;

@@ -3,7 +3,9 @@ import { AccountService } from '../../providers/account-service/account-service'
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { App, NavController, NavParams } from 'ionic-angular';
+import { ShipmentClosedDetailPage } from '../shipment-closed-detail/shipment-closed-detail';
+
 
 @Component({
     selector: 'page-shipments-closed',
@@ -23,7 +25,8 @@ export class ShipmentsClosedPage {
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
         private shipmentSrv: ShipmentsService,
-        private accountSrv: AccountService) {
+        private accountSrv: AccountService,
+        private app: App) {
     }
 
     ionViewWillEnter() {
@@ -42,6 +45,14 @@ export class ShipmentsClosedPage {
 
     getStatusMessage(currentStageStatus):string{
         return this.shipmentSrv.getStatusMessage(currentStageStatus);
+    }
+
+    goToDetail(data:any) {
+        console.log('go to detail > ', data.shipmentId);
+        this.app.getRootNavs()[0].push(ShipmentClosedDetailPage, { 
+            shipmentId: data.shipmentId,
+            sendingId: data.sendingId,
+        });         
     }
 
     /**

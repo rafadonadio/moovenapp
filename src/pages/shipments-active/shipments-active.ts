@@ -5,7 +5,7 @@ import { AlertController, ToastController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component } from '@angular/core';
 import { App, NavController, ViewController } from 'ionic-angular';
-import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
+import { ShipmentActiveDetailPage } from '../shipment-active-detail/shipment-active-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 
@@ -53,7 +53,7 @@ export class ShipmentsActivePage {
 
     goToDetail(data:any) {
         console.log('go to detail > ', data.shipmentId);
-        this.app.getRootNavs()[0].push(ShipmentDetailPage, { 
+        this.app.getRootNavs()[0].push(ShipmentActiveDetailPage, { 
             shipmentId: data.shipmentId,
             sendingId: data.sendingId,
         });         

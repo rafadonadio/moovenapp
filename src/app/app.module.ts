@@ -36,7 +36,8 @@ import { SettingsPage } from '../pages/settings/settings';
 import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover';
 import { ShipmentCreatePage } from '../pages/shipment-create/shipment-create';
 import { ShipmentCreate2Page } from '../pages/shipment-create-2/shipment-create-2';
-import { ShipmentDetailPage } from '../pages/shipment-detail/shipment-detail';
+import { ShipmentActiveDetailPage } from '../pages/shipment-active-detail/shipment-active-detail';
+import { ShipmentClosedDetailPage } from '../pages/shipment-closed-detail/shipment-closed-detail';
 import { ShipmentsActivePage } from '../pages/shipments-active/shipments-active';
 import { ShipmentsClosedPage } from '../pages/shipments-closed/shipments-closed';
 import { ShipmentsTabsPage } from '../pages/shipments-tabs/shipments-tabs';
@@ -137,7 +138,8 @@ export const firebaseConfig = {
         SettingsPopoverPage,
         ShipmentCreatePage,
         ShipmentCreate2Page,
-        ShipmentDetailPage,
+        ShipmentActiveDetailPage,
+        ShipmentClosedDetailPage,
         ShipmentsTabsPage,
         ShipmentsActivePage,
         ShipmentsClosedPage,
@@ -192,7 +194,8 @@ export const firebaseConfig = {
         SettingsPopoverPage,
         ShipmentCreatePage,
         ShipmentCreate2Page,
-        ShipmentDetailPage,
+        ShipmentActiveDetailPage,
+        ShipmentClosedDetailPage,
         ShipmentsTabsPage,
         ShipmentsActivePage,
         ShipmentsClosedPage,
