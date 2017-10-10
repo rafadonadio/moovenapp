@@ -9,5 +9,20 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
-
+    <ion-list>
+        <ion-item *ngFor="let item of payments" text-wrap>
+            <ion-icon 
+                *ngIf="item.success==true"
+                name="ios-checkmark-circle-outline" item-start></ion-icon>
+            <ion-icon 
+                *ngIf="item.success==false"
+                name="ios-close-circle-outline" item-start></ion-icon>
+            <div 
+                (click)="toggleDetail(item.$key)"
+                >Servicio #{{ item.publicId }} <ion-icon *ngIf="toggler[item.$key]==false" name="md-arrow-dropdown"></ion-icon>
+                <span>${{ item.amount }}</span></div>
+            <p class="message" *ngIf="toggler[item.$key]==true">{{ item.message }}<br>({{ item.gateway }})</p>
+            <p class="date">{{ item.timestamp | formatdatePipe:'DD/MM/Y hh:mm' }}</p>
+        </ion-item>
+    </ion-list>
 </ion-content>

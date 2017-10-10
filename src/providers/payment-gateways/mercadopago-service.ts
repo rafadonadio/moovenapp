@@ -107,6 +107,7 @@ export class MercadopagoService {
             payerEmail: preData.payerEmail,
             externalReference: preData.externalReference,
             suid: preData.suid,
+            puid: preData.puid,
             uid: preData.uid
         }
         //console.log('paymentData > ', data);
