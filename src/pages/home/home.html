@@ -22,7 +22,8 @@
         <ion-card-content>
             <ion-item *ngFor="let item of sendings | async">
                 <ion-icon name="ios-send-outline" color="primary" item-start></ion-icon>
-                <span class="sending-label">{{ item.objectShortName | capitalizePipe }}</span><span item-end>#{{ item.publicId }}</span>
+                <span class="sending-label">{{ item.objectShortName | capitalizePipe }}</span>
+                <span item-end>{{ getStatusMessage(item._currentStage_Status).message }}</span>
             </ion-item> 
             <ion-item *ngIf="(sendings | async)?.length==0"><span>No tienes servicios activos</span></ion-item>                
         </ion-card-content>

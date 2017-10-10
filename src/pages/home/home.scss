@@ -37,14 +37,16 @@ page-home {
         }        
         ion-card.card-list .card-content .item span {
             margin: 0 8px 0 0;
-            font-weight: 400;
+            font-weight: 300;
             font-size:1.4rem;
             color: #999;
         }
         ion-card.card-list .card-content .item span.sending-label {
             color: color($colors, primary);
+            font-weight: 400;
         }  
         ion-card.card-list .card-content .item span.shipment-label {
             color: color($colors, green);
+            font-weight: 400;
         }                
 }
