@@ -52,6 +52,9 @@ npm run ionic:build --prod
     - mercado pago
         habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
 
+- gral
+    - backup config db nodes
+
 # MOOVEN APP
 - Nuevo Servicio - Paso 2    
     <!--- ingresar fecha  -->

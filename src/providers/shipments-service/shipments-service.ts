@@ -20,5 +20,46 @@ export class ShipmentsService {
         });          
     }
 
+   /**
+     * STRINGS
+     */
+
+    getStatusMessage(currentStageStatus) {
+        let message:string = '--';
+        switch (currentStageStatus) {
+            case 'live_gotoperator':
+            case 'live_waitpickup':
+                message = 'Retirar Servicio';
+                break;
+            case 'live_pickedup':
+                message = 'Retiro confirmado';
+                break;
+            case 'live_inroute':
+                message = 'En transito';
+                break;
+            case 'live_dropped':
+                message = 'Entrega confirmada';
+                break;
+            case 'closed_completed':
+                message = 'Servicio completado';
+                break;
+            case 'closed_autocompleted':
+                message = 'Servicio autocompletado';
+                break;
+            case 'closed_canceledbysender':
+                message = 'Cancelado por Solicitante';
+                break;
+            case 'closed_canceledbyoperator':
+                message = 'Concelado por Operador';
+                break;
+            case 'closed_payexpired':
+                message = 'Venció antes del pago';
+                break;
+            case 'closed_waitoperatorexpired':
+                message = 'Venció antes de tener Operador';
+                break;                  
+        }
+        return message;
+    }   
 
 }

@@ -69,21 +69,7 @@ export class ShipmentsActivePage {
 
     getStatusMessage(currentStageStatus) {
         let message = '';
-        switch(currentStageStatus){
-            case 'live_gotoperator':
-            case 'live_waitpickup':
-                message = 'Retirar';
-                break;
-            case 'live_pickedup':                
-            case 'live_inroute':
-                message = 'Entregar';
-                break;                
-            case 'live_dropped':
-            case 'closed_completed':
-                message = 'Entregado';
-                break;                             
-        }
-        return message;
+        return this.shipmentSrv.getStatusMessage(currentStageStatus);
     }    
 
     /**
