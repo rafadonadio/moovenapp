@@ -17,7 +17,8 @@
         <ion-list *ngFor="let notif of obj.notifs">
             <ion-item text-wrap>
                 <ion-icon name="{{ notif.icon }}" item-start></ion-icon>
-                <h5 (click)="toggleDetail(obj.sendingId)">{{ notif.title }}</h5>
+                <h5 (click)="toggleDetail(obj.sendingId)"
+                    >{{ notif.title }} <ion-icon *ngIf="toggler[obj.sendingId]==false" name="md-arrow-dropdown"></ion-icon></h5>
                 <p *ngIf="toggler[obj.sendingId]==true">{{ notif.msg }}</p>
             </ion-item>            
         </ion-list>
