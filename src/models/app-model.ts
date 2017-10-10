@@ -20,7 +20,7 @@ export const APP_CFG = {
                 name: '__moovenDev'
             },
             IONIC_IO: {
-                ID: 'c9b3dcc7',
+                ID: 'c7d12063',
             }
         },
         'STAGE': {
