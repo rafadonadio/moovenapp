@@ -1,13 +1,31 @@
 <ion-header>
-        <ion-navbar color="green">
-            <button ion-button menuToggle>
-                <ion-icon name="menu"></ion-icon>
-            </button>
-            <ion-title>
-                <h4>Notificaciones</h4>
-            </ion-title>
-        </ion-navbar>
-    </ion-header>
+    <ion-navbar color="green">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>
+            <h4>Notificaciones</h4>
+        </ion-title>
+    </ion-navbar>
+</ion-header>
 <ion-content padding>
-
+    <ion-list *ngIf="notifications?.length==0">
+        <button ion-item detail-none>
+            <p ion-text color="green" text-center>No hay notificaciones.</p>
+        </button>
+    </ion-list>    
+    <ion-card *ngFor="let obj of notifications">
+        <ion-card-header
+            (click)="goToDetail(obj.shipmentId)">
+            Servicio <span>#{{ obj.publicId }}</span><ion-icon name="arrow-forward"></ion-icon>
+        </ion-card-header>
+        <ion-list *ngFor="let notif of obj.notifs">
+            <ion-item text-wrap>
+                <ion-icon name="{{ notif.icon }}" item-start></ion-icon>
+                <h5 (click)="toggleDetail(obj.shipmentId)"
+                    >{{ notif.title }} <ion-icon *ngIf="toggler[obj.shipmentId]==false" name="md-arrow-dropdown"></ion-icon></h5>
+                <p *ngIf="toggler[obj.shipmentId]==true">{{ notif.msg }}</p>
+            </ion-item>            
+        </ion-list>
+    </ion-card>
 </ion-content>

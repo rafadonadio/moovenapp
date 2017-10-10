@@ -31,6 +31,16 @@ export class ShipmentsService {
         });          
     }
 
+    getAllNotifications(snapshot:boolean = false, limitToLast:number = 100): FirebaseListObservable<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        return this.afDb.list(`userNotificationsByShipmentid/${accountId}`, { 
+            preserveSnapshot: snapshot,
+            query: {
+                limitToLast: limitToLast
+            } 
+        });
+    }
+
    /**
      * STRINGS
      */
