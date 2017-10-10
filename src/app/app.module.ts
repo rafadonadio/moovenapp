@@ -82,8 +82,21 @@ import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
 import { FormatDatePipe } from '../pipes/formatdate-pipe';
 
+// IONIC PRO 
+import { Pro } from '@ionic/pro';
+import { ErrorHandler } from '@angular/core';
+
 const ENV = APP_CFG.CURRENT_ENV;
 
+// IONIC PRO 
+const IonicPro = Pro.init('APP_ID', {
+  appVersion: APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
+});
+export class MyErrorHandler implements ErrorHandler {
+    handleError(err: any): void {
+      IonicPro.monitoring.handleNewError(err);
+    }
+  }
 
 // AF2 Settings
 export const firebaseConfig = {
@@ -192,6 +205,7 @@ export const firebaseConfig = {
         HomePage,
     ],
     providers: [
+        [{ provide: ErrorHandler, useClass: MyErrorHandler }], // Ionic PRO
         Camera,
         SplashScreen,
         StatusBar,
