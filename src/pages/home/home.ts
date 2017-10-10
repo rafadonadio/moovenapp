@@ -70,10 +70,10 @@ export class HomePage {
         this.navCtrl.setRoot(ShipmentsTabsPage);
     } 
     goToHelp() {
-        this.navCtrl.setRoot(HelpPage);
+        this.navCtrl.push(HelpPage);
     } 
     goToSettings() {
-        this.navCtrl.setRoot(SettingsPage);
+        this.navCtrl.push(SettingsPage);
     }            
 
     private getActiveSendings() {
