@@ -96,5 +96,6 @@ export class PaymentData {
     payerEmail:string;
     externalReference:string;
     suid:string;
-    uid:string;    
+    uid:string; 
+    puid:string;   
 }
