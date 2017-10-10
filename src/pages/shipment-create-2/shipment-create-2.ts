@@ -2,7 +2,7 @@ import { SendingService } from '../../providers/sending-service/sending-service'
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 import { Component, OnInit } from '@angular/core';
 import { Alert, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
-import { ShipmentsPage } from '../shipments/shipments';
+import { ShipmentsTabsPage } from '../shipments-tabs/shipments-tabs';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 
 const TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT;
@@ -135,7 +135,7 @@ export class ShipmentCreate2Page implements OnInit {
                 // done
                 loading.dismiss()
                     .then(() => {
-                        this.navCtrl.setRoot(ShipmentsPage);
+                        this.navCtrl.setRoot(ShipmentsTabsPage);
                         this.presentSuccessToast();                        
                     });
             })

@@ -12,7 +12,7 @@ page-sendings-closed {
     }    
     ion-card ion-item ion-label.label-md h2,
     ion-card ion-item ion-label.label-ios h2{
-        color: color($colors, primary);
+        color: #777;
         font-size: 1.8rem;
         font-weight: 500;
     }
@@ -53,5 +53,14 @@ page-sendings-closed {
     }
     .scroll-content {
         overflow-y:auto;
+    }    
+    .footer .icon.active{
+        color: lime;
+    }
+    .footer .icon.activealert{
+        color: red;
+    }
+    .footer .icon.activewarn{
+        color: orange;
     }    
 }

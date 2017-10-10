@@ -9,4 +9,17 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
+    <ion-card *ngFor="let obj of notifications">
+        <ion-card-header
+            (click)="goToSendingDetail(obj.sendingId)">
+            Servicio <span>#{{ obj.publicId }}</span><ion-icon name="arrow-forward"></ion-icon>
+        </ion-card-header>
+        <ion-list *ngFor="let notif of obj.notifs">
+            <ion-item text-wrap>
+                <ion-icon name="{{ notif.icon }}" item-start></ion-icon>
+                <h5 (click)="toggleDetail(obj.sendingId)">{{ notif.title }}</h5>
+                <p *ngIf="toggler[obj.sendingId]==true">{{ notif.msg }}</p>
+            </ion-item>            
+        </ion-list>
+    </ion-card>
 </ion-content>

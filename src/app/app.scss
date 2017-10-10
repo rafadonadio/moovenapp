@@ -42,6 +42,9 @@ body {
 }
 
 // TOOLBARS
+ion-header ion-navbar ion-title .toolbar-title,
+ion-header ion-navbar ion-title,
+ion-header ion-navbar ion-title h4,
 ion-header ion-navbar ion-title h4 span {
     font-weight: 300;
 }

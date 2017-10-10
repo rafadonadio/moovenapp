@@ -1,3 +1,22 @@
 page-sendings-notifications {
 
+    .card-header{
+        background-color: #f6f6f6;
+        color: #999;
+    }
+    .card-header span{
+        color: #333;
+    }
+    .card-header .icon{
+        float: right;
+    }
+    .item .icon{
+        color: #ccc;
+    }
+    .item h5{
+        line-height: 1.5;
+    }
+    .item p{
+        color: #999;
+    }
 }

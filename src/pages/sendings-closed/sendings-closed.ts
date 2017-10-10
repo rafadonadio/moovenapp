@@ -3,7 +3,7 @@ import { APP_CFG } from '../../models/app-model';
 import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
 import { ViewController } from 'ionic-angular';
-import { SendingDetailPage } from '../sending-detail/sending-detail';
+import { SendingClosedDetailPage } from '../sending-closed-detail/sending-closed-detail';
 
 import { SendingService } from '../../providers/sending-service/sending-service';
 
@@ -13,7 +13,7 @@ import { SendingService } from '../../providers/sending-service/sending-service'
 })
 export class SendingsClosedPage implements OnInit {
 
-    sendings: FirebaseListObservable<any>;
+    sendings: any[];
     appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
@@ -38,7 +38,7 @@ export class SendingsClosedPage implements OnInit {
 
     goToDetail(key: string) {
         console.log('_goToDetail()', key);
-        this.app.getRootNavs()[0].push(SendingDetailPage, { sendingId: key });
+        this.app.getRootNavs()[0].push(SendingClosedDetailPage, { sendingId: key });
     }
 
     getStatusMessage(currentStageStatus) {
@@ -48,30 +48,24 @@ export class SendingsClosedPage implements OnInit {
             mode: 'note'
         };
         switch (currentStageStatus) {
-            case 'created_registered':
-                data.message = 'PAGAR';
-                data.color = 'danger';
-                data.mode = 'button';
-                break;
-            case 'created_paid':
-                data.message = 'Verificando pago';
-                break;
-            case 'created_enabled':
-            case 'live_waitoperator':
-                data.message = 'Aguardar Operador';
-                break;
-            case 'live_gotoperator':
-            case 'live_waitpickup':
-                data.message = 'Aguardar Retiro';
-                break;
-            case 'live_pickedup':
-            case 'live_inroute':
-                data.message = 'En transito';
-                break;
-            case 'live_dropped':
             case 'closed_completed':
                 data.message = 'Entregado';
                 break;
+            case 'closed_autocompleted':
+                data.message = 'Autocompletado';
+                break;
+            case 'closed_canceledbysender':
+                data.message = 'Cancelado por Solicitante';
+                break;
+            case 'closed_canceledbyoperator':
+                data.message = 'Concelado por Operador';
+                break;
+            case 'closed_payexpired':
+                data.message = 'Venció antes del pago';
+                break;
+            case 'closed_waitoperatorexpired':
+                data.message = 'Venció antes de tener Operador';
+                break;            
         }
         return data;
     }
@@ -82,7 +76,18 @@ export class SendingsClosedPage implements OnInit {
 
     private getAllClosed() {
         console.log('_getAll');
-        this.sendings = this.sendingSrv.getAllClosedObs();
+        let obs = this.sendingSrv.getAllClosedObs(true, 50);
+        obs.subscribe(snap => {
+            this.sendings = [];
+            snap.forEach(childsnap => {
+                let key = {
+                    $key: childsnap.key 
+                }
+                let obj = childsnap.val();
+                obj = Object.assign(obj, key);
+                this.sendings.unshift(obj);
+            });
+        });
     }
 
     private unbind() {

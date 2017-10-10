@@ -3,17 +3,18 @@ import { AccountService } from '../../providers/account-service/account-service'
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { AlertController, ToastController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
-import { Component, OnInit } from '@angular/core';
-import { NavController, ViewController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { App, NavController, ViewController } from 'ionic-angular';
 import { ShipmentDetailPage } from '../shipment-detail/shipment-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 
 @Component({
-    selector: 'page-shipments',
-    templateUrl: 'shipments.html',
+    selector: 'page-shipments-active',
+    templateUrl: 'shipments-active.html',
 })
-export class ShipmentsPage implements OnInit{
+export class ShipmentsActivePage {
+
 
     // operatorAuth flags
     operatorAuthUnchecked:any;
@@ -29,7 +30,8 @@ export class ShipmentsPage implements OnInit{
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         private accountSrv: AccountService,
-        private toastCtrl: ToastController) {}
+        private toastCtrl: ToastController,
+        private app: App) {}
 
     ngOnInit() {
         console.info('__shipment__');
@@ -51,7 +53,7 @@ export class ShipmentsPage implements OnInit{
 
     goToDetail(data:any) {
         console.log('go to detail > ', data.shipmentId);
-        this.navCtrl.push(ShipmentDetailPage, { 
+        this.app.getRootNavs()[0].push(ShipmentDetailPage, { 
             shipmentId: data.shipmentId,
             sendingId: data.sendingId,
         });         
@@ -59,7 +61,7 @@ export class ShipmentsPage implements OnInit{
 
     goToCreate() {
         if(this.operator.active) {
-            this.navCtrl.setRoot(ShipmentCreatePage);
+            this.app.getRootNavs()[0].setRoot(ShipmentCreatePage);
         }else{
             this.toastNotAvailable();
         }
@@ -123,6 +125,5 @@ export class ShipmentsPage implements OnInit{
             });
         toast.present();
     }
-
 
 }

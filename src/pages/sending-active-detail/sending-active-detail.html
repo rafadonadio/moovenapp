@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar color="primary">
-        <ion-title>{{ sending?.objectShortName }}</ion-title>
+        <ion-title>{{ sending?.objectShortName | capitalizePipe }}</ion-title>
         <ion-buttons end>
             <button ion-button (click)="openActionSh()">
                 <ion-icon name="more"></ion-icon>
@@ -13,16 +13,16 @@
     <div margin-bottom margin-top>
         <ion-segment [(ngModel)]="sendingtab" dark>
             <ion-segment-button value="notifications">
-                <ion-icon name="notifications"></ion-icon>
+                <ion-icon name="ios-notifications-outline"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="shipment">
-                <ion-icon name="send"></ion-icon>
+                <ion-icon name="ios-send-outline"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="pickup">
-                <ion-icon name="home"></ion-icon>
+                <ion-icon name="ios-home-outline"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="drop">
-                <ion-icon name="pin"></ion-icon>
+                <ion-icon name="ios-pin-outline"></ion-icon>
             </ion-segment-button>
         </ion-segment>
     </div>
@@ -34,75 +34,75 @@
             <ion-list-header>Estado y Notificaciones</ion-list-header>
             <ion-item-divider dark>Estado</ion-item-divider>
             <ion-item text-wrap no-lines>
-                <ion-icon name="send" item-left></ion-icon>
+                <ion-icon name="ios-create-outline" item-left></ion-icon>
                 <h3>#{{ sending?.publicId }}</h3>
-                <p>Registrado el {{ sending?.timestamp | ts2datePipe }}</p>
-                <ion-icon name="checkmark" item-right></ion-icon>
+                <p>Registrado el {{ sending?.timestamp |  formatdatePipe:'DD-MM-Y, HH:mm' }}</p>
+                <ion-icon name="ios-checkmark-outline" item-right></ion-icon>
             </ion-item>
 
             <!-- IF -->
             <ion-item text-wrap no-lines *ngIf="sending?._stages.created.status.paid.set==false">
-                <ion-icon name="card" item-left></ion-icon>
+                <ion-icon name="ios-card-outline" item-left></ion-icon>
                 <h3>Pago</h3>
                 <p>Se debitará ${{ sending?.price }} de tu cuenta</p>
                 <button ion-button item-right color="danger" (click)="goToCheckout()">Pagar</button>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending?._stages.created.status.paid.set==true">
-                <ion-icon name="card" item-left></ion-icon>
+                <ion-icon name="ios-card-outline" item-left></ion-icon>
                 <h3>Pago</h3>
                 <p>Se debitó ${{ sending?.price }} de tu cuenta</p>
                 <p *ngIf="sending?._stages.created.status.enabled.set==false">
                     <em>** En proceso de aprobación</em>
                 </p>
-                <ion-icon name="timer" item-right
+                <ion-icon name="ios-timer-outline" item-right
                     *ngIf="sending?._stages.created.status.enabled.set==false"></ion-icon>
-                <ion-icon name="checkmark" item-right
+                <ion-icon name="ios-checkmark-outline" item-right
                     *ngIf="sending?._stages.created.status.enabled.set==true"></ion-icon>                
             </ion-item>
             <!-- ENDIF -->
 
             <!-- IF -->
             <ion-item text-wrap no-lines *ngIf="sending?._stages.live.status.gotoperator.set==false">
-                <ion-icon name="person" item-left></ion-icon>
+                <ion-icon name="ios-person-outline" item-left></ion-icon>
                 <h3>Operador</h3>
                 <p>Aguardando Operador </p>
-                <ion-icon name="time" item-right></ion-icon>
+                <ion-icon name="ios-time-outline" item-right></ion-icon>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending?._stages.live.status.gotoperator.set==true">
-                <ion-icon name="person" item-left></ion-icon>
+                <ion-icon name="ios-person-outline" item-left></ion-icon>
                 <h3>Operador confirmado</h3>
                 <p>{{ sending?._operator.displayName }}</p>
-                <ion-icon name="checkmark" item-right></ion-icon>
+                <ion-icon name="ios-checkmark-outline" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
 
             <!-- IF -->
             <ion-item text-wrap no-lines *ngIf="sending?._stages.live.status.pickedup.set==false">
-                <ion-icon name="home" item-left></ion-icon>
+                <ion-icon name="ios-home-outline" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>A retirarse el {{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo | formatdatePipe:'HH:mm' }}</p>
-                <ion-icon name="time" item-right></ion-icon>
+                <ion-icon name="ios-time-outline" item-right></ion-icon>
             </ion-item>
             <ion-item text-wrap no-lines *ngIf="sending?._stages.live.status.pickedup.set==true">
-                <ion-icon name="home" item-left></ion-icon>
+                <ion-icon name="ios-home-outline" item-left></ion-icon>
                 <h3>Retiro</h3>
                 <p>Retirado de {{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</p>
-                <ion-icon name="checkmark" item-right></ion-icon>
+                <ion-icon name="ios-checkmark-outline" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
 
             <!-- IF -->
             <ion-item text-wrap *ngIf="sending?._stages.live.status.dropped.set==false">
-                <ion-icon name="pin" item-left></ion-icon>
+                <ion-icon name="ios-pin-outline" item-left></ion-icon>
                 <h3>Entrega</h3>
                 <p>A entregarse el {{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.dropTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo | formatdatePipe:'HH:mm' }}</p>
-                <ion-icon name="time" item-right></ion-icon>
+                <ion-icon name="ios-time-outline" item-right></ion-icon>
             </ion-item>
             <ion-item text-wrap *ngIf="sending?._stages.live.status.dropped.set==true">
-                <ion-icon name="pin" item-left></ion-icon>
+                <ion-icon name="ios-pin-outline" item-left></ion-icon>
                 <h3>Entrega</h3>
                 <p>Entregado en {{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</p>
-                <ion-icon name="checkmark" item-right></ion-icon>
+                <ion-icon name="ios-checkmark-outline" item-right></ion-icon>
             </ion-item>
             <!-- ENDIF -->
 
@@ -118,8 +118,8 @@
                         (click)="toggleDisplayTasks()">Mas registros</button></ion-item-divider>
             <ion-list *ngIf="displayTasks">
                 <ion-item *ngFor="let task of tasks" text-wrap no-lines>
-                    <ion-icon *ngIf="task.success" name="checkmark" item-left></ion-icon>
-                    <ion-icon *ngIf="!task.success" name="close" item-left></ion-icon>
+                    <ion-icon *ngIf="task.success" name="ios-checkmark-outline" item-left></ion-icon>
+                    <ion-icon *ngIf="!task.success" name="ios-close-circle-outline" item-left></ion-icon>
                     <h3>{{ getTaskTitle(task.task) }}</h3>
                     <p>Creado: {{ task.createdAt | formatdatePipe:'DD/MM/YYYY HH:mm:ss' }}</p>
                     <p>Procesado: {{ task.runAt | formatdatePipe:'DD/MM/YYYY HH:mm:ss' }}</p>
@@ -133,7 +133,7 @@
             <ion-list-header>Detalles del Envío</ion-list-header>
             <ion-item-divider *ngIf="sending?._stages.live.status.gotoperator.set==true">Transportista
                 <button ion-button outline item-right icon-left color="primary">
-                    <ion-icon name="call"></ion-icon>
+                    <ion-icon name="ios-call-outline"></ion-icon>
                     Llamar
                 </button>
             </ion-item-divider>
@@ -148,7 +148,7 @@
             <ion-item-group>
                 <ion-item-divider>Precio</ion-item-divider>
                 <ion-item no-lines>
-                    <ion-icon name="card" item-left light></ion-icon>
+                    <ion-icon name="ios-card-outline" item-left light></ion-icon>
                     <h3>Distancia aproximada: {{ sending?.routeDistanceTxt }}</h3>
                     <h2><b>$ {{ sending?.price }}</b></h2>
                 </ion-item>
@@ -177,38 +177,38 @@
             <ion-item-group>
                 <ion-item-divider>Dirección
                     <a *ngIf="_isiOS" button ion-button outline item-right icon-left color="primary" href="comgooglemaps://?q={{ sending?.pickupAddressLat }},{{ sending?.pickupAddressLng }}" target="_system">
-                        <ion-icon name="pin"></ion-icon>
+                        <ion-icon name="ios-pin-outline"></ion-icon>
                         Mapa
                     </a>
                     <a *ngIf="_isAndroid" button ion-button outline item-right icon-left color="primary" href="geo:?q={{ sending?.pickupAddressLat }},{{ sending?.pickupAddressLng }}" target="_system">
-                        <ion-icon name="pin"></ion-icon>
+                        <ion-icon name="ios-pin-outline"></ion-icon>
                         Mapa
                     </a>
                     <a *ngIf="_isCore" button ion-button outline item-right icon-left color="primary" href="http://maps.google.com/?q={{ sending?.pickupAddressLat }},{{ sending?.pickupAddressLng }}" target="_blank">
-                        <ion-icon name="pin"></ion-icon>
+                        <ion-icon name="ios-pin-outline"></ion-icon>
                         Mapa
                     </a>
                 </ion-item-divider>
                 <ion-item no-lines>
-                    <ion-icon name="home" item-left></ion-icon>
+                    <ion-icon name="ios-home-outline" item-left></ion-icon>
                     <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
                     <h3>{{ sending?.pickupAddressCityLong }}</h3>
                 </ion-item>
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
-                    <ion-icon name="time" item-left></ion-icon>
+                    <ion-icon name="ios-time-outline" item-left></ion-icon>
                     <p>Fecha y horario para el retiro.</p>
                     <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo | formatdatePipe:'HH:mm' }}</h2>
                 </ion-item>
             </ion-item-group>
             <ion-item-divider>Persona que entrega
                 <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending?.pickupPersonPhone }}" target="_system">
-                    <ion-icon name="call"></ion-icon>
+                    <ion-icon name="ios-call-outline"></ion-icon>
                     Llamar
                 </a>
             </ion-item-divider>
             <button ion-item no-lines>
-                <ion-icon name="person" item-left></ion-icon>
+                <ion-icon name="ios-person-outline" item-left></ion-icon>
                 <h2>{{ sending?.pickupPersonName }}</h2>
                 <h3>{{ sending?.pickupPersonPhone }}</h3>
                 <h3>{{ sending?.pickupPersonEmail }}</h3>
@@ -226,37 +226,37 @@
             <ion-item-group>
                 <ion-item-divider>Dirección
                     <a *ngIf="_isiOS" button ion-button outline item-right icon-left color="primary" href="comgooglemaps://?q={{ sending?.dropAddressLat }},{{ sending?.dropAddressLng }}" target="_system">
-                        <ion-icon name="pin"></ion-icon>
+                        <ion-icon name="ios-pin-outline"></ion-icon>
                         Mapa
                     </a>
                     <a *ngIf="_isAndroid" button ion-button outline item-right icon-left color="primary" href="geo:?q={{ sending?.dropAddressLat }},{{ sending?.dropAddressLng }}" target="_system">
-                        <ion-icon name="pin"></ion-icon>
+                        <ion-icon name="ios-pin-outline"></ion-icon>
                         Mapa
                     </a>
                     <a *ngIf="_isCore" button ion-button outline item-right icon-left color="primary" href="http://maps.google.com/?q={{ sending?.dropAddressLat }},{{ sending?.dropAddressLng }}" target="_blank">
-                        <ion-icon name="pin"></ion-icon>
+                        <ion-icon name="ios-pin-outline"></ion-icon>
                         Mapa
                     </a>
                 </ion-item-divider>
                 <ion-item no-lines>
-                    <ion-icon name="pin" item-left></ion-icon>
+                    <ion-icon name="ios-pin-outline" item-left></ion-icon>
                     <h3>{{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</h3>
                     <h3>{{ sending?.dropAddressCityLong }}</h3>
                 </ion-item>
                 <ion-item-divider>Horario</ion-item-divider>
                 <ion-item no-lines>
-                    <ion-icon name="time" item-left></ion-icon>
+                    <ion-icon name="ios-time-outline" item-left></ion-icon>
                     <p>Fecha y horario para hacer la entrega.</p>
                     <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.dropTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo | formatdatePipe:'HH:mm' }}</h2>
                 </ion-item>
                 <ion-item-divider>Persona que recibe
                     <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending?.dropPersonPhone }}" target="_system">
-                        <ion-icon name="call"></ion-icon>
+                        <ion-icon name="ios-call-outline"></ion-icon>
                         Llamar
                     </a>
                 </ion-item-divider>
                 <ion-item no-lines>
-                    <ion-icon name="person" item-left></ion-icon>
+                    <ion-icon name="ios-person-outline" item-left></ion-icon>
                     <h3>{{ sending?.dropPersonName }}</h3>
                     <h3>{{ sending?.dropPersonPhone }}</h3>
                     <h3>{{ sending?.dropPersonEmail }}</h3>

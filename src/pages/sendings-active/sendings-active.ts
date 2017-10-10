@@ -3,7 +3,7 @@ import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { SendingCreatePage } from '../sending-create/sending-create';
-import { SendingDetailPage } from '../sending-detail/sending-detail';
+import { SendingActiveDetailPage } from '../sending-active-detail/sending-active-detail';
 import { CheckoutPage } from '../checkout/checkout';
 import { SendingService } from '../../providers/sending-service/sending-service';
 
@@ -39,7 +39,7 @@ export class SendingsActivePage implements OnInit {
     goToDetail(key: string) {
         console.log('_goToDetail()', key);
         // console.log('using getRootNavs()', this.app.getRootNavs());
-        this.app.getRootNavs()[0].push(SendingDetailPage, { sendingId: key });
+        this.app.getRootNavs()[0].push(SendingActiveDetailPage, { sendingId: key });
     }
 
     goToCheckout(key: string) {

@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar color="primary">
+    <ion-navbar color="dark">
         <button ion-button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
@@ -8,16 +8,37 @@
         </ion-title>
     </ion-navbar>
 </ion-header>
-<ion-content>
-    <ion-card>
-    <img src="http://placehold.it/500x250?text=Servicios"/>
-    <ion-card-content>
-        <ion-card-title>
-        Servicios
-        </ion-card-title>
-        <p>
-        Accede a tus servicios o crea uno nuevo
-        </p>
-    </ion-card-content>
+<ion-content class="card-background-page">
+    <!-- Active sendings -->
+
+    <ion-card (click)="goToSendings()">
+        <img src="assets/img/home-sendings.png" />
+        <div class="card-title">SERVICIOS</div>
+        <div class="card-subtitle" *ngIf="(sendings | async)?.length==0">No tienes servicios activos</div>
+        <div class="card-subtitle" *ngIf="(sendings | async)?.length==1">{{ (sendings | async)?.length }} servicio activo</div>
+        <div class="card-subtitle" *ngIf="(sendings | async)?.length>1">{{ (sendings | async)?.length }} servicios activos</div>
     </ion-card>
+
+    <ion-card 
+        *ngIf="!operatorAuthUnchecked && operator?.enabled"
+        (click)="goToShipments()">
+        <img src="assets/img/home-shipments.png" />
+        <div class="card-title">OPERADOR</div>
+        <div class="card-subtitle" *ngIf="shipments?.length==0">No tienes servicios activos</div>
+        <div class="card-subtitle" *ngIf="shipments?.length==1">{{ shipments?.length }} servicio activo</div>
+        <div class="card-subtitle" *ngIf="shipments?.length>1">{{ shipments?.length }} servicios activos</div>
+    </ion-card>
+
+    <ion-card (click)="goToHelp()">
+        <img src="assets/img/home-help.png" />
+        <div class="card-title">AYUDA</div>
+        <div class="card-subtitle">Preguntas frecuentes</div>
+    </ion-card>    
+
+    <ion-card (click)="goToSettings()">
+        <img src="assets/img/home-settings.png" />
+        <div class="card-title">AJUSTES</div>
+        <div class="card-subtitle">Configuración de tu cuenta</div>
+    </ion-card>        
+
 </ion-content>

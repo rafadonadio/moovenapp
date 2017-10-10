@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs/Rx';
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
-import { ShipmentsPage } from '../shipments/shipments';
+import { ShipmentsTabsPage } from '../shipments-tabs/shipments-tabs';
 import { ShipmentCreate2Page } from '../shipment-create-2/shipment-create-2';
 import { SendingService } from '../../providers/sending-service/sending-service';
 import {
@@ -101,7 +101,7 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     goBack() {
-        this.navCtrl.setRoot(ShipmentsPage);
+        this.navCtrl.setRoot(ShipmentsTabsPage);
     }
 
     selectedToggle(vacant:any) {

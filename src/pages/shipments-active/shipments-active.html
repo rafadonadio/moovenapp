@@ -4,7 +4,7 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>
-            <h4><span>MOOVEN | </span>Operador</h4>
+            <h4>Operador</h4>
         </ion-title>
     </ion-navbar>
 </ion-header>
@@ -14,7 +14,7 @@
             <ion-icon name="add"></ion-icon>
         </button>
     </ion-fab>
-  
+    
     <ion-list
         *ngIf="!operatorAuthUnchecked && !operator?.enabled">
         <ion-card>
@@ -38,7 +38,7 @@
             <h2 color="green" text-center>No hay servicios activos</h2>
         </button>
     </ion-list>
- 
+    
     <ion-list 
         *ngFor="let item of shipments | async">
         <!-- list item only visible if operator?.enabled -->

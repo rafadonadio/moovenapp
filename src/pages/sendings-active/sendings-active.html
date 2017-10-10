@@ -29,30 +29,27 @@
             <ion-item class="content" (click)="goToDetail(item.$key)">
                 <p><span>Desde</span> {{ item.pickupAddressStreetShort }} {{ item.pickupAddressNumber }}, {{ item.pickupAddressCityShort }}</p>
                 <p><span>Hasta</span> {{ item.dropAddressStreetShort }} {{ item.dropAddressNumber }}, {{ item.dropAddressCityShort }}</p>
-                <p><span><small> {{ item.timestamp | ts2datePipe }}</small></span></p>
+                <p><span><small>Registrado el {{ item.timestamp | formatdatePipe:'DD-MM-Y, HH:mm' }}</small></span></p>
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>
             <ion-item class="footer">
-                <ion-icon name="create" item-left 
+                <ion-icon name="ios-create-outline" item-left 
                     [class.active]="item._currentStage_Status=='created_registered'">
                 </ion-icon>
-                <ion-icon name="card" item-left 
+                <ion-icon name="ios-card-outline" item-left 
                     [class.active]="item._currentStage_Status=='created_paid'">
                 </ion-icon>                    
-                <ion-icon name="time" item-left 
+                <ion-icon name="ios-time-outline" item-left 
                     [class.active]="item._currentStage_Status=='created_enabled' || item._currentStage_Status=='live_waitoperator'">
                 </ion-icon>
-                <ion-icon name="home" item-left 
+                <ion-icon name="ios-home-outline" item-left 
                     [class.active]="item._currentStage_Status=='live_gotoperator' || item._currentStage_Status=='live_waitpickup'">
                 </ion-icon>
-                <ion-icon name="pin" item-left 
+                <ion-icon name="ios-send-outline" item-left 
                     [class.active]="item._currentStage_Status=='live_pickedup' || item._currentStage_Status=='live_inroute' ">
                 </ion-icon>
-                <ion-icon name="md-done-all" item-left 
-                    [class.active]="item._currentStage_Status=='live_dropped' || item._currentStage_Status=='closed_complete'">
-                </ion-icon>
-                <ion-icon name="alert" item-left 
-                    [class.active]="item._currentStage_Status=='closed_canceledbysender' || item._currentStage_Status=='closed_canceledbyoperator'">
+                <ion-icon name="ios-pin-outline" item-left 
+                    [class.active]="item._currentStage_Status=='live_dropped'">
                 </ion-icon>
                 <ion-note 
                     *ngIf="getStatusMessage(item._currentStage_Status).mode=='note'"

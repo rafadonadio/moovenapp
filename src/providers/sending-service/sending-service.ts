@@ -85,14 +85,35 @@ export class SendingService {
     // get account active sendings Observable
     getAllActiveObs(snapshot:boolean = false): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.list(`userSendings/${accountId}/active`, { preserveSnapshot: snapshot });
+        return this.afDb.list(`userSendings/${accountId}/active`, { 
+            preserveSnapshot: snapshot,
+            query: {
+                orderByChild: 'timestamp',
+            } 
+        });
     } 
 
     // get account closedd sendings Observable
-    getAllClosedObs(snapshot:boolean = false): FirebaseListObservable<any> {
+    getAllClosedObs(snapshot:boolean = false, limitToLast:number = 100): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
-        return this.afDb.list(`userSendings/${accountId}/closed`, { preserveSnapshot: snapshot });
+        return this.afDb.list(`userSendings/${accountId}/closed`, { 
+            preserveSnapshot: snapshot, 
+            query: {
+                orderByChild: 'timestamp',
+                limitToLast: limitToLast
+            }
+        });
     }     
+
+    getAllNotifications(snapshot:boolean = false, limitToLast:number = 100): FirebaseListObservable<any> {
+        let accountId = this.authSrv.fbuser.uid;
+        return this.afDb.list(`userNotificationsBySendingid/${accountId}`, { 
+            preserveSnapshot: snapshot,
+            query: {
+                limitToLast: limitToLast
+            } 
+        });
+    }
 
     /**
      *  SendingLiveVacants
@@ -198,5 +219,59 @@ export class SendingService {
         });
     }
 
+    /**
+     * STRINGS
+     */
+
+    getStatusMessage(currentStageStatus) {
+        let data:any = {
+            message: '',
+            color: 'primary',
+            mode: 'note'
+        };
+        switch (currentStageStatus) {
+            case 'created_registered':
+                data.message = 'PAGAR';
+                data.color = 'danger';
+                data.mode = 'button';
+                break;
+            case 'created_paid':
+                data.message = 'Verificando pago';
+                break;
+            case 'created_enabled':
+            case 'live_waitoperator':
+                data.message = 'Aguardar Operador';
+                break;
+            case 'live_gotoperator':
+            case 'live_waitpickup':
+                data.message = 'Aguardar Retiro';
+                break;
+            case 'live_pickedup':
+            case 'live_inroute':
+                data.message = 'En transito';
+                break;
+            case 'live_dropped':
+            case 'closed_completed':
+                data.message = 'Entregado';
+                break;
+            case 'closed_autocompleted':
+                data.message = 'Autocompletado';
+                break;
+            case 'closed_canceledbysender':
+                data.message = 'Cancelado por Solicitante';
+                break;
+            case 'closed_canceledbyoperator':
+                data.message = 'Concelado por Operador';
+                break;
+            case 'closed_payexpired':
+                data.message = 'Venció antes del pago';
+                break;
+            case 'closed_waitoperatorexpired':
+                data.message = 'Venció antes de tener Operador';
+                break;                  
+        }
+        return data;
+    }    
 
 }
+

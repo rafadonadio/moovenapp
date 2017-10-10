@@ -27,7 +27,8 @@ import { SendingCreatePage } from '../pages/sending-create/sending-create';
 import { SendingCreate2Page } from '../pages/sending-create-2/sending-create-2';
 import { SendingCreate3Page } from '../pages/sending-create-3/sending-create-3';
 import { SendingCreate4Page } from '../pages/sending-create-4/sending-create-4';
-import { SendingDetailPage } from '../pages/sending-detail/sending-detail';
+import { SendingActiveDetailPage } from '../pages/sending-active-detail/sending-active-detail';
+import { SendingClosedDetailPage } from '../pages/sending-closed-detail/sending-closed-detail';
 import { SendingsTabsPage } from '../pages/sendings-tabs/sendings-tabs';
 import { SendingsActivePage } from '../pages/sendings-active/sendings-active';
 import { SendingsClosedPage } from '../pages/sendings-closed/sendings-closed';
@@ -36,7 +37,10 @@ import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover'
 import { ShipmentCreatePage } from '../pages/shipment-create/shipment-create';
 import { ShipmentCreate2Page } from '../pages/shipment-create-2/shipment-create-2';
 import { ShipmentDetailPage } from '../pages/shipment-detail/shipment-detail';
-import { ShipmentsPage } from '../pages/shipments/shipments';
+import { ShipmentsActivePage } from '../pages/shipments-active/shipments-active';
+import { ShipmentsClosedPage } from '../pages/shipments-closed/shipments-closed';
+import { ShipmentsTabsPage } from '../pages/shipments-tabs/shipments-tabs';
+import { ShipmentsNotificationsPage } from '../pages/shipments-notifications/shipments-notifications';
 import { SignupPage } from '../pages/signup/signup';
 import { SignupMergePage } from '../pages/signup-merge/signup-merge';
 import { StartPage } from '../pages/start/start';
@@ -110,7 +114,8 @@ export const firebaseConfig = {
         SendingCreate2Page,
         SendingCreate3Page,
         SendingCreate4Page,
-        SendingDetailPage,
+        SendingActiveDetailPage,
+        SendingClosedDetailPage,
         SendingsActivePage,
         SendingsClosedPage,
         SendingsTabsPage,
@@ -119,7 +124,10 @@ export const firebaseConfig = {
         ShipmentCreatePage,
         ShipmentCreate2Page,
         ShipmentDetailPage,
-        ShipmentsPage,
+        ShipmentsTabsPage,
+        ShipmentsActivePage,
+        ShipmentsClosedPage,
+        ShipmentsNotificationsPage,
         SignupPage,
         SignupMergePage,
         StartPage,
@@ -161,7 +169,8 @@ export const firebaseConfig = {
         SendingCreate2Page,
         SendingCreate3Page,
         SendingCreate4Page,
-        SendingDetailPage,
+        SendingActiveDetailPage,
+        SendingClosedDetailPage,
         SendingsActivePage,
         SendingsClosedPage,
         SendingsTabsPage,
@@ -170,7 +179,10 @@ export const firebaseConfig = {
         ShipmentCreatePage,
         ShipmentCreate2Page,
         ShipmentDetailPage,
-        ShipmentsPage,
+        ShipmentsTabsPage,
+        ShipmentsActivePage,
+        ShipmentsClosedPage,
+        ShipmentsNotificationsPage,
         SignupPage,
         SignupMergePage,
         StartPage,

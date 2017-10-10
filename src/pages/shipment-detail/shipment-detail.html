@@ -18,7 +18,7 @@
                 <ion-icon name="notifications"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="details">
-                <ion-icon name="send"></ion-icon>
+                <ion-icon name="ios-send-outline"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="pickup">
                 <ion-icon name="home"></ion-icon>
@@ -36,7 +36,7 @@
             <ion-list-header>Estado y Notificaciones</ion-list-header>
             <ion-item-divider>Estado</ion-item-divider>
             <button class="active" ion-item no-lines detail-none (click)="goToTab('details')">
-                <ion-icon name="send" item-left></ion-icon>
+                <ion-icon name="ios-send-outline" item-left></ion-icon>
                 <h3>Servicio confirmado</h3>
                 <p>Registrado el {{ shipment?.timestamp | ts2datePipe }}</p>
                 <p>A cobrar por viaje: ${{ sending?.price }}</p>

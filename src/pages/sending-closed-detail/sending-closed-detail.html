@@ -1,0 +1,193 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>{{ sending?.objectShortName | capitalizePipe }}</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content class="sending-detail">
+    <!-- TABS -->
+    <div margin-bottom margin-top>
+        <ion-segment [(ngModel)]="sendingtab" dark>
+            <ion-segment-button value="notifications">
+                <ion-icon name="ios-notifications-outline"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="shipment">
+                <ion-icon name="ios-send-outline"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="pickup">
+                <ion-icon name="ios-home-outline"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="drop">
+                <ion-icon name="ios-pin-outline"></ion-icon>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+    <!-- TAB CONTENT -->
+    <div [ngSwitch]="sendingtab">
+
+        <!-- TAB CONTENT -->
+        <ion-list *ngSwitchCase="'notifications'">
+            <ion-list-header>Notificaciones</ion-list-header>
+            <ion-item *ngFor="let notif of notifications" text-wrap>
+                <ion-icon name="{{ notif.data.icon }}" item-left></ion-icon>
+                <h2>{{ notif.data.title }}</h2>
+                <p>{{ notif.data.msg }}</p>
+            </ion-item>
+
+            <ion-item-divider dark>
+                    <button ion-button item-end clear color="dark-gray"
+                        (click)="toggleDisplayTasks()">Mas registros</button></ion-item-divider>
+            <ion-list *ngIf="displayTasks">
+                <ion-item *ngFor="let task of tasks" text-wrap no-lines>
+                    <ion-icon *ngIf="task.success" name="checkmark" item-left></ion-icon>
+                    <ion-icon *ngIf="!task.success" name="close" item-left></ion-icon>
+                    <h3>{{ getTaskTitle(task.task) }}</h3>
+                    <p>Creado: {{ task.createdAt | formatdatePipe:'DD/MM/YYYY HH:mm:ss' }}</p>
+                    <p>Procesado: {{ task.runAt | formatdatePipe:'DD/MM/YYYY HH:mm:ss' }}</p>
+                    <p style="color:#ccc">o:{{ task.origin }} | by:{{ task.setBy }}</p>
+                </ion-item>
+            </ion-list>
+            
+        </ion-list>
+
+        <ion-list *ngSwitchCase="'shipment'">
+            <ion-list-header>Detalles del Envío</ion-list-header>
+            <ion-item-divider *ngIf="sending?._stages.live.status.gotoperator.set==true">Transportista
+                <button ion-button outline item-right icon-left color="primary">
+                    <ion-icon name="ios-call-outline"></ion-icon>
+                    Llamar
+                </button>
+            </ion-item-divider>
+            <ion-item no-lines *ngIf="sending?._stages.live.status.gotoperator.set==true">
+                <ion-thumbnail item-left>
+                    <img [src]="sending?._operator.photoURL || 'http://placehold.it/200x200'">
+                </ion-thumbnail>
+                <p>Datos del Operador:</p>
+                <h3><span>Nombre</span>{{ sending?._operator.displayName }}</h3>
+                <h3><span>Teléfono</span>{{ sending?._operator.phone }}</h3>
+            </ion-item>
+            <ion-item-group>
+                <ion-item-divider>Precio</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="ios-card-outline" item-left light></ion-icon>
+                    <h3>Distancia aproximada: {{ sending?.routeDistanceTxt }}</h3>
+                    <h2><b>$ {{ sending?.price }}</b></h2>
+                </ion-item>
+                <ion-item-divider>Objeto</ion-item-divider>
+            </ion-item-group>
+            <ion-grid>
+                <ion-row>
+                    <ion-col width-50>
+                        <img [src]="sending?.objectImageDownloadUrl || 'http://placehold.it/200x200?text=SIN+FOTO'">
+                    </ion-col>
+                    <ion-col width-50>
+                        <ion-item no-lines>
+                            <p>Objeto a enviar</p>
+                            <h2>{{ sending?.objectType }}</h2>
+                            <br>
+                            <p>Valor declarado</p>
+                            <h2>$ {{ sending?.objectDeclaredValue }}</h2>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-list>
+
+        <ion-list *ngSwitchCase="'pickup'">
+            <ion-list-header>Detalles del Retiro</ion-list-header>
+            <ion-item-group>
+                <ion-item-divider>Dirección
+                    <a *ngIf="_isiOS" button ion-button outline item-right icon-left color="primary" href="comgooglemaps://?q={{ sending?.pickupAddressLat }},{{ sending?.pickupAddressLng }}" target="_system">
+                        <ion-icon name="ios-pin-outline"></ion-icon>
+                        Mapa
+                    </a>
+                    <a *ngIf="_isAndroid" button ion-button outline item-right icon-left color="primary" href="geo:?q={{ sending?.pickupAddressLat }},{{ sending?.pickupAddressLng }}" target="_system">
+                        <ion-icon name="ios-pin-outline"></ion-icon>
+                        Mapa
+                    </a>
+                    <a *ngIf="_isCore" button ion-button outline item-right icon-left color="primary" href="http://maps.google.com/?q={{ sending?.pickupAddressLat }},{{ sending?.pickupAddressLng }}" target="_blank">
+                        <ion-icon name="ios-pin-outline"></ion-icon>
+                        Mapa
+                    </a>
+                </ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="ios-home-outline" item-left></ion-icon>
+                    <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
+                    <h3>{{ sending?.pickupAddressCityLong }}</h3>
+                </ion-item>
+                <ion-item-divider>Horario</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="ios-time-outline" item-left></ion-icon>
+                    <p>Fecha y horario para el retiro.</p>
+                    <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo | formatdatePipe:'HH:mm' }}</h2>
+                </ion-item>
+            </ion-item-group>
+            <ion-item-divider>Persona que entrega
+                <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending?.pickupPersonPhone }}" target="_system">
+                    <ion-icon name="ios-call-outline"></ion-icon>
+                    Llamar
+                </a>
+            </ion-item-divider>
+            <button ion-item no-lines>
+                <ion-icon name="ios-person-outline" item-left></ion-icon>
+                <h2>{{ sending?.pickupPersonName }}</h2>
+                <h3>{{ sending?.pickupPersonPhone }}</h3>
+                <h3>{{ sending?.pickupPersonEmail }}</h3>
+            </button>
+            <ion-item-divider>Código de seguridad</ion-item-divider>
+            <ion-item no-lines>
+                <ion-icon name="ios-lock-outline" item-left></ion-icon>
+                <h2>{{ sending?.pickupSecurityCode }}</h2>
+                <p>Solicita este código al transportista<br>para verificar su identidad.</p>
+            </ion-item>
+        </ion-list>
+
+        <ion-list *ngSwitchCase="'drop'">
+            <ion-list-header>Detalles de la Entrega</ion-list-header>
+            <ion-item-group>
+                <ion-item-divider>Dirección
+                    <a *ngIf="_isiOS" button ion-button outline item-right icon-left color="primary" href="comgooglemaps://?q={{ sending?.dropAddressLat }},{{ sending?.dropAddressLng }}" target="_system">
+                        <ion-icon name="ios-pin-outline"></ion-icon>
+                        Mapa
+                    </a>
+                    <a *ngIf="_isAndroid" button ion-button outline item-right icon-left color="primary" href="geo:?q={{ sending?.dropAddressLat }},{{ sending?.dropAddressLng }}" target="_system">
+                        <ion-icon name="ios-pin-outline"></ion-icon>
+                        Mapa
+                    </a>
+                    <a *ngIf="_isCore" button ion-button outline item-right icon-left color="primary" href="http://maps.google.com/?q={{ sending?.dropAddressLat }},{{ sending?.dropAddressLng }}" target="_blank">
+                        <ion-icon name="ios-pin-outline"></ion-icon>
+                        Mapa
+                    </a>
+                </ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="ios-pin-outline" item-left></ion-icon>
+                    <h3>{{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</h3>
+                    <h3>{{ sending?.dropAddressCityLong }}</h3>
+                </ion-item>
+                <ion-item-divider>Horario</ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="ios-time-outline" item-left></ion-icon>
+                    <p>Fecha y horario para hacer la entrega.</p>
+                    <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMM' }}, entre {{ sending?.dropTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.dropTimeTo | formatdatePipe:'HH:mm' }}</h2>
+                </ion-item>
+                <ion-item-divider>Persona que recibe
+                    <a button ion-button outline item-right icon-left color="primary" href="tel:{{ sending?.dropPersonPhone }}" target="_system">
+                        <ion-icon name="ios-call-outline"></ion-icon>
+                        Llamar
+                    </a>
+                </ion-item-divider>
+                <ion-item no-lines>
+                    <ion-icon name="ios-person-outline" item-left></ion-icon>
+                    <h3>{{ sending?.dropPersonName }}</h3>
+                    <h3>{{ sending?.dropPersonPhone }}</h3>
+                    <h3>{{ sending?.dropPersonEmail }}</h3>
+                </ion-item>
+                <ion-item-divider>Código de Seguridad</ion-item-divider>
+                <ion-item>
+                    <ion-icon name="ios-lock-outline" item-left></ion-icon>
+                    <h2>{{ sending?.dropSecurityCode }}</h2>
+                    <p text-wrap>Informa este código de seguridad<br>al recibir el envío<br>para validar la identidad.</p>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
+    </div>
+</ion-content>
