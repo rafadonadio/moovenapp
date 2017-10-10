@@ -12,37 +12,33 @@
     <!-- Active sendings -->
 
     <ion-card (click)="goToSendings()">
-        <img src="assets/img/card-saopaolo.png" />
+        <img src="assets/img/home-sendings.png" />
         <div class="card-title">SERVICIOS</div>
         <div class="card-subtitle" *ngIf="(sendings | async)?.length==0">No tienes servicios activos</div>
-        <div class="card-subtitle" *ngIf="(sendings | async)?.length==1">{{ (sendings | async)?.length }} Servicio Activo</div>
-        <div class="card-subtitle" *ngIf="(sendings | async)?.length>1">{{ (sendings | async)?.length }} Servicios Activos</div>
+        <div class="card-subtitle" *ngIf="(sendings | async)?.length==1">{{ (sendings | async)?.length }} servicio activo</div>
+        <div class="card-subtitle" *ngIf="(sendings | async)?.length>1">{{ (sendings | async)?.length }} servicios activos</div>
     </ion-card>
 
-    <ion-card (click)="goToShipments()">
-        <img src="assets/img/card-saopaolo.png" />
+    <ion-card 
+        *ngIf="!operatorAuthUnchecked && operator?.enabled"
+        (click)="goToShipments()">
+        <img src="assets/img/home-shipments.png" />
         <div class="card-title">OPERADOR</div>
         <div class="card-subtitle" *ngIf="shipments?.length==0">No tienes servicios activos</div>
-        <div class="card-subtitle" *ngIf="shipments?.length==1">{{ shipments?.length }} Servicio Activo</div>
-        <div class="card-subtitle" *ngIf="shipments?.length>1">{{ shipments?.length }} Servicios Activos</div>
+        <div class="card-subtitle" *ngIf="shipments?.length==1">{{ shipments?.length }} servicio activo</div>
+        <div class="card-subtitle" *ngIf="shipments?.length>1">{{ shipments?.length }} servicios activos</div>
     </ion-card>
 
-    <ion-card (click)="goToShipments()">
-        <img src="assets/img/card-saopaolo.png" />
+    <ion-card (click)="goToHelp()">
+        <img src="assets/img/home-help.png" />
         <div class="card-title">AYUDA</div>
         <div class="card-subtitle">Preguntas frecuentes</div>
     </ion-card>    
 
-    <ion-card (click)="goToShipments()">
-        <img src="assets/img/card-saopaolo.png" />
+    <ion-card (click)="goToSettings()">
+        <img src="assets/img/home-settings.png" />
         <div class="card-title">AJUSTES</div>
         <div class="card-subtitle">Configuración de tu cuenta</div>
-    </ion-card>    
-
-    <ion-card (click)="goToShipments()">
-        <img src="assets/img/card-saopaolo.png" />
-        <div class="card-title">PAGOS</div>
-        <div class="card-subtitle">Historial de pagos</div>
     </ion-card>        
 
 </ion-content>
