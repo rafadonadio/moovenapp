@@ -16,7 +16,7 @@
     </ion-list>    
     <ion-card *ngFor="let obj of notifications">
         <ion-card-header
-            (click)="goToDetail(obj.shipmentId)">
+            (click)="goToDetail(obj)">
             Servicio <span>#{{ obj.publicId }}</span><ion-icon name="arrow-forward"></ion-icon>
         </ion-card-header>
         <ion-list *ngFor="let notif of obj.notifs">

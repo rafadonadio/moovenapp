@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { App, NavController, NavParams } from 'ionic-angular';
 import { ShipmentClosedDetailPage } from '../shipment-closed-detail/shipment-closed-detail';
 
 @Component({
@@ -19,11 +19,13 @@ export class ShipmentsNotificationsPage {
     account: UserAccount;
     operator: UserAccountOperator;
     notifications:any;
+    notifSub: Subscription;
     toggler:any = {};
 
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
-        private shipmentSrv: ShipmentsService) {
+        private shipmentSrv: ShipmentsService,
+        private app: App) {
     }
 
     ionViewWillEnter() {
@@ -45,7 +47,7 @@ export class ShipmentsNotificationsPage {
         console.log('_getAll');
         this.notifications = [];
         let obs = this.shipmentSrv.getAllNotifications(true);
-        obs.subscribe(snap => {
+        this.notifSub = obs.subscribe(snap => {
             snap.forEach(childsnap => {
                 console.log('sendingid', childsnap.key);
                 let notifObj = childsnap.val();
@@ -82,6 +84,7 @@ export class ShipmentsNotificationsPage {
     }
 
     private unbind() {
+        this.notifSub.unsubscribe();
         this.notifications = null;
     }  
 
