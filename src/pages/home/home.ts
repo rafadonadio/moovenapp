@@ -1,3 +1,4 @@
+import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { HelpPage } from '../help/help';
 import { SettingsPage } from '../settings/settings';
 import { ShipmentsTabsPage } from '../shipments-tabs/shipments-tabs';
@@ -30,6 +31,7 @@ export class HomePage {
     constructor(public navCtrl: NavController, 
         public navParams: NavParams,
         private sendingSrv: SendingService,
+        private shipmentSrv: ShipmentsService,
         private accountSrv: AccountService) {
     }
 
@@ -81,11 +83,15 @@ export class HomePage {
     }
 
     private getActiveShipments() {
-        this.shipments = [];
+        this.shipments = this.shipmentSrv.getAllActiveObs();
     }
 
-    getStatusMessage(currentStageStatus:string) {
+    getSendingStatus(currentStageStatus:string) {
         return this.sendingSrv.getStatusMessage(currentStageStatus);
+    }
+
+    getShipmentStatusMessage(currentStageStatus:string) {
+        return this.shipmentSrv.getStatusMessage(currentStageStatus);
     }
 
 }

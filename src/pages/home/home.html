@@ -9,8 +9,8 @@
     </ion-navbar>
 </ion-header>
 <ion-content>
-    <!-- Active sendings -->
 
+    <!-- Active sendings -->
     <ion-card class="card-background with-list" (click)="goToSendings()">
         <img src="assets/img/home-sendings.png" />
         <div class="card-title">SERVICIOS</div>
@@ -18,33 +18,35 @@
         <div class="card-subtitle" *ngIf="(sendings | async)?.length==1">{{ (sendings | async)?.length }} servicio activo</div>
         <div class="card-subtitle" *ngIf="(sendings | async)?.length>1">{{ (sendings | async)?.length }} servicios activos</div>
     </ion-card>
-    <ion-card class="card-list">
+    <ion-card class="card-list" (click)="goToSendings()">
         <ion-card-content>
             <ion-item *ngFor="let item of sendings | async">
                 <ion-icon name="ios-send-outline" color="primary" item-start></ion-icon>
                 <span class="sending-label">{{ item.objectShortName | capitalizePipe }}</span>
-                <span item-end>{{ getStatusMessage(item._currentStage_Status).message }}</span>
+                <span item-end>{{ getSendingStatus(item._currentStage_Status).message }}</span>
             </ion-item> 
             <ion-item *ngIf="(sendings | async)?.length==0"><span>No tienes servicios activos</span></ion-item>                
         </ion-card-content>
     </ion-card>
 
+    <!-- active shipments -->
     <ion-card class="card-background with-list" 
         *ngIf="!operatorAuthUnchecked && operator?.enabled"
         (click)="goToShipments()">
         <img src="assets/img/home-shipments.png" />
         <div class="card-title">OPERADOR</div>
         <div class="card-subtitle" *ngIf="shipments?.length==0">No tienes servicios activos</div>
-        <div class="card-subtitle" *ngIf="shipments?.length==1">{{ shipments?.length }} servicio activo</div>
-        <div class="card-subtitle" *ngIf="shipments?.length>1">{{ shipments?.length }} servicios activos</div>
+        <div class="card-subtitle" *ngIf="shipments?.length==1">{{ (shipments | async)?.length }} servicio activo</div>
+        <div class="card-subtitle" *ngIf="shipments?.length>1">{{ (shipments | async)?.length }} servicios activos</div>
     </ion-card>
-    <ion-card class="card-list">
+    <ion-card class="card-list" (click)="goToShipments()">
         <ion-card-content>
-            <ion-item *ngFor="let item of shipments">
+            <ion-item *ngFor="let item of shipments | async">
                 <ion-icon name="ios-cube-outline" color="green" item-start></ion-icon>
-                <span class="shipment-label">{{ item.objectShortName | capitalizePipe }}</span><span item-end>#{{ item.publicId }}</span>
+                <span class="shipment-label">{{ item.summary.objectShortName | capitalizePipe }}</span>
+                <span item-end>{{ getShipmentStatusMessage(item._currentStage_Status) }}</span>
             </ion-item>
-            <ion-item *ngIf="shipments?.length==0"><span>No tienes servicios activos</span></ion-item>            
+            <ion-item *ngIf="(shipments | async)?.length==0"><span>No tienes servicios activos</span></ion-item>            
         </ion-card-content>
     </ion-card>
 

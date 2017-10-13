@@ -8,6 +8,47 @@
         </ion-title>
     </ion-navbar>
 </ion-header>
-<ion-content padding>
+<ion-content>
+
+    <p ion-text color="green" text-center 
+        *ngIf="(shipments | async)?.length==0">No hay servicios en historial</p>
+    
+    <ion-list *ngIf="operator?.enabled">
+        <!-- list item only visible if operator?.enabled -->
+        <ion-card (click)="goToDetail(item)"
+            *ngFor="let item of shipments | async">
+            <ion-item class="header">
+                <h2>#{{ item?.publicId }}</h2>
+                <ion-note item-right>{{ item?.summary.objectShortName }}</ion-note>
+            </ion-item>
+            <ion-item class="content">
+                <p><span>Estado</span> {{ getStatusMessage(item?._currentStage_Status) }}</p>
+                <p><span>Recorrido</span> {{ item?.summary.pickupAddressCityShort }} <ion-icon name="md-arrow-forward"></ion-icon> {{ item?.summary.dropAddressCityShort }}</p>                
+                <p><span>Fecha</span> {{ item?.timestamp | formatdatePipe:'dddd DD/MMMM' }}</p>
+                <ion-icon name="arrow-forward" item-right></ion-icon>
+            </ion-item>
+            <ion-item class="footer">
+                <ion-icon name="ios-done-all-outline" item-left 
+                    [class.active]="item._currentStage_Status=='closed_completed'">
+                </ion-icon>
+                <ion-icon name="ios-checkbox-outline" item-left 
+                    [class.active]="item._currentStage_Status=='closed_autocompleted'">
+                </ion-icon>
+                <ion-icon name="ios-close-circle-outline" item-left 
+                    [class.activealert]="item._currentStage_Status=='closed_canceledbysender'">
+                </ion-icon>                    
+                <ion-icon name="ios-close-circle-outline" item-left 
+                    [class.activealert]="item._currentStage_Status=='closed_canceledbyoperator'">
+                </ion-icon>
+                <ion-icon name="ios-alert-outline" item-left 
+                    [class.activewarn]="item._currentStage_Status=='closed_payexpired' ">
+                </ion-icon>                    
+                <ion-icon name="ios-alert-outline" item-left 
+                    [class.activewarn]="item._currentStage_Status=='closed_waitoperatorexpired'">
+                </ion-icon>  
+            </ion-item>
+        </ion-card>
+    </ion-list>
+
 
 </ion-content>

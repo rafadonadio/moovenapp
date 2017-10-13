@@ -36,7 +36,8 @@ import { SettingsPage } from '../pages/settings/settings';
 import { SettingsPopoverPage } from '../pages/settings-popover/settings-popover';
 import { ShipmentCreatePage } from '../pages/shipment-create/shipment-create';
 import { ShipmentCreate2Page } from '../pages/shipment-create-2/shipment-create-2';
-import { ShipmentDetailPage } from '../pages/shipment-detail/shipment-detail';
+import { ShipmentActiveDetailPage } from '../pages/shipment-active-detail/shipment-active-detail';
+import { ShipmentClosedDetailPage } from '../pages/shipment-closed-detail/shipment-closed-detail';
 import { ShipmentsActivePage } from '../pages/shipments-active/shipments-active';
 import { ShipmentsClosedPage } from '../pages/shipments-closed/shipments-closed';
 import { ShipmentsTabsPage } from '../pages/shipments-tabs/shipments-tabs';
@@ -76,6 +77,7 @@ import { SendingSetCanceledbyoperatorService } from '../providers/sending-servic
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
@@ -85,24 +87,26 @@ import { FormatDatePipe } from '../pipes/formatdate-pipe';
 // IONIC PRO 
 import { Pro } from '@ionic/pro';
 import { ErrorHandler } from '@angular/core';
+import { FaqProvider } from '../providers/faq/faq';
 
 const ENV = APP_CFG.CURRENT_ENV;
 
 // IONIC PRO 
-const IonicPro = Pro.init('APP_ID', {
-  appVersion: APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
-});
-export class MyErrorHandler implements ErrorHandler {
-    handleError(err: any): void {
-      IonicPro.monitoring.handleNewError(err);
-    }
-  }
+// const IonicPro = Pro.init('APP_ID', {
+//   appVersion: APP_CFG.ENVIRONMENTS[ENV].IONIC_IO.ID
+// });
+// export class MyErrorHandler implements ErrorHandler {
+//     handleError(err: any): void {
+//       IonicPro.monitoring.handleNewError(err);
+//     }
+// }
 
 // AF2 Settings
 export const firebaseConfig = {
     apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
     authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
     databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
+    projectId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.projectId,
     storageBucket: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.storageBucket,
     messagingSenderId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.messagingSenderId
 };
@@ -137,7 +141,8 @@ export const firebaseConfig = {
         SettingsPopoverPage,
         ShipmentCreatePage,
         ShipmentCreate2Page,
-        ShipmentDetailPage,
+        ShipmentActiveDetailPage,
+        ShipmentClosedDetailPage,
         ShipmentsTabsPage,
         ShipmentsActivePage,
         ShipmentsClosedPage,
@@ -158,6 +163,7 @@ export const firebaseConfig = {
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireAuthModule,
         AngularFireDatabaseModule,
+        AngularFirestoreModule,
         HttpModule,
         IonicStorageModule.forRoot({
             name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
@@ -192,7 +198,8 @@ export const firebaseConfig = {
         SettingsPopoverPage,
         ShipmentCreatePage,
         ShipmentCreate2Page,
-        ShipmentDetailPage,
+        ShipmentActiveDetailPage,
+        ShipmentClosedDetailPage,
         ShipmentsTabsPage,
         ShipmentsActivePage,
         ShipmentsClosedPage,
@@ -205,7 +212,7 @@ export const firebaseConfig = {
         HomePage,
     ],
     providers: [
-        [{ provide: ErrorHandler, useClass: MyErrorHandler }], // Ionic PRO
+        // [{ provide: ErrorHandler, useClass: MyErrorHandler }], // Ionic PRO
         Camera,
         SplashScreen,
         StatusBar,
@@ -232,7 +239,8 @@ export const firebaseConfig = {
         PriceService,
         CheckoutService,
         StorageService,
-        LocalNotifications
+        LocalNotifications,
+    FaqProvider
     ],
 })
 export class AppModule { }

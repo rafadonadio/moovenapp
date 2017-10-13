@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Rx';
 import { Component } from '@angular/core';
 import { App, NavController } from 'ionic-angular';
 import { SendingService } from '../../providers/sending-service/sending-service';
@@ -10,6 +11,7 @@ import { SendingClosedDetailPage } from '../sending-closed-detail/sending-closed
 export class SendingsNotificationsPage {
 
     notifications:any;
+    notifSub: Subscription;
     toggler:any = {};
 
     constructor(public navCtrl: NavController,
@@ -41,7 +43,7 @@ export class SendingsNotificationsPage {
         console.log('_getAll');
         this.notifications = [];
         let obs = this.sendingSrv.getAllNotifications(true);
-        obs.subscribe(snap => {
+        this.notifSub = obs.subscribe(snap => {
             snap.forEach(childsnap => {
                 console.log('sendingid', childsnap.key);
                 let notifObj = childsnap.val();
@@ -75,6 +77,7 @@ export class SendingsNotificationsPage {
     }
 
     private unbind() {
+        this.notifSub.unsubscribe();
         this.notifications = null;
     }    
 

@@ -27,7 +27,7 @@ npm run ionic:build --prod
     <!-- - set shipment notifications -->
     - ajuste visualización items en tab sending, a vencer en menos de 30 minutos - sending
     <!-- - ajuste visualización items en tab history - sending -->
-    - ajuste visualización items en tab history - shipment
+    <!-- - ajuste visualización items en tab history - shipment -->
     - visualización pedidos en mapa - shipment new
     - notificaciones (email)
     - network detector
@@ -51,6 +51,9 @@ npm run ionic:build --prod
         - mostrar contadores
     - mercado pago
         habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
+
+- gral
+    - backup config db nodes
 
 # MOOVEN APP
 - Nuevo Servicio - Paso 2    

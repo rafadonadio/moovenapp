@@ -128,6 +128,7 @@ export class MercadopagoService {
                         +'&payerEmail='+data.payerEmail
                         +'&externalReference='+data.externalReference
                         +'&suid='+data.suid
+                        +'&puid='+data.puid
                         +'&uid='+data.uid;
         return this.http.post(SERVER_PAYMENT_URL, tokendata, {headers:headers})
                     .map((response) => {

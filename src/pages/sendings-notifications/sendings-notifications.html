@@ -9,6 +9,11 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
+    <ion-list *ngIf="notifications?.length==0">
+        <button ion-item detail-none>
+            <p ion-text color="primary" text-center>No hay notificaciones.</p>
+        </button>
+    </ion-list>    
     <ion-card *ngFor="let obj of notifications">
         <ion-card-header
             (click)="goToSendingDetail(obj.sendingId)">
