@@ -5,6 +5,8 @@ import { NavController, NavParams, ViewController, AlertController } from 'ionic
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NumberValidator } from '../../validators/number.validator';
 
+import firebase from 'firebase';
+
 @Component({
     selector: 'modal-user-edit-phone',
     templateUrl: 'modal-user-edit-phone.html'
