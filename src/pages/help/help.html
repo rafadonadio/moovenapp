@@ -8,5 +8,14 @@
         </ion-title>
     </ion-navbar>
 </ion-header>
-<ion-content padding>
+<ion-content>
+    <ion-list>
+        <ion-item *ngFor="let faq of faqs | async" text-wrap>
+            <h2 (click)="toggleDetail(faq.id)">
+                <ion-icon *ngIf="toggler[faq.id]==false" name="md-arrow-dropright"></ion-icon> 
+                <ion-icon *ngIf="toggler[faq.id]==true" name="md-arrow-dropdown"></ion-icon> 
+                {{ faq.question }}</h2>
+            <p *ngIf="toggler[faq.id]==true">{{ faq.answer }}</p>
+        </ion-item>
+    </ion-list>
 </ion-content>

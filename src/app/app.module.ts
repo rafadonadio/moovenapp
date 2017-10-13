@@ -77,6 +77,7 @@ import { SendingSetCanceledbyoperatorService } from '../providers/sending-servic
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 // PIPES
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
@@ -86,6 +87,7 @@ import { FormatDatePipe } from '../pipes/formatdate-pipe';
 // IONIC PRO 
 import { Pro } from '@ionic/pro';
 import { ErrorHandler } from '@angular/core';
+import { FaqProvider } from '../providers/faq/faq';
 
 const ENV = APP_CFG.CURRENT_ENV;
 
@@ -104,6 +106,7 @@ export const firebaseConfig = {
     apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
     authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
     databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
+    projectId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.projectId,
     storageBucket: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.storageBucket,
     messagingSenderId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.messagingSenderId
 };
@@ -160,6 +163,7 @@ export const firebaseConfig = {
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireAuthModule,
         AngularFireDatabaseModule,
+        AngularFirestoreModule,
         HttpModule,
         IonicStorageModule.forRoot({
             name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
@@ -235,7 +239,8 @@ export const firebaseConfig = {
         PriceService,
         CheckoutService,
         StorageService,
-        LocalNotifications
+        LocalNotifications,
+    FaqProvider
     ],
 })
 export class AppModule { }
