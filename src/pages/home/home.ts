@@ -1,3 +1,5 @@
+import { ShipmentCreatePage } from '../shipment-create/shipment-create';
+import { SendingCreatePage } from '../sending-create/sending-create';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { HelpPage } from '../help/help';
 import { SettingsPage } from '../settings/settings';
@@ -68,9 +70,15 @@ export class HomePage {
     goToSendings() {
         this.navCtrl.setRoot(SendingsTabsPage);
     }
+    goToNewSending() {
+        this.navCtrl.setRoot(SendingCreatePage);
+    }    
     goToShipments() {
         this.navCtrl.setRoot(ShipmentsTabsPage);
     } 
+    goToNewShipment() {
+        this.navCtrl.setRoot(ShipmentCreatePage);
+    }     
     goToHelp() {
         this.navCtrl.push(HelpPage);
     } 

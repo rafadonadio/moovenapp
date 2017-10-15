@@ -1,52 +1,83 @@
 page-home {
-    
-        ion-card.card-background {
-            position: relative;
-            text-align: center;
-        }
-        ion-card.card-background.with-list{
-            margin-bottom: 0;
-        }
-        ion-card.card-background .card-title {
-            position: absolute;
-            top: 30%;
-            font-size: 2em;
-            width: 100%;
-            font-weight: 300;
-            color: #fff;
-        }
-        ion-card.card-background .card-subtitle {
-            font-size: 1.0em;
-            position: absolute;
-            top: 55%;
-            width: 100%;
-            color: #fff;
-        }
 
-        ion-card.card-list .card-content {
-            padding: 7px 5px;
-        }
-        ion-card.card-list .card-content .item.item-block{
-            min-height: 2.4rem;
-        }        
-        ion-card.card-list .card-content .item .label {
-            margin: 0 8px 0 0;
-        }
-        ion-card.card-list .card-content .item .icon {
-            margin: 0;
-        }        
-        ion-card.card-list .card-content .item span {
-            margin: 0 8px 0 0;
-            font-weight: 300;
-            font-size:1.4rem;
-            color: #999;
-        }
-        ion-card.card-list .card-content .item span.sending-label {
-            color: color($colors, primary);
-            font-weight: 400;
-        }  
-        ion-card.card-list .card-content .item span.shipment-label {
-            color: color($colors, green);
-            font-weight: 400;
-        }                
+    ion-card.card-bg-sending {
+        min-height: 140px;
+        padding: 5px;
+        background-image: url('../assets/img/home-sendings.png');
+        margin: 10px 10px 0 10px;
+        text-align: center;
+    }
+    ion-card.card-bg-sending .card-title {
+        text-align: center;
+        font-size: 2em;
+        width: 100%;
+        font-weight: 300;
+        color: #fff;
+        padding: 25px 0 27px;
+    }
+    ion-card.card-bg-shipment {
+        min-height: 140px;
+        padding: 5px;
+        background-image: url('../assets/img/home-shipments.png');
+        margin: 10px 10px 0 10px;
+        text-align: center;
+    }
+    ion-card.card-bg-shipment .card-title {
+        text-align: center;
+        font-size: 2em;
+        width: 100%;
+        font-weight: 300;
+        color: #fff;
+        padding: 25px 0 27px;
+    }
+
+    ion-card.card-background {
+        position: relative;
+        text-align: center;
+    }
+    ion-card.card-background.with-list{
+        margin-bottom: 0;
+    }
+    ion-card.card-background .card-title {
+        position: absolute;
+        top: 36%;
+        font-size: 2em;
+        width: 100%;
+        font-weight: 300;
+        color: #fff;
+    }
+    ion-card.card-background .card-subtitle {
+        font-size: 1.0em;
+        position: absolute;
+        top: 55%;
+        width: 100%;
+        color: #fff;
+    }
+
+    ion-card.card-list .card-content {
+        padding: 7px 5px;
+    }
+    ion-card.card-list .card-content .item.item-block{
+        min-height: 2.4rem;
+    }        
+    ion-card.card-list .card-content .item .label {
+        margin: 0 8px 0 0;
+    }
+    ion-card.card-list .card-content .item .icon {
+        margin: 0;
+    }        
+    ion-card.card-list .card-content .item span {
+        margin: 0 8px 0 0;
+        font-weight: 300;
+        font-size:1.4rem;
+        color: #999;
+    }
+    ion-card.card-list .card-content .item span.sending-label {
+        color: color($colors, primary);
+        font-weight: 400;
+    }  
+    ion-card.card-list .card-content .item span.shipment-label {
+        color: color($colors, green);
+        font-weight: 400;
+    }                
 }

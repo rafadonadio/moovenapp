@@ -21,29 +21,33 @@
                 <ion-note item-right>#{{ item.publicId }}</ion-note>
             </ion-item>
             <ion-item class="content" (click)="goToDetail(item.$key)">
-                <p><span>Registrado</span> {{ item.timestamp | formatdatePipe:'DD-MM-Y, HH:mm' }}</p>
-                <p><span>Estado</span> {{ getStatusMessage(item._currentStage_Status).message }}</p>
-                <ion-icon name="ios-arrow-round-forward-outline" item-right></ion-icon>
-            </ion-item>
-            <ion-item class="footer">
-                <ion-icon name="ios-done-all-outline" item-left 
+                <ion-icon name="ios-done-all-outline" item-left
+                    *ngIf="item._currentStage_Status=='closed_completed'" 
                     [class.active]="item._currentStage_Status=='closed_completed'">
                 </ion-icon>
                 <ion-icon name="ios-checkbox-outline" item-left 
+                    *ngIf="item._currentStage_Status=='closed_autocompleted'"
                     [class.active]="item._currentStage_Status=='closed_autocompleted'">
                 </ion-icon>
                 <ion-icon name="ios-close-circle-outline" item-left 
+                    *ngIf="item._currentStage_Status=='closed_canceledbysender'"    
                     [class.activealert]="item._currentStage_Status=='closed_canceledbysender'">
                 </ion-icon>                    
                 <ion-icon name="ios-close-circle-outline" item-left 
+                    *ngIf="item._currentStage_Status=='closed_canceledbyoperator'"
                     [class.activealert]="item._currentStage_Status=='closed_canceledbyoperator'">
                 </ion-icon>
                 <ion-icon name="ios-alert-outline" item-left 
-                    [class.activewarn]="item._currentStage_Status=='closed_payexpired' ">
+                    *ngIf="item._currentStage_Status=='closed_payexpired'"
+                    [class.activewarn]="item._currentStage_Status=='closed_payexpired'">
                 </ion-icon>                    
                 <ion-icon name="ios-alert-outline" item-left 
+                    *ngIf="item._currentStage_Status=='closed_waitoperatorexpired'"
                     [class.activewarn]="item._currentStage_Status=='closed_waitoperatorexpired'">
-                </ion-icon>                
+                </ion-icon> 
+                <p><span>Registrado</span> {{ item.timestamp | formatdatePipe:'DD-MM-Y, HH:mm' }}</p>
+                <p><span>Estado</span> {{ getStatusMessage(item._currentStage_Status).message }}</p>
+                <ion-icon name="ios-arrow-round-forward-outline" item-right></ion-icon>
             </ion-item>
         </ion-card>
     </ion-list>
