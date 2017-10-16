@@ -20,11 +20,18 @@
         <ion-card-content>
             <ion-item *ngIf="(sendings | async)?.length==1" text-center
                 (click)="goToSendings()">
-                <ion-icon name="md-arrow-forward" item-right></ion-icon><span>Tienes {{ (sendings | async)?.length }} Servicio Activo</span></ion-item>
+                <ion-icon name="md-arrow-forward" item-right></ion-icon>
+                <span>Tienes {{ (sendings | async)?.length }} Servicio Activo</span>
+            </ion-item>
             <ion-item *ngIf="(sendings | async)?.length>1" text-center
                 (click)="goToSendings()">
-                <ion-icon name="md-arrow-forward" item-right></ion-icon><span>Tienes {{ (sendings | async)?.length }} Servicios Activos</span></ion-item>                   
-            <ion-item *ngIf="(sendings | async)?.length==0" text-center><span>No tienes servicios activos</span></ion-item>         
+                <ion-icon name="md-arrow-forward" item-right></ion-icon>
+                <span>Tienes {{ (sendings | async)?.length }} Servicios Activos</span>
+            </ion-item>                   
+            <ion-item *ngIf="(sendings | async)?.length==0" text-center
+                (click)="goToSendings()">
+                <ion-icon name="md-arrow-forward" item-right></ion-icon>
+                <span>No tienes servicios activos</span></ion-item>         
         </ion-card-content>
     </ion-card>
 
@@ -39,11 +46,19 @@
         <ion-card-content>
             <ion-item *ngIf="(shipments | async)?.length==1" text-center
                 (click)="goToShipments()">
-                <ion-icon name="md-arrow-forward" item-right></ion-icon><span>Tienes {{ (shipments | async)?.length }} Servicio Activo</span></ion-item>
+                <ion-icon name="md-arrow-forward" item-right></ion-icon>
+                <span>Tienes {{ (shipments | async)?.length }} Servicio Activo</span>
+            </ion-item>
             <ion-item *ngIf="(shipments | async)?.length>1" text-center
                 (click)="goToShipments()">
-                <ion-icon name="md-arrow-forward" item-right></ion-icon><span>Tienes {{ (shipments | async)?.length }} Servicios Activos</span></ion-item>                   
-            <ion-item *ngIf="(shipments | async)?.length==0" text-center><span>No tienes servicios activos</span></ion-item>         
+                <ion-icon name="md-arrow-forward" item-right></ion-icon>
+                <span>Tienes {{ (shipments | async)?.length }} Servicios Activos</span>
+            </ion-item>                   
+            <ion-item *ngIf="(shipments | async)?.length==0" text-center
+                (click)="goToShipments()">
+                <ion-icon name="md-arrow-forward" item-right></ion-icon>
+                <span>No tienes servicios activos</span>
+            </ion-item>         
         </ion-card-content>
     </ion-card>
 
