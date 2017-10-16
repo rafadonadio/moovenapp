@@ -22,33 +22,37 @@
                 <ion-note item-right>{{ item?.summary.objectShortName }}</ion-note>
             </ion-item>
             <ion-item class="content">
+                <!-- status icon -->                
+            <ion-icon name="ios-done-all-outline" item-left 
+                *ngIf="item._currentStage_Status=='closed_completed'"
+                class="active">
+            </ion-icon>
+            <ion-icon name="ios-checkbox-outline" item-left 
+                *ngIf="item._currentStage_Status=='closed_autocompleted'"
+                class="active">
+            </ion-icon>
+            <ion-icon name="ios-close-circle-outline" item-left 
+                *ngIf="item._currentStage_Status=='closed_canceledbysender'"
+                class="activalert">
+            </ion-icon>                    
+            <ion-icon name="ios-close-circle-outline" item-left 
+                *ngIf="item._currentStage_Status=='closed_canceledbyoperator'"
+                class="activealert">
+            </ion-icon>
+            <ion-icon name="ios-alert-outline" item-left 
+                *ngIf="item._currentStage_Status=='closed_payexpired'"
+                class="activewarn">
+            </ion-icon>                    
+            <ion-icon name="ios-alert-outline" item-left 
+                *ngIf="item._currentStage_Status=='closed_waitoperatorexpired'"
+                class="activewarn">
+            </ion-icon>  
+                <!-- // -->
                 <p><span>Estado</span> {{ getStatusMessage(item?._currentStage_Status) }}</p>
                 <p><span>Recorrido</span> {{ item?.summary.pickupAddressCityShort }} <ion-icon name="md-arrow-forward"></ion-icon> {{ item?.summary.dropAddressCityShort }}</p>                
                 <p><span>Fecha</span> {{ item?.timestamp | formatdatePipe:'dddd DD/MMMM' }}</p>
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>
-            <ion-item class="footer">
-                <ion-icon name="ios-done-all-outline" item-left 
-                    [class.active]="item._currentStage_Status=='closed_completed'">
-                </ion-icon>
-                <ion-icon name="ios-checkbox-outline" item-left 
-                    [class.active]="item._currentStage_Status=='closed_autocompleted'">
-                </ion-icon>
-                <ion-icon name="ios-close-circle-outline" item-left 
-                    [class.activealert]="item._currentStage_Status=='closed_canceledbysender'">
-                </ion-icon>                    
-                <ion-icon name="ios-close-circle-outline" item-left 
-                    [class.activealert]="item._currentStage_Status=='closed_canceledbyoperator'">
-                </ion-icon>
-                <ion-icon name="ios-alert-outline" item-left 
-                    [class.activewarn]="item._currentStage_Status=='closed_payexpired' ">
-                </ion-icon>                    
-                <ion-icon name="ios-alert-outline" item-left 
-                    [class.activewarn]="item._currentStage_Status=='closed_waitoperatorexpired'">
-                </ion-icon>  
-            </ion-item>
         </ion-card>
     </ion-list>
-
-
 </ion-content>

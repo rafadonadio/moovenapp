@@ -15,16 +15,13 @@
     <div margin-bottom margin-top>
         <ion-segment [(ngModel)]="shipmenttab" color="green">
             <ion-segment-button value="notifications">
-                <ion-icon name="ios-notifications-outline"></ion-icon>
-            </ion-segment-button>
-            <ion-segment-button value="details">
-                <ion-icon name="ios-send-outline"></ion-icon>
+                Estado
             </ion-segment-button>
             <ion-segment-button value="pickup">
-                <ion-icon name="ios-home-outline"></ion-icon>
+                Retiro
             </ion-segment-button>
             <ion-segment-button value="drop">
-                <ion-icon name="ios-pin-outline"></ion-icon>
+                Entrega
             </ion-segment-button>
         </ion-segment>
     </div>
@@ -92,29 +89,27 @@
             </ion-list>
         </ion-list>
 
-        <ion-list *ngSwitchCase="'details'">
-            <ion-list>
-                <ion-list-header>Detalles del Envío</ion-list-header>
-                <ion-item-divider>Solicitante
-                    <button ion-button outline item-right icon-left color="green">
-                        <ion-icon name="ios-call-outline"></ion-icon>
-                        Llamar
-                    </button> </ion-item-divider>
-                <ion-item no-lines>
-                    <ion-thumbnail item-left>
-                        <img [src]="sender.photoURL || 'http://placehold.it/200x200'">
-                    </ion-thumbnail>
-                    <h2>{{ sender.firstName }} {{ sender.lastName }}</h2>
-                    <h3>{{ sender.phonePrefix }}{{ sender.phoneMobile }}</h3>
-                </ion-item>
-                <ion-item-divider>Precio</ion-item-divider>
-                <ion-item no-lines>
-                    <ion-icon name="ios-card-outline" item-left light></ion-icon>
-                    <p>Distancia aproximada: {{ sending?.routeDistanceTxt }}</p>
-                    <h2><b>${{ sending?.price }}</b></h2>
-                </ion-item>
-                <ion-item-divider>Carga</ion-item-divider>
-            </ion-list>
+        <ion-list *ngSwitchCase="'pickup'">
+            <ion-list-header>Detalles del Servicio</ion-list-header>
+            <ion-item-divider>Solicitante
+                <button ion-button outline item-right icon-left color="green">
+                    <ion-icon name="ios-call-outline"></ion-icon>
+                    Llamar
+                </button> </ion-item-divider>
+            <ion-item no-lines>
+                <ion-thumbnail item-left>
+                    <img [src]="sender.photoURL || 'http://placehold.it/200x200'">
+                </ion-thumbnail>
+                <h2>{{ sender.firstName }} {{ sender.lastName }}</h2>
+                <h3>{{ sender.phonePrefix }}{{ sender.phoneMobile }}</h3>
+            </ion-item>
+            <ion-item-divider>Precio</ion-item-divider>
+            <ion-item no-lines>
+                <ion-icon name="ios-card-outline" item-left light></ion-icon>
+                <p>Distancia aproximada: {{ sending?.routeDistanceTxt }}</p>
+                <h2><b>${{ sending?.price }}</b></h2>
+            </ion-item>
+            <ion-item-divider>Carga</ion-item-divider>
             <ion-grid>
                 <ion-row>
                     <ion-col width-50>
@@ -130,46 +125,42 @@
                         </ion-item>
                     </ion-col>
                 </ion-row>
-            </ion-grid>
-        </ion-list>
+            </ion-grid> 
 
-        <ion-list *ngSwitchCase="'pickup'">
-            <ion-list>
-                <ion-list-header>Detalles del Retiro</ion-list-header>
-                <ion-item-divider>Dirección
-                    <button ion-button outline item-right icon-left color="green">
-                        <ion-icon name="ios-pin-outline"></ion-icon>
-                        Mapa
-                    </button>
-                </ion-item-divider>
-                <ion-item no-lines>
-                    <ion-icon name="ios-home-outline" item-left></ion-icon>
-                    <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
-                    <h3>{{ sending?.pickupAddressCityShort }}, {{ sending?.pickupAddressStateShort }}</h3>
-                </ion-item>
-                <ion-item-divider>Horario</ion-item-divider>
-                <ion-item no-lines text-wrap>
-                    <ion-icon name="ios-time-outline" item-left></ion-icon>
-                    <p>Banda horaria para el retiro</p>
-                    <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMMM' }} entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo| formatdatePipe:'HH:mm' }} hs</h2>
-                </ion-item>
-                <ion-item-divider>Persona que entrega
-                    <button ion-button outline item-right icon-left color="green">
-                        <ion-icon name="ios-call-outline"></ion-icon>
-                        Llamar
-                    </button></ion-item-divider>
-                <button ion-item no-lines>
-                    <ion-icon name="ios-person-outline" item-left></ion-icon>
-                    <h2>{{ sending?.pickupPersonName }}</h2>
-                    <h3>{{ sending?.pickupPersonPhone }}</h3>
+            <ion-list-header>Detalles del Retiro</ion-list-header>
+            <ion-item-divider>Dirección
+                <button ion-button outline item-right icon-left color="green">
+                    <ion-icon name="ios-pin-outline"></ion-icon>
+                    Mapa
                 </button>
-                <ion-item-divider>Código de Seguridad</ion-item-divider>
-                <ion-item>
-                    <ion-icon name="ios-lock-outline" item-left></ion-icon>
-                    <h2>{{ sending?.pickupSecurityCode }}</h2>
-                    <p text-wrap>Informa este código de seguridad<br>al retirar el envío<br>para validar tu identidad.</p>
-                </ion-item>
-            </ion-list>
+            </ion-item-divider>
+            <ion-item no-lines>
+                <ion-icon name="ios-home-outline" item-left></ion-icon>
+                <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
+                <h3>{{ sending?.pickupAddressCityShort }}, {{ sending?.pickupAddressStateShort }}</h3>
+            </ion-item>
+            <ion-item-divider>Horario</ion-item-divider>
+            <ion-item no-lines text-wrap>
+                <ion-icon name="ios-time-outline" item-left></ion-icon>
+                <p>Banda horaria para el retiro</p>
+                <h2>{{ sending?.pickupDate| formatdatePipe:'dddd DD/MMMM' }} entre {{ sending?.pickupTimeFrom| formatdatePipe:'HH:mm' }} y {{ sending?.pickupTimeTo| formatdatePipe:'HH:mm' }} hs</h2>
+            </ion-item>
+            <ion-item-divider>Persona que entrega
+                <button ion-button outline item-right icon-left color="green">
+                    <ion-icon name="ios-call-outline"></ion-icon>
+                    Llamar
+                </button></ion-item-divider>
+            <button ion-item no-lines>
+                <ion-icon name="ios-person-outline" item-left></ion-icon>
+                <h2>{{ sending?.pickupPersonName }}</h2>
+                <h3>{{ sending?.pickupPersonPhone }}</h3>
+            </button>
+            <ion-item-divider>Código de Seguridad</ion-item-divider>
+            <ion-item>
+                <ion-icon name="ios-lock-outline" item-left></ion-icon>
+                <h2>{{ sending?.pickupSecurityCode }}</h2>
+                <p text-wrap>Informa este código de seguridad<br>al retirar el envío<br>para validar tu identidad.</p>
+            </ion-item>
         </ion-list>
 
         <ion-list *ngSwitchCase="'drop'">
