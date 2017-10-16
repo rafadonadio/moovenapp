@@ -9,7 +9,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-searchbar 
+    <ion-searchbar #searchbar
         [(ngModel)]="autocomplete.query" 
         [showCancelButton]="true" 
         (ionInput)="updateSearch()" 

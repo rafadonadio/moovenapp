@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
+import { ViewChild, Component, OnInit } from '@angular/core';
+import { AlertController, NavController, NavParams, Searchbar, ViewController } from 'ionic-angular';
 
 import { GoogleMapsService } from '../../providers/google-maps-service/google-maps-service';
 
@@ -21,12 +21,20 @@ export class ModalSearchMapAddressPage implements OnInit{
         public gmapsSrv: GoogleMapsService) { 
     }
 
+    @ViewChild('searchbar') searchBar: Searchbar;
+
+    ionViewDidEnter() {
+        setTimeout(()=>{
+            this.searchBar.setFocus();
+        }, 150);
+    }
+    
     ngOnInit() {
         this.modalTitle = this.params.get('modalTitle');
         this.autocompleteItems = [];
         this.autocomplete = {
             query: ''
-        };        
+        };      
     }
 
     
