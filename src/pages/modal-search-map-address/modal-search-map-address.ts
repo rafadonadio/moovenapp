@@ -21,12 +21,12 @@ export class ModalSearchMapAddressPage implements OnInit{
         public gmapsSrv: GoogleMapsService) { 
     }
 
-    @ViewChild('searchbar') searchBar: Searchbar;
+    @ViewChild('searchaddress') searchBar: Searchbar;
 
     ionViewDidEnter() {
         setTimeout(()=>{
             this.searchBar.setFocus();
-        }, 150);
+        }, 300);
     }
     
     ngOnInit() {

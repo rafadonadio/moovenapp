@@ -8,16 +8,13 @@
     <div margin-bottom margin-top>
         <ion-segment [(ngModel)]="sendingtab" dark>
             <ion-segment-button value="notifications">
-                <ion-icon name="ios-notifications-outline"></ion-icon>
-            </ion-segment-button>
-            <ion-segment-button value="shipment">
-                <ion-icon name="ios-send-outline"></ion-icon>
+                Notificaciones
             </ion-segment-button>
             <ion-segment-button value="pickup">
-                <ion-icon name="ios-home-outline"></ion-icon>
+                Retiro
             </ion-segment-button>
             <ion-segment-button value="drop">
-                <ion-icon name="ios-pin-outline"></ion-icon>
+                Entrega
             </ion-segment-button>
         </ion-segment>
     </div>
@@ -49,9 +46,9 @@
             
         </ion-list>
 
-        <ion-list *ngSwitchCase="'shipment'">
-            <ion-list-header>Detalles del Envío</ion-list-header>
-            <ion-item-divider *ngIf="sending?._stages.live.status.gotoperator.set==true">Transportista
+        <ion-list *ngSwitchCase="'pickup'">
+            <ion-list-header>Detalles del Servicio</ion-list-header>
+            <ion-item-divider *ngIf="sending?._stages.live.status.gotoperator.set==true">Operador
                 <button ion-button outline item-right icon-left color="primary">
                     <ion-icon name="ios-call-outline"></ion-icon>
                     Llamar
@@ -89,10 +86,7 @@
                         </ion-item>
                     </ion-col>
                 </ion-row>
-            </ion-grid>
-        </ion-list>
-
-        <ion-list *ngSwitchCase="'pickup'">
+            </ion-grid>            
             <ion-list-header>Detalles del Retiro</ion-list-header>
             <ion-item-group>
                 <ion-item-divider>Dirección

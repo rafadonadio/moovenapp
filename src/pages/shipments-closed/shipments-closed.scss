@@ -31,12 +31,8 @@ page-shipments-closed {
         font-size:2.9rem; 
         color: color($colors, green);
     }
-    ion-card ion-item.content.item-md ion-icon,
-    ion-card ion-item.content.item-ios ion-icon{
+    .item .icon{
         color: #c5c5c5;
-    }
-    ion-card ion-item.footer{
-        border-top: 1px solid #ededed;
     }
     ion-card ion-item.footer ion-icon{
         color: #ededed;
@@ -50,13 +46,13 @@ page-shipments-closed {
     .scroll-content {
         overflow-y:auto;
     }
-    .footer .icon.active{
+    .icon.active{
         color: lime;
     }
-    .footer .icon.activealert{
+    .icon.activealert{
         color: red;
     }
-    .footer .icon.activewarn{
+    .icon.activewarn{
         color: orange;
     }     
 }
