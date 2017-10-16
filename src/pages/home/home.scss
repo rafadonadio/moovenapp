@@ -1,7 +1,7 @@
 page-home {
 
     ion-card.card-bg-sending {
-        min-height: 140px;
+        min-height: 150px;
         padding: 5px;
         background-image: url('../assets/img/home-sendings.png');
         margin: 10px 10px 0 10px;
@@ -13,10 +13,10 @@ page-home {
         width: 100%;
         font-weight: 300;
         color: #fff;
-        padding: 25px 0 27px;
+        padding: 25px 0 20px;
     }
     ion-card.card-bg-shipment {
-        min-height: 140px;
+        min-height: 150px;
         padding: 5px;
         background-image: url('../assets/img/home-shipments.png');
         margin: 10px 10px 0 10px;
@@ -28,7 +28,7 @@ page-home {
         width: 100%;
         font-weight: 300;
         color: #fff;
-        padding: 25px 0 27px;
+        padding: 25px 0 20px;
     }
 
     ion-card.card-background {
@@ -40,7 +40,7 @@ page-home {
     }
     ion-card.card-background .card-title {
         position: absolute;
-        top: 36%;
+        top: 30%;
         font-size: 2em;
         width: 100%;
         font-weight: 300;
@@ -52,6 +52,10 @@ page-home {
         top: 55%;
         width: 100%;
         color: #fff;
+    }
+
+    .card .button {
+        padding: 0 2em;
     }
 
     ion-card.card-list .card-content {
@@ -70,7 +74,7 @@ page-home {
         margin: 0 8px 0 0;
         font-weight: 300;
         font-size:1.4rem;
-        color: #999;
+        color: #333;
     }
     ion-card.card-list .card-content .item span.sending-label {
         color: color($colors, primary);

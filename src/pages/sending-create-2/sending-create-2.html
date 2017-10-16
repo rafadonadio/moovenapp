@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-buttons start>
+        <ion-buttons left>
             <button ion-button (click)="goBack()">
                 <ion-icon name="arrow-back"></ion-icon>
             </button>
@@ -9,26 +9,30 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <form [formGroup]="formTwo"> 
-        <ion-list>
+    <form [formGroup]="formTwo">
+
+        <ion-list no-lines>
             <ion-item-divider>Datos del Retiro
                 <ion-note item-right>
-                    <ion-icon name="radio-button-on"></ion-icon>
-                    <ion-icon name="radio-button-on"></ion-icon>
-                    <ion-icon name="radio-button-off"></ion-icon>
-                    <ion-icon name="radio-button-off"></ion-icon>
+                    <ion-icon name="md-radio-button-on"></ion-icon>
+                    <ion-icon name="md-radio-button-on"></ion-icon>
+                    <ion-icon name="md-radio-button-off"></ion-icon>
+                    <ion-icon name="md-radio-button-off"></ion-icon>
                 </ion-note>
             </ion-item-divider>             
-            <div class="map-container">
-                <div id="mapf2"></div>
-            </div>
+        </ion-list>
+        <div class="map-container">
+            <div id="mapf2"></div>
+        </div>
+        
+        <ion-list no-lines>
             <ion-list-header>Dirección de Retiro</ion-list-header>
-            <ion-item no-lines>
+            <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="pickupAddressFullText"
                     (focusin)="showAddressSearchModal()"></ion-input>
             </ion-item> 
-            <ion-item *ngIf="sending?.pickupAddressSet==true" no-lines>
+            <ion-item *ngIf="sending?.pickupAddressSet==true">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h2>{{ sending?.pickupAddressStreetShort }} {{ sending?.pickupAddressNumber }}</h2>
                 <h3>{{ sending?.pickupAddressCityLong }}</h3>
@@ -40,16 +44,22 @@
                 </button>                
             </ion-item>              
             <div *ngIf="showErrors && !pickupAddressFullText.valid" 
-                class="input-error">* Dirección de retiro es requerida</div>
-            <ion-list-header>Info adicional Dirección</ion-list-header>
-            <ion-item no-lines>
+                class="input-error" margin-bottom>* Dirección de retiro es requerida</div>
+        </ion-list>
+
+        <ion-list no-lines>
+            <ion-list-header margin-top>Info adicional Dirección</ion-list-header>
+            <ion-item>
                 <ion-input type="text" clearInput 
                     placeholder="nro de piso, depto, oficina, etc" 
                     formControlName="pickupAddressLine2"
                     ></ion-input>
             </ion-item> 
+        </ion-list>
+        
+        <ion-list no-lines>
             <ion-list-header margin-top>Fecha y horario de Retiro</ion-list-header>
-            <ion-item no-lines>
+            <ion-item>
                 <ion-label>Fecha</ion-label>
                 <ion-datetime 
                     formControlName="pickupDate"
@@ -64,7 +74,7 @@
             </ion-item>
             <div *ngIf="showErrors && !pickupDate.valid" 
                 class="input-error">* Fecha de retiro es requerida</div>            
-            <ion-item no-lines>
+            <ion-item>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 
                     formControlName="pickupTimeFrom" 
@@ -76,7 +86,7 @@
                     (ionChange)="changePickupTimeFrom()"
                     cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
-            <ion-item no-lines>
+            <ion-item>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
                     formControlName="pickupTimeTo" 
@@ -89,36 +99,43 @@
                     cancelText="Cancelar" doneText="Listo" ></ion-datetime>
             </ion-item>
             <div *ngIf="showErrors && !pickupTimeFrom.touched && !pickupTimeTo.touched" 
-                class="input-optional"><small>* verifica que el horario de retiro sea correcto</small></div>
-            <ion-list-header>
+                class="input-optional" margin-bottom>* Verifica el HORARIO de Retiro sea correcto</div>
+        </ion-list>
+
+        <ion-list no-lines>
+            <ion-list-header margin-top>
                 Contacto para Retiro
                 <button ion-button outline item-right small 
                     (click)="populateContactWithUserData()">Pegar mis datos</button>
             </ion-list-header>
-            <ion-list inset>
-                <ion-item no-lines>
-                    <ion-label>Nombre</ion-label>
-                    <ion-input type="text" clearInput 
-                        formControlName="pickupPersonName"></ion-input>
-                </ion-item>
-                <div *ngIf="pickupPersonName.hasError('required') && pickupPersonName.touched || showErrors && pickupPersonName.valid==false" 
-                    class="input-error">* ingresa un nombre de contacto</div>
-                <ion-item no-lines>
-                    <ion-label>Telefono</ion-label>
-                    <ion-input type="text" clearInput formControlName="pickupPersonPhone"></ion-input>
-                </ion-item>
-                <div *ngIf="pickupPersonPhone.hasError('required') && pickupPersonPhone.touched || showErrors && pickupPersonPhone.valid==false" 
-                    class="input-error">* ingresa un teléfono de contacto</div>                
-                <ion-item no-lines>
-                    <ion-label>Email</ion-label>
-                    <ion-input type="text" clearInput formControlName="pickupPersonEmail"></ion-input>
-                </ion-item>
-                <div *ngIf="showErrors && pickupPersonEmail.value==''" 
-                    class="input-optional">* ingresa un email de contacto (opcional)</div> 
-                <div *ngIf="pickupPersonEmail.value!='' && pickupPersonEmail.hasError('isValid') && pickupPersonEmail.touched" 
-                    class="input-error">* ingresa una dirección válida</div>                
-            </ion-list>
+            <ion-item>
+                <ion-label stacked>Nombre</ion-label>
+                <ion-input type="text" 
+                    formControlName="pickupPersonName"
+                    placeholder="Nombre del Contacto"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label stacked>Telefono</ion-label>
+                <ion-input type="text" formControlName="pickupPersonPhone"
+                    placeholder="Teléfono del Contacto"></ion-input>
+            </ion-item>             
+            <ion-item>
+                <ion-label stacked>Email</ion-label>
+                <ion-input type="text" formControlName="pickupPersonEmail"
+                    placeholder="Email del Contacto"></ion-input>
+            </ion-item>
+            <!-- MSG ERRORS -->
+            <div *ngIf="pickupPersonName.hasError('required') && pickupPersonName.touched || showErrors && pickupPersonName.valid==false" 
+                class="input-error">* ingresa un nombre de contacto</div>                
+            <div *ngIf="pickupPersonPhone.hasError('required') && pickupPersonPhone.touched || showErrors && pickupPersonPhone.valid==false" 
+                class="input-error">* ingresa un teléfono de contacto</div>                  
+            <div *ngIf="showErrors && pickupPersonEmail.value==''" 
+                class="input-optional">* ingresa un email de contacto (opcional)</div> 
+            <div *ngIf="pickupPersonEmail.value!='' && pickupPersonEmail.hasError('isValid') && pickupPersonEmail.touched" 
+                class="input-error">* ingresa una dirección válida</div>                
+            <!-- // -->
         </ion-list>
+
         <div margin>
             <button ion-button block color="primary" 
                 (click)="submit()">Siguiente</button>
@@ -127,5 +144,6 @@
             <button ion-button block color="subdark" clear margin-top 
                 (click)="cancel()">Cancelar</button>
         </div>
+
     </form>
 </ion-content>

@@ -5,10 +5,17 @@ page-sending-create-2 {
         font-weight: 200;
     }
     ion-toolbar.toolbar-md ion-title span ion-icon,
-    ion-toolbar.toolbar-ios ion-title span  ion-icon{
+    ion-toolbar.toolbar-ios ion-title span ion-icon{
         font-size: 1.4rem;
     }     
 
+    /* generic */
+    .item-divider .label{
+        font-weight: 300;
+    }    
+    .note .icon{
+        font-size: 2.4rem;
+    }
     .input-error{
         margin-left: 20px;
         margin-top: 5px;
@@ -22,6 +29,24 @@ page-sending-create-2 {
     button.submit{
         margin-top: 30px;
     }
+    .list-header{
+        margin-bottom: 7px;
+        background-color: #f1f1f1;
+        color: color($colors, primary);
+        font-weight: 300;
+        font-size:1.6rem;
+        text-transform: none;  
+    }  
+    .list-header-md{
+        border:none;
+    }
+    .list-md .item-input:last-child {
+        border-bottom: none;
+    }
+    .list-md{
+        margin-bottom: 25px;
+    }    
+
     ion-list.list-md ion-item-divider,
     ion-list.list-ios ion-item-divider{
         color: color($colors, primary);
@@ -34,14 +59,7 @@ page-sending-create-2 {
         font-size: 1.5rem;    
         color: color($colors, primary);
     }     
-    ion-list.list-md ion-list-header,
-    ion-list.list-ios ion-list-header{
-        background: #fff;
-        color: color($colors, primary);
-        font-weight: 500;
-        font-size:1.6rem;
-        text-transform: none;
-    }  
+
     ion-card.card-md ion-item button ion-icon,
     ion-card.card-ios ion-item button ion-icon{
         font-size: 3rem;
@@ -57,10 +75,6 @@ page-sending-create-2 {
     ion-list.list-ios .ac-input{
         padding-left: 16px;
     }
-    ion-list.list-md .ac-input .ac-inner,
-    ion-list.list-ios .ac-input .ac-inner{           
-        border-bottom: 1px solid #dedede;
-    }
     ion-list.list-md .ac-input input#pickupaddress,
     ion-list.list-ios .ac-input input#pickupaddress{
         margin: 13px 8px 13px 8px;
@@ -73,9 +87,12 @@ page-sending-create-2 {
     }
     
     // MAP
+    .list:first-child{
+        margin-bottom: 0;
+    }
     #mapf2 {
         height: 200px;
-        width:100%
+        width:100%;
     }
 
 }

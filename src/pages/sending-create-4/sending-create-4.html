@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-buttons start>
+        <ion-buttons left>
             <button ion-button (click)="goBack(3)">
                 <ion-icon name="arrow-back"></ion-icon>
             </button>
@@ -12,10 +12,10 @@
     <ion-list>
         <ion-item-divider>Confirmar Datos
             <ion-note item-right>
-                <ion-icon name="radio-button-on"></ion-icon>
-                <ion-icon name="radio-button-on"></ion-icon>
-                <ion-icon name="radio-button-on"></ion-icon>
-                <ion-icon name="radio-button-on"></ion-icon>
+                <ion-icon name="md-radio-button-on"></ion-icon>
+                <ion-icon name="md-radio-button-on"></ion-icon>
+                <ion-icon name="md-radio-button-on"></ion-icon>
+                <ion-icon name="md-radio-button-on"></ion-icon>
             </ion-note>
         </ion-item-divider>          
         <div class="map-container">
@@ -112,7 +112,7 @@
             <h2>{{ sending.dropPersonEmail }}</h2>
         </ion-item>
         <ion-list-header>PRECIO</ion-list-header>
-        <ion-item no-lines>
+        <ion-item no-lines class="price">
             <ion-icon name="card" item-left></ion-icon>
             <p>Costo del Servicio</p>
             <h2>$ {{ sending.price }}</h2>

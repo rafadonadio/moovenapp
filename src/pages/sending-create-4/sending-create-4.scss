@@ -8,6 +8,9 @@ page-sending-create-4 {
     button.submit{
         margin-top: 30px;
     }
+    .note .icon{
+        font-size: 2.4rem;
+    }
 
     ion-list.list-md ion-list-header,
     ion-list.list-ios ion-list-header{
@@ -46,9 +49,18 @@ page-sending-create-4 {
     ion-list.list-ios ion-item ion-label h2{
         color: color($colors, primary);
     }     
+    .item-md.list-header-md:last-child {
+        margin-bottom: 0;
+    }
 
     #mapf4 {
         height: 250px;
         width: 100%;
     }
+
+    .item.price h2{
+        padding: 15px 0 15px 15px;
+        font-size: 3rem;
+    }
+
 }

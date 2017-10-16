@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar color="primary">
         <ion-title>Nuevo Servicio</ion-title>
-        <ion-buttons start>
+        <ion-buttons left>
             <button ion-button (click)="cancelSending()">
                 <ion-icon name="md-close"></ion-icon>
             </button>
@@ -10,13 +10,13 @@
 </ion-header>
 <ion-content class="sending-create">
     <form [formGroup]="formOne">
-        <ion-list padding-bottom>
-            <ion-item-divider>
+        <ion-list no-lines>
+            <ion-item-divider>Detalle del Servicio
                 <ion-note item-right>
-                    <ion-icon name="radio-button-on"></ion-icon>
-                    <ion-icon name="radio-button-off"></ion-icon>
-                    <ion-icon name="radio-button-off"></ion-icon>
-                    <ion-icon name="radio-button-off"></ion-icon>
+                    <ion-icon name="md-radio-button-on"></ion-icon>
+                    <ion-icon name="md-radio-button-off"></ion-icon>
+                    <ion-icon name="md-radio-button-off"></ion-icon>
+                    <ion-icon name="md-radio-button-off"></ion-icon>
                 </ion-note>
             </ion-item-divider>             
 
@@ -33,7 +33,7 @@
             <div *ngIf="objectShortName.hasError('maxlength') && objectShortName.touched" 
                 class="input-error">* máximo 75 caracteres</div>
         </ion-list>
-        <ion-list radio-group formControlName="objectType">
+        <ion-list radio-group formControlName="objectType" no-lines>
             <ion-list-header>Tipo de objeto</ion-list-header>
             <ion-item no-lines>
                 <ion-label>Sobre</ion-label>
@@ -50,13 +50,13 @@
             <div *ngIf="showErrors && objectType.valid==false" 
                 class="input-error">* selecciona el Tipo de objeto</div>            
         </ion-list>
-        <ion-list>   
+        <ion-list no-lines>   
             <ion-list-header>Valor a declarar</ion-list-header>
             <ion-item no-lines>
-                <ion-range min="0" max="3000" step="100" 
+                <ion-range min="0" max="3000" step="100" color="primary" 
                     [(ngModel)]="rangeValue" 
                     formControlName="objectDeclaredValue">
-                    <ion-label range-right>${{ objectDeclaredValue.value }}</ion-label>
+                    <ion-label range-right color="dark">${{ objectDeclaredValue.value }}</ion-label>
                 </ion-range>
             </ion-item>
             <ion-item no-lines
@@ -70,7 +70,7 @@
             <div *ngIf="showErrors && objectDeclaredValue.hasError('nonZero') && objectNoValueDeclared.value==false" 
                 class="input-error">* Desliza hasta el valor ó marca "Sin valor"</div>
         </ion-list>
-        <ion-list>              
+        <ion-list no-lines>              
             <ion-list-header>Foto  <ion-note item-right>Opcional</ion-note></ion-list-header>
             <ion-card>
                 <div>

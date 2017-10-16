@@ -23,7 +23,6 @@ declare var window: any;
     templateUrl: 'app.html'
 })
 export class MyApp {
-    //@ViewChild(Nav) nav: Nav;
     @ViewChild(Nav) nav: Nav;
     // make StartPage the root (or first) page
     rootPage: any = StartPage;
