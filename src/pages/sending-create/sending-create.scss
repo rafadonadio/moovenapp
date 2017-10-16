@@ -4,35 +4,51 @@ page-sending-create {
     ion-toolbar.toolbar-ios ion-title span{
         font-weight: 200;
     }    
-   .input-error{
+
+    /* generic */
+    .item-divider .label{
+        font-weight: 300;
+    }        
+    .note .icon{
+        font-size: 2.4rem;
+    }
+    .input-error{
         margin-left: 20px;
         margin-top: 5px;
-        margin-bottom: 25px;
         color: red;
     }
     .input-optional{
         margin-left: 20px;
         margin-top: 5px;
-        color: orange;
-    }
+        color: color($colors, warn);
+    }    
     button.submit{
         margin-top: 30px;
     }
-
-    ion-list.list-md ion-list-header,
-    ion-list.list-ios ion-list-header{
-        background: #fff;
+    .list-header{
+        margin-bottom: 7px;
+        background-color: #f1f1f1;
         color: color($colors, primary);
-        font-weight: 500;
+        font-weight: 300;
         font-size:1.6rem;
-        text-transform: none;
+        text-transform: none;        
+    }  
+    .list-header-md{
+        border:none;
     }
+    .list-md .item-input:last-child {
+        border-bottom: none;
+    }
+    .list-md{
+        margin-bottom: 25px;
+    }
+
     ion-list.list-md ion-item-divider,
     ion-list.list-ios ion-item-divider{
         color: color($colors, primary);
         font-size:1.8rem;
-        background: #e2e2e2;
-        font-weight: 500;        
+        background: #ccc;
+        padding: 7px 5px 7px 16px;        
     }
     ion-list.list-md ion-item-divider ion-icon,
     ion-list.list-ios ion-item-divider ion-icon{
@@ -53,6 +69,9 @@ page-sending-create {
     ion-list.list-ios ion-item ion-label{
         color: #999;
     }        
+    .range .label{
+        color: color($colors, primary);
+    }
     ion-list.list-md ion-item.toggled ion-label,
     ion-list.list-ios ion-item.toggled ion-label{
         color:red;

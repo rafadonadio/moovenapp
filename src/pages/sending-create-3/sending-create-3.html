@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-buttons start>
+        <ion-buttons left>
             <button ion-button (click)="goBack()">
                 <ion-icon name="arrow-back"></ion-icon>
             </button>
@@ -10,7 +10,8 @@
 </ion-header>
 <ion-content class="sending-create-2">
     <form [formGroup]="form">
-        <ion-list>
+
+        <ion-list no-lines>
             <ion-item-divider>Datos de la Entrega
                 <ion-note item-right>
                     <ion-icon name="radio-button-on"></ion-icon>
@@ -19,15 +20,18 @@
                     <ion-icon name="radio-button-off"></ion-icon>
                 </ion-note>
             </ion-item-divider>  
-            <div class="map-container">
-                <div id="mapf3"></div>
-            </div>
-            <ion-item no-lines>
+        </ion-list>
+        <div class="map-container">
+            <div id="mapf3"></div>
+        </div>
+
+        <ion-list no-lines>
+            <ion-item>
                 <ion-input type="text" placeholder="Ingresa la dirección" 
                     formControlName="dropAddressFullText"
                     (focusin)="showAddressSearchModal()"></ion-input>
             </ion-item>     
-            <ion-item *ngIf="sending?.dropAddressSet==true" no-lines>
+            <ion-item *ngIf="sending?.dropAddressSet==true">
                 <ion-icon name="pin" item-left></ion-icon>
                 <h2>{{ sending?.dropAddressStreetShort }} {{ sending?.dropAddressNumber }}</h2>
                 <h3>{{ sending?.dropAddressCityShort }}</h3>
@@ -37,18 +41,24 @@
                     (click)="resetAddress()">
                     <ion-icon name="close-circle"></ion-icon>
                 </button>                
-            </ion-item>                
+            </ion-item>    
             <div *ngIf="showErrors && !dropAddressFullText.valid"
-                class="input-error">* Direccion de entrega es requerida</div>
-            <ion-list-header>Info Adicional Dirección</ion-list-header>
-            <ion-item no-lines>
+                class="input-error">* Direccion de entrega es requerida</div>                        
+        </ion-list>
+
+        <ion-list no-lines>
+            <ion-list-header margin-top>Info Adicional Dirección</ion-list-header>
+            <ion-item>
                 <ion-input type="text" clearInput 
                     placeholder="nro de piso, depto, oficina, etc" 
                     formControlName="dropAddressLine2"
                     ></ion-input>
             </ion-item>                    
+        </ion-list>
+    
+        <ion-list no-lines>
             <ion-list-header margin-top>Banda horaria de Entrega</ion-list-header>
-            <ion-item no-lines>
+            <ion-item>
                 <ion-label>Desde</ion-label>
                 <ion-datetime 
                     formControlName="dropTimeFrom" 
@@ -59,7 +69,7 @@
                     (ionChange)="changeDropTimeFrom()"
                     cancelText="Cancelar" doneText="Listo"></ion-datetime>
             </ion-item>
-            <ion-item no-lines>
+            <ion-item>
                 <ion-label>Hasta</ion-label>
                 <ion-datetime 
                     formControlName="dropTimeTo" 
@@ -72,36 +82,39 @@
             </ion-item>
             <div *ngIf="showErrors && !dropTimeFrom.touched && !dropTimeTo.touched" 
                 class="input-optional"><small>* verifica que el horario de entrega sea correcto</small></div>            
+        </ion-list>
+
+        <ion-list no-lines>
             <ion-list-header>
-                Contacto para Retiro
+                Contacto para Entrega
                 <button ion-button outline item-right 
                     (click)="populateContactWithUserData()">
                     Pegar mis datos
                 </button>
             </ion-list-header>
-            <ion-list inset>
-                <ion-item no-lines>
-                    <ion-label>Nombre</ion-label>
-                    <ion-input type="text" formControlName="dropPersonName"></ion-input>
-                </ion-item>
-                <div *ngIf="dropPersonName.hasError('required') && dropPersonName.touched || showErrors && dropPersonName.valid==false" 
-                    class="input-error">* ingresa un nombre de contacto</div>                
-                <ion-item no-lines>
-                    <ion-label>Telefono</ion-label>
-                    <ion-input type="text" formControlName="dropPersonPhone"></ion-input>
-                </ion-item>
-                <div *ngIf="dropPersonPhone.hasError('required') && dropPersonPhone.touched || showErrors && dropPersonPhone.valid==false" 
-                    class="input-error">* ingresa un teléfono de contacto</div>                     
-                <ion-item no-lines>
-                    <ion-label>Email</ion-label>
-                    <ion-input type="text" formControlName="dropPersonEmail"></ion-input>
-                </ion-item>
-                <div *ngIf="showErrors && dropPersonEmail.value==''" 
-                    class="input-optional">* ingresa un email de contacto (opcional)</div>                 
-                <div *ngIf="dropPersonEmail.value!='' && dropPersonEmail.hasError('isValid') && dropPersonEmail.touched" 
-                    class="input-error">* ingresa una dirección válida</div>                   
-            </ion-list>
+            <ion-item>
+                <ion-label stacked>Nombre</ion-label>
+                <ion-input type="text" formControlName="dropPersonName"></ion-input>
+            </ion-item>            
+            <ion-item>
+                <ion-label stacked>Telefono</ion-label>
+                <ion-input type="text" formControlName="dropPersonPhone"></ion-input>
+            </ion-item>                  
+            <ion-item>
+                <ion-label stacked>Email</ion-label>
+                <ion-input type="text" formControlName="dropPersonEmail"></ion-input>
+            </ion-item>
+            <!-- MSG ERRORS -->
+            <div *ngIf="dropPersonName.hasError('required') && dropPersonName.touched || showErrors && dropPersonName.valid==false" 
+                class="input-error">* ingresa un nombre de contacto</div>               
+            <div *ngIf="dropPersonPhone.hasError('required') && dropPersonPhone.touched || showErrors && dropPersonPhone.valid==false" 
+                class="input-error">* ingresa un teléfono de contacto</div>                  
+            <div *ngIf="showErrors && dropPersonEmail.value==''" 
+                class="input-optional">* ingresa un email de contacto (opcional)</div>                 
+            <div *ngIf="dropPersonEmail.value!='' && dropPersonEmail.hasError('isValid') && dropPersonEmail.touched" 
+                class="input-error">* ingresa una dirección válida</div>                   
         </ion-list>
+
         <div margin>
             <button ion-button block color="primary" 
                 (click)="submit()">Siguiente</button>
@@ -110,5 +123,6 @@
             <button ion-button block color="subdark" clear margin-top 
                 (click)="cancel()">Cancelar</button>            
         </div>
+
     </form>
 </ion-content>
