@@ -57,7 +57,7 @@ export class ShipmentCreatePage implements OnInit {
         // check it hasnt expired
         const hasExpired = this.sendingSrv.hasVacantExpired(sendingVacantData);
         console.log('check expired before lock', hasExpired);
-        if(!hasExpired) {
+        if(hasExpired) {
             let alert = this.alertCtrl.create({
                 title: 'El Servicio ha expirado',
                 subTitle: 'No es posible tomar el Servicio porque ha expirado, por favor intenta seleccionar otro Servicio disponible.',
@@ -177,16 +177,16 @@ export class ShipmentCreatePage implements OnInit {
                     }
                     // check is expired
                     const hasExpired = this.sendingSrv.hasVacantExpired(value);
-                    if(hasExpired) {
+                    if(hasExpired) {                               
+                        this.vacantsExpired.push(item);          
+                    }else{
                         this.vacants.push(item);
                         //add markers to map
                         let latlng = {
                             lat: value.pickupAddressLat,
                             lng: value.pickupAddressLng,
                         }
-                        this.addMapMarker(latlng, key);                    
-                    }else{
-                        this.vacantsExpired.push(item);
+                        this.addMapMarker(latlng, key); 
                     }
                 });
             }
