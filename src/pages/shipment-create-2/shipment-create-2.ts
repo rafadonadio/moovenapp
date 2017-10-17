@@ -68,7 +68,7 @@ export class ShipmentCreate2Page implements OnInit {
 
     private presentSuccessToast() {
         let toast = this.toastCtrl.create({
-            message: 'Tienes una nueva carga!',
+            message: 'Tienes un nuevo Servicio!',
             duration: 2000,
             position: 'bottom'
         });
