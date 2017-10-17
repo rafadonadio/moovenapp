@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar color="green">
-        <ion-buttons right>
+        <ion-buttons left>
             <button ion-button (click)="goBack()">
                 <ion-icon name="close"></ion-icon>
             </button>
@@ -18,15 +18,15 @@
             <h3><span>Fecha</span>{{ vacant.data.pickupTimeFrom | formatdatePipe:'dddd DD/MMM' }}</h3>
             <h3><span>Retirar</span>{{ vacant.data.pickupTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.data.pickupTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
             <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.data.dropTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
-            <button ion-button item-right outline color="green"
+            <button ion-button item-right color="green"
                 *ngIf="mapMarkers.selected!==vacant.key" 
-                (click)="selectedToggle(vacant)"><ion-icon name="pin"></ion-icon>&nbsp;&nbsp;VER</button>
-            <button ion-button item-right clear color="light"
+                (click)="selectedToggle(vacant)">VER</button>
+            <button ion-button item-right icon-only clear color="light"
                 *ngIf="mapMarkers.selected===vacant.key"
-                (click)="selectedToggle(vacant)"><ion-icon name="close"></ion-icon></button>
+                (click)="selectedToggle(vacant)"><ion-icon name="ios-close-circle-outline"></ion-icon></button>
             <button ion-button item-right color="light"
                 *ngIf="mapMarkers.selected===vacant.key" 
-                (click)="select(vacant.key, vacant.data)">Tomar</button>
+                (click)="select(vacant.key, vacant.data)">TOMAR</button>
         </ion-item>
     </ion-list>
 </ion-content>

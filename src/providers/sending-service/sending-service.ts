@@ -139,6 +139,16 @@ export class SendingService {
         return this.writeUnlockVacant(sendingId);
     }
 
+    hasVacantExpired(sendingSummary:any) {
+        // check if expired
+        const now = this.dateSrv.getUnixTimestamp();
+        const expiresAt = sendingSummary._waitoperatorExpiresAt;
+        const secondsBeforeExpires = expiresAt - now;
+        // console.log('hasVacantExpired', secondsBeforeExpires);
+        return secondsBeforeExpires>0 ? false : true;        
+    }
+
+
     /**
      *  NOTIFICATIONS
      */

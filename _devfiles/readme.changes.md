@@ -84,11 +84,11 @@ npm run ionic:build --prod
     notificaciones via email
     local notifications
 - Historial
-    - historial de servicios
+    <!-- - historial de servicios -->
 - Pagos
-    - historial de pagos realizados
+    <!-- - historial de pagos realizados -->
 - Ayuda
-    ....
+    <!-- .... -->
 - Varios  
     - registrar cada acción de usuario  
     - obtener datos marca/modelo del dispositivo del usuario (???)

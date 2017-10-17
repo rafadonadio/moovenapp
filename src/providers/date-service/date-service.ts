@@ -56,6 +56,7 @@ export class DateService {
         return moment().utcOffset(utcOffset).format();
     }
 
+    // by default returns ISO8601 string date
     getCurrent(format:string = '', utcOffset:string = defaultUTCzone) {
         return moment().utcOffset(utcOffset).format(format);        
     }

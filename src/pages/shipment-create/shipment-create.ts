@@ -20,6 +20,7 @@ import { DateService } from '../../providers/date-service/date-service';
 export class ShipmentCreatePage implements OnInit {
 
     vacants;
+    vacantsExpired;
     vacantSubs:Subscription;
     // map
     map: any;
@@ -49,13 +50,27 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ionViewWillLeave() {
-        if(this.vacantSubs) {
-            this.vacantSubs.unsubscribe();
-        }
-        this.vacants = null;
+        this.unsubscribe();
     }
 
     select(sendingVacantId:string, sendingVacantData:any) {
+        // check it hasnt expired
+        const hasExpired = this.sendingSrv.hasVacantExpired(sendingVacantData);
+        console.log('check expired before lock', hasExpired);
+        if(!hasExpired) {
+            let alert = this.alertCtrl.create({
+                title: 'El Servicio ha expirado',
+                subTitle: 'No es posible tomar el Servicio porque ha expirado, por favor intenta seleccionar otro Servicio disponible.',
+                buttons: ['Cerrar']
+            });
+            alert.present();
+            // reload subscription
+            this.unsubscribe();
+            this.initMap();
+            this.getVacants();
+            return;
+        }
+        // all good, go
         // init loader
         let loader = this.loaderCtrl.create({
             content: 'verificando disponibilidad ...'
@@ -150,6 +165,7 @@ export class ShipmentCreatePage implements OnInit {
         let obs = this.sendingSrv.getLiveVacantObs(true);
         this.vacantSubs = obs.subscribe(snaps => {
             this.vacants = [];
+            this.vacantsExpired = [];
             if(snaps) {
                 snaps.forEach(snap => {
                     let key = snap.key;
@@ -159,15 +175,22 @@ export class ShipmentCreatePage implements OnInit {
                         key: key,
                         data: value
                     }
-                    this.vacants.push(item);
-                    //add markers to map
-                    let latlng = {
-                        lat: value.pickupAddressLat,
-                        lng: value.pickupAddressLng,
+                    // check is expired
+                    const hasExpired = this.sendingSrv.hasVacantExpired(value);
+                    if(hasExpired) {
+                        this.vacants.push(item);
+                        //add markers to map
+                        let latlng = {
+                            lat: value.pickupAddressLat,
+                            lng: value.pickupAddressLng,
+                        }
+                        this.addMapMarker(latlng, key);                    
+                    }else{
+                        this.vacantsExpired.push(item);
                     }
-                    this.addMapMarker(latlng, key);                    
                 });
             }
+            console.log('vacantsExpired', this.vacantsExpired);
         });
     }
 
@@ -252,6 +275,15 @@ export class ShipmentCreatePage implements OnInit {
         });
         alert.present();
     }  
+
+    private unsubscribe() {
+        if(this.vacantSubs) {
+            console.log('Unsubscribed');
+            this.vacantSubs.unsubscribe();
+        }
+        this.vacants = null;
+        this.vacantsExpired = null;        
+    }
 
 }
 
