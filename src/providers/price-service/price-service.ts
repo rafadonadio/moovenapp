@@ -59,7 +59,7 @@ export class PriceService {
         const commissionAmount = this.calcOperatorCommissionAmount(priceResult.value, priceResult.priceCommissionPercentage);
         priceResult.priceCommissionAmount = this.roundWithDecimal(commissionAmount, 2);
         // operator earning
-        const earning = priceResult.value - commissionAmount;
+        const earning = priceResult.value - priceResult.priceCommissionAmount;
         priceResult.priceOperatorEarning = this.roundWithDecimal(earning, 2);
         // return
         return priceResult;
