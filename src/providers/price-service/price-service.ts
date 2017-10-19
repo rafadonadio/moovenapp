@@ -18,7 +18,8 @@ export class PriceService {
             items: [],
             processedKms: 0,
             priceCommissionPercentage: 0,
-            priceCommissionAmount: 0
+            priceCommissionAmount: 0,
+            priceOperatorEarning: 0
         }
         // aux
         let aux = {
@@ -53,10 +54,13 @@ export class PriceService {
         priceResult.items = aux.items;
         priceResult.processedKms = aux.processedKms;
         console.log('final price', priceResult);
-        // operator commission
+        // mooven commission
         priceResult.priceCommissionPercentage = CFG.OPERATOR_COMMISSION_PERCENTAGE;
         const commissionAmount = this.calcOperatorCommissionAmount(priceResult.value, priceResult.priceCommissionPercentage);
         priceResult.priceCommissionAmount = this.roundWithDecimal(commissionAmount, 2);
+        // operator earning
+        const earning = priceResult.value - commissionAmount;
+        priceResult.priceOperatorEarning = this.roundWithDecimal(earning, 2);
         // return
         return priceResult;
     }    

@@ -27,7 +27,8 @@ export class SendingCreate4Page implements OnInit {
         items: [],
         processedKms: 0,
         priceCommissionPercentage: 0,
-        priceCommissionAmount: 0       
+        priceCommissionAmount: 0,
+        priceOperatorEarning: 0       
     };  
 
     constructor(public navCtrl: NavController,
@@ -296,7 +297,7 @@ export class SendingCreate4Page implements OnInit {
     private setPrice():void {
         console.log('setSendingPrice > ', this.routeDetails.totalDistance.kms);
         this.price = this.priceSrv.setSendingPrice(this.routeDetails.totalDistance.kms);
-        console.log('setPrice', this.price);
+        // console.log('setPrice', this.price);
     }
 
     private updateSendingPrice() {
@@ -305,6 +306,7 @@ export class SendingCreate4Page implements OnInit {
         this.sending.priceItems = this.price.items;
         this.sending.priceCommissionPercentage = this.price.priceCommissionPercentage;
         this.sending.priceCommissionAmount = this.price.priceCommissionAmount;
+        this.sending.priceOperatorEarning = this.price.priceOperatorEarning;
     }
 
     private updateSendingRoute() {

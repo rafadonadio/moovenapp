@@ -471,7 +471,8 @@ export class SendingRequest {
     priceItems: Array<any>;
     priceCurrencyId: string;
     priceCommissionPercentage: number;
-    priceCommissionAmount: number;               
+    priceCommissionAmount: number;
+    priceOperatorEarning: number;               
     routeDistanceMt: number;
     routeDistanceKm: number;
     routeDistanceTxt: string;
