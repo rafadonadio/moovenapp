@@ -27,8 +27,7 @@ export class SendingCreate4Page implements OnInit {
         items: [],
         processedKms: 0,
         priceCommissionPercentage: 0,
-        priceCommissionAmount: 0,
-        priceCommissionAmountTxt: ''        
+        priceCommissionAmount: 0       
     };  
 
     constructor(public navCtrl: NavController,
@@ -306,7 +305,6 @@ export class SendingCreate4Page implements OnInit {
         this.sending.priceItems = this.price.items;
         this.sending.priceCommissionPercentage = this.price.priceCommissionPercentage;
         this.sending.priceCommissionAmount = this.price.priceCommissionAmount;
-        this.sending.priceCommissionAmountTxt = this.price.priceCommissionAmountTxt;
     }
 
     private updateSendingRoute() {
