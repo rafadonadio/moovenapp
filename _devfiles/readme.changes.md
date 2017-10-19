@@ -14,115 +14,75 @@ npm run ionic:build --prod
 # TO_DO
 #############
 
-# CLOSE (corte)
-
-- app
-    <!-- - refactor sending (switch to authService AccountService) -->
-    - cf de cancelación
-        <!-- app: cancelar servicio (usuario) *closed_canceledbysender* -->
-        <!-- app: cancelar servicio (operador) *closed_canceledbyoperator* -->
-        <!-- cron: cancelar servicio no pagado *closed_payexpired* -->
-        <!-- cron: cancelar servicio no tomado *closed_waitoperatorexpired* -->
-        <!-- cron: cerrar servicio con hora de entrega pasada y notificaciones no enviadas *closed_autocompleted* -->
-    <!-- - set shipment notifications -->
-    - ajuste visualización items en tab sending, a vencer en menos de 30 minutos - sending
-    <!-- - ajuste visualización items en tab history - sending -->
-    <!-- - ajuste visualización items en tab history - shipment -->
-    - visualización pedidos en mapa - shipment new
-    - notificaciones (email)
-    - network detector
-    - operatorWallet 
-    - BUG: 
-        - al cambiar horario pickup 12, 12.30 no suma 2 hs a drop
-        - permitir tomarlo desde YA
-
-    - ** notificaciones (push)
-    - ** replicate datastore
-    - ** log (big query)
-    - ** cron para listar servicios (pagados) a vencer en 30 minutos
-
-- admin
-    - contadores
-        servicios por stage, status
-        servicios por fecha
-        usuarios
-        operadores
-    - dashboard
-        - mostrar contadores
-    - mercado pago
-        habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
+# ADMIN APP
+- contadores
+    servicios por stage, status
+    servicios por fecha
+    usuarios
+    operadores
+- dashboard
+    - mostrar contadores
+- mercado pago
+    habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
 
 - gral
     - backup config db nodes
 
 # MOOVEN APP
-- Nuevo Servicio - Paso 2    
-    <!--- ingresar fecha  -->
-    <!--- validar horario-->
-        <!--validar fecha (hasta 5 días en reserva)-->
-        <!--validar drop time si pickup cambio-->
-        <!--validar pickup si drop cambio-->
-        <!--validar pickup/drop si hora cambió-->
-- Nuevo Servicio - Paso 3  
-    <!--- validar horario        -->
-- Nuevo Servicio - Paso 4  
-    <!--- calculo precio-->
-    establecer comision operador 30%
-- Service actions
-    - cancel before paying
-- Nuevo shipment
-     - impedir user tomar propio servicio
-     - en vista tomar servicio, listar vacantes en función de center-map + limite mapa, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.    
-- Checkout
-    - crear usuario MP
-    - guardar datos tarjeta en MP
-- Operator
-    <!-- set role
-    define role data
-    refactor data used on shipment -->
-- Notificaciones
-    notificaciones via email
-    local notifications
-- Historial
-    <!-- - historial de servicios -->
-- Pagos
-    <!-- - historial de pagos realizados -->
-- Ayuda
-    <!-- .... -->
-- Varios  
-    - registrar cada acción de usuario  
-    - obtener datos marca/modelo del dispositivo del usuario (???)
-    - funcionalidad para cerra cuenta de usuario
-    - firebase network detector
-    <!-- - email para recuperar contraseña, hacer custom español -->
-- Ajustes  
-    - boton para cerrar aplicación
-    - notificaciones (locales/email) - revisar
-     - limitar intentos de reenviar email de validación 
-
-# ADMIN APP
-- init
-    <!-- nueva ionic app -->
-- operadores
-    <!-- crear operadores  -->
-    al crear: indicar datos faltantes que no permiten activar.a
-    consulta de servicios realizados, monto total de ingresos.
-
-# CF
-- mercado pago
-    habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
-- test data in google gloud datastore
-- test data in google gloud bigquery
+- en vista tomar servicio, listar vacantes en función de center-map + limite mapa
+- en vista tomar servicio, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.    
+- impedir user tomar propio servicio
+- notificaciones (email)
+- network detector
+- operatorWallet
+- establecer comision operador 30% 
+<!-- - Nuevo Servicio - Paso 2     -->
+<!--- ingresar fecha  -->
+<!--- validar horario-->
+<!--validar fecha (hasta 5 días en reserva)-->
+<!--validar drop time si pickup cambio-->
+<!--validar pickup si drop cambio-->
+<!--validar pickup/drop si hora cambió-->
+<!-- - Nuevo Servicio - Paso 3   -->
+<!--- validar horario        -->
+<!-- - Nuevo Servicio - Paso 4   -->
+<!--- calculo precio-->
+<!-- - Service actions -->
+<!-- - cancel before paying -->
+<!-- - Checkout -->
+<!-- - Operator -->
+<!-- set role
+define role data
+refactor data used on shipment -->
+<!-- - historial de servicios -->
+<!-- - historial de pagos realizados -->
+<!-- - Ayuda: crear FAQs desde Admin -->
+<!-- - funcionalidad para cerra cuenta de usuario -->
+<!-- - email para recuperar contraseña, hacer custom español -->
 
 
 
 #---------------
+# TO-DO
 # TO BE DEFINED 
 #---------------
+- ** notificaciones (push)
+- ** replicate datastore
+- ** log (big query)
+- ** cron para listar servicios (pagados) a vencer en 30 minutos
+- notificaciones (locales/email) - revisar
+- limitar intentos de reenviar email de validación 
+- al cambiar horario pickup 12, 12.30 no suma 2 hs a drop
+- permitir tomarlo desde YA
+- registrar cada acción de usuario  
+- obtener datos marca/modelo del dispositivo del usuario (???)
+- crear usuario MP
+- guardar datos tarjeta en MP
+- boton para cerrar aplicación
 - fecha de servicio
     - que pasa con feriados?
     - que pasa con fin de semana?
-- situaciónes de conflicto a preveer:
+- situaciónes de posible conflicto:
     - operador dice que lo entrega
     - usuario dice que no lo recibió
     - solución: ???
