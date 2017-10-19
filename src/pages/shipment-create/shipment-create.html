@@ -14,7 +14,7 @@
 <ion-content class="shipment-create">
     <ion-list *ngFor="let vacant of vacants">
         <ion-item [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
-            <h3><span>Precio</span><b>${{ vacant.data.price }}</b> | {{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
+            <h3><span>Cobro</span><b>${{ vacant.data.priceOperatorEarning }}</b> | {{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
             <h3><span>Fecha</span>{{ vacant.data.pickupTimeFrom | formatdatePipe:'dddd DD/MMM' }}</h3>
             <h3><span>Retirar</span>{{ vacant.data.pickupTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.data.pickupTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
             <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.data.dropTimeTo | formatdatePipe:'HH:mm' }} hs</h3>

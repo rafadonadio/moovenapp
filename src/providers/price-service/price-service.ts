@@ -16,7 +16,10 @@ export class PriceService {
             value: null,
             applyMinFare: false,
             items: [],
-            processedKms: 0
+            processedKms: 0,
+            priceCommissionPercentage: 0,
+            priceCommissionAmount: 0,
+            priceOperatorEarning: 0
         }
         // aux
         let aux = {
@@ -44,15 +47,28 @@ export class PriceService {
             }
         }
         // round price
-        aux.subtotal = this.roundPrice(aux.subtotal);
+        aux.subtotal = this.roundWithDecimal(aux.subtotal, 2);
         // calc min fare
         priceResult.applyMinFare = this.isMinFareApplicable(aux.subtotal);
         priceResult.value = priceResult.applyMinFare ? CFG.MIN_FARE.VALUE : aux.subtotal;
         priceResult.items = aux.items;
         priceResult.processedKms = aux.processedKms;
         console.log('final price', priceResult);
+        // mooven commission
+        priceResult.priceCommissionPercentage = CFG.OPERATOR_COMMISSION_PERCENTAGE;
+        const commissionAmount = this.calcOperatorCommissionAmount(priceResult.value, priceResult.priceCommissionPercentage);
+        priceResult.priceCommissionAmount = this.roundWithDecimal(commissionAmount, 2);
+        // operator earning
+        const earning = priceResult.value - commissionAmount;
+        priceResult.priceOperatorEarning = this.roundWithDecimal(earning, 2);
+        // return
         return priceResult;
     }    
+
+    private calcOperatorCommissionAmount(price:number, percent:number):number {
+        let amount:number = price / 100 * percent;       
+        return amount;        
+    }
 
     private calcKmsToProcessForCurrentRange(range:any, pendingKms:number) {
         let calc = 0;
@@ -73,14 +89,17 @@ export class PriceService {
         return range.VALUE_PER_KM * kmsToProcess;
     }
 
-    private roundPrice(value) {
-        return Math.round(value);
-    }
-
     private isMinFareApplicable(finalPrice):boolean {
         let applicable:boolean;
         applicable = CFG.MIN_FARE.VALUE > finalPrice ? true : false;
         return applicable;
     }
+
+    private roundWithDecimal(number:number, precision:number) {
+        var factor = Math.pow(10, precision);
+        var tempNumber = number * factor;
+        var roundedTempNumber = Math.round(tempNumber);
+        return roundedTempNumber / factor;
+    };    
 
 }

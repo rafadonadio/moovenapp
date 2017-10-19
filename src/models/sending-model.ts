@@ -92,8 +92,9 @@ export const SENDING_CFG = {
             PER_DISTANCE: [
                 { ID:'0-25', GRTR_THAN:0, SMLR_OR_EQUAL:25, VALUE_PER_KM: 10 },
                 { ID:'25-50', GRTR_THAN:25, SMLR_OR_EQUAL:50, VALUE_PER_KM: 8 },
-                { ID:'50-10000', GRTR_THAN:50, SMLR_OR_EQUAL:10000, VALUE_PER_KM: 5 },
-            ]                 
+                { ID:'50-100000', GRTR_THAN:50, SMLR_OR_EQUAL:100000, VALUE_PER_KM: 5 },
+            ],
+            OPERATOR_COMMISSION_PERCENTAGE: 30             
         }
     }
 }
@@ -468,7 +469,10 @@ export class SendingRequest {
     price: number;   
     priceMinFareApplied: boolean;  
     priceItems: Array<any>;
-    priceCurrencyId: string;             
+    priceCurrencyId: string;
+    priceCommissionPercentage: number;
+    priceCommissionAmount: number;
+    priceOperatorEarning: number;               
     routeDistanceMt: number;
     routeDistanceKm: number;
     routeDistanceTxt: string;
