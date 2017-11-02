@@ -18,7 +18,7 @@
             <ion-list-header>Mapa</ion-list-header>
             <ion-item *ngFor="let opt of pointsDropdown; let i = index">
                 <h2>{{opt.label}}</h2>
-                <button ion-button color="light" (click)="setMapCenter(i)" item-right>Seleccionar</button>
+                <button ion-button clear color="green" (click)="setMapCenter(i)" item-right>Seleccionar</button>
             </ion-item>       
         </ion-list>
         <ion-item *ngIf="!pointChange">
@@ -31,8 +31,8 @@
         <ion-list *ngIf="dateChange">
             <ion-list-header>Fecha</ion-list-header>
             <ion-item *ngFor="let date of datesList; let i = index">
-                {{date.dateCalendar}} <ion-badge color="green">{{date.keys.length}}</ion-badge>
-                <button ion-button color="light" item-right (click)="setDate(index)">Seleccionar</button>
+                {{date.dateCalendar}} <ion-badge item-right color="green">{{date.keys.length}}</ion-badge>
+                <button ion-button clear color="green" item-end (click)="setDate(index)">Seleccionar</button>
             </ion-item>            
         </ion-list>
         <ion-item *ngIf="!dateChange">
