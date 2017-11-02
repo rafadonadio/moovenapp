@@ -14,27 +14,15 @@ import {
 import { DateService } from '../../providers/date-service/date-service';
 
 @Component({
-    selector: 'page-shipment-create',
-    templateUrl: 'shipment-create.html',
+    selector: 'page-shipment-create-1',
+    templateUrl: 'shipment-create-1.html',
 })
 export class ShipmentCreatePage implements OnInit {
 
     vacants;
     vacantsExpired;
     vacantSubs:Subscription;
-    geoFire: any;
-    geoFireQuery: any;    
-    // maps points
-    pointsDropdown: Array<any>;
-    pointSelected: number;
-    pointChange: boolean;
-    // dates
-    datesList: Array<any>;
-    dateSelected: number;
-    dateChange: boolean;
     // map
-    mapCenter: any;
-    mapDate: any;    
     map: any;
     mapMarkers = {
         list:[],
@@ -53,9 +41,8 @@ export class ShipmentCreatePage implements OnInit {
 
     }
 
-    ngOnInit() {   
-        this.initPointSelected();     
-        this.resetMap(); 
+    ngOnInit() {
+        this.initMap();         
     }
 
     ionViewWillEnter() {      
@@ -65,84 +52,6 @@ export class ShipmentCreatePage implements OnInit {
     ionViewWillLeave() {
         this.unsubscribe();
     }
-
-    // navigation
-    goBack() {
-        this.navCtrl.setRoot(ShipmentsTabsPage);
-    }
-
-    /**
-     *  GEOFIRE
-     */
-
-    // Map center
-    changeMapCenter() {
-        console.log('changeMapCenter');  
-        this.pointChange = true;    
-    }
-    setMapCenter(index) {
-        console.log('setMapCenter', index);
-        this.pointChange = false;
-    }
-    private initPointSelected() {
-        this.pointSelected = 0;
-        this.pointsDropdown = GMAP_CFG.POINTS;
-        this.pointChange = false;
-    }     
-
-    // date
-    changeDate() {
-        console.log('changeDate');  
-        this.dateChange = true;    
-    }
-    setDate(index) {
-        console.log('setDate', index);
-        this.dateChange = false;
-    }
-    private initDateSelected() {
-        this.dateSelected = 0;
-        this.datesList = [];
-        this.dateChange = false;
-    }
-    private setMapDate() {
-        this.mapDate = this.datesList[this.dateSelected];        
-        console.log('setMapDate', this.mapDate);
-    }      
-
-    private resetMap() {
-        // this.setMapCenter();
-        this.initMap();
-        this.initDateSelected();
-        this.sendingSrv.getGeofireLiveDates()
-            .then(snaps => {
-                snaps.forEach(child => {
-                    let dateString:string = child.key;
-                    let dates = child.val();
-                    console.log('dates', dateString, dates);
-                    let dateMonth = dateString.substr(0,2);
-                    let dateDay = dateString.substr(3,2);
-                    let date = {
-                        dateString: `${dateDay}/${dateMonth}`,
-                        dateCalendar: this.dateSrv.displayCalendarTime(dateDay, dateMonth),
-                        list: dates,
-                        keys: Object.keys(dates)
-                    }
-                    this.datesList.push(date);
-                });
-                this.setMapDate();
-                if(this.datesList.length>0) {
-                    this.runGeofire();                     
-                }
-            });
-    }
-
-    private runGeofire() {
-        console.log('runGeofire');
-    }
-
-    /**
-     *  SENDING SELECT
-     */
 
     select(sendingVacantId:string, sendingVacantData:any) {
         // check it hasnt expired
@@ -206,7 +115,9 @@ export class ShipmentCreatePage implements OnInit {
 
     }
 
-
+    goBack() {
+        this.navCtrl.setRoot(ShipmentsTabsPage);
+    }
 
     selectedToggle(vacant:any) {
         // toggle: if already selected, de-selelect
@@ -325,7 +236,7 @@ export class ShipmentCreatePage implements OnInit {
 
     private getMapDefaultSettings():MapDefaultSettings{
         let settings:MapDefaultSettings = {
-            latlng: this.gmapsService.setlatLng(GMAP_CFG.DEFAULT_CENTER.LAT, GMAP_CFG.DEFAULT_CENTER.LNG),
+            latlng: this.gmapsService.setlatLng(GMAP_CFG.POINTS.CABA.LAT, GMAP_CFG.POINTS.CABA.LNG),
             zoom: 11                
         }
         return settings;
@@ -350,7 +261,7 @@ export class ShipmentCreatePage implements OnInit {
         }
         // init map
         this.map = this.gmapsService.initMap(latlng, divMap, options);
-    }      
+    }
 
     /**
      *  HELPERS

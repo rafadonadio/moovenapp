@@ -37,10 +37,10 @@ export class ShipmentCreate2Page implements OnInit {
 
     ngOnInit() {
         this.initTimer();
-        this.initConfirmAlert();
     }
 
     showConfirmAlert() {
+        this.initConfirmAlert();
         this.confirmAlert.present();
         this.confirmAlertOpen = true;
     }
@@ -99,10 +99,10 @@ export class ShipmentCreate2Page implements OnInit {
                 }
             ]
         });
-        let self = this;
-        this.confirmAlert.onDidDismiss(function() {
+        this.confirmAlert.onDidDismiss(() => {
             console.log('confirmAlert Dismissed');
-            self.confirmAlertOpen = false;
+            this.confirmAlertOpen = false;
+            this.confirmAlert = null;
         })
     }
 

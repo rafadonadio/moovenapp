@@ -240,7 +240,7 @@ export const firebaseConfig = {
         CheckoutService,
         StorageService,
         LocalNotifications,
-    FaqProvider
+        FaqProvider
     ],
 })
 export class AppModule { }
