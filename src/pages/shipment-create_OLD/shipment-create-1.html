@@ -12,34 +12,6 @@
     </div>
 </ion-header>
 <ion-content class="shipment-create">
-
-    <ion-card>
-        <ion-list *ngIf="pointChange">
-            <ion-list-header>Mapa</ion-list-header>
-            <ion-item *ngFor="let opt of pointsDropdown; let i = index">
-                <h2>{{opt.label}}</h2>
-                <button ion-button color="light" (click)="setMapCenter(i)" item-right>Seleccionar</button>
-            </ion-item>       
-        </ion-list>
-        <ion-item *ngIf="!pointChange">
-            <h2>CABA</h2>
-            <button ion-button clear color="green" (click)="changeMapCenter()" item-right>Cambiar</button>
-        </ion-item>   
-    </ion-card>
-    
-    <ion-card>
-        <ion-list *ngIf="dateChange">
-            <ion-list-header>Fecha</ion-list-header>
-            <ion-item *ngFor="let date of datesList; let i = index">
-                {{date.dateCalendar}} <ion-badge color="green">{{date.keys.length}}</ion-badge>
-                <button ion-button color="light" item-right (click)="setDate(index)">Seleccionar</button>
-            </ion-item>            
-        </ion-list>
-        <ion-item *ngIf="!dateChange">
-            <h2>Hoy</h2>
-            <button ion-button clear color="green" item-right (click)="changeDate()">Cambiar</button>
-        </ion-item>            
-    </ion-card>
     <ion-list *ngFor="let vacant of vacants">
         <ion-item [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
             <h3><span>Cobro</span><b>${{ vacant.data.priceOperatorEarning }}</b> | {{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
@@ -49,9 +21,9 @@
             <button ion-button item-right color="green"
                 *ngIf="mapMarkers.selected!==vacant.key" 
                 (click)="selectedToggle(vacant)">VER</button>
-            <button ion-button item-right color="dark"
+            <button ion-button item-right icon-only clear color="light"
                 *ngIf="mapMarkers.selected===vacant.key"
-                (click)="selectedToggle(vacant)"><ion-icon name="ios-close"></ion-icon></button>
+                (click)="selectedToggle(vacant)"><ion-icon name="ios-close-circle-outline"></ion-icon></button>
             <button ion-button item-right color="light"
                 *ngIf="mapMarkers.selected===vacant.key" 
                 (click)="select(vacant.key, vacant.data)">TOMAR</button>

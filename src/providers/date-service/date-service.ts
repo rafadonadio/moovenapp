@@ -65,6 +65,20 @@ export class DateService {
      *  HELPERS
      */
 
+    // calendar time
+    displayCalendarTime(day:string, month:string, utcOffset:string = defaultUTCzone) {
+        let year = moment().year();
+        const obj:any = {'year': year, 'month': parseInt(month)-1, 'date': parseInt(day)};
+        return moment().utcOffset(utcOffset).set(obj).calendar(null, {
+            sameDay: '[hoy]',
+            nextDay: '[mañana]',
+            nextWeek: 'dddd [próximo]',
+            lastDay: '[Ayer]',
+            lastWeek: 'dddd [anterior]',
+            sameElse: 'DD/MM'
+        });
+    }
+
     // transform a timestamp to date
     transformTimestampToHuman(timestamp:string, utcOffset:string = defaultUTCzone):string {
         //console.info('transformTimestampToHuman');

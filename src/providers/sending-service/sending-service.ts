@@ -15,7 +15,8 @@ import { HashService } from '../hash-service/hash-service';
 import { SendingRequest } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 
-import firebase from 'firebase';
+import * as GeoFire from 'geofire';
+import * as firebase from 'firebase';
 
 const VACANT_LOCK_TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT + SHIPMENT_CFG.WAIT_AFTER_UNLOCK; // ADDED SECONDS TO AVOID COLISSIONS
 
@@ -114,6 +115,31 @@ export class SendingService {
             } 
         });
     }
+
+    /**
+     *  Sending Live Geofire 
+     */
+
+    getGeofireLiveDatesObs(snapshot:boolean = false): FirebaseListObservable<any> {
+        return this.afDb.list(`_sendingsLiveGeofireDates`, {
+            preserveSnapshot: snapshot
+        });
+    }
+
+    getGeofireLiveDates() {
+        return firebase.database().ref('_sendingsLiveGeofireDates').once('value');
+    }
+
+    // datestring: 'MM_DD'
+    getGeofireDbRef(dateSlug:string) {
+        return firebase.database().ref(`_sendingsLiveGeofireByDate/${dateSlug}`);
+    }
+
+    // dbRef: firebase database reference
+    getGeofire(dbRef:any) {
+        return new GeoFire(dbRef);
+    }    
+
 
     /**
      *  SendingLiveVacants

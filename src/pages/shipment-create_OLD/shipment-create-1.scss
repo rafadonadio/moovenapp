@@ -1,4 +1,4 @@
-page-shipment-create {
+page-shipment-create-1 {
     ion-list .item h3 span {
         color: #aaa;
         min-width: 75px;
@@ -10,9 +10,6 @@ page-shipment-create {
     }
     ion-list .item ion-icon {
         color: color($colors, green);
-    }
-    .list-header{
-        margin-bottom: 0;
     }
     .item-md .item-button,
     .item-ios .item-button {
