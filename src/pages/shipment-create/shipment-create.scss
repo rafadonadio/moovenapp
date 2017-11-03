@@ -29,6 +29,19 @@ page-shipment-create {
     .item.selected h3 span {
         color: #aaa;
     }
+
+    .item.point-selected,
+    .item.date-selected {
+        background: color($colors, green);
+    } 
+    .item.point-selected .item-inner,
+    .item.date-selected .item-inner {
+        margin-left: 7px;
+    }
+    .item.point-selected .label h2,
+    .item.date-selected .label h2{
+        color: white;
+    }
     // MAP
     #maps1 {
         min-height: 300px;

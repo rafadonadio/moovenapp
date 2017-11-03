@@ -25,10 +25,12 @@ export class ShipmentCreatePage implements OnInit {
     geoFire: any;
     geoFireQuery: any;    
     // maps points
-    pointsDropdown: Array<any>;
+    pointsList: Array<any>;
     pointSelected: number;
     pointChange: boolean;
     // dates
+    datesExist: boolean;
+    datesListSubs: Subscription;
     datesList: Array<any>;
     dateSelected: number;
     dateChange: boolean;
@@ -54,12 +56,14 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ngOnInit() {   
-        this.initPointSelected();     
-        this.resetMap(); 
+        this.initMapDates();
+        this.initMapCenterSelected();     
+        this.initMap();
+        this.listenMapDates(); 
     }
 
     ionViewWillEnter() {      
-        this.getVacants(); 
+        console.log('ionViewWillEnter');
     }
 
     ionViewWillLeave() {
@@ -82,58 +86,64 @@ export class ShipmentCreatePage implements OnInit {
     }
     setMapCenter(index) {
         console.log('setMapCenter', index);
+        this.pointSelected = index;
+        this.mapCenter = this.pointsList[this.pointSelected];        
         this.pointChange = false;
     }
-    private initPointSelected() {
+    private initMapCenterSelected() {
         this.pointSelected = 0;
-        this.pointsDropdown = GMAP_CFG.POINTS;
+        this.pointsList = GMAP_CFG.POINTS;
+        this.mapCenter = this.pointsList[this.pointSelected];
         this.pointChange = false;
     }     
 
     // date
-    changeDate() {
-        console.log('changeDate');  
+    changeMapDate() {
+        console.log('Map');  
         this.dateChange = true;    
     }
-    setDate(index) {
-        console.log('setDate', index);
-        this.dateChange = false;
-    }
-    private initDateSelected() {
-        this.dateSelected = 0;
-        this.datesList = [];
-        this.dateChange = false;
-    }
-    private setMapDate() {
+    setMapDate(index = null) {
+        this.dateSelected = !index ? this.dateSelected : index;
         this.mapDate = this.datesList[this.dateSelected];        
+        this.dateChange = false;
         console.log('setMapDate', this.mapDate);
-    }      
+    }
+    private initMapDates() {
+        this.datesExist = false;
+        this.datesList = [];
+        this.dateSelected = 0;
+        this.dateChange = false; 
+    } 
 
-    private resetMap() {
-        // this.setMapCenter();
-        this.initMap();
-        this.initDateSelected();
-        this.sendingSrv.getGeofireLiveDates()
-            .then(snaps => {
-                snaps.forEach(child => {
-                    let dateString:string = child.key;
-                    let dates = child.val();
-                    console.log('dates', dateString, dates);
-                    let dateMonth = dateString.substr(0,2);
-                    let dateDay = dateString.substr(3,2);
-                    let date = {
-                        dateString: `${dateDay}/${dateMonth}`,
-                        dateCalendar: this.dateSrv.displayCalendarTime(dateDay, dateMonth),
-                        list: dates,
-                        keys: Object.keys(dates)
-                    }
-                    this.datesList.push(date);
-                });
-                this.setMapDate();
-                if(this.datesList.length>0) {
-                    this.runGeofire();                     
+    private listenMapDates() {
+        let obs = this.sendingSrv.getGeofireLiveDatesObs(true);
+        this.datesListSubs = obs.subscribe(snaps => {
+            console.log('datesList subs ...');
+            this.datesList = [];
+            snaps.forEach(child => {
+                let dateString:string = child.key;
+                let dates = child.val();
+                console.log('dates', dateString, dates);
+                let dateMonth = dateString.substr(0,2);
+                let dateDay = dateString.substr(3,2);
+                let date = {
+                    dateString: `${dateDay}/${dateMonth}`,
+                    dateCalendar: this.dateSrv.displayCalendarTime(dateDay, dateMonth),
+                    list: dates,
+                    keys: Object.keys(dates)
                 }
+                this.datesList.push(date);
             });
+            if(this.datesList.length>0) {
+                // if its an update view, advice before changing
+                // use dateString for array index ??
+                this.datesExist = true;
+                this.setMapDate();
+                this.runGeofire();                     
+            }else{
+                this.datesExist = false;
+            }            
+        })
     }
 
     private runGeofire() {
@@ -339,11 +349,10 @@ export class ShipmentCreatePage implements OnInit {
 
     private initMap() {
         console.info('initMap');
-        let settings = this.getMapDefaultSettings()
-        let latlng = settings.latlng;
+        let latlng = this.gmapsService.setlatLng(this.mapCenter.lat, this.mapCenter.lng);
         let divMap = (<HTMLInputElement>document.getElementById('maps1'));
         let options:MapsMapOptions = {
-            zoom: 11,
+            zoom: this.mapCenter.zoom,
             maxZoom: 16, 
             minZoom: 8,
             draggable:true
@@ -367,10 +376,15 @@ export class ShipmentCreatePage implements OnInit {
 
     private unsubscribe() {
         if(this.vacantSubs) {
-            console.log('Unsubscribed');
+            console.log('vacantSubs Unsubscribed');
             this.vacantSubs.unsubscribe();
         }
+        if(this.datesListSubs) {
+            console.log('datesListSubs Unsubscribed');
+            this.datesListSubs.unsubscribe();
+        }
         this.vacants = null;
+        this.datesList = null;
         this.vacantsExpired = null;        
     }
 

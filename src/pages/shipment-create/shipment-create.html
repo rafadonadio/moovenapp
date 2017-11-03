@@ -1,45 +1,48 @@
 <ion-header>
-    <ion-toolbar color="green">
+    <ion-navbar color="green">
         <ion-buttons left>
             <button ion-button (click)="goBack()">
                 <ion-icon name="close"></ion-icon>
             </button>
         </ion-buttons>
-        <ion-title>Servicios disponibles</ion-title>
-    </ion-toolbar>
+        <ion-title><h4>Servicios disponibles</h4></ion-title>
+    </ion-navbar>
     <div class="map-container">
         <div id="maps1"></div>
     </div>
 </ion-header>
 <ion-content class="shipment-create">
-
-    <ion-card>
-        <ion-list *ngIf="pointChange">
-            <ion-list-header>Mapa</ion-list-header>
-            <ion-item *ngFor="let opt of pointsDropdown; let i = index">
-                <h2>{{opt.label}}</h2>
-                <button ion-button clear color="green" (click)="setMapCenter(i)" item-right>Seleccionar</button>
-            </ion-item>       
-        </ion-list>
-        <ion-item *ngIf="!pointChange">
-            <h2>CABA</h2>
-            <button ion-button clear color="green" (click)="changeMapCenter()" item-right>Cambiar</button>
-        </ion-item>   
-    </ion-card>
-    
+  
     <ion-card>
         <ion-list *ngIf="dateChange">
             <ion-list-header>Fecha</ion-list-header>
             <ion-item *ngFor="let date of datesList; let i = index">
                 {{date.dateCalendar}} <ion-badge item-right color="green">{{date.keys.length}}</ion-badge>
-                <button ion-button clear color="green" item-end (click)="setDate(index)">Seleccionar</button>
+                <button ion-button clear color="dark-gray" item-end (click)="setMapDate(i)">Seleccionar</button>
             </ion-item>            
         </ion-list>
-        <ion-item *ngIf="!dateChange">
-            <h2>Hoy</h2>
-            <button ion-button clear color="green" item-right (click)="changeDate()">Cambiar</button>
+        <ion-item *ngIf="datesExist && !dateChange" class="date-selected">
+            <ion-icon name="ios-calendar-outline" color="light" item-left></ion-icon>
+            <h2>{{mapDate?.dateCalendar}}</h2>
+            <button ion-button clear color="light" item-right (click)="changeMapDate()">Cambiar</button>
         </ion-item>            
     </ion-card>
+
+    <ion-card>
+        <ion-list *ngIf="pointChange">
+            <ion-list-header>Mapa</ion-list-header>
+            <ion-item *ngFor="let opt of pointsList; let i = index">
+                <h2>{{opt.label}}</h2>
+                <button ion-button clear color="dark-gray" (click)="setMapCenter(i)" item-right>Seleccionar</button>
+            </ion-item>       
+        </ion-list>
+        <ion-item *ngIf="datesExist && !pointChange" class="point-selected">
+            <ion-icon name="ios-locate-outline" color="light" item-left></ion-icon>
+            <h2>{{pointsList[pointSelected].label}}</h2>
+            <button ion-button clear color="light" (click)="changeMapCenter()" item-right>Cambiar</button>
+        </ion-item>   
+    </ion-card>
+
     <ion-list *ngFor="let vacant of vacants">
         <ion-item [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
             <h3><span>Cobro</span><b>${{ vacant.data.priceOperatorEarning }}</b> | {{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
@@ -57,4 +60,8 @@
                 (click)="select(vacant.key, vacant.data)">TOMAR</button>
         </ion-item>
     </ion-list>
+    
+    <ion-item *ngIf="!datesExist" no-lines>
+        <p text-center>No hay servicios disponibles</p>
+    </ion-item>
 </ion-content>
