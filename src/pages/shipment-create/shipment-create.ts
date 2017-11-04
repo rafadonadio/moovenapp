@@ -62,18 +62,20 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ngOnInit() {   
-        console.log('ngOnInit');
+        console.groupCollapsed('SHIPMENT_CREATE: INIT');
         this.showLoading('Consultando servicios ...');
         this.resetVacantSelected();
         this.resetMapDates();
         this.initMapCenterSelected();     
         this.initMap();
         this.runMapDatesSubcription(); 
+        console.groupEnd();
     }
 
     ionViewWillEnter() {      
-        console.log('ionViewWillEnter');
+        console.groupCollapsed('SHIPMENT_CREATE: ION_VIEW_WILL_ENTER');
         this.flagDatesInitiated = false; 
+        console.groupEnd();
     }
 
     ionViewWillLeave() {
@@ -105,17 +107,23 @@ export class ShipmentCreatePage implements OnInit {
         this.dateChange = true;    
     }
     setMapDate(index = null) {
+        console.groupCollapsed('SHIPMENT_CREATE: SET_MAP_DATE');
         this.dateIndexSelected = index==null ? this.dateIndexSelected : index;
         this.mapDate = this.datesList[this.dateIndexSelected];        
         this.dateChange = false;
-        console.log('setMapDate (index, dateIndexSelected, mapDate)', index, this.dateIndexSelected, this.mapDate);
+        console.log('index', index);
+        console.log('dateIndexSelected', this.dateIndexSelected);
+        console.log('mapDate', this.mapDate);
+        console.groupEnd();
     }
     private resetMapDates() {
+        console.groupCollapsed('SHIPMENT_CREATE: RESET_MAP_DATE');
         this.mapDate = null;
         this.flagDatesExist = false;
         this.datesList = [];
         this.dateIndexSelected = null;
         this.dateChange = false; 
+        console.groupEnd();
     } 
 
     /**
@@ -146,7 +154,7 @@ export class ShipmentCreatePage implements OnInit {
         let obs = this.sendingSrv.getGeofireLiveDatesObs(true);
         // subcription
         this.datesListSubs = obs.subscribe(snaps => {
-            console.log('datesList subs ...');
+            console.groupCollapsed('SHIPMENT_CREATE: MAP_DATES_SUSCRIPTION ...');
             // initial flags
             this.flagDatesInitiated = true;
             this.closeLoading();
@@ -201,9 +209,11 @@ export class ShipmentCreatePage implements OnInit {
                 this.resetMapDates();                
             }
             this.runGeofire(); 
-            console.log('datesList', this.datesList);       
+            console.log('datesList', this.datesList);     
+            console.groupEnd();  
         }, error =>{
             console.log('datesListSubs error', error);
+            console.groupEnd();
         });
     }
 
