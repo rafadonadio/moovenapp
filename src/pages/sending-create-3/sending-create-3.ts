@@ -458,7 +458,7 @@ export class SendingCreate3Page implements OnInit{
         if(!this.addressModal) {
             // set
             this.addressModal = this.modalCtrl.create(ModalSearchMapAddressPage, {
-                            'modalTitle': 'Dirección de Retiro'
+                            'modalTitle': 'Dirección de Entrega'
                         });                 
             // open
             this.addressModal.present();

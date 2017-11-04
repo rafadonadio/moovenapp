@@ -73,6 +73,14 @@ export class SendingService {
     }    
 
     /**
+     * CREATE FORM HELPERS
+     */
+
+    isPickupDateValid(pickupDate, dateLimitMin, dateLimitMax) {
+        return this.dateSrv.isBetween(pickupDate, dateLimitMin, dateLimitMax);
+    }      
+
+    /**
      *  READ
      */
 
@@ -311,3 +319,21 @@ export class SendingService {
 
 }
 
+// CLASSES
+
+export class DateLimits {
+    min:string;
+    max:string;
+    maxDisplay:string;
+    minHuman:string;
+    maxHuman:string;
+}
+
+export class TimeLimits {
+    from: {
+        min:string
+    }
+    to: {
+        min:string
+    }
+}

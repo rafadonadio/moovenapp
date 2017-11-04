@@ -167,6 +167,14 @@ export class DateService {
         return moment(date).isBefore(compareWith);
     }
 
+    isAfterThan(date:any, compareWith:any): boolean {
+        return moment(date).isAfter(compareWith);
+    }  
+    
+    isBetween(date:any, min:any, max:any) {
+        return moment(date).isBetween(min, max);
+    }
+
 
 
 }

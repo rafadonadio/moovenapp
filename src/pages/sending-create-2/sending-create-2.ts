@@ -1,3 +1,5 @@
+import { SendingService } from '../../providers/sending-service/sending-service';
+import { DateLimits, TimeLimits } from '../../providers/sending-service/sending-service';
 import { Subscription } from 'rxjs/Rx';
 import { AccountService } from '../../providers/account-service/account-service';
 import { UserAccount } from '../../models/user-model';
@@ -47,13 +49,15 @@ export class SendingCreate2Page implements OnInit {
     monthShortNames: any = DATES_TXT.monthShortNames.es;
     dayNames: any = DATES_TXT.dayNames.es;
     dayShortNames: any = DATES_TXT.dayShortNames.es;
-    dateLimits:any;
-    timeLimits:any;
+    dateLimits: DateLimits;
+    timeLimits: TimeLimits;
     addressModal:any;
     // map
     map: any;
     mapMarkers = [];
-    placeDetails: any;    
+    placeDetails: any;
+    // pickupDateAux
+    pickupDatePreventLoopOn:boolean;    
 
     constructor(private navCtrl: NavController,
         private navParams: NavParams,
@@ -63,11 +67,12 @@ export class SendingCreate2Page implements OnInit {
         private toastCtrl: ToastController,        
         private gmapsService: GoogleMapsService,
         private dateSrv: DateService,
-        private accountSrv: AccountService) {
+        private accountSrv: AccountService,
+        private sendingSrv: SendingService) {
     }
 
     ngOnInit() {
-        console.info('f2 > init');
+        console.groupCollapsed('F2 INIT');
         // init
         this.setAccount();
         this.initPlaceDetails();        
@@ -77,10 +82,10 @@ export class SendingCreate2Page implements OnInit {
         // set request from param
         this.getSendingFromParams();
         // populate page
-        this.initAndPopulatePage();
-        // set selector limits
         this.setDateLimits();
+        this.initAndPopulatePage();
         this.setTimeLimits();
+        console.groupEnd();
     }
 
     ionViewWillLeave() {
@@ -146,17 +151,53 @@ export class SendingCreate2Page implements OnInit {
 
     // triggered by setDate()
     private runPickupDateChange() {
-        console.group('runPickupDateChange');
-        // console.log('pickupDate', this.pickupDate.value);
-        // update PickupDate
-        this.setSendingPickupDate(this.pickupDate.value);
-        // update pickupTimeFrom
-        this.setNextValidTimeFrom();
-        // update pickupTimeTo
-        let newTo = this.dateSrv.addHours(this.sending.pickupTimeFrom, 2);
-        this.setPickupTimeTo(newTo);
-        // update TimeLimits
-        this.setTimeLimits();
+        if(this.pickupDatePreventLoopOn) {
+            console.log('PICKUP_DATE_CHANGE: trigger prevented, manual change in process ...');
+            return;
+        }
+        console.groupCollapsed('PICKUP_DATE_CHANGE');
+        console.log('selected', this.pickupDate.value);
+        // update date limits
+        this.setDateLimits();
+        // check pickupDate is valid
+        if(this.sendingSrv.isPickupDateValid(this.pickupDate.value, this.dateLimits.min, this.dateLimits.max)) {
+            console.log('VALID');
+            // update PickupDate
+            this.setSendingPickupDate(this.pickupDate.value);
+            // update pickupTimeFrom
+            this.setNextValidTimeFrom();
+            // update pickupTimeTo
+            let newTo = this.dateSrv.addHours(this.sending.pickupTimeFrom, 2);
+            this.setPickupTimeTo(newTo);
+            // update TimeLimits
+            this.setTimeLimits();
+        }else{  
+            console.log('INVALID', this.pickupDate.value, this.dateLimits.min, this.dateLimits.max);
+            const dateSelected = this.pickupDate.value;
+            const dateSelectedHuman = this.dateSrv.displayFormat(dateSelected,'DD/MMM');
+            
+            // alert
+            let alert = this.alertCtrl.create({
+                title:'Fecha inválida', 
+                subTitle:`Fecha de Retiro "${dateSelectedHuman}" es inválida. 
+                          Selecciona una fecha válida, desde hoy y hasta el ${this.dateLimits.maxHuman} inclusive)". La fecha se ha reestablecido a "hoy".`, 
+                buttons:['Cerrar']
+            });
+            alert.present();
+
+            // --- reset date input
+            console.log('pickupDatePreventLoop ON');
+            this.pickupDatePreventLoopOn = true;
+            this.pickupDate.setValue('');
+            this.setSendingPickupDate('');
+            this.resetDateTimeFromTo();
+            setTimeout(() => {
+                console.log('pickupDatePreventLoop OFF');
+                this.pickupDatePreventLoopOn = false;
+            }, 1000);
+            // --- end reset
+        }
+        console.log('value set', this.pickupDate.value);
         console.groupEnd();
     }
 
@@ -281,6 +322,7 @@ export class SendingCreate2Page implements OnInit {
 
     // set pickupTimeFrom date, to next valid hour
     private resetDateTimeFromTo() {
+        console.groupCollapsed('RESET_DATE_TIME_FROM_TO');
         let now = this.dateSrv.getIsoString();
         let hour = this.dateSrv.getHourNum(now);    
         let minute = this.dateSrv.getMinuteNum(now);     
@@ -306,30 +348,34 @@ export class SendingCreate2Page implements OnInit {
         this.setPickupTimeFrom(newDate);
         let newTo = this.dateSrv.addHours(newDate, 2);
         this.setPickupTimeTo(newTo);
-        // console.log('resetDateTimeFromTo', now, hour, minute, newHour, newMinute, newDate, newTo);
-    }
-
-    private isAdateOlderThanBdate(a:any, b:any) {
-        let isOld = this.dateSrv.isBeforeThan(a, b);
-        // console.log('isAdateOlderThanBdate', isOld, a, b);
-        return isOld;
+        console.log('resetDateTimeFromTo', now, hour, minute, newHour, newMinute, newDate, newTo);
+        console.groupEnd();
     }
 
     // this is fixed, can be today or X days in the future
     private setDateLimits() {
-        let now = this.dateSrv.getIsoString();
+        console.groupCollapsed('DATE_LIMITS');
+        const now = this.dateSrv.getIsoString();
+        const max = this.dateSrv.addDays(now, PICKUP_DIFF_DAYS)
+        const maxDisplay = this.dateSrv.addDays(now, PICKUP_DIFF_DAYS - 1)
+        const minHuman = this.dateSrv.displayFormat(now, 'DD/MMM');
+        const maxHuman = this.dateSrv.displayFormat(maxDisplay, 'DD/MMM');
         this.dateLimits = {
             min: now,
-            max: this.dateSrv.addDays(now, PICKUP_DIFF_DAYS),
+            max: max,
+            maxDisplay: maxDisplay,
+            minHuman: minHuman,
+            maxHuman: maxHuman,
         }
         console.log('dateLimits', this.dateLimits);
+        console.groupEnd();
     }
 
     // depends of pickupDate
     // if today, set limit from current time
     // if in the future, set limit default
     private setTimeLimits() {
-        console.group('setTimeLimits');
+        console.groupCollapsed('TIME_LIMITS');
         let now = this.dateSrv.getIsoString();
         let fromMin;
         let toMin;
@@ -405,6 +451,7 @@ export class SendingCreate2Page implements OnInit {
     }
 
     private initForm() {
+        console.log('- initForm');
         this.formTwo = this.formBuilder.group({
             'pickupAddressFullText': ['', Validators.compose([Validators.required])],
             'pickupAddressLine2': ['', Validators.compose([Validators.maxLength(100)])],
@@ -422,41 +469,42 @@ export class SendingCreate2Page implements OnInit {
         this.pickupTimeTo = this.formTwo.controls['pickupTimeTo'];
         this.pickupPersonName = this.formTwo.controls['pickupPersonName'];
         this.pickupPersonPhone = this.formTwo.controls['pickupPersonPhone'];
-        this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];         
+        this.pickupPersonEmail = this.formTwo.controls['pickupPersonEmail'];     
+        // aux
+        this.pickupDatePreventLoopOn = false;    
     }
 
     private initAndPopulatePage() {
-        console.info('__populate__ ');
+        console.groupCollapsed('INIT_POPULATE_PAGE');
         // map
         if(this.sending.pickupAddressSet==true) {
-            console.info('__pop__ > set map');
+            console.log('- pickupAddress is set');
             var latlng = {
                 lat: this.sending.pickupAddressLat,
                 lng: this.sending.pickupAddressLng,
             }
-            console.log('__pop__ > latlng > ', latlng);
+            console.log('- map latlng', latlng);
             this.setMapCenter(latlng);
             this.addMapMarker(latlng);
+        }else{
+            console.log('- no pickupAddress set');
         }
         // address
+        console.log('- populate form');
         this.pickupAddressFullText.setValue(this.sending.pickupAddressFullText);
         this.pickupAddressLine2.setValue(this.sending.pickupAddressLine2);        
         // contact
         this.pickupPersonName.setValue(this.sending.pickupPersonName);
         this.pickupPersonPhone.setValue(this.sending.pickupPersonPhone);
         this.pickupPersonEmail.setValue(this.sending.pickupPersonEmail);
-
-        // DATE AUX
-        let now = this.dateSrv.getIsoString();        
-
-        // PICKUP DATE
+        // PICKUP DATE      
         if(this.sending.pickupDate=='') {
             // not set, set with now
             this.resetDateTimeFromTo();
         }else{
             // is set, old?
-            if(this.isAdateOlderThanBdate(this.sending.pickupDate, now)) {               
-                // is old, reset with now
+            if(!this.sendingSrv.isPickupDateValid(this.sending.pickupDate, this.dateLimits.min, this.dateLimits.max)) {               
+                console.log('pickupDate is not valid');
                 this.resetDateTimeFromTo();
                 let toast = this.toastCtrl.create({
                     message: 'ATENCIÓN: Fecha/horario de Retiro fueron ajustados',
@@ -468,16 +516,13 @@ export class SendingCreate2Page implements OnInit {
                 toast.present();
             }else{
                 // its ok, set from sending
+                console.log('pickupDate is valid');
                 this.setPickupDate(this.sending.pickupDate);
                 this.setPickupTimeFrom(this.sending.pickupTimeFrom);
                 this.setPickupTimeTo(this.sending.pickupTimeTo);
             }
         }
-        //
-        // console.log('__pop__ pickupDate', this.sending.pickupDate);        
-        // console.log('__pop__ pickupTimeFrom', this.sending.pickupTimeFrom);        
-        // console.log('__pop__ pickupTimeTo', this.sending.pickupTimeTo);        
-
+        console.groupEnd();
     }
 
     private populateAddressInput(fullAddress:string) {
@@ -626,7 +671,7 @@ export class SendingCreate2Page implements OnInit {
     }
 
     private initPlaceDetails() {
-        console.info('f2 > initPlaceDetails');
+        console.log('- initPlaceDetails');
         this.placeDetails = this.gmapsService.initPlaceDetails();
     }
 
@@ -694,7 +739,7 @@ export class SendingCreate2Page implements OnInit {
     }     
 
     private initMap() {
-        console.info('f2 > initMap');
+        console.log('- initMap');
         let latlng = this.gmapsService.setlatLng(-34.603684, -58.381559);
         let divMap = (<HTMLInputElement>document.getElementById('mapf2'));
         this.map = this.gmapsService.initMap(latlng, divMap);
@@ -715,9 +760,10 @@ export class SendingCreate2Page implements OnInit {
     }    
 
     private getSendingFromParams() {
-        console.info('f2 > getSendingFromParams');
-        console.log('f2 > param > ', this.navParams.get('sending'));
+        console.groupCollapsed('SENDING_PARAMS');
+        console.log(this.navParams.get('sending'));
         this.sending = this.navParams.get('sending');
+        console.groupEnd();
     }
 
     private showTimeRangeToast(input:string, newTime:string) {

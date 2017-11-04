@@ -39,7 +39,7 @@ export class GoogleMapsService {
     /////////////////////
 
     initMap(latlng, htmlInputElement, options:MapsMapOptions = {}) {
-        console.info('gmapService > initMap');
+        // console.info('gmapService > initMap');
         let mapOptions = {
             center: latlng,
             zoom: 10,
@@ -57,7 +57,7 @@ export class GoogleMapsService {
                 mapOptions[key] = options[key];
             }
         }
-        console.log(mapOptions);
+        // console.log(mapOptions);
         return new google.maps.Map(htmlInputElement, mapOptions);
     }
 
@@ -324,9 +324,9 @@ export const GMAP_CFG = {
     POINTS: [
                 // {index:0, id:'caba+gba', label:'CABA+GBA', lat:-34.612, lng:-58.600, radius:60000, zoom:9},   
                 {index:1, id:'caba', label:'CABA', lat:-34.612, lng:-58.450, radius:10000, zoom:11},
-                {index:2, id:'zonanorte', label:'Zona Norte', lat:-34.475894, lng:-58.662271, radius:25000, zoom:10},  
-                {index:3, id:'zonaoeste', label:'Zona Oeste', lat:-34.632396, lng:-58.704758, radius:25000, zoom:10},       
-                {index:4, id:'zonasur', label:'Zona Sur', lat:-34.810738, lng:-58.395767, radius:25000, zoom:10}, 
+                {index:2, id:'zonanorte', label:'GBA Norte', lat:-34.475894, lng:-58.662271, radius:25000, zoom:10},  
+                {index:3, id:'zonaoeste', label:'GBA Oeste', lat:-34.632396, lng:-58.704758, radius:25000, zoom:10},       
+                {index:4, id:'zonasur', label:'GBA Sur', lat:-34.810738, lng:-58.395767, radius:25000, zoom:10}, 
  
     ] 
 }
