@@ -30,18 +30,40 @@ page-shipment-create {
         color: #aaa;
     }
 
-    .item.point-selected,
     .item.date-selected {
         background: color($colors, green);
     } 
-    .item.point-selected .item-inner,
     .item.date-selected .item-inner {
         margin-left: 7px;
     }
-    .item.point-selected .label h2,
+    .item.date-change .label>span {
+        color: color($colors, green);
+        text-transform: capitalize;
+    }
     .item.date-selected .label h2{
         color: white;
+        text-transform: capitalize;
     }
+
+    .item.mapcenter-selected{
+        background: color($colors, green);
+    } 
+    .item.mapcenter-selected .item-inner{
+        margin-left: 7px;
+    }
+    .item.mapcenter-change .label h2 {
+        color: color($colors, green);
+    }
+    .item.mapcenter-selected .label h2{
+        color: white;
+    }        
+
+    // refresh icon
+    .icon.refresh-sign {
+        color: white;
+        font-size: 2.4rem;
+    }
+
     // MAP
     #maps1 {
         min-height: 300px;
