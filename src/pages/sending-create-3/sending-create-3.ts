@@ -1,3 +1,4 @@
+import { DateLimits, SendingService, TimeLimits } from '../../providers/sending-service/sending-service';
 import { SendingRequest } from '../../models/sending-model';
 import { Subscription } from 'rxjs/Rx';
 import { Component, OnInit } from '@angular/core';
@@ -42,7 +43,8 @@ export class SendingCreate3Page implements OnInit{
     monthShortNames: any = DATES_TXT.monthShortNames.es;
     dayNames: any = DATES_TXT.dayNames.es;
     dayShortNames: any = DATES_TXT.dayShortNames.es;
-    timeLimits:any;
+    dateLimits: DateLimits;  
+    timeLimits: TimeLimits;
     addressModal:any;
     // map
     map: any;
@@ -57,12 +59,13 @@ export class SendingCreate3Page implements OnInit{
         private toastCtrl: ToastController,
         private gmapsService: GoogleMapsService,
         private dateSrv: DateService,
-        private accountSrv: AccountService) {
+        private accountSrv: AccountService,
+        private sendingSrv: SendingService) {
     }
 
     ngOnInit() {
-        console.log('f3 > init');
-        console.group('f3');        
+        console.groupCollapsed('F3 INIT');    
+        // init 
         this.setAccount();
         this.initPlaceDetails();
         this.initMap();        
@@ -71,8 +74,10 @@ export class SendingCreate3Page implements OnInit{
         // set sending from param
         this.getSendingFromParams();
         // populate page
+        this.setDateLimits();
         this.initAndPopulatePage();
         this.setTimeLimits();        
+        console.groupEnd();        
     }
 
     ionViewWillLeave() {
@@ -195,6 +200,14 @@ export class SendingCreate3Page implements OnInit{
         return isOld;
     }
 
+    // this is fixed, can be today or X days in the future
+    private setDateLimits() {
+        console.groupCollapsed('DATE_LIMITS');
+        this.dateLimits = this.sendingSrv.setDateLimits();
+        console.log('dateLimits', this.dateLimits);
+        console.groupEnd();
+    }
+
     // set TimeFrom = pickupDate
     // set TimeTo = TimeFrom+2hr
     private setTimeLimits() {
@@ -298,7 +311,12 @@ export class SendingCreate3Page implements OnInit{
         this.dropPersonPhone.setValue(this.sending.dropPersonPhone);
         this.dropPersonEmail.setValue(this.sending.dropPersonEmail);
 
-        // DATE AUX
+        // DATE PICKUPDATE CHECK
+        // if(!this.sendingSrv.isPickupDateValid(this.sending.pickupDate, this.dateLimits.min, this.dateLimits.max)) {               
+        //     console.log('pickupDate is not valid');           
+        // }
+
+        // DATE DROPTIMEFROM
         let from = this.sending.pickupDate;
         if(this.sending.dropTimeFrom=='') {
             // not set, set with now

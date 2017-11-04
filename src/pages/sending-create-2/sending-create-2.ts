@@ -152,7 +152,7 @@ export class SendingCreate2Page implements OnInit {
     // triggered by setDate()
     private runPickupDateChange() {
         if(this.pickupDatePreventLoopOn) {
-            console.log('PICKUP_DATE_CHANGE: trigger prevented, manual change in process ...');
+            console.log('PICKUP_DATE_CHANGE: trigger stopped > manual change in process ...');
             return;
         }
         console.groupCollapsed('PICKUP_DATE_CHANGE');
@@ -188,9 +188,11 @@ export class SendingCreate2Page implements OnInit {
             // --- reset date input
             console.log('pickupDatePreventLoop ON');
             this.pickupDatePreventLoopOn = true;
-            this.pickupDate.setValue('');
-            this.setSendingPickupDate('');
-            this.resetDateTimeFromTo();
+            // this.pickupDate.setValue('');
+            // this.setSendingPickupDate('');
+            // this.resetDateTimeFromTo();
+            this.pickupDate.setValue(this.pickupDate.value);
+            this.setSendingPickupDate(this.pickupDate.value);
             setTimeout(() => {
                 console.log('pickupDatePreventLoop OFF');
                 this.pickupDatePreventLoopOn = false;
@@ -267,10 +269,10 @@ export class SendingCreate2Page implements OnInit {
             newDate = this.dateSrv.setTimeToDate(pickupDate, DEFAULT_PICKUP_TIME_FROM_HR, DEFAULT_PICKUP_TIME_FROM_MIN); 
         }
         this.setPickupTimeFrom(newDate);        
-        // console.log('__NVF__ dateIsToday', dateIsToday);
-        // console.log('__NVF__ hour:minute', hour, minute);
-        // console.log('__NVF__ newHour:newMinute', newHour, newMinute);
-        // console.log('__NVF__ new TimeFrom', newDate);
+        console.log('__NVF__ dateIsToday', dateIsToday);
+        console.log('__NVF__ hour:minute', hour, minute);
+        console.log('__NVF__ newHour:newMinute', newHour, newMinute);
+        console.log('__NVF__ new TimeFrom', newDate);
         console.groupEnd();
     }
 
@@ -355,18 +357,7 @@ export class SendingCreate2Page implements OnInit {
     // this is fixed, can be today or X days in the future
     private setDateLimits() {
         console.groupCollapsed('DATE_LIMITS');
-        const now = this.dateSrv.getIsoString();
-        const max = this.dateSrv.addDays(now, PICKUP_DIFF_DAYS)
-        const maxDisplay = this.dateSrv.addDays(now, PICKUP_DIFF_DAYS - 1)
-        const minHuman = this.dateSrv.displayFormat(now, 'DD/MMM');
-        const maxHuman = this.dateSrv.displayFormat(maxDisplay, 'DD/MMM');
-        this.dateLimits = {
-            min: now,
-            max: max,
-            maxDisplay: maxDisplay,
-            minHuman: minHuman,
-            maxHuman: maxHuman,
-        }
+        this.dateLimits = this.sendingSrv.setDateLimits();
         console.log('dateLimits', this.dateLimits);
         console.groupEnd();
     }
