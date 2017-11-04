@@ -18,7 +18,7 @@ export class CalendarDatePipe {
             const day = this.dateSrv.displayFormat(value, 'DD');
             const month = this.dateSrv.displayFormat(value, 'MM');
             const cal = this.dateSrv.displayCalendarTime(day, month);
-            console.log('calendarPipe', value, cal);
+            // console.log('calendarPipe', value, cal);
             return cal;
         }
         return value;

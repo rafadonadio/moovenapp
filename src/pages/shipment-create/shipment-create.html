@@ -18,10 +18,20 @@
   
     <ion-card>
         <ion-list *ngIf="dateChange">
-            <ion-list-header>Fecha</ion-list-header>
+            <ion-list-header>Fecha 
+                <button ion-button clear item-end (click)="changeMapDateClose()">
+                    <ion-icon color="dark" name="close"></ion-icon>
+                </button>
+            </ion-list-header>
             <ion-item *ngFor="let date of datesList; let i = index" class="date-change">
                 <span>{{date.dateCalendar}}</span> <ion-badge item-right color="green">{{date.keys.length}}</ion-badge>
-                <button ion-button clear color="green" item-end (click)="setMapDate(i)">Seleccionar</button>
+                <button ion-button clear color="green" item-end
+                    *ngIf="date.dateSlug!=mapDate.dateSlug" 
+                    (click)="setMapDate(i)">Seleccionar</button>
+                <button ion-button clear color="dark-gray" item-end
+                    *ngIf="date.dateSlug==mapDate.dateSlug"
+                    (click)="changeMapDateClose()" 
+                    >Seleccionado</button>
             </ion-item>            
         </ion-list>
         <ion-item *ngIf="flagDatesExist && !dateChange" class="date-selected">
@@ -33,10 +43,20 @@
 
     <ion-card>
         <ion-list *ngIf="mapCenterChange">
-            <ion-list-header>Mapa</ion-list-header>
+            <ion-list-header>Mapa 
+                <button ion-button clear item-end (click)="changeMapCenterClose()">
+                    <ion-icon color="dark" name="close"></ion-icon>
+                </button>
+            </ion-list-header>
             <ion-item *ngFor="let center of mapCenterList; let i = index" class="mapcenter-change">
                 <h2>{{center.label}}</h2>
-                <button ion-button clear color="green" (click)="setMapCenter(i)" item-right>Seleccionar</button>
+                <button ion-button clear color="green" 
+                    *ngIf="center.id!=mapCenter.id"
+                    (click)="setMapCenter(i)" item-right>Seleccionar</button>
+                <button ion-button clear color="dark-gray" item-end
+                    *ngIf="center.id==mapCenter.id" 
+                    (click)="changeMapCenterClose()"
+                    >Seleccionado</button>                    
             </ion-item>       
         </ion-list>
         <ion-item *ngIf="flagDatesExist && !mapCenterChange" class="mapcenter-selected">

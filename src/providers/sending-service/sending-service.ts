@@ -107,6 +107,10 @@ export class SendingService {
             });
     }
 
+    getByIdOnce(sendingId:string):Promise<any> {
+        return firebase.database().ref(`sendings/${sendingId}`).once('value');
+    }
+
     // get account active sendings Observable
     getAllActiveObs(snapshot:boolean = false): FirebaseListObservable<any> {
         let accountId = this.authSrv.fbuser.uid;
