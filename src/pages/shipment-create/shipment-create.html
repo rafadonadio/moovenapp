@@ -19,7 +19,7 @@
     <ion-card>
         <ion-list *ngIf="dateChange">
             <ion-list-header>Fecha 
-                <button ion-button clear item-end (click)="changeMapDateClose()">
+                <button ion-button clear item-end (click)="mapDateChangeClose()">
                     <ion-icon color="dark" name="close"></ion-icon>
                 </button>
             </ion-list-header>
@@ -27,24 +27,24 @@
                 <span>{{date.dateCalendar}}</span> <ion-badge item-right color="green">{{date.keys.length}}</ion-badge>
                 <button ion-button clear color="green" item-end
                     *ngIf="date.dateSlug!=mapDate.dateSlug" 
-                    (click)="setMapDate(i)">Seleccionar</button>
+                    (click)="mapDateSwitch(i)">Seleccionar</button>
                 <button ion-button clear color="dark-gray" item-end
                     *ngIf="date.dateSlug==mapDate.dateSlug"
-                    (click)="changeMapDateClose()" 
+                    (click)="mapDateChangeClose()" 
                     >Seleccionado</button>
             </ion-item>            
         </ion-list>
         <ion-item *ngIf="flagDatesExist && !dateChange" class="date-selected">
             <ion-icon name="ios-calendar-outline" color="light" item-left></ion-icon>
             <h2>{{mapDate?.dateCalendar}}</h2>
-            <button ion-button clear color="light" item-right (click)="changeMapDate()">Cambiar</button>
+            <button ion-button clear color="light" item-right (click)="mapDateChange()">Cambiar</button>
         </ion-item>            
     </ion-card>
 
     <ion-card>
-        <ion-list *ngIf="mapCenterChange">
+        <ion-list *ngIf="mapCenterEditing">
             <ion-list-header>Mapa 
-                <button ion-button clear item-end (click)="changeMapCenterClose()">
+                <button ion-button clear item-end (click)="mapCenterCloseChange()">
                     <ion-icon color="dark" name="close"></ion-icon>
                 </button>
             </ion-list-header>
@@ -52,17 +52,17 @@
                 <h2>{{center.label}}</h2>
                 <button ion-button clear color="green" 
                     *ngIf="center.id!=mapCenter.id"
-                    (click)="setMapCenter(i)" item-right>Seleccionar</button>
+                    (click)="mapCenterSet(i)" item-right>Seleccionar</button>
                 <button ion-button clear color="dark-gray" item-end
                     *ngIf="center.id==mapCenter.id" 
-                    (click)="changeMapCenterClose()"
+                    (click)="mapCenterCloseChange()"
                     >Seleccionado</button>                    
             </ion-item>       
         </ion-list>
-        <ion-item *ngIf="flagDatesExist && !mapCenterChange" class="mapcenter-selected">
+        <ion-item *ngIf="flagDatesExist && !mapCenterEditing" class="mapcenter-selected">
             <ion-icon name="ios-locate-outline" color="light" item-left></ion-icon>
             <h2>{{mapCenterList[mapCenterSelected].label}}</h2>
-            <button ion-button clear color="light" (click)="changeMapCenter()" item-right>Cambiar</button>
+            <button ion-button clear color="light" (click)="mapCenterChange()" item-right>Cambiar</button>
         </ion-item>   
     </ion-card>
 

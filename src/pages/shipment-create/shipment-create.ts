@@ -40,7 +40,7 @@ export class ShipmentCreatePage implements OnInit {
     // map center
     mapCenterList: Array<MapCenter>;
     mapCenterSelected: number;
-    mapCenterChange: boolean;
+    mapCenterEditing: boolean;
     mapCenter: MapCenter;
     // map 
     map: any;
@@ -65,11 +65,14 @@ export class ShipmentCreatePage implements OnInit {
     ngOnInit() {   
         console.groupCollapsed('SHIPMENT_CREATE: INIT');
         this.showLoading('Consultando servicios ...');
-        this.resetVacantSelected();
-        this.resetMapDates();
-        this.initMapCenterSelected();     
-        this.initMap();
-        this.runMapDatesSubcription(); 
+        this.vacantSelectedReset();
+        // set mapCenter
+        this.mapCenterListSet();   
+        this.mapCenterSet(0);  
+        this.gmapReset();
+        // set mapDates: geofire
+        this.mapDatesReset();
+        this.mapDatesSubscribe(); 
         console.groupEnd();
     }
 
@@ -92,7 +95,7 @@ export class ShipmentCreatePage implements OnInit {
      * VACANT SELECTED
      */
 
-    private resetVacantSelected() {
+    private vacantSelectedReset() {
         this.vacantSelected = {
             set: false,
             dateSlug: '',
@@ -103,16 +106,20 @@ export class ShipmentCreatePage implements OnInit {
     /**
      *  MAP DATES
      */
-    changeMapDateClose() {
-        console.log('changeMapDateClose');  
+    mapDateSwitch(index) {
+        this.mapDateSet(index);
+
+    }
+    mapDateChangeClose() {
+        console.log('mapDateChangeClose');  
         this.dateChange = false;    
     }    
-    changeMapDate() {
-        console.log('changeMapDate'); 
-        this.changeMapCenterClose(); 
+    mapDateChange() {
+        console.log('mapDateChange'); 
+        this.mapCenterCloseChange(); 
         this.dateChange = true;    
     }
-    setMapDate(index = null) {
+    mapDateSet(index = null) {
         console.groupCollapsed('SHIPMENT_CREATE: SET_MAP_DATE');
         this.dateIndexSelected = index==null ? this.dateIndexSelected : index;
         this.mapDate = this.datesList[this.dateIndexSelected];        
@@ -122,7 +129,7 @@ export class ShipmentCreatePage implements OnInit {
         console.log('mapDate', this.mapDate);
         console.groupEnd();
     }
-    private resetMapDates() {
+    private mapDatesReset() {
         console.groupCollapsed('SHIPMENT_CREATE: RESET_MAP_DATE');
         this.mapDate = null;
         this.flagDatesExist = false;
@@ -135,40 +142,36 @@ export class ShipmentCreatePage implements OnInit {
     /**
      *  MAP CENTER
      */
-    changeMapCenterClose() {
-        console.log('changeMapCenterClose');  
-        this.mapCenterChange = false;    
+    mapCenterCloseChange() {
+        console.log('mapCenterCloseChange');  
+        this.mapCenterEditing = false;    
     }
-    changeMapCenter() {
-        console.log('changeMapCenter');  
-        this.changeMapDateClose();
-        this.mapCenterChange = true;    
+    mapCenterChange() {
+        console.log('mapCenterChange');  
+        this.mapDateChangeClose();
+        this.mapCenterEditing = true;    
     }
-    setMapCenter(index) {
+    mapCenterSet(index) {
         console.groupCollapsed('SET_MAP_CENTER');
         this.mapCenterSelected = index;
         this.mapCenter = this.mapCenterList[this.mapCenterSelected];        
-        this.mapCenterChange = false;
+        this.mapCenterEditing = false;
         console.log('mapCenter', index, this.mapCenter);
         console.groupEnd();
     }
-    private initMapCenterSelected() {
+    private mapCenterListSet() {
         console.groupCollapsed('INIT_MAP_CENTER');
-        this.mapCenterSelected = 0;
         this.mapCenterList = GMAP_CFG.POINTS;
-        this.mapCenter = this.mapCenterList[this.mapCenterSelected];
-        this.mapCenterChange = false;
-        console.log('mapCenter', this.mapCenterSelected, this.mapCenter);
+        console.log('mapCenterList', this.mapCenterList);
         console.groupEnd();
     }     
 
     /**
      *  GEOFIRE
      */
-    private runMapDatesSubcription() {
-        // dates observable
+    private mapDatesSubscribe() {
+        // dates observable, subscribe
         let obs = this.sendingSrv.getGeofireLiveDatesObs(true);
-        // subcription
         this.datesListSubs = obs.subscribe(snaps => {
             console.groupCollapsed('SHIPMENT_CREATE: MAP_DATES_SUSCRIPTION ...');
             // initial flags
@@ -215,16 +218,15 @@ export class ShipmentCreatePage implements OnInit {
             if(auxDatesList.length>0) {
                 // dates available, set
                 this.datesList = auxDatesList.concat([]); 
-                this.setMapDate(mapDateIndex);
+                this.mapDateSet(mapDateIndex);
                 this.flagDatesExist = true;
             }else{
                 // no dates available, reset
                 if(this.datesList.length>0) {
                     this.showToast(`En este momento no hay Servicios disponibles`, 2000, 'bottom');
                 }
-                this.resetMapDates();                
+                this.mapDatesReset();                
             }
-            this.runGeofire(); 
             console.log('datesList', this.datesList);     
             console.groupEnd();  
         }, error =>{
@@ -233,53 +235,68 @@ export class ShipmentCreatePage implements OnInit {
         });
     }
 
-    private runGeofire() {
+    private geofireRun(lat:number, lng:number, radius:number) {
+        console.groupCollapsed('RUN_GEOFIRE');
+        console.log('lat, lng, radius', lat, lng, radius);
         let items = [];
-        if(!this.flagDatesExist) {
-            console.log('no dates available, reset geofire');
-            // 
-            return;
-        }
         const dbRef = this.sendingSrv.getGeofireDbRef(this.mapDate.dateSlug);
         this.geoFire = this.sendingSrv.getGeofire(dbRef);
         // IN
+        console.log('IN query started');
         this.geoFireInQuery = this.geoFire.query({
-            center: [this.mapCenter.lat, this.mapCenter.lng],
-            radius: this.mapCenter.radius
+            center: [lat, lng],
+            radius: radius
         })
         .on('key_entered', (key, location, distance) => {
             this.sendingSrv.getByIdOnce(key)
-            .then(snap => {
-                let item = {
-                    key: key,
-                    location: location,
-                    distance: distance,
-                    sending: snap.val()
-                }
-                console.log('IN snap', snap.key, item);
-                // push
-                items.push(item);
-                let latlng = {
-                    lat: location[0],
-                    lng: location[1],
-                }
-            })
-            .catch(err => console.log('error', err));   
+                .then(snap => {
+                    let item = {
+                        key: key,
+                        location: location,
+                        distance: distance,
+                        sending: snap.val()
+                    }
+                    console.log('IN snap', snap.key, item);
+                    // push
+                    items.push(item);
+                    let latlng = {
+                        lat: location[0],
+                        lng: location[1],
+                    }
+                })
+                .catch(err => console.log('error', err));   
         });
         // OUT
+        console.log('OUT query started');
         this.geoFireOutQuery = this.geoFire.query({
-            center: [this.mapCenter.lat, this.mapCenter.lng],
-            radius: this.mapCenter.radius
+            center: [lat, lng],
+            radius: radius
         })
         .on('key_exited', (key, location, distance) => {
             console.log('OUT snap', key);
-        });        
+        });     
+        console.groupEnd();   
     }
 
-    private closeGeofire() {
+    private geofireUpdateCriteria() {
+
+    }
+
+    private geofireCancel() {
+        console.groupCollapsed('GEOFIRE_CLOSE');
         if(this.geoFireInQuery) {
             this.geoFireInQuery.cancel();
+            console.log('geofireIn closed');            
         }
+        if(this.geoFireOutQuery) {
+            this.geoFireOutQuery.cancel();
+            console.log('geofireOut closed');            
+        }   
+        this.geoFireInQuery = null;
+        this.geoFireOutQuery = null;     
+        this.vacants = null;
+        this.vacantsExpired = null;   
+        console.groupEnd();             
     }
 
     /**
@@ -299,7 +316,7 @@ export class ShipmentCreatePage implements OnInit {
             alert.present();
             // reload subscription
             this.unsubscribe();
-            this.initMap();
+            this.gmapReset();
             this.getVacants();
             return;
         }
@@ -479,7 +496,7 @@ export class ShipmentCreatePage implements OnInit {
         this.map.setZoom(settings.zoom);
     }
 
-    private initMap() {
+    private gmapReset() {
         console.info('initMap');
         let latlng = this.gmapsService.setlatLng(this.mapCenter.lat, this.mapCenter.lng);
         let divMap = (<HTMLInputElement>document.getElementById('maps1'));
@@ -507,7 +524,7 @@ export class ShipmentCreatePage implements OnInit {
     }  
 
     private unsubscribe() {
-        this.closeGeofire();
+        this.geofireCancel();
         if(this.vacantSubs) {
             console.log('vacantSubs Unsubscribed');
             this.vacantSubs.unsubscribe();
@@ -516,9 +533,7 @@ export class ShipmentCreatePage implements OnInit {
             console.log('datesListSubs Unsubscribed');
             this.datesListSubs.unsubscribe();
         }
-        this.vacants = null;
         this.datesList = null;
-        this.vacantsExpired = null;        
     }
 
     private showLoading(text:string) {
