@@ -63,6 +63,18 @@ page-shipment-create {
         color: color($colors, green);
         font-size: 1.4rem;
     }
+    .card .item.selected h3 span {
+        color: #ccc;
+        min-width: 75px;
+        display: inline-block;
+    }    
+    .card .item.selected h3 {
+        color: white;
+        font-size: 1.4rem;
+    } 
+    .card .item h3 small{
+        color: #aaa;
+    }   
 
     // MAP
     #maps1 {

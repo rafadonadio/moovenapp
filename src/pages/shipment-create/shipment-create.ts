@@ -45,14 +45,11 @@ import { DateService } from '../../providers/date-service/date-service';
  *                      to get sending Data
  *      - geoFireRegIn: (key_exited) track when key is removed from geofire list
  *                      For each removed element, Map/UI is updated deleting the sending 
- * 3. Switch MapCenter
- *    MapCenter is changed from UI
- *    Geofire stays enabled, trigger updateCriteria() to update lat, lng and radius
- * 4. Switch MapDate
- *    MapDate is changed from UI
+ * 3. Switch MapDate / MapCenter
+ *    MapDate/MapCenter is changed/selected from UI
  *    Both Geofire GeoCallbackRegistration are closed (canceled)
- *          (This is because we need to reference to another geofire list in DB)   
- *    Geofire is started, with new Db Ref and new GeoCallbackRegistration
+ *    Gmap is reseted
+ *    Geofire is re-started, with new Db Ref and new GeoCallbackRegistration
  */
 
 @Component({
@@ -88,7 +85,7 @@ export class ShipmentCreatePage implements OnInit {
         selected:''
     };
     routeLine: any;
-    checkeredMarker: any;
+    mapMarkerSelected: any;
     // vacant sendings
     vacants: Array<any>;
     vacantsIndexList: Array<string>;
@@ -111,7 +108,6 @@ export class ShipmentCreatePage implements OnInit {
 
     ngOnInit() {   
         console.groupCollapsed('SHIPMENT_CREATE INIT');
-        this.showLoading('Consultando servicios ...');
         this.vacantSelectedReset();
         // set mapCenter
         this.mapCenterListSet();   
@@ -157,6 +153,7 @@ export class ShipmentCreatePage implements OnInit {
         console.log('mapDateSwitch');
         this.geofireCancel();
         this.mapDateSet(index);
+        this.gmapReset();
         this.geofireRun();
     }
     mapDateChangeClose() {
@@ -195,8 +192,10 @@ export class ShipmentCreatePage implements OnInit {
      */
     mapCenterSwitch(index) {
         console.log('mapCenterSwitch');
+        this.geofireCancel();
         this.mapCenterSet(index);
-        this.geofireUpdateCriteria();
+        this.gmapReset();
+        this.geofireRun();       
     }    
     mapCenterCloseChange() {
         console.log('mapCenterCloseChange');  
@@ -227,6 +226,7 @@ export class ShipmentCreatePage implements OnInit {
      */
     private mapDatesSubscribe() {
         // dates observable, subscribe
+        this.showLoading('Cargando fechas ...');
         let obs = this.sendingSrv.getGeofireLiveDatesObs(true);
         this.datesListSubs = obs.subscribe(snaps => {
             console.groupCollapsed('MAP_DATES_SUSCRIPTION ...');
@@ -301,7 +301,14 @@ export class ShipmentCreatePage implements OnInit {
         }
         // RUN
         console.groupCollapsed('RUN_GEOFIRE');
+        // show loading
+        this.showLoading('Cargando Servicios ...');
+        setTimeout(() => {
+            this.closeLoading();
+        }, 750);
+        // run
         this.vacants = [];
+        this.vacantsIndexList = [];
         const dateSlug = this.mapDate.dateSlug;
         const lat = this.mapCenter.lat;
         const lng = this.mapCenter.lng;
@@ -309,11 +316,12 @@ export class ShipmentCreatePage implements OnInit {
         console.log('dateSlug, lat, lng, radius', dateSlug, lat, lng, radius);
         const dbRef = this.sendingSrv.getGeofireDbRef(dateSlug);
         this.geoFire = this.sendingSrv.getGeofire(dbRef);
-        // IN
-        console.log('IN query started');
+        
+        // IN > ADD
+        console.log('IN query started', this.mapCenter.label, lat, lng);
         this.geoFireQuery = this.geoFire.query({
                 center: [lat, lng],
-                radius: radius
+                radius: radius/1000 // in KM
             });
         this.geoFireRegIn = this.geoFireQuery.on('key_entered', (key, location, distance) => {
                 console.log('IN > key', key);
@@ -326,36 +334,39 @@ export class ShipmentCreatePage implements OnInit {
                             sending: snap.val()
                         }
                         console.log('IN > read snap', key, item);
-                        // push
+                        // push to arrays
+                        this.vacantsIndexList.push(key);
                         this.vacants.push(item);
+                        // add marker to map
                         let latlng = {
                             lat: location[0],
                             lng: location[1],
                         }
-                        this.addMapMarker(latlng, key); 
+                        this.addMapMarker(latlng, key);
+                        console.log('vacants', this.vacantsIndexList, this.vacants); 
                     })
                     .catch(err => console.log('error', err));   
         });
-        // OUT
+        
+        // OUT > DELETE
         console.log('OUT query started');
         this.geoFireRegOut = this.geoFireQuery.on('key_exited', (key, location, distance) => {
                 console.log('OUT > key', key);
-
+                const index = this.vacantsIndexList.findIndex(x => x == key);
+                if(index>-1) {
+                    console.log('OUT > index', index);
+                    // console.log('before deleting', this.vacantsIndexList, this.vacants);
+                    // remove element from array
+                    this.vacants.splice(index, 1);
+                    this.vacantsIndexList.splice(index, 1);
+                    // remove map marker      
+                    this.deleteMapMarker(key);             
+                    // console.log('after deleting', this.vacantsIndexList, this.vacants);
+                }else{
+                    console.warn('OUT > index not_found! (it must exist)', key, index);
+                }
             });     
         console.groupEnd();   
-    }
-
-    private geofireUpdateCriteria() {
-        console.groupCollapsed('GEOFIRE_UPDATE_CRITERIA');
-        const lat = this.mapCenter.lat;
-        const lng = this.mapCenter.lng;
-        const radius = this.mapCenter.radius;        
-        this.geoFireQuery.updateCriteria({
-            center: [lat, lng],
-            radius: radius
-        });   
-        console.log(`"${this.mapCenter.label}": lat, lng, radius`, lat, lng, radius);
-        console.groupEnd();
     }
 
     private geofireCancel() {
@@ -371,7 +382,8 @@ export class ShipmentCreatePage implements OnInit {
         this.geoFire = null;
         this.geoFireRegIn = null;
         this.geoFireRegOut = null;     
-        this.vacants = null;
+        this.vacants = [];
+        this.vacantsIndexList = [];
         this.vacantsExpired = null;   
         console.groupEnd();             
     }
@@ -464,7 +476,7 @@ export class ShipmentCreatePage implements OnInit {
             //this.map.setZoom(12);
             // set current marker selected
             this.setMarkerSelected(sendingId);
-            this.addMapMarkerCheckered(dropLatLng);
+            this.addMapMarkerSelected(dropLatLng);
             // draw polyline
             let coordinates = [pickupLatLng, dropLatLng];
             let routeLineCfg: MapsMapPolylineOptions = {
@@ -541,22 +553,35 @@ export class ShipmentCreatePage implements OnInit {
             this.mapMarkers.list[this.mapMarkers.selected].setIcon(GMAP_CFG.ICONS.DEFAULT);
             this.mapMarkers.selected = '';
             this.routeLine.setMap(null);
-            this.removeMapMarkerCheckered();
+            this.removeMapMarkerSelected();
         }        
     }
 
-    private removeMapMarkerCheckered() {
-        this.checkeredMarker.setMap(null);
+    private removeMapMarkerSelected() {
+        this.mapMarkerSelected.setMap(null);
     }
 
-    private addMapMarkerCheckered(latLng:any):void {
-        this.checkeredMarker = this.gmapsService.addMapMarker(latLng, this.map, GMAP_CFG.ICONS.CHECKERED);
+    private addMapMarkerSelected(latLng:any):void {
+        console.groupCollapsed('addMapMarkerSelected');
+        this.mapMarkerSelected = this.gmapsService.addMapMarker(latLng, this.map, GMAP_CFG.ICONS.CHECKERED);
+        console.log('list', this.mapMarkerSelected, this.mapMarkers.selected);
+        console.groupEnd();        
+    }
+
+    private deleteMapMarker(key:string) {
+        console.groupCollapsed('DELETE_MAP_MARKER')
+        this.mapMarkers.list[key].setMap(null);
+        const deleted = delete this.mapMarkers.list[key];
+        console.log('result:', deleted);        
+        console.groupEnd();
     }
 
     private addMapMarker(latlng:any, key:string):void {
-        console.info('addMapMarker');
+        console.groupCollapsed('ADD_MAP_MARKER');
         let marker = this.gmapsService.addMapMarker(latlng, this.map);
         this.mapMarkers.list[key] = marker;
+        console.log('list', this.mapMarkers.list);
+        console.groupEnd();
     }  
 
     private getMapDefaultSettings():MapDefaultSettings{
@@ -624,7 +649,7 @@ export class ShipmentCreatePage implements OnInit {
         if(this.loader) {
             this.loader.dismiss();
             this.loader.onDidDismiss(() => {
-                this.loader = null;
+                console.log('loader dismissed');
             });            
         }
     }
