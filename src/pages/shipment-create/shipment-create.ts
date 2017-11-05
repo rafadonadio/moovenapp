@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs/Rx';
-import { SendingRequest, SendingRequestLiveSummary } from '../../models/sending-model';
+import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController, ToastController, ViewController } from 'ionic-angular';
 import { ShipmentsTabsPage } from '../shipments-tabs/shipments-tabs';
@@ -89,11 +89,6 @@ export class ShipmentCreatePage implements OnInit {
     // vacant sendings
     vacants: Array<any>;
     vacantsIndexList: Array<string>;
-    vacantsExpired: Array<any>;
-    vacantSelected: VacantSelected;    
-
-    vacantSubs:Subscription;
-
 
     constructor(public navCtrl: NavController,
         public gmapsService: GoogleMapsService,
@@ -108,7 +103,6 @@ export class ShipmentCreatePage implements OnInit {
 
     ngOnInit() {   
         console.groupCollapsed('SHIPMENT_CREATE INIT');
-        this.vacantSelectedReset();
         // set mapCenter
         this.mapCenterListSet();   
         this.mapCenterSet(0);  
@@ -132,18 +126,6 @@ export class ShipmentCreatePage implements OnInit {
     // navigation
     goBack() {
         this.navCtrl.setRoot(ShipmentsTabsPage);
-    }
-
-    /**
-     * VACANT SELECTED
-     */
-
-    private vacantSelectedReset() {
-        this.vacantSelected = {
-            set: false,
-            dateSlug: '',
-            sendingId: ''
-        }
     }
 
     /**
@@ -320,53 +302,64 @@ export class ShipmentCreatePage implements OnInit {
         // IN > ADD
         console.log('IN query started', this.mapCenter.label, lat, lng);
         this.geoFireQuery = this.geoFire.query({
-                center: [lat, lng],
-                radius: radius/1000 // in KM
-            });
+            center: [lat, lng],
+            radius: radius/1000 // in KM
+        });
+        console.groupEnd();
         this.geoFireRegIn = this.geoFireQuery.on('key_entered', (key, location, distance) => {
-                console.log('IN > key', key);
-                this.sendingSrv.getLiveByIdOnce(key)
-                    .then(snap => {
-                        let item: Vacant = {
-                            key: key,
-                            location: location,
-                            distance: distance,
-                            sending: snap.val()
-                        }
-                        console.log('IN > read snap', key, item);
-                        // push to arrays
-                        this.vacantsIndexList.push(key);
-                        this.vacants.push(item);
-                        // add marker to map
-                        let latlng = {
-                            lat: location[0],
-                            lng: location[1],
-                        }
-                        this.addMapMarker(latlng, key);
-                        console.log('vacants', this.vacantsIndexList, this.vacants); 
-                    })
-                    .catch(err => console.log('error', err));   
+            this.sendingSrv.getLiveByIdOnce(key)
+                .then(snap => {
+                    console.groupCollapsed('IN: ADD_VACANT');
+                    const liveVacant = snap.val();
+                    const item: Vacant = {
+                        key: key,
+                        location: location,
+                        distance: distance,
+                        sending: liveVacant
+                    }
+                    if(this.hasVacantExpired(liveVacant)) {
+                        console.log('vacant has expired, will not be added');
+                        console.groupEnd();
+                        return;
+                    }
+
+                    // all good, add vacant
+                    console.log('key', key);                        
+                    // push to arrays
+                    this.vacantsIndexList.push(key);
+                    this.vacants.push(item);
+                    // add marker to map
+                    let latlng = {
+                        lat: location[0],
+                        lng: location[1],
+                    }
+                    this.addMapMarker(latlng, key);
+                    console.log('vacantsIndexList', this.vacantsIndexList); 
+                    console.log('vacants', this.vacants); 
+                    console.groupEnd();
+                })
+                .catch(err => console.log('error', err));   
         });
         
         // OUT > DELETE
-        console.log('OUT query started');
         this.geoFireRegOut = this.geoFireQuery.on('key_exited', (key, location, distance) => {
-                console.log('OUT > key', key);
-                const index = this.vacantsIndexList.findIndex(x => x == key);
-                if(index>-1) {
-                    console.log('OUT > index', index);
-                    // console.log('before deleting', this.vacantsIndexList, this.vacants);
-                    // remove element from array
-                    this.vacants.splice(index, 1);
-                    this.vacantsIndexList.splice(index, 1);
-                    // remove map marker      
-                    this.deleteMapMarker(key);             
-                    // console.log('after deleting', this.vacantsIndexList, this.vacants);
-                }else{
-                    console.warn('OUT > index not_found! (it must exist)', key, index);
-                }
-            });     
-        console.groupEnd();   
+            console.groupCollapsed('OUT: REMOVE_VACANT');
+            console.log('key', key);
+            const index = this.vacantsIndexList.findIndex(x => x == key);
+            if(index>-1) {
+                console.log('index', index);
+                // console.log('before deleting', this.vacantsIndexList, this.vacants);
+                // remove element from array
+                this.vacants.splice(index, 1);
+                this.vacantsIndexList.splice(index, 1);
+                // remove map marker      
+                this.deleteMapMarker(key);             
+                // console.log('after deleting', this.vacantsIndexList, this.vacants);
+            }else{
+                console.warn('index not_found! (it must exist)', key, index);
+            }
+            console.groupEnd();               
+        });     
     }
 
     private geofireCancel() {
@@ -383,9 +376,16 @@ export class ShipmentCreatePage implements OnInit {
         this.geoFireRegIn = null;
         this.geoFireRegOut = null;     
         this.vacants = [];
-        this.vacantsIndexList = [];
-        this.vacantsExpired = null;   
+        this.vacantsIndexList = [];  
         console.groupEnd();             
+    }
+
+    private hasVacantExpired(liveVacant: SendingRequestLiveSummary):boolean {
+        console.groupCollapsed('HAS_VACANT_EXPIRED')
+        const hasExpired = this.sendingSrv.hasVacantExpired(liveVacant);
+        console.log('hasExpired', hasExpired);      
+        console.groupEnd();
+        return hasExpired;
     }
 
     /**
@@ -393,24 +393,18 @@ export class ShipmentCreatePage implements OnInit {
      */
 
     select(vacantKey:string, vacantSending:SendingRequestLiveSummary) {
-        // check if it hasnt expired
-        const hasExpired = this.sendingSrv.hasVacantExpired(vacantSending);
-        console.log('check expired before lock', hasExpired);
-        if(hasExpired) {
+        const expired = this.hasVacantExpired(vacantSending);        
+        if(expired) {
             let alert = this.alertCtrl.create({
                 title: 'El Servicio ha expirado',
                 subTitle: 'No es posible tomar el Servicio porque ha expirado, por favor intenta seleccionar otro Servicio disponible.',
                 buttons: ['Cerrar']
             });
-            alert.present();
-            // reload subscription
-            this.unsubscribe();
-            this.gmapReset();
-            this.getVacants();
-            return;
+            alert.present();       
+            return;     
         }
-        // all good, go
-        // init loader
+        // 
+        // All good, continue
         let loader = this.loaderCtrl.create({
             content: 'verificando disponibilidad ...'
         });
@@ -454,11 +448,13 @@ export class ShipmentCreatePage implements OnInit {
 
     }
 
-
-
     selectedToggle(vacant:any) {
-        // toggle: if already selected, de-selelect
-        if(this.mapMarkers.selected !== vacant.key) {
+        if(this.mapMarkers.selected == vacant.key) {
+            // already selected, de-select
+            this.resetSelected();
+            this.resetMapCenter();
+        }else{
+            // select
             let sendingId = vacant.key;
             let live:SendingRequestLiveSummary = vacant.sending;
             let pickupLatLng = this.gmapsService.setlatLng(live.pickupAddressLat, live.pickupAddressLng);
@@ -488,48 +484,12 @@ export class ShipmentCreatePage implements OnInit {
             };
             this.routeLine = this.gmapsService.initPolyline(routeLineCfg);
             this.routeLine.setMap(this.map); 
-        }else{
-            this.resetSelected();
-            this.resetMapCenter();
         }
     }
 
     /**
      *  GET
      */
-
-    private getVacants() {
-        let obs = this.sendingSrv.getLiveVacantObs(true);
-        this.vacantSubs = obs.subscribe(snaps => {
-            this.vacants = [];
-            this.vacantsExpired = [];
-            if(snaps) {
-                snaps.forEach(snap => {
-                    let key = snap.key;
-                    let value = snap.val();
-                    //console.log('vacants', key, value);
-                    let item = {
-                        key: key,
-                        data: value
-                    }
-                    // check is expired
-                    const hasExpired = this.sendingSrv.hasVacantExpired(value);
-                    if(hasExpired) {                               
-                        this.vacantsExpired.push(item);          
-                    }else{
-                        this.vacants.push(item);
-                        //add markers to map
-                        let latlng = {
-                            lat: value.pickupAddressLat,
-                            lng: value.pickupAddressLng,
-                        }
-                        this.addMapMarker(latlng, key); 
-                    }
-                });
-            }
-            console.log('vacantsExpired', this.vacantsExpired);
-        });
-    }
 
     private goToConfirm(sendingId:string, sendingData:any) {
         this.navCtrl.setRoot(ShipmentCreate2Page, {
@@ -594,8 +554,9 @@ export class ShipmentCreatePage implements OnInit {
 
     private resetMapCenter():void {
         let settings = this.getMapDefaultSettings();
-        this.map.setCenter(settings.latlng);
-        this.map.setZoom(settings.zoom);
+        const latLng = this.gmapsService.setlatLng(this.mapCenter.lat, this.mapCenter.lng);
+        this.map.setCenter(latLng);
+        this.map.setZoom(this.mapCenter.zoom);
     }
 
     private gmapReset() {
@@ -627,10 +588,6 @@ export class ShipmentCreatePage implements OnInit {
 
     private unsubscribe() {
         this.geofireCancel();
-        if(this.vacantSubs) {
-            console.log('vacantSubs Unsubscribed');
-            this.vacantSubs.unsubscribe();
-        }
         if(this.datesListSubs) {
             console.log('datesListSubs Unsubscribed');
             this.datesListSubs.unsubscribe();
@@ -649,7 +606,7 @@ export class ShipmentCreatePage implements OnInit {
         if(this.loader) {
             this.loader.dismiss();
             this.loader.onDidDismiss(() => {
-                console.log('loader dismissed');
+                // console.log('loader dismissed');
             });            
         }
     }
@@ -686,12 +643,6 @@ export class MapCenter {
     lng:number;
     radius:number;
     zoom:number;
-}
-
-export class VacantSelected {
-    set:boolean;
-    dateSlug:string;
-    sendingId:string;
 }
 
 export class Vacant {
