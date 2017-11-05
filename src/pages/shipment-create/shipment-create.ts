@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs/Rx';
-import { SendingRequestLiveSummary } from '../../models/sending-model';
+import { SendingRequest, SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController, ToastController, ViewController } from 'ionic-angular';
 import { ShipmentsTabsPage } from '../shipments-tabs/shipments-tabs';
@@ -13,16 +13,54 @@ import {
 } from '../../providers/google-maps-service/google-maps-service';
 import { DateService } from '../../providers/date-service/date-service';
 
+/**
+ * @name Shipment Create
+ * @module moovenapp
+ * @description
+ * Shipment Create Page is where Operators select sendings to ship.
+ *      A selected sending and confirmed, converts to a shipment
+ * To be listed as vacant a sending must be in status "waitoperator".
+ *      Must be paid and enabled.
+ * Sendings can be listed by "date" and "map center".
+ * View is in realtime mode always, using firebase and geofire suscriptions
+ *      UI auto updates upon changes in DB in realtime. 
+ * 
+ * LOGIC
+ * 1. subscribe to "_sendingsLiveGeofireDates" (this.datesListSubs)
+ *    each node represents a date (MM_DD) with at least 1 vacant sending
+ *    add dates as element of the array
+ *    by default:
+ *      - element '0' of mapDate is set as dateSlug [MM_DD]
+ *      - element '0' of mapCenter is set as map lat/lng
+ * 2. Run Geofire
+ *    at least one date must be available to start geofire
+ *    parameters used to trigger geofire
+ *      - dateSlug: used to set the DB reference
+ *                  In the DB, each "dateslug" is a separate geofire list  
+ *      - mapCenter: lat, lng and radius
+ *                   used for query (geoFireQuery), tracks keys matching criteria   
+ *    Two GeoCallbackRegistration are set:
+ *      - geoFireRegIn: (key_entered) track when key is written to this geofire list
+ *                      For each new element, another DB read is made to /sending/ID 
+ *                      to get sending Data
+ *      - geoFireRegIn: (key_exited) track when key is removed from geofire list
+ *                      For each removed element, Map/UI is updated deleting the sending 
+ * 3. Switch MapCenter
+ *    MapCenter is changed from UI
+ *    Geofire stays enabled, trigger updateCriteria() to update lat, lng and radius
+ * 4. Switch MapDate
+ *    MapDate is changed from UI
+ *    Both Geofire GeoCallbackRegistration are closed (canceled)
+ *          (This is because we need to reference to another geofire list in DB)   
+ *    Geofire is started, with new Db Ref and new GeoCallbackRegistration
+ */
+
 @Component({
     selector: 'page-shipment-create',
     templateUrl: 'shipment-create.html',
 })
 export class ShipmentCreatePage implements OnInit {
 
-    vacants;
-    vacantsExpired;
-    vacantSubs:Subscription;
-    vacantSelected: VacantSelected;
     // aux
     loader:any;     
     // geofire
@@ -36,7 +74,7 @@ export class ShipmentCreatePage implements OnInit {
     datesListSubs: Subscription;
     datesList: Array<any>;
     dateIndexSelected: number;
-    dateChange: boolean;
+    dateEditing: boolean;
     mapDate: MapDate;  
     // map center
     mapCenterList: Array<MapCenter>;
@@ -51,6 +89,14 @@ export class ShipmentCreatePage implements OnInit {
     };
     routeLine: any;
     checkeredMarker: any;
+    // vacant sendings
+    vacants: Array<any>;
+    vacantsIndexList: Array<string>;
+    vacantsExpired: Array<any>;
+    vacantSelected: VacantSelected;    
+
+    vacantSubs:Subscription;
+
 
     constructor(public navCtrl: NavController,
         public gmapsService: GoogleMapsService,
@@ -64,7 +110,7 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ngOnInit() {   
-        console.groupCollapsed('SHIPMENT_CREATE: INIT');
+        console.groupCollapsed('SHIPMENT_CREATE INIT');
         this.showLoading('Consultando servicios ...');
         this.vacantSelectedReset();
         // set mapCenter
@@ -78,7 +124,7 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     ionViewWillEnter() {      
-        console.groupCollapsed('SHIPMENT_CREATE: ION_VIEW_WILL_ENTER');
+        console.groupCollapsed('ION_VIEW_WILL_ENTER');
         this.flagDatesInitiated = false; 
         console.groupEnd();
     }
@@ -115,30 +161,32 @@ export class ShipmentCreatePage implements OnInit {
     }
     mapDateChangeClose() {
         console.log('mapDateChangeClose');  
-        this.dateChange = false;    
+        this.dateEditing = false;    
     }    
     mapDateChange() {
         console.log('mapDateChange'); 
         this.mapCenterCloseChange(); 
-        this.dateChange = true;    
+        this.dateEditing = true;    
     }
     mapDateSet(index = null) {
-        console.groupCollapsed('SHIPMENT_CREATE: SET_MAP_DATE');
+        console.groupCollapsed('SET_MAP_DATE');
         this.dateIndexSelected = index==null ? this.dateIndexSelected : index;
         this.mapDate = this.datesList[this.dateIndexSelected];        
-        this.dateChange = false;
+        this.dateEditing = false;
         console.log('index', index);
         console.log('dateIndexSelected', this.dateIndexSelected);
         console.log('mapDate', this.mapDate);
         console.groupEnd();
     }
     private mapDatesReset() {
-        console.groupCollapsed('SHIPMENT_CREATE: RESET_MAP_DATE');
+        console.groupCollapsed('RESET_MAP_DATE');
         this.mapDate = null;
         this.flagDatesExist = false;
         this.datesList = [];
         this.dateIndexSelected = null;
-        this.dateChange = false; 
+        this.dateEditing = false; 
+        console.log('mapDate, flagDatesExist, datesList, dateIndexSelected, dateChange', 
+            this.mapDate, this.flagDatesExist, this.datesList, this.dateIndexSelected, this.dateEditing);
         console.groupEnd();
     } 
 
@@ -181,7 +229,7 @@ export class ShipmentCreatePage implements OnInit {
         // dates observable, subscribe
         let obs = this.sendingSrv.getGeofireLiveDatesObs(true);
         this.datesListSubs = obs.subscribe(snaps => {
-            console.groupCollapsed('SHIPMENT_CREATE: MAP_DATES_SUSCRIPTION ...');
+            console.groupCollapsed('MAP_DATES_SUSCRIPTION ...');
             // initial flags
             this.flagDatesInitiated = true;
             this.closeLoading();
@@ -253,12 +301,12 @@ export class ShipmentCreatePage implements OnInit {
         }
         // RUN
         console.groupCollapsed('RUN_GEOFIRE');
+        this.vacants = [];
         const dateSlug = this.mapDate.dateSlug;
         const lat = this.mapCenter.lat;
         const lng = this.mapCenter.lng;
         const radius = this.mapCenter.radius;
         console.log('dateSlug, lat, lng, radius', dateSlug, lat, lng, radius);
-        let items = [];
         const dbRef = this.sendingSrv.getGeofireDbRef(dateSlug);
         this.geoFire = this.sendingSrv.getGeofire(dbRef);
         // IN
@@ -268,29 +316,31 @@ export class ShipmentCreatePage implements OnInit {
                 radius: radius
             });
         this.geoFireRegIn = this.geoFireQuery.on('key_entered', (key, location, distance) => {
-                console.log('IN geoSnap key', key);
-                this.sendingSrv.getByIdOnce(key)
+                console.log('IN > key', key);
+                this.sendingSrv.getLiveByIdOnce(key)
                     .then(snap => {
-                        let item = {
+                        let item: Vacant = {
                             key: key,
                             location: location,
                             distance: distance,
                             sending: snap.val()
                         }
-                        console.log('IN get', key, item);
+                        console.log('IN > read snap', key, item);
                         // push
-                        items.push(item);
+                        this.vacants.push(item);
                         let latlng = {
                             lat: location[0],
                             lng: location[1],
                         }
+                        this.addMapMarker(latlng, key); 
                     })
                     .catch(err => console.log('error', err));   
         });
         // OUT
         console.log('OUT query started');
         this.geoFireRegOut = this.geoFireQuery.on('key_exited', (key, location, distance) => {
-                console.log('OUT snap', key);
+                console.log('OUT > key', key);
+
             });     
         console.groupEnd();   
     }
@@ -304,7 +354,7 @@ export class ShipmentCreatePage implements OnInit {
             center: [lat, lng],
             radius: radius
         });   
-        console.log('updated', this.mapCenter.label, lat, lng, radius);
+        console.log(`"${this.mapCenter.label}": lat, lng, radius`, lat, lng, radius);
         console.groupEnd();
     }
 
@@ -330,9 +380,9 @@ export class ShipmentCreatePage implements OnInit {
      *  SENDING SELECT
      */
 
-    select(sendingVacantId:string, sendingVacantData:any) {
+    select(vacantKey:string, vacantSending:SendingRequestLiveSummary) {
         // check if it hasnt expired
-        const hasExpired = this.sendingSrv.hasVacantExpired(sendingVacantData);
+        const hasExpired = this.sendingSrv.hasVacantExpired(vacantSending);
         console.log('check expired before lock', hasExpired);
         if(hasExpired) {
             let alert = this.alertCtrl.create({
@@ -354,13 +404,13 @@ export class ShipmentCreatePage implements OnInit {
         });
         loader.present();
         // process attempt
-        this.sendingSrv.attemptToLockVacant(sendingVacantId)
+        this.sendingSrv.attemptToLockVacant(vacantKey)
             .then((result) => {
                 console.log('attempt result > ', result);
                 if(result.didLock===true) {
                     loader.dismiss()
                         .then(() => {
-                            this.goToConfirm(sendingVacantId, sendingVacantData);
+                            this.goToConfirm(vacantKey, vacantSending);
                         });
                 }else if(result.isTaken===true) {
                     let title = 'Servicio tomado';
@@ -398,7 +448,7 @@ export class ShipmentCreatePage implements OnInit {
         // toggle: if already selected, de-selelect
         if(this.mapMarkers.selected !== vacant.key) {
             let sendingId = vacant.key;
-            let live:SendingRequestLiveSummary = vacant.data;
+            let live:SendingRequestLiveSummary = vacant.sending;
             let pickupLatLng = this.gmapsService.setlatLng(live.pickupAddressLat, live.pickupAddressLng);
             let dropLatLng = this.gmapsService.setlatLng(live.dropAddressLat, live.dropAddressLng);            
             // center map and zoom
@@ -617,4 +667,11 @@ export class VacantSelected {
     set:boolean;
     dateSlug:string;
     sendingId:string;
+}
+
+export class Vacant {
+    key:string;
+    location:Array<any>;
+    distance:number;
+    sending:SendingRequestLiveSummary;
 }

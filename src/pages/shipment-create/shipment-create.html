@@ -17,7 +17,7 @@
 <ion-content class="shipment-create">
   
     <ion-card>
-        <ion-list *ngIf="dateChange">
+        <ion-list *ngIf="dateEditing">
             <ion-list-header>Fecha 
                 <button ion-button clear item-end (click)="mapDateChangeClose()">
                     <ion-icon color="dark" name="close"></ion-icon>
@@ -34,7 +34,7 @@
                     >Seleccionado</button>
             </ion-item>            
         </ion-list>
-        <ion-item *ngIf="flagDatesExist && !dateChange" class="date-selected">
+        <ion-item *ngIf="flagDatesExist && !dateEditing" class="date-selected">
             <ion-icon name="ios-calendar-outline" color="light" item-left></ion-icon>
             <h2>{{mapDate?.dateCalendar}}</h2>
             <button ion-button clear color="light" item-right (click)="mapDateChange()">Cambiar</button>
@@ -66,12 +66,12 @@
         </ion-item>   
     </ion-card>
 
-    <ion-list *ngFor="let vacant of vacants">
+    <ion-card *ngFor="let vacant of vacants">
         <ion-item [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
-            <h3><span>Cobro</span><b>${{ vacant.data.priceOperatorEarning }}</b> | {{ vacant.data.routeDistanceKm | number: '1.0-0' }} km</h3>
-            <h3><span>Fecha</span>{{ vacant.data.pickupTimeFrom | formatdatePipe:'dddd DD/MMM' }}</h3>
-            <h3><span>Retirar</span>{{ vacant.data.pickupTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.data.pickupTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
-            <h3><span>Entregar</span>{{ vacant.data.dropTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.data.dropTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
+            <h3><span>Cobro</span><b>${{ vacant.sending.priceOperatorEarning }}</b> | {{ vacant.sending.routeDistanceKm | number: '1.0-0' }} km</h3>
+            <h3><span>Fecha</span>{{ vacant.sending.pickupTimeFrom | formatdatePipe:'dddd DD/MMM' }}</h3>
+            <h3><span>Retirar</span>{{ vacant.sending.pickupTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.sending.pickupTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
+            <h3><span>Entregar</span>{{ vacant.sending.dropTimeFrom | formatdatePipe:'HH:mm' }} - {{ vacant.sending.dropTimeTo | formatdatePipe:'HH:mm' }} hs</h3>
             <button ion-button item-right color="green"
                 *ngIf="mapMarkers.selected!==vacant.key" 
                 (click)="selectedToggle(vacant)">VER</button>
@@ -80,9 +80,9 @@
                 (click)="selectedToggle(vacant)"><ion-icon name="ios-close"></ion-icon></button>
             <button ion-button item-right color="light"
                 *ngIf="mapMarkers.selected===vacant.key" 
-                (click)="select(vacant.key, vacant.data)">TOMAR</button>
+                (click)="select(vacant.key, vacant.sending)">TOMAR</button>
         </ion-item>
-    </ion-list>
+    </ion-card>
     
     <ion-item *ngIf="!flagDatesExist" no-lines>
         <p text-center>En este momento no hay Servicios disponibles</p>

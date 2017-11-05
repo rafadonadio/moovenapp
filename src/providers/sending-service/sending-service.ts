@@ -12,7 +12,7 @@ import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { Injectable } from '@angular/core';
 import { HashService } from '../hash-service/hash-service';
-import { SendingRequest } from '../../models/sending-model';
+import { SendingRequest, SendingRequestLiveSummary } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 
 import * as GeoFire from 'geofire';
@@ -183,6 +183,9 @@ export class SendingService {
             preserveSnapshot: snapshot,
         });         
     }
+    getLiveByIdOnce(sendingId:string):Promise<any> {
+        return firebase.database().ref(`_sendingsLive/${sendingId}`).once('value');
+    }
 
     attemptToLockVacant(sendingId:string):Promise<any> {
         let userId = this.authSrv.fbuser.uid;
@@ -193,10 +196,10 @@ export class SendingService {
         return this.writeUnlockVacant(sendingId);
     }
 
-    hasVacantExpired(sendingSummary:any) {
+    hasVacantExpired(sendingLiveSummary:SendingRequestLiveSummary) {
         // check if expired
         const now = this.dateSrv.getUnixTimestamp();
-        const expiresAt = sendingSummary._waitoperatorExpiresAt;
+        const expiresAt = sendingLiveSummary._waitoperatorExpiresAt;
         const secondsBeforeExpires = expiresAt - now;
         // console.log('hasVacantExpired', secondsBeforeExpires);
         return secondsBeforeExpires>0 ? false : true;        
