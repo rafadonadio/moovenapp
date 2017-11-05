@@ -52,7 +52,7 @@
                 <h2>{{center.label}}</h2>
                 <button ion-button clear color="green" 
                     *ngIf="center.id!=mapCenter.id"
-                    (click)="mapCenterSet(i)" item-right>Seleccionar</button>
+                    (click)="mapCenterSwitch(i)" item-right>Seleccionar</button>
                 <button ion-button clear color="dark-gray" item-end
                     *ngIf="center.id==mapCenter.id" 
                     (click)="mapCenterCloseChange()"

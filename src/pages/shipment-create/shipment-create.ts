@@ -27,8 +27,9 @@ export class ShipmentCreatePage implements OnInit {
     loader:any;     
     // geofire
     geoFire: any;
-    geoFireInQuery: any;
-    geoFireOutQuery: any;    
+    geoFireQuery: any;
+    geoFireRegIn: any;
+    geoFireRegOut: any;    
     // maps dates
     flagDatesInitiated: boolean;
     flagDatesExist: boolean;
@@ -107,8 +108,10 @@ export class ShipmentCreatePage implements OnInit {
      *  MAP DATES
      */
     mapDateSwitch(index) {
+        console.log('mapDateSwitch');
+        this.geofireCancel();
         this.mapDateSet(index);
-
+        this.geofireRun();
     }
     mapDateChangeClose() {
         console.log('mapDateChangeClose');  
@@ -142,6 +145,11 @@ export class ShipmentCreatePage implements OnInit {
     /**
      *  MAP CENTER
      */
+    mapCenterSwitch(index) {
+        console.log('mapCenterSwitch');
+        this.mapCenterSet(index);
+        this.geofireUpdateCriteria();
+    }    
     mapCenterCloseChange() {
         console.log('mapCenterCloseChange');  
         this.mapCenterEditing = false;    
@@ -220,12 +228,15 @@ export class ShipmentCreatePage implements OnInit {
                 this.datesList = auxDatesList.concat([]); 
                 this.mapDateSet(mapDateIndex);
                 this.flagDatesExist = true;
+                // run geofire
+                this.geofireRun();
             }else{
                 // no dates available, reset
                 if(this.datesList.length>0) {
                     this.showToast(`En este momento no hay Servicios disponibles`, 2000, 'bottom');
                 }
-                this.mapDatesReset();                
+                this.mapDatesReset();       
+                this.geofireCancel();         
             }
             console.log('datesList', this.datesList);     
             console.groupEnd();  
@@ -235,65 +246,81 @@ export class ShipmentCreatePage implements OnInit {
         });
     }
 
-    private geofireRun(lat:number, lng:number, radius:number) {
+    private geofireRun() {
+        if(this.geoFire) {
+            console.log('Geofire already running ...');
+            return;
+        }
+        // RUN
         console.groupCollapsed('RUN_GEOFIRE');
-        console.log('lat, lng, radius', lat, lng, radius);
+        const dateSlug = this.mapDate.dateSlug;
+        const lat = this.mapCenter.lat;
+        const lng = this.mapCenter.lng;
+        const radius = this.mapCenter.radius;
+        console.log('dateSlug, lat, lng, radius', dateSlug, lat, lng, radius);
         let items = [];
-        const dbRef = this.sendingSrv.getGeofireDbRef(this.mapDate.dateSlug);
+        const dbRef = this.sendingSrv.getGeofireDbRef(dateSlug);
         this.geoFire = this.sendingSrv.getGeofire(dbRef);
         // IN
         console.log('IN query started');
-        this.geoFireInQuery = this.geoFire.query({
-            center: [lat, lng],
-            radius: radius
-        })
-        .on('key_entered', (key, location, distance) => {
-            this.sendingSrv.getByIdOnce(key)
-                .then(snap => {
-                    let item = {
-                        key: key,
-                        location: location,
-                        distance: distance,
-                        sending: snap.val()
-                    }
-                    console.log('IN snap', snap.key, item);
-                    // push
-                    items.push(item);
-                    let latlng = {
-                        lat: location[0],
-                        lng: location[1],
-                    }
-                })
-                .catch(err => console.log('error', err));   
+        this.geoFireQuery = this.geoFire.query({
+                center: [lat, lng],
+                radius: radius
+            });
+        this.geoFireRegIn = this.geoFireQuery.on('key_entered', (key, location, distance) => {
+                console.log('IN geoSnap key', key);
+                this.sendingSrv.getByIdOnce(key)
+                    .then(snap => {
+                        let item = {
+                            key: key,
+                            location: location,
+                            distance: distance,
+                            sending: snap.val()
+                        }
+                        console.log('IN get', key, item);
+                        // push
+                        items.push(item);
+                        let latlng = {
+                            lat: location[0],
+                            lng: location[1],
+                        }
+                    })
+                    .catch(err => console.log('error', err));   
         });
         // OUT
         console.log('OUT query started');
-        this.geoFireOutQuery = this.geoFire.query({
-            center: [lat, lng],
-            radius: radius
-        })
-        .on('key_exited', (key, location, distance) => {
-            console.log('OUT snap', key);
-        });     
+        this.geoFireRegOut = this.geoFireQuery.on('key_exited', (key, location, distance) => {
+                console.log('OUT snap', key);
+            });     
         console.groupEnd();   
     }
 
     private geofireUpdateCriteria() {
-
+        console.groupCollapsed('GEOFIRE_UPDATE_CRITERIA');
+        const lat = this.mapCenter.lat;
+        const lng = this.mapCenter.lng;
+        const radius = this.mapCenter.radius;        
+        this.geoFireQuery.updateCriteria({
+            center: [lat, lng],
+            radius: radius
+        });   
+        console.log('updated', this.mapCenter.label, lat, lng, radius);
+        console.groupEnd();
     }
 
     private geofireCancel() {
         console.groupCollapsed('GEOFIRE_CLOSE');
-        if(this.geoFireInQuery) {
-            this.geoFireInQuery.cancel();
+        if(this.geoFireRegIn) {
+            this.geoFireRegIn.cancel();
             console.log('geofireIn closed');            
         }
-        if(this.geoFireOutQuery) {
-            this.geoFireOutQuery.cancel();
+        if(this.geoFireRegOut) {
+            this.geoFireRegOut.cancel();
             console.log('geofireOut closed');            
         }   
-        this.geoFireInQuery = null;
-        this.geoFireOutQuery = null;     
+        this.geoFire = null;
+        this.geoFireRegIn = null;
+        this.geoFireRegOut = null;     
         this.vacants = null;
         this.vacantsExpired = null;   
         console.groupEnd();             
