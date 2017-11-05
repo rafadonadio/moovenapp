@@ -1,13 +1,8 @@
 <ion-header>
     <ion-navbar color="green">
-        <ion-buttons left>
-            <button ion-button (click)="cancel()"><ion-icon name="close"></ion-icon></button>
-        </ion-buttons>
-        <ion-title>Confirmar</ion-title>
+        <ion-title>Tienes {{ timeout }} seg. para Aceptar</ion-title>
         <ion-buttons end>
-            <button ion-button icon-right outline (click)="showTimerToast()">
-                {{ timeout }} <ion-icon name="timer"></ion-icon>
-            </button>
+            <button ion-button (click)="cancel()"><ion-icon name="close"></ion-icon></button>
         </ion-buttons>
     </ion-navbar>
 </ion-header>
