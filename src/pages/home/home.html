@@ -37,13 +37,13 @@
 
     <!-- active shipments -->
     <ion-card class="card-bg-shipment"
-        *ngIf="!operatorAuthUnchecked && operator?.enabled">
+        *ngIf="!operatorAuthUnchecked && operator?.active">
         <div class="card-title">OPERADOR</div>
         <button ion-button outline color="light"
             (click)="goToNewShipment()">Nuevo</button>
     </ion-card>
     <ion-card class="card-list"
-        *ngIf="!operatorAuthUnchecked && operator?.enabled">
+        *ngIf="!operatorAuthUnchecked && operator?.active">
         <ion-card-content>
             <ion-item *ngIf="(shipments | async)?.length==1" text-center
                 (click)="goToShipments()">

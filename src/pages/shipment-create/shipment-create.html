@@ -18,79 +18,86 @@
     </div>
 </ion-header>
 <ion-content class="shipment-create">
-  
-    <ion-card>
-        <ion-list *ngIf="dateEditing">
-            <ion-list-header>Fecha de Retiro
-                <button ion-button clear item-end (click)="mapDateChangeClose()">
-                    <ion-icon color="dark" name="close"></ion-icon>
-                </button>
-            </ion-list-header>
-            <ion-item *ngFor="let date of datesList; let i = index" class="date-change">
-                <span>{{date.dateCalendar}}</span> <ion-badge item-right color="green">{{date.keys.length}}</ion-badge>
-                <button ion-button clear color="green" item-end
-                    *ngIf="date.dateSlug!=mapDate.dateSlug" 
-                    (click)="mapDateSwitch(i)">Seleccionar</button>
-                <button ion-button clear color="dark-gray" item-end
-                    *ngIf="date.dateSlug==mapDate.dateSlug"
-                    (click)="mapDateChangeClose()" 
-                    >Seleccionado</button>
-            </ion-item>            
-        </ion-list>
-        <ion-item *ngIf="flagDatesExist && !dateEditing" class="date-selected">
-            <ion-icon name="ios-calendar-outline" color="light" item-left></ion-icon>
-            <h2>Retirar {{mapDate?.dateCalendar}}</h2>
-            <button ion-button clear color="light" item-right (click)="mapDateChange()">Cambiar</button>
-        </ion-item>            
-    </ion-card>
-
-    <ion-card>
-        <ion-list *ngIf="mapCenterEditing">
-            <ion-list-header>Zona de Retiro 
-                <button ion-button clear item-end (click)="mapCenterCloseChange()">
-                    <ion-icon color="dark" name="close"></ion-icon>
-                </button>
-            </ion-list-header>
-            <ion-item *ngFor="let center of mapCenterList; let i = index" class="mapcenter-change">
-                <h2>{{center.label}}</h2>
-                <button ion-button clear color="green" 
-                    *ngIf="center.id!=mapCenter.id"
-                    (click)="mapCenterSwitch(i)" item-right>Seleccionar</button>
-                <button ion-button clear color="dark-gray" item-end
-                    *ngIf="center.id==mapCenter.id" 
-                    (click)="mapCenterCloseChange()"
-                    >Seleccionado</button>                    
-            </ion-item>       
-        </ion-list>
-        <ion-item *ngIf="flagDatesExist && !mapCenterEditing" class="mapcenter-selected">
-            <ion-icon name="ios-locate-outline" color="light" item-left></ion-icon>
-            <h2>En {{mapCenterList[mapCenterSelected].label}}</h2>
-            <button ion-button clear color="light" (click)="mapCenterChange()" item-right>Cambiar</button>
-        </ion-item>   
-    </ion-card>
-
-    <ion-card *ngFor="let vacant of vacants">
-        <ion-item [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
-            <h3><span>A cobrar</span><b>${{ vacant.sending.priceOperatorEarning }}</b></h3>
-            <h3><span>Distancia</span>{{ vacant.sending.routeDistanceKm | number: '1.0-0' }} Km <small>Aprox.</small></h3>
-            <h3><span>Retirar</span>{{ (vacant.sending.pickupTimeFrom | calendardatePipe) | capitalizePipe }}, {{ vacant.sending.pickupTimeFrom | formatdatePipe:'HH:mm' }} hs</h3>
-            <button ion-button item-right color="green"
-                *ngIf="mapMarkers.selected!==vacant.key" 
-                (click)="selectedToggle(vacant)">VER</button>
-            <button ion-button item-right color="dark"
-                *ngIf="mapMarkers.selected===vacant.key"
-                (click)="selectedToggle(vacant)"><ion-icon name="ios-close"></ion-icon></button>
-            <button ion-button item-right color="light"
-                *ngIf="mapMarkers.selected===vacant.key" 
-                (click)="select(vacant.key, vacant.sending)">TOMAR</button>
-        </ion-item>
-    </ion-card>
     
-    <ion-item *ngIf="!flagDatesExist" no-lines>
-        <p text-center text-wrap>En este momento no hay Servicios disponibles en ninguna fecha.</p>
-    </ion-item>
-    <ion-item *ngIf="flagDatesExist && vacants?.length==0" no-lines>
-        <p text-center text-wrap>En este momento no hay<br>Servicios disponibles en {{ mapCenter?.label }} para {{mapDate?.dateCalendar}}</p>
-        <p text-center text-wrap>Puedes probar otra Fecha o Zona de Retiro.</p>
-    </ion-item>    
+    <ion-card *ngIf="!operatorAuthUnchecked && (!operator?.enabled || !operator?.active)">
+        <ion-item><p text-center>Tu cuenta de Operador no esta habilitada.</p></ion-item>
+    </ion-card>
+
+    <div 
+        *ngIf="!operatorAuthUnchecked && operator?.enabled && operator?.active">
+        <ion-card>
+            <ion-list *ngIf="dateEditing">
+                <ion-list-header>Fecha de Retiro
+                    <button ion-button clear item-end (click)="mapDateChangeClose()">
+                        <ion-icon color="dark" name="close"></ion-icon>
+                    </button>
+                </ion-list-header>
+                <ion-item *ngFor="let date of datesList; let i = index" class="date-change">
+                    <span>{{date.dateCalendar}}</span> <ion-badge item-right color="green">{{date.keys.length}}</ion-badge>
+                    <button ion-button clear color="green" item-end
+                        *ngIf="date.dateSlug!=mapDate.dateSlug" 
+                        (click)="mapDateSwitch(i)">Seleccionar</button>
+                    <button ion-button clear color="dark-gray" item-end
+                        *ngIf="date.dateSlug==mapDate.dateSlug"
+                        (click)="mapDateChangeClose()" 
+                        >Seleccionado</button>
+                </ion-item>            
+            </ion-list>
+            <ion-item *ngIf="flagDatesExist && !dateEditing" class="date-selected">
+                <ion-icon name="ios-calendar-outline" color="light" item-left></ion-icon>
+                <h2>Retirar {{mapDate?.dateCalendar}}</h2>
+                <button ion-button clear color="light" item-right (click)="mapDateChange()">Cambiar</button>
+            </ion-item>            
+        </ion-card>
+
+        <ion-card>
+            <ion-list *ngIf="mapCenterEditing">
+                <ion-list-header>Zona de Retiro 
+                    <button ion-button clear item-end (click)="mapCenterCloseChange()">
+                        <ion-icon color="dark" name="close"></ion-icon>
+                    </button>
+                </ion-list-header>
+                <ion-item *ngFor="let center of mapCenterList; let i = index" class="mapcenter-change">
+                    <h2>{{center.label}}</h2>
+                    <button ion-button clear color="green" 
+                        *ngIf="center.id!=mapCenter.id"
+                        (click)="mapCenterSwitch(i)" item-right>Seleccionar</button>
+                    <button ion-button clear color="dark-gray" item-end
+                        *ngIf="center.id==mapCenter.id" 
+                        (click)="mapCenterCloseChange()"
+                        >Seleccionado</button>                    
+                </ion-item>       
+            </ion-list>
+            <ion-item *ngIf="flagDatesExist && !mapCenterEditing" class="mapcenter-selected">
+                <ion-icon name="ios-locate-outline" color="light" item-left></ion-icon>
+                <h2>En {{mapCenterList[mapCenterSelected].label}}</h2>
+                <button ion-button clear color="light" (click)="mapCenterChange()" item-right>Cambiar</button>
+            </ion-item>   
+        </ion-card>
+
+        <ion-card *ngFor="let vacant of vacants">
+            <ion-item [class.selected]="mapMarkers.selected==vacant.key" no-lines detail-none>
+                <h3><span>A cobrar</span><b>${{ vacant.sending.priceOperatorEarning }}</b></h3>
+                <h3><span>Distancia</span>{{ vacant.sending.routeDistanceKm | number: '1.0-0' }} Km <small>Aprox.</small></h3>
+                <h3><span>Retirar</span>{{ (vacant.sending.pickupTimeFrom | calendardatePipe) | capitalizePipe }}, {{ vacant.sending.pickupTimeFrom | formatdatePipe:'HH:mm' }} hs</h3>
+                <button ion-button item-right color="green"
+                    *ngIf="mapMarkers.selected!==vacant.key" 
+                    (click)="selectedToggle(vacant)">VER</button>
+                <button ion-button item-right color="dark"
+                    *ngIf="mapMarkers.selected===vacant.key"
+                    (click)="selectedToggle(vacant)"><ion-icon name="ios-close"></ion-icon></button>
+                <button ion-button item-right color="light"
+                    *ngIf="mapMarkers.selected===vacant.key" 
+                    (click)="select(vacant.key, vacant.sending)">TOMAR</button>
+            </ion-item>
+        </ion-card>
+        
+        <ion-item *ngIf="!flagDatesExist" no-lines>
+            <p text-center text-wrap>En este momento no hay Servicios disponibles en ninguna fecha.</p>
+        </ion-item>
+        <ion-item *ngIf="flagDatesExist && vacants?.length==0" no-lines>
+            <p text-center text-wrap>En este momento no hay<br>Servicios disponibles en {{ mapCenter?.label }} para {{mapDate?.dateCalendar}}</p>
+            <p text-center text-wrap>Puedes probar otra Fecha o Zona de Retiro.</p>
+        </ion-item>    
+    </div>
 </ion-content>

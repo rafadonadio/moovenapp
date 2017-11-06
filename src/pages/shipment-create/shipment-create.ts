@@ -1,5 +1,6 @@
 import { AuthService } from '../../providers/auth-service/auth-service';
-import { UserAccount } from '../../models/user-model';
+import { AccountService } from '../../providers/account-service/account-service';
+import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { Subscription } from 'rxjs/Rx';
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
@@ -60,6 +61,12 @@ import { DateService } from '../../providers/date-service/date-service';
 })
 export class ShipmentCreatePage implements OnInit {
 
+    // operatorAuth flags
+    operatorAuthUnchecked:any;  
+    // account
+    accountSubs: Subscription;
+    account: UserAccount;
+    operator: UserAccountOperator;      
     // aux
     loader:any;     
     // geofire
@@ -100,19 +107,31 @@ export class ShipmentCreatePage implements OnInit {
         public loaderCtrl: LoadingController,
         public viewCtrl: ViewController,
         public toastCtrl: ToastController,
-        private AuthSrv: AuthService) {
+        private AuthSrv: AuthService,
+        private accountSrv: AccountService) {
 
     }
 
     ngOnInit() {   
         console.groupCollapsed('SHIPMENT_CREATE INIT');
-        // set mapCenter
-        this.mapCenterListSet();   
-        this.mapCenterSet(0);  
-        this.gmapReset();
-        // set mapDates: geofire
-        this.mapDatesReset();
-        this.mapDatesSubscribe(); 
+        this.operatorAuthUnchecked = true;
+        this.setAccount()
+            .then(() => {                
+                // set mapCenter
+                this.mapCenterListSet();   
+                this.mapCenterSet(0);  
+                this.gmapReset();
+                // set mapDates: geofire
+                this.mapDatesReset();
+                this.mapDatesSubscribe();            
+            })
+            .catch(err => {
+                console.log('error', err);
+                this.showAlertAndCancel(
+                    'Error', 
+                    'Ocurrió un error al validar tus credenciales como Operador, vuelve a intentarlo en unos momentos.'
+                );
+            })        
         console.groupEnd();
     }
 
@@ -129,6 +148,25 @@ export class ShipmentCreatePage implements OnInit {
     // navigation
     goBack() {
         this.navCtrl.setRoot(ShipmentsTabsPage);
+    }
+
+    private setAccount(): Promise<any> {
+        console.groupCollapsed('SET_ACCOUNT');
+        return new Promise((resolve, reject) => {
+            let obs = this.accountSrv.getObs(true);
+            this.accountSubs = obs.subscribe((snap) => {
+                this.account = snap.val();
+                this.operator = this.account.operator;
+                this.operatorAuthUnchecked = false;
+                console.groupEnd();
+                resolve();
+            },
+            err => {
+                console.log(err);
+                console.groupEnd();
+                reject();
+            });
+        });
     }
 
     /**
