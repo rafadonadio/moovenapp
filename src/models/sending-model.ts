@@ -466,6 +466,7 @@ export class SendingRequestLiveSummary {
     publicId: string;
     routeDistanceKm: number;        
     timestamp: number;
+    userUid: string;
 }
 
 export class SendingRequest {

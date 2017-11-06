@@ -1,3 +1,5 @@
+import { AuthService } from '../../providers/auth-service/auth-service';
+import { UserAccount } from '../../models/user-model';
 import { Subscription } from 'rxjs/Rx';
 import { SendingRequestLiveSummary } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
@@ -97,7 +99,8 @@ export class ShipmentCreatePage implements OnInit {
         public alertCtrl: AlertController,
         public loaderCtrl: LoadingController,
         public viewCtrl: ViewController,
-        public toastCtrl: ToastController) {
+        public toastCtrl: ToastController,
+        private AuthSrv: AuthService) {
 
     }
 
@@ -327,12 +330,17 @@ export class ShipmentCreatePage implements OnInit {
             this.sendingSrv.getLiveByIdOnce(key)
                 .then(snap => {
                     console.groupCollapsed('IN: ADD_VACANT');
-                    const liveVacant = snap.val();
+                    const liveVacant:SendingRequestLiveSummary = snap.val();
                     const item: Vacant = {
                         key: key,
                         location: location,
                         distance: distance,
                         sending: liveVacant
+                    }
+                    if(this.operatorIsVacantOwner(liveVacant.userUid)) {
+                        console.log('Sending is own by operator, will not be added');
+                        console.groupEnd();
+                        return;
                     }
                     if(this.hasVacantExpired(liveVacant)) {
                         console.log('vacant has expired, will not be added');
@@ -413,11 +421,31 @@ export class ShipmentCreatePage implements OnInit {
         return hasExpired;
     }
 
+    private operatorIsVacantOwner(vacantSendingUserId:string): boolean {
+        console.groupCollapsed('OPERATOR_IS_VACANT_OWNER');
+        let isOwner = this.AuthSrv.fbuser.uid==vacantSendingUserId ? true : false;
+        console.log('isOwner', isOwner);
+        console.groupEnd();
+        return isOwner;
+    }
+
     /**
      *  SENDING SELECT
      */
 
     select(vacantKey:string, vacantSending:SendingRequestLiveSummary) {
+        // check is not the owner
+        const isOwner = this.operatorIsVacantOwner(vacantSending.userUid); 
+        if(isOwner) {
+            let alert = this.alertCtrl.create({
+                title: 'Acción no permitida',
+                subTitle: 'No puedes seleccionar tu propio Servicio.',
+                buttons: ['Cerrar']
+            });
+            alert.present();       
+            return;     
+        }      
+        // check is not expired
         const expired = this.hasVacantExpired(vacantSending);        
         if(expired) {
             let alert = this.alertCtrl.create({
@@ -428,7 +456,6 @@ export class ShipmentCreatePage implements OnInit {
             alert.present();       
             return;     
         }
-        // 
         // All good, continue
         let loader = this.loaderCtrl.create({
             content: 'verificando disponibilidad ...'
