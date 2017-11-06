@@ -42,7 +42,8 @@
         <button ion-button outline color="light"
             (click)="goToNewShipment()">Nuevo</button>
     </ion-card>
-    <ion-card class="card-list">
+    <ion-card class="card-list"
+        *ngIf="!operatorAuthUnchecked && operator?.enabled">
         <ion-card-content>
             <ion-item *ngIf="(shipments | async)?.length==1" text-center
                 (click)="goToShipments()">

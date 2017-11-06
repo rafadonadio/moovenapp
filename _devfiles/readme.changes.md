@@ -29,13 +29,13 @@ npm run ionic:build --prod
     - backup config db nodes
 
 # MOOVEN APP
-- en vista tomar servicio, listar vacantes en función de center-map + limite mapa
-- en vista tomar servicio, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.    
-- impedir user tomar propio servicio
+<!-- - en vista tomar servicio, listar vacantes en función de center-map + limite mapa -->
+<!-- - en vista tomar servicio, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.     -->
+<!-- - impedir user tomar propio servicio -->
 - notificaciones (email)
 - network detector
-- operatorWallet
-- establecer comision operador 30% 
+- userWallet debits/credits
+<!-- - establecer comision operador 30%  -->
 <!-- - Nuevo Servicio - Paso 2     -->
 <!--- ingresar fecha  -->
 <!--- validar horario-->
