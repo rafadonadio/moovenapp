@@ -129,6 +129,20 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     /**
+     * MANUAL RESET CONNECTION 
+     * reset mapDatesSuscription and Geofire
+     */
+    manualReset() {
+        console.groupCollapsed('MANUAL_RESET');
+        this.showToast('REINICIANDO CONEXIÓN... Ten en cuenta que el listado de servicios esta siempre conectado en Tiempo Real y se actualiza automáticamente. Este boton es solamente para forzar un reinicio de la conexión.', 7000, 'top');
+        this.geofireCancel();
+        this.gmapReset();
+        this.geofireRun();        
+        console.groupEnd();
+    }
+
+
+    /**
      *  MAP DATES
      */
     mapDateSwitch(index) {
@@ -572,7 +586,7 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     private gmapReset() {
-        console.info('initMap');
+        console.groupCollapsed('GMAP_RESET');
         let latlng = this.gmapsService.setlatLng(this.mapCenter.lat, this.mapCenter.lng);
         let divMap = (<HTMLInputElement>document.getElementById('maps1'));
         let options:MapsMapOptions = {
@@ -583,6 +597,7 @@ export class ShipmentCreatePage implements OnInit {
         }
         // init map
         this.map = this.gmapsService.initMap(latlng, divMap, options);
+        console.groupEnd();
     }      
 
     /**

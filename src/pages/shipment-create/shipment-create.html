@@ -7,7 +7,10 @@
         </ion-buttons>
         <ion-title><h4>Servicios disponibles</h4></ion-title>
         <ion-buttons right>
-            <ion-icon *ngIf="flagUpdating" name="md-refresh-circle" class="refresh-sign"></ion-icon>
+            <button ion-button clear 
+                (click)="manualReset()">
+                <ion-icon name="ios-refresh-outline" class="refresh-sign"></ion-icon>
+            </button>
         </ion-buttons>
     </ion-navbar>
     <div class="map-container">
