@@ -84,9 +84,10 @@
     </ion-card>
     
     <ion-item *ngIf="!flagDatesExist" no-lines>
-        <p text-center>En este momento no hay Servicios disponibles</p>
+        <p text-center text-wrap>En este momento no hay Servicios disponibles en ninguna fecha.</p>
     </ion-item>
-    <ion-item *ngIf="vacants?.length==0" no-lines>
-        <p text-center text-wrap>En este momento no hay<br>Servicios disponibles en {{ mapCenter?.label }}</p>
+    <ion-item *ngIf="flagDatesExist && vacants?.length==0" no-lines>
+        <p text-center text-wrap>En este momento no hay<br>Servicios disponibles en {{ mapCenter?.label }} para {{mapDate?.dateCalendar}}</p>
+        <p text-center text-wrap>Puedes probar otra Fecha o Zona de Retiro.</p>
     </ion-item>    
 </ion-content>

@@ -81,8 +81,8 @@ export class ShipmentCreatePage implements OnInit {
     // map 
     map: any;
     mapMarkers = {
-        list:[],
-        selected:''
+        list: [],
+        selected: ''
     };
     routeLine: any;
     mapMarkerSelected: any;
@@ -248,7 +248,11 @@ export class ShipmentCreatePage implements OnInit {
                     mapDateIndex = currentMapDateIndexInAux;
                 }else{
                     // current mapDate no longer available
-                    this.showToast(`En este momento, para "${this.mapDate.dateCalendar}" no hay Servicios disponibles`, 2000, 'middle');
+                    if(this.datesList.length>0) {
+                        // only show if vacants are displayed
+                        // may not been showed because they may have expired
+                        this.showToast(`En este momento, para "${this.mapDate.dateCalendar}" no hay Servicios disponibles`, 2000, 'middle');
+                    }
                 }
             }
             console.log('mapDateIndex', mapDateIndex);            
@@ -305,7 +309,6 @@ export class ShipmentCreatePage implements OnInit {
             center: [lat, lng],
             radius: radius/1000 // in KM
         });
-        console.groupEnd();
         this.geoFireRegIn = this.geoFireQuery.on('key_entered', (key, location, distance) => {
             this.sendingSrv.getLiveByIdOnce(key)
                 .then(snap => {
@@ -342,6 +345,7 @@ export class ShipmentCreatePage implements OnInit {
         });
         
         // OUT > DELETE
+        console.log('OUT query started', this.mapCenter.label, lat, lng);
         this.geoFireRegOut = this.geoFireQuery.on('key_exited', (key, location, distance) => {
             console.groupCollapsed('OUT: REMOVE_VACANT');
             console.log('key', key);
@@ -349,6 +353,12 @@ export class ShipmentCreatePage implements OnInit {
             if(index>-1) {
                 console.log('index', index);
                 // console.log('before deleting', this.vacantsIndexList, this.vacants);
+                if(this.mapMarkers.selected == key) {
+                    // vacant is selected, show message, close and remove.
+                    this.resetSelected();
+                    this.resetMapCenter();           
+                    this.showToast('Lo sentimos, este Servicio ya no esta disponible', 2500, 'middle');         
+                }
                 // remove element from array
                 this.vacants.splice(index, 1);
                 this.vacantsIndexList.splice(index, 1);
@@ -360,6 +370,7 @@ export class ShipmentCreatePage implements OnInit {
             }
             console.groupEnd();               
         });     
+        console.groupEnd();        
     }
 
     private geofireCancel() {
@@ -522,9 +533,10 @@ export class ShipmentCreatePage implements OnInit {
     }
 
     private addMapMarkerSelected(latLng:any):void {
-        console.groupCollapsed('addMapMarkerSelected');
+        console.groupCollapsed('ADD_MAP_MARKER_SELECTED');
         this.mapMarkerSelected = this.gmapsService.addMapMarker(latLng, this.map, GMAP_CFG.ICONS.CHECKERED);
-        console.log('list', this.mapMarkerSelected, this.mapMarkers.selected);
+        console.log('mapMarkerSelected', this.mapMarkerSelected);
+        console.log('mapMarkers.selected', this.mapMarkers.selected);
         console.groupEnd();        
     }
 
