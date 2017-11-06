@@ -179,8 +179,8 @@ export class SendingCreate2Page implements OnInit {
             // alert
             let alert = this.alertCtrl.create({
                 title:'Fecha inválida', 
-                subTitle:`Fecha de Retiro "${dateSelectedHuman}" es inválida. 
-                          Selecciona una fecha válida, desde hoy y hasta el ${this.dateLimits.maxHuman} inclusive)". La fecha se ha reestablecido a "hoy".`, 
+                subTitle:`Fecha de Retiro ${dateSelectedHuman} es inválida. 
+                          Selecciona una fecha válida, desde hoy y hasta el ${this.dateLimits.maxHuman} inclusive. La fecha se ha restablecido a "HOY".`, 
                 buttons:['Cerrar']
             });
             alert.present();
@@ -188,9 +188,9 @@ export class SendingCreate2Page implements OnInit {
             // --- reset date input
             console.log('pickupDatePreventLoop ON');
             this.pickupDatePreventLoopOn = true;
-            // this.pickupDate.setValue('');
-            // this.setSendingPickupDate('');
-            // this.resetDateTimeFromTo();
+            this.pickupDate.setValue('');
+            this.setSendingPickupDate('');
+            this.resetDateTimeFromTo();
             this.pickupDate.setValue(this.pickupDate.value);
             this.setSendingPickupDate(this.pickupDate.value);
             setTimeout(() => {
