@@ -635,16 +635,7 @@ export class ShipmentCreatePage implements OnInit {
         console.groupEnd();
     }  
 
-    private getMapDefaultSettings():MapDefaultSettings{
-        let settings:MapDefaultSettings = {
-            latlng: this.gmapsService.setlatLng(GMAP_CFG.DEFAULT_CENTER.LAT, GMAP_CFG.DEFAULT_CENTER.LNG),
-            zoom: 11                
-        }
-        return settings;
-    }
-
     private resetMapCenter():void {
-        let settings = this.getMapDefaultSettings();
         const latLng = this.gmapsService.setlatLng(this.mapCenter.lat, this.mapCenter.lng);
         this.map.setCenter(latLng);
         this.map.setZoom(this.mapCenter.zoom);
