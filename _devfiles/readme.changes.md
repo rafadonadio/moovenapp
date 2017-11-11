@@ -16,6 +16,7 @@ npm run ionic:build --prod
 
 # ADMIN APP
 - contadores
+    (firestore > logSendings)
     servicios por stage, status
     servicios por fecha
     usuarios
@@ -24,17 +25,20 @@ npm run ionic:build --prod
     - mostrar contadores
 - mercado pago
     habilitar HTTP trigger: Notifications IPN, para sync de pagos con MP
-
 - gral
     - backup config db nodes
+- Wallet
+    - balance mensual usuarios
+    - cron function > set balance per user/calendar month > firestore
+
 
 # MOOVEN APP
 <!-- - en vista tomar servicio, listar vacantes en función de center-map + limite mapa -->
 <!-- - en vista tomar servicio, reaccionar a cuando el mapa se mueve y actualizar listado de vacantes.     -->
 <!-- - impedir user tomar propio servicio -->
-- notificaciones (email)
+<!-- - notificaciones (email) -->
 - network detector
-- userWallet debits/credits
+<!-- - userWallet debits/credits -->
 <!-- - establecer comision operador 30%  -->
 <!-- - Nuevo Servicio - Paso 2     -->
 <!--- ingresar fecha  -->
@@ -71,6 +75,7 @@ refactor data used on shipment -->
 - ** log (big query)
 - ** cron para listar servicios (pagados) a vencer en 30 minutos
 - notificaciones (locales/email) - revisar
+- call and map btn actions in APP
 - limitar intentos de reenviar email de validación 
 - al cambiar horario pickup 12, 12.30 no suma 2 hs a drop
 - permitir tomarlo desde YA
