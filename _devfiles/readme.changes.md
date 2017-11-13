@@ -30,7 +30,17 @@ npm run ionic:build --prod
 - Wallet
     - balance mensual usuarios
     - cron function > set balance per user/calendar month > firestore
-
+- LOGS
+    Secuencia:
+        - task creada en RTDB
+        - Functions ejecuta task
+        - Task Result se guarda en Firestore
+            Si Result success, se elimina registro de RTDB
+    Nodes a migrar a Firestore
+        <!-- sendingTaskResult -->
+        <!-- sendingTaskOkBySendingId -->
+        <!-- taskUserResult -->
+        <!-- adminappTaskResult -->
 
 # MOOVEN APP
 <!-- - en vista tomar servicio, listar vacantes en función de center-map + limite mapa -->
