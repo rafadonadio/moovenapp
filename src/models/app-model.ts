@@ -4,7 +4,7 @@
  */
 
 export const APP_CFG = {
-    CURRENT_ENV: 'DEV', // DEV, STAGE, PROD
+    CURRENT_ENV: 'DEV', // DEV, PROD
     ENVIRONMENTS: {
         'DEV': {
             APP_NAME: 'MOOVEN.dev',
@@ -21,23 +21,6 @@ export const APP_CFG = {
             },
             IONIC_IO: {
                 ID: 'c7d12063',
-            }
-        },
-        'STAGE': {
-            APP_NAME: 'MOOVEN STAGE',
-            FIREBASE: {
-                apiKey: 'AIzaSyCuvzqFIK_emRtUTglniXBdEUYEOIPWIfE',
-                authDomain: 'moovenstage.firebaseapp.com',
-                databaseURL: 'https://moovenstage.firebaseio.com',
-                projectId: 'moovenstage',
-                storageBucket: 'moovenstage.appspot.com',
-                messagingSenderId: '34166889782',              
-            },
-            LOCALSTORAGE: {
-                name: '__moovenStage'
-            },
-            IONIC_IO: {
-                ID: '7cbebd36',
             }
         },
         'PROD': {
