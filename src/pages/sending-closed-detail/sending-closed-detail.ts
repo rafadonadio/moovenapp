@@ -1,11 +1,9 @@
 import { Subscription } from 'rxjs/Rx';
 import { SendingService } from '../../providers/sending-service/sending-service';
-import { Alert, LoadingController } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
 import { SendingRequest, SendingTask , CF_TASKS } from '../../models/sending-model';
 import { Component, OnInit } from '@angular/core';
 import { ViewController, NavController, NavParams, Platform, ToastController, AlertController, ActionSheetController } from 'ionic-angular';
-
-import { CheckoutPage } from '../checkout/checkout';
 
 @Component({
     selector: 'page-sending-closed-detail',

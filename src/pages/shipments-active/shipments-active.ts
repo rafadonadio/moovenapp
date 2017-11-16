@@ -4,7 +4,7 @@ import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { AlertController, ToastController } from 'ionic-angular';
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Component } from '@angular/core';
-import { App, NavController, ViewController } from 'ionic-angular';
+import { App, ViewController } from 'ionic-angular';
 import { ShipmentActiveDetailPage } from '../shipment-active-detail/shipment-active-detail';
 import { ShipmentCreatePage } from '../shipment-create/shipment-create';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
@@ -25,8 +25,7 @@ export class ShipmentsActivePage {
     // list
     shipments:FirebaseListObservable<any>;
 
-    constructor(private navCtrl: NavController,
-        public shipmentSrv:ShipmentsService,
+    constructor(public shipmentSrv:ShipmentsService,
         public viewCtrl: ViewController,
         public alertCtrl: AlertController,
         private accountSrv: AccountService,
@@ -68,7 +67,6 @@ export class ShipmentsActivePage {
     }
 
     getStatusMessage(currentStageStatus) {
-        let message = '';
         return this.shipmentSrv.getStatusMessage(currentStageStatus);
     }    
 

@@ -1,6 +1,5 @@
 import { ShipmentsService } from '../../providers/shipments-service/shipments-service';
 import { Subscription } from 'rxjs/Rx';
-import { AccountService } from '../../providers/account-service/account-service';
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
 import { Component } from '@angular/core';
 import { App, NavController, NavParams } from 'ionic-angular';

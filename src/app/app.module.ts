@@ -83,6 +83,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { CapitalizePipe } from '../pipes/capitalize-pipe';
 import { Ts2DatePipe } from '../pipes/ts2date-pipe';
 import { FormatDatePipe } from '../pipes/formatdate-pipe';
+import { CalendarDatePipe } from '../pipes/calendardate-pipe';
 
 // IONIC PRO 
 import { Pro } from '@ionic/pro';
@@ -155,7 +156,8 @@ export const firebaseConfig = {
         // PIPES
         CapitalizePipe,
         Ts2DatePipe,
-        FormatDatePipe
+        FormatDatePipe,
+        CalendarDatePipe
     ],
     imports: [
         BrowserModule,

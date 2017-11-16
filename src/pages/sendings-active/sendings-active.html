@@ -27,8 +27,9 @@
                 <ion-note item-right>#{{ item.publicId }}</ion-note>
             </ion-item>
             <ion-item class="content" (click)="goToDetail(item.$key)">
-                <p><span>Desde</span> {{ item.pickupAddressStreetShort }} {{ item.pickupAddressNumber }}, {{ item.pickupAddressCityShort }}</p>
-                <p><span>Hasta</span> {{ item.dropAddressStreetShort }} {{ item.dropAddressNumber }}, {{ item.dropAddressCityShort }}</p>
+                <p><span>RETIRO</span> {{ item.pickupTimeFrom | calendardatePipe }}, {{ item.pickupTimeFrom | formatdatePipe:'HH:mm' }}</p>
+                <p><span>DESDE</span> {{ item.pickupAddressStreetShort }} {{ item.pickupAddressNumber }}, {{ item.pickupAddressCityShort }}</p>
+                <p><span>HASTA</span> {{ item.dropAddressStreetShort }} {{ item.dropAddressNumber }}, {{ item.dropAddressCityShort }}</p>
                 <p><span><small>Registrado el {{ item.timestamp | formatdatePipe:'DD-MM-Y, HH:mm' }}</small></span></p>
                 <ion-icon name="arrow-forward" item-right></ion-icon>
             </ion-item>

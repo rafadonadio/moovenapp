@@ -43,25 +43,30 @@ export class HomePage {
     }
 
     private init() {
+        console.groupCollapsed('HOME: INIT');
         this.getActiveSendings();        
         this.setAccount()
             .then(() => {
                 this.getActiveShipments();
             });
+        console.groupEnd();
     }    
 
     private setAccount(): Promise<any> {
         return new Promise((resolve, reject) => {
             let obs = this.accountSrv.getObs(true);
             this.accountSubs = obs.subscribe((snap) => {
+                console.groupCollapsed('HOME: SET_ACCOUNT');
                 this.account = snap.val();
                 this.operator = this.account.operator;
                 this.operatorAuthUnchecked = false;
                 console.log('set account', this.account, this.operator, this.operatorAuthUnchecked);
+                console.groupEnd();
                 resolve();
             },
             err => {
                 console.log(err);
+                console.groupEnd();
                 reject();
             });
         });

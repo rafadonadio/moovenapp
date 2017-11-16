@@ -93,7 +93,7 @@ export class AccountService {
         return new Promise((resolve, reject) => {
             firebase.database().ref(`userAccount/${accountId}`).once('value')
                 .then(snap => {
-                    console.log('account', snap.val());
+                    // console.log('account', snap.val());
                     result.exist = snap.val() ? true : false;
                     resolve(result);
                 })

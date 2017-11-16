@@ -29,7 +29,7 @@ export class SendingCreateService{
     }
 
     /**
-     *  METHODS
+     *  PRIVATE METHODS
      */
 
     private create():Promise<SendingRequest> {
