@@ -1,3 +1,4 @@
+import { APP_CFG } from '../../models/app-model';
 import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
 import { ViewController } from 'ionic-angular';
@@ -6,8 +7,6 @@ import { SendingActiveDetailPage } from '../sending-active-detail/sending-active
 import { CheckoutPage } from '../checkout/checkout';
 import { SendingService } from '../../providers/sending-service/sending-service';
 
-import { ENV } from '@app/env';
-
 @Component({
     selector: 'page-sendings-active',
     templateUrl: 'sendings-active.html',
@@ -15,7 +14,7 @@ import { ENV } from '@app/env';
 export class SendingsActivePage implements OnInit {
 
     sendings: any;
-    appName:string = ENV.app_name;
+    appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
         public loadingCtrl: LoadingController,

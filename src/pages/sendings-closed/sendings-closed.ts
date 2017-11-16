@@ -1,10 +1,10 @@
+import { APP_CFG } from '../../models/app-model';
 import { App, LoadingController } from 'ionic-angular';
 import { Component, OnInit } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { SendingClosedDetailPage } from '../sending-closed-detail/sending-closed-detail';
-import { SendingService } from '../../providers/sending-service/sending-service';
 
-import { ENV } from '@app/env';
+import { SendingService } from '../../providers/sending-service/sending-service';
 
 @Component({
     selector: 'page-sendings-closed',
@@ -13,7 +13,7 @@ import { ENV } from '@app/env';
 export class SendingsClosedPage implements OnInit {
 
     sendings: any[];
-    appName:string = ENV.app_name;
+    appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
 
     constructor(public viewCtrl: ViewController,
         public loadingCtrl: LoadingController,

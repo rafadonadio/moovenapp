@@ -1,3 +1,4 @@
+import { APP_CFG } from '../models/app-model';
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
@@ -89,8 +90,7 @@ import { Pro } from '@ionic/pro';
 import { ErrorHandler } from '@angular/core';
 import { FaqProvider } from '../providers/faq/faq';
 
-// ENV
-import { ENV } from '@app/env';
+const ENV = APP_CFG.CURRENT_ENV;
 
 // IONIC PRO 
 // const IonicPro = Pro.init('APP_ID', {
@@ -104,12 +104,12 @@ import { ENV } from '@app/env';
 
 // AF2 Settings
 export const firebaseConfig = {
-    apiKey: ENV.firebase.apiKey,
-    authDomain: ENV.firebase.authDomain,
-    databaseURL: ENV.firebase.databaseURL,
-    projectId: ENV.firebase.projectId,
-    storageBucket: ENV.firebase.storageBucket,
-    messagingSenderId: ENV.firebase.messagingSenderId
+    apiKey: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.apiKey,
+    authDomain: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.authDomain,
+    databaseURL: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.databaseURL,
+    projectId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.projectId,
+    storageBucket: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.storageBucket,
+    messagingSenderId: APP_CFG.ENVIRONMENTS[ENV].FIREBASE.messagingSenderId
 };
 
 @NgModule({
@@ -168,7 +168,7 @@ export const firebaseConfig = {
         AngularFirestoreModule,
         HttpModule,
         IonicStorageModule.forRoot({
-            name: ENV.local_storage.name,
+            name: APP_CFG.ENVIRONMENTS[ENV].LOCALSTORAGE.name,
             driverOrder: ['localstorage', 'indexeddb', 'sqlite', 'websql']
         })
     ],

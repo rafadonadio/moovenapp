@@ -9,11 +9,9 @@ import { AccountService } from '../../providers/account-service/account-service'
 import { SendingService } from '../../providers/sending-service/sending-service';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { APP_CFG } from '../../models/app-model';
 import { Subscription } from 'rxjs/Rx';
 import { UserAccount, UserAccountOperator } from '../../models/user-model';
-
-// ENV
-import { ENV } from '@app/env';
 
 @Component({
     selector: 'page-home',
@@ -28,7 +26,7 @@ export class HomePage {
     account: UserAccount;
     operator: UserAccountOperator;
     // 
-    appName:string = ENV.app_name;
+    appName:string = APP_CFG.ENVIRONMENTS[APP_CFG.CURRENT_ENV].APP_NAME;
     sendings:any;
     shipments:any;
 
