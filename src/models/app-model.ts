@@ -26,12 +26,12 @@ export const APP_CFG = {
         'PROD': {
             APP_NAME: 'MOOVEN',
             FIREBASE: {
-                apiKey: 'AIzaSyC6tq6l0EVThcHsvkWHEoPYenGZg2p7PiU',
-                authDomain: 'mooven-f9e3c.firebaseapp.com',
-                databaseURL: 'https://mooven-f9e3c.firebaseio.com',
-                projectId: 'mooven-f9e3c',
-                storageBucket: 'mooven-f9e3c.appspot.com',
-                messagingSenderId: '301998553220',                
+                apiKey: "AIzaSyBqzeQjuoqMufM3r0qNyMwgQLJoI6D6zXI",
+                authDomain: "mooven-production-5fb0b.firebaseapp.com",
+                databaseURL: "https://mooven-production-5fb0b.firebaseio.com",
+                projectId: "mooven-production-5fb0b",
+                storageBucket: "mooven-production-5fb0b.appspot.com",
+                messagingSenderId: "411770841728"              
             },
             LOCALSTORAGE: {
                 name: '__moovenApp'
