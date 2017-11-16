@@ -434,31 +434,39 @@ export const CF_TASKS = {
  */
 
 export class SendingRequestLiveSummary {
-    publicId: string;
-    timestamp: number;
-    price: number;           
-    routeDistanceKm: number;
+    _completedExpiresAt?: number;  
+    _completedExpiresDate?: string;  
     _currentStage?: string;
     _currentStatus?: string;
-    _currentStage_Status?: string;  
+    _currentStage_Status?: string;
+    _waitoperatorExpiresAt?: number;  
+    _waitoperatorExpiresDate?: string;  
+    dropAddressCityShort: string;
+    dropAddressLat: number;
+    dropAddressLng: number;  
+    dropAddressStreetShort: string;
+    dropAddressNumber: string;            
+    dropTimeFrom: string;
+    dropTimeTo: string;  
+    objectDeclaredValue: number;
     objectShortName: string;
     objectImageDownloadUrl: string;
     objectType: string;
+    pickupAddressCityShort: string;
     pickupAddressLat: number;
     pickupAddressLng: number;  
     pickupAddressStreetShort: string;
     pickupAddressNumber: string;
     pickupAddressPostalCode: string;            
-    pickupAddressCityShort: string;
     pickupTimeFrom: string;
     pickupTimeTo: string;
-    dropAddressLat: number;
-    dropAddressLng: number;  
-    dropAddressStreetShort: string;
-    dropAddressNumber: string;            
-    dropAddressCityShort: string;
-    dropTimeFrom: string;
-    dropTimeTo: string;          
+    price: number;           
+    priceCommissionAmount:number;
+    priceOperatorEarning:number;
+    publicId: string;
+    routeDistanceKm: number;        
+    timestamp: number;
+    userUid: string;
 }
 
 export class SendingRequest {

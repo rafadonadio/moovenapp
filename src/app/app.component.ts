@@ -99,7 +99,7 @@ export class MyApp {
     private susbcribeAuthState() {
         this.authSrv.firebaseAuthObservable()
             .subscribe( user => {
-                console.info('_authState_');
+                console.groupCollapsed('APP: AUTH_STATE');
                 if(user) {
                     // user OK
                     console.log('_authState_', user);
@@ -114,6 +114,7 @@ export class MyApp {
                     console.log('__ASC__ NULL');
                     this.signOut();
                 }
+                console.groupEnd();
             });
     }
 
@@ -121,9 +122,11 @@ export class MyApp {
     // userAccount is created by CF trigger:user.onCreated
     // if account not yet exist, it keeps user in homepage
     private initAccount() {
+        
         // check if account exist
         this.accountSrv.exist()
             .then(result => {
+                console.groupCollapsed('APP: INIT_ACCOUNT');
                 console.log('account', result);
                 if(!result.getId) {    
                     // no userUid, logout
@@ -141,11 +144,13 @@ export class MyApp {
                     this.setAccount();
                     this.nav.setRoot(HomePage);                          
                 }   
+                console.groupEnd();
             })
             .catch(result => {
                 console.log('error', result);
                 this.presentToast('Ha ocurrido un error en la autenticación, por favor vuelve a ingresar', 2500);                
                 this.authSrv.signOut();
+                console.groupEnd();
             });
     }
 

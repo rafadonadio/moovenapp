@@ -1,6 +1,6 @@
 import { SendingSetCanceledbyoperatorService } from './sending-set-canceledbyoperator-service';
 import { SendingSetCanceledbysenderService } from './sending-set-canceledbysender-service';
-import { DateService } from '../date-service/date-service';
+import { DATE_DEFAULTS, DateService } from '../date-service/date-service';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { AuthService } from '../auth-service/auth-service';
 import { SendingSetDroppedService } from './sending-set-dropped-service';
@@ -12,14 +12,14 @@ import { SendingPaymentService } from './sending-payment-service';
 import { SendingNotificationsService } from './sending-notifications-service';
 import { Injectable } from '@angular/core';
 import { HashService } from '../hash-service/hash-service';
-import { SendingRequest } from '../../models/sending-model';
+import { SendingRequest, SendingRequestLiveSummary } from '../../models/sending-model';
 import { SHIPMENT_CFG } from '../../models/shipment-model';
 
 import * as GeoFire from 'geofire';
 import * as firebase from 'firebase';
 
 const VACANT_LOCK_TIMEOUT = SHIPMENT_CFG.CONFIRM_TIMEOUT + SHIPMENT_CFG.WAIT_AFTER_UNLOCK; // ADDED SECONDS TO AVOID COLISSIONS
-
+const PICKUP_DIFF_DAYS = DATE_DEFAULTS.PICKUP_DIFF_DAYS;
 
 @Injectable()
 export class SendingService {
@@ -73,6 +73,30 @@ export class SendingService {
     }    
 
     /**
+     * CREATE FORM HELPERS
+     */
+
+    isPickupDateValid(pickupDate, dateLimitMin, dateLimitMax) {
+        return this.dateSrv.isBetween(pickupDate, dateLimitMin, dateLimitMax);
+    }      
+
+    setDateLimits() {
+        const now = this.dateSrv.getIsoString();
+        const max = this.dateSrv.addDays(now, PICKUP_DIFF_DAYS)
+        const maxDisplay = this.dateSrv.addDays(now, PICKUP_DIFF_DAYS - 1)
+        const minHuman = this.dateSrv.displayFormat(now, 'DD/MMM');
+        const maxHuman = this.dateSrv.displayFormat(maxDisplay, 'DD/MMM');
+        const dateLimits: DateLimits = {
+            min: now,
+            max: max,
+            maxDisplay: maxDisplay,
+            minHuman: minHuman,
+            maxHuman: maxHuman,
+        }
+        return dateLimits;
+    }
+
+    /**
      *  READ
      */
 
@@ -81,6 +105,10 @@ export class SendingService {
         return this.afDb.object(`sendings/${sendingId}`,  { 
                 preserveSnapshot: snapshot 
             });
+    }
+
+    getByIdOnce(sendingId:string):Promise<any> {
+        return firebase.database().ref(`sendings/${sendingId}`).once('value');
     }
 
     // get account active sendings Observable
@@ -155,6 +183,9 @@ export class SendingService {
             preserveSnapshot: snapshot,
         });         
     }
+    getLiveByIdOnce(sendingId:string):Promise<any> {
+        return firebase.database().ref(`_sendingsLive/${sendingId}`).once('value');
+    }
 
     attemptToLockVacant(sendingId:string):Promise<any> {
         let userId = this.authSrv.fbuser.uid;
@@ -165,10 +196,10 @@ export class SendingService {
         return this.writeUnlockVacant(sendingId);
     }
 
-    hasVacantExpired(sendingSummary:any) {
+    hasVacantExpired(sendingLiveSummary:SendingRequestLiveSummary) {
         // check if expired
         const now = this.dateSrv.getUnixTimestamp();
-        const expiresAt = sendingSummary._waitoperatorExpiresAt;
+        const expiresAt = sendingLiveSummary._waitoperatorExpiresAt;
         const secondsBeforeExpires = expiresAt - now;
         // console.log('hasVacantExpired', secondsBeforeExpires);
         return secondsBeforeExpires>0 ? false : true;        
@@ -311,3 +342,21 @@ export class SendingService {
 
 }
 
+// CLASSES
+
+export class DateLimits {
+    min:string;
+    max:string;
+    maxDisplay:string;
+    minHuman:string;
+    maxHuman:string;
+}
+
+export class TimeLimits {
+    from: {
+        min:string
+    }
+    to: {
+        min:string
+    }
+}
