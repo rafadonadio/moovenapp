@@ -1,7 +1,7 @@
 {
   "name": "mooven",
   "author": "Guillermo Dova",
-  "homepage": "http://moovenapp.com/",
+  "homepage": "https://moovenapp.com/",
   "private": true,
   "scripts": {
     "build": "ionic-app-scripts build",
@@ -64,7 +64,7 @@
     "ionic": "3.18.0",
     "typescript": "2.3.4"
   },
-  "description": "moovenAppDev: An Ionic project",
+  "description": "Mooven App",
   "cordovaPlugins": [
     "cordova-plugin-device",
     "cordova-plugin-console",
